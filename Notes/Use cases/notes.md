@@ -15,11 +15,14 @@ User POV:
 7. RAG chatbot
     - Handles complex queries and adjusts the filters accordingly for select queries
     - Answers doubts regarding any properties based upon the property details
+8. Get latest news
+9. User based login
+10. To see saved properties
 
 Admin POV:
 1. Admin based login
 2. Admin Dashboard
-    - View property listing (Pop up)
+    - View Properties
         - Property cards (property details,)
         - Filters:
             - View current listed properties
@@ -29,22 +32,25 @@ Admin POV:
             - Latest (on shelf date)
             - Beds and baths
             - Current stage
-    - Add Properties
-        - Manual entry or excel entry
-        - Checker as a precaution
-        - Create ai video of home tour using MCP server using Dashscope
-        - Admin check of the home tour and retry option with prompt modifications
-        - Save as draft
-        - Publish
+
     - Property Management
         - Property cards (property details, update, Status, publish)
-        - Delete property option
-        - Add / delete photos
-        - Update details
-        - Update home tour video
-        - Save as draft
-        - Publish
-    - Email Campaign 
+        - Add Properties page
+            - Manual entry or excel entry
+            - Checker as a precaution
+            - Create ai video of home tour using MCP server using Dashscope
+            - Admin check of the home tour and retry option with prompt modifications
+            - Save as draft
+            - Publish
+        - Update properties page    
+            - Delete property option
+            - Add / delete photos
+            - Update details
+            - Update home tour video
+            - Save as draft
+            - Publish
+
+    - Email Campaign Management
         - View / Add Subscribers 
             - Count and list of current subscribers (export to excel)
             - Count and list of current unsubscribers (export to excel)
@@ -76,9 +82,17 @@ Admin POV:
             - Template creation
                 - Properties
                 - Code editor
-    - Interests
+
+    - Interests Management
         - Filteration panel (Properties, date of interest, location, agent)
         - Email content
         - Proprty card with number of interests (counter updated based interest registered (add) and email sent (delete))
             - List of interests
             - Email
+
+    - News Management
+        - View old news with date of publish and date active
+        - Add content
+        - Add date to be live
+        - Select properties to refer in the news
+        - Publish option
