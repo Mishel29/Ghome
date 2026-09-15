@@ -11,13 +11,39 @@ User POV:
 3. Calculate your mortgage
 4. Comparison of properties
 5. Data analytics based upon property value growth
+6. Save properties and view the list of saved properties
+7. RAG chatbot
+    - Handles complex queries and adjusts the filters accordingly for select queries
+    - Answers doubts regarding any properties based upon the property details
 
 Admin POV:
 1. Admin based login
 2. Admin Dashboard
     - View property listing (Pop up)
-        - View current listed properties (Filters)
-        - View offline properties (Filter)
+        - Property cards (property details,)
+        - Filters:
+            - View current listed properties
+            - View offline properties
+            - Location
+            - Price range
+            - Latest (on shelf date)
+            - Beds and baths
+            - Current stage
+    - Add Properties
+        - Manual entry or excel entry
+        - Checker as a precaution
+        - Create ai video of home tour using MCP server using Dashscope
+        - Admin check of the home tour and retry option with prompt modifications
+        - Save as draft
+        - Publish
+    - Property Management
+        - Property cards (property details, update, Status, publish)
+        - Delete property option
+        - Add / delete photos
+        - Update details
+        - Update home tour video
+        - Save as draft
+        - Publish
     - Email Campaign 
         - View / Add Subscribers 
             - Count and list of current subscribers (export to excel)
@@ -26,7 +52,7 @@ Admin POV:
         - Campaign log
             - Filter by date range
             - List of email campaign posts
-                - Reachout (click count, interest count)
+                - Reachout (click count, interest count, save count)
                 - Date of issue
                 - Properties listed (Number and names)
                 - Send/Fail Status for all users 
@@ -37,11 +63,22 @@ Admin POV:
             - Interest/Email rate (source email)
             - Date range for getting the stats
         - Create Campaign
-            - 
-            - Property campaigned
-            - Pending campaigned
             - Select and post campaign
-    - Interest 
-3. CRUD operation - page content, house types, new post
-3. Upload images 
-4. Manage email campaign
+                - Property (details)
+                - Filters and sorts
+                    - Click count
+                    - Interest count
+                    - Not campaigned
+                    - Location
+                    - Price range
+                    - Latest (on shelf date)
+                    - Beds and baths
+            - Template creation
+                - Properties
+                - Code editor
+    - Interests
+        - Filteration panel (Properties, date of interest, location, agent)
+        - Email content
+        - Proprty card with number of interests (counter updated based interest registered (add) and email sent (delete))
+            - List of interests
+            - Email
