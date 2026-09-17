@@ -1,8 +1,10 @@
 import { useApp } from "../context";
+import { useNavigate } from "react-router-dom";
 import { fmt } from "../data";
 
 export default function Compare() {
-  const { compareIds, toggleCompare, properties, nav } = useApp();
+  const { compareIds, toggleCompare, properties} = useApp();
+  const navigate = useNavigate();
   const selected = properties.filter((p) => compareIds.includes(p.id));
 
   const rows: { label: string; key: (p: typeof properties[0]) => string }[] = [
@@ -101,7 +103,7 @@ export default function Compare() {
                   {selected.map((p) => (
                     <td key={p.id} className="px-5 py-4 border-r border-[#ddd5c5] last:border-r-0">
                       <button
-                        onClick={() => nav("property-detail", { id: p.id })}
+                        onClick={() => navigate(`/property/${p.id}`)}
                         className="bg-navy text-white text-xs font-semibold px-4 py-2 hover:bg-amber transition-colors"
                       >
                         View Details

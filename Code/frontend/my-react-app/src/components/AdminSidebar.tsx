@@ -1,4 +1,5 @@
 import { useApp } from "../context";
+import { useNavigate } from "react-router-dom";
 
 type AdminView =
   | "admin-dashboard" | "admin-properties" | "admin-property-form"
@@ -15,13 +16,14 @@ const items: { icon: string; label: string; view: AdminView }[] = [
 ];
 
 export default function AdminSidebar() {
-  const { view, nav, logout } = useApp();
+  const { view, logout } = useApp();
+  const navigate = useNavigate();
 
   return (
     <aside className="w-56 shrink-0 bg-navy min-h-screen flex flex-col">
       {/* Logo */}
       <div className="px-5 py-5 border-b border-white/10">
-        <button onClick={() => nav("admin-dashboard")} className="flex items-center gap-2 text-white font-display font-bold text-lg">
+        <button onClick={() => navigate("admin-dashboard")} className="flex items-center gap-2 text-white font-display font-bold text-lg">
           <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
             <polygon points="14,2 26,24 2,24" fill="none" stroke="#E8761B" strokeWidth="2"/>
             <polygon points="14,8 22,22 6,22" fill="#E8761B" opacity="0.3"/>
@@ -38,7 +40,19 @@ export default function AdminSidebar() {
           return (
             <button
               key={label}
-              onClick={() => nav(v)}
+              onClick={() => navigate(
+  v === "admin-properties"
+    ? "/admin/properties"
+    : v === "admin-campaigns"
+    ? "/admin/campaigns"
+    : v === "admin-subscribers"
+    ? "/admin/subscribers"
+    : v === "admin-interests"
+    ? "/admin/interests"
+    : v === "admin-news"
+    ? "/admin/news"
+    : "/admin"
+)}
               className={`admin-sidebar-item w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-sm transition-all ${
                 active
                   ? "bg-amber text-white"
@@ -57,7 +71,7 @@ export default function AdminSidebar() {
       {/* Bottom actions */}
       <div className="px-3 pb-5 space-y-1 border-t border-white/10 pt-4">
         <button
-          onClick={() => nav("home")}
+          onClick={() => navigate("/")}
           className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/8 transition-all"
         >
           <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.75" viewBox="0 0 24 24">

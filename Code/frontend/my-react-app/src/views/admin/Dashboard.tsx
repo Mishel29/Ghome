@@ -1,9 +1,11 @@
 import { useApp } from "../../context";
+import { useNavigate } from "react-router-dom";
 import { fmt } from "../../data";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 export default function AdminDashboard() {
-  const { properties, interests, subscribers, campaigns, nav } = useApp();
+  const navigate = useNavigate();
+  const { properties, interests, subscribers, campaigns } = useApp();
 
   const activeSubs = subscribers.filter((s) => !s.unsubscribed).length;
   const sentCampaigns = campaigns.filter((c) => c.status === "sent").length;
@@ -87,7 +89,7 @@ export default function AdminDashboard() {
         <div className="bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-display text-navy font-semibold text-base">Recent Interests</h2>
-            <button onClick={() => nav("admin-interests")} className="text-xs text-amber hover:underline">View all</button>
+            <button onClick={() => navigate("/admin/interests")}className="text-xs text-amber hover:underline">View all</button>
           </div>
           <div className="space-y-3">
             {interests.slice(-5).reverse().map((i) => {
@@ -110,7 +112,7 @@ export default function AdminDashboard() {
       <div className="bg-white shadow-sm">
         <div className="p-5 border-b border-[#EDE5D5] flex items-center justify-between">
           <h2 className="font-display text-navy font-semibold text-base">Property Snapshot</h2>
-          <button onClick={() => nav("admin-properties")} className="text-xs text-amber hover:underline">Manage</button>
+          <button onClick={() => navigate("/admin/properties")} className="text-xs text-amber hover:underline">Manage</button>
         </div>
         <div className="divide-y divide-[#EDE5D5]">
           {properties.map((p) => (

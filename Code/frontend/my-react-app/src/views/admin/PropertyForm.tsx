@@ -1,6 +1,28 @@
 import { useState } from "react";
 import { useApp } from "../../context";
 import type { Property } from "../../data";
+import { useNavigate, useParams } from "react-router-dom";
+
+const Field = ({
+  label,
+  req,
+  error,
+  children,
+}: {
+  label: string;
+  req?: boolean;
+  error?: string;
+  children: React.ReactNode;
+}) => (
+  <div>
+    <label className="text-xs font-semibold text-stone uppercase tracking-wider block mb-1.5">
+      {label}
+      {req && <span className="text-red-500 ml-0.5">*</span>}
+    </label>
+    {children}
+    {error && <p className="text-[11px] text-red-600 mt-1">{error}</p>}
+  </div>
+);
 
 const BLANK: Omit<Property, "id" | "valueGrowth" | "interestCount" | "clickCount" | "saveCount" | "campaigned"> = {
   name: "", location: "", county: "Dublin", address: "", status: "draft",
@@ -11,8 +33,11 @@ const BLANK: Omit<Property, "id" | "valueGrowth" | "interestCount" | "clickCount
 };
 
 export default function PropertyForm() {
-  const { params, properties, setProperties, nav } = useApp();
-  const existing = params.id ? properties.find((p) => p.id === params.id) : null;
+  const { properties, setProperties } = useApp();
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+
+  const existing = id ? properties.find((p) => p.id === id) : null;
 
   const [form, setForm] = useState<typeof BLANK>(existing ? { ...existing } : { ...BLANK });
   const [featureInput, setFeatureInput] = useState("");
@@ -52,7 +77,7 @@ export default function PropertyForm() {
       setProperties([...properties, newProp]);
     }
     setSaved(true);
-    setTimeout(() => { setSaved(false); nav("admin-properties"); }, 1200);
+    setTimeout(() => { setSaved(false); navigate("/admin/properties"); }, 1200);
   };
 
   const generateVideo = () => {
@@ -60,22 +85,13 @@ export default function PropertyForm() {
     setTimeout(() => setVideoStatus("review"), 3000);
   };
 
-  const Field = ({ label, req, error, children }: { label: string; req?: boolean; error?: string; children: React.ReactNode }) => (
-    <div>
-      <label className="text-xs font-semibold text-stone uppercase tracking-wider block mb-1.5">
-        {label}{req && <span className="text-red-500 ml-0.5">*</span>}
-      </label>
-      {children}
-      {error && <p className="text-[11px] text-red-600 mt-1">{error}</p>}
-    </div>
-  );
 
   const inputCls = "w-full border border-[#ddd5c5] px-3 py-2.5 text-sm text-navy bg-white";
 
   return (
     <div className="p-8 max-w-4xl">
       <div className="flex items-center gap-3 mb-6">
-        <button onClick={() => nav("admin-properties")} className="text-stone hover:text-navy transition-colors">
+        <button onClick={() => navigate("/admin/properties")} className="text-stone hover:text-navy transition-colors">
           <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
         </button>
         <h1 className="font-display text-navy text-3xl font-bold">{existing ? `Edit: ${existing.name}` : "Add New Property"}</h1>
@@ -286,7 +302,7 @@ export default function PropertyForm() {
         <button onClick={() => save(true)} className="bg-amber text-white px-6 py-2.5 text-sm font-semibold hover:bg-amber-hover transition-colors">
           Publish
         </button>
-        <button onClick={() => nav("admin-properties")} className="ml-auto text-stone hover:text-navy text-sm transition-colors">Cancel</button>
+        <button onClick={() => navigate("/admin/properties")} className="ml-auto text-stone hover:text-navy text-sm transition-colors">Cancel</button>
       </div>
     </div>
   );

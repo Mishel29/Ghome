@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { useApp } from "../context";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginModal() {
-  const { login, setShowLogin, nav } = useApp();
+  const { login, setShowLogin} = useApp();
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -13,14 +15,18 @@ export default function LoginModal() {
     setError("");
     setLoading(true);
     await new Promise((r) => setTimeout(r, 600));
+    console.log("LOGIN ATTEMPT:", email, password);
     const ok = login(email, password);
     setLoading(false);
     if (ok) {
-      setShowLogin(false);
-      if (email === "admin@harborstone.ie") nav("admin-dashboard");
-    } else {
-      setError("Invalid email or password. Try: user@harborstone.ie / password");
-    }
+  setShowLogin(false);
+
+  if (email === "admin@harborstone.ie") {
+    navigate("/admin");
+  } else {
+    navigate("/");
+  }
+}
   };
 
   return (

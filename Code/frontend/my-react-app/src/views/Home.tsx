@@ -1,17 +1,26 @@
 import { useState } from "react";
 import { useApp } from "../context";
+import { useNavigate } from "react-router-dom";
 import PropertyCard from "../components/PropertyCard";
 
 export default function Home() {
-  const { properties, news, nav } = useApp();
+  const { properties, news } = useApp();
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
 
   const featured = properties.filter((p) => p.status === "on-sale" || p.status === "coming-soon").slice(0, 8);
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    nav("properties");
-  };
+const handleSearch = (e: React.FormEvent) => {
+  e.preventDefault();
+
+  const query = search.trim();
+
+  if (query) {
+    navigate(`/properties?search=${encodeURIComponent(query)}`);
+  } else {
+    navigate("/properties");
+  }
+};
 
   return (
     <div className="bg-cream min-h-screen">
@@ -44,7 +53,7 @@ export default function Home() {
             </button>
           </form>
           <button
-            onClick={() => nav("properties")}
+            onClick={() => navigate("/properties")}
             className="border border-white text-white px-10 py-3 text-sm font-semibold hover:bg-white hover:text-navy transition-all tracking-wider uppercase"
           >
             Find Your New Home
@@ -56,10 +65,10 @@ export default function Home() {
       <section className="bg-navy">
         <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4">
           {[
-            { icon: "M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M9 17h6", label: "Mortgage Calculator", action: () => nav("mortgage") },
-            { icon: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z", label: "Compare Properties", action: () => nav("compare") },
-            { icon: "M13 7h8m0 0v8m0-8l-8 8-4-4-6 6", label: "Property Analytics", action: () => nav("analytics") },
-            { icon: "M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z", label: "AI Home Assistant", action: () => nav("chatbot") },
+            { icon: "M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M9 17h6", label: "Mortgage Calculator", action: () => navigate("/mortgage")},
+            { icon: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z", label: "Compare Properties", action: () => navigate("/compare") },
+            { icon: "M13 7h8m0 0v8m0-8l-8 8-4-4-6 6", label: "Property Analytics", action: () => navigate("/analytics")},
+            { icon: "M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z", label: "AI Home Assistant", action: () => navigate("/chatbot") },
           ].map(({ icon, label, action }) => (
             <button
               key={label}
@@ -83,7 +92,7 @@ export default function Home() {
             <p className="text-stone text-sm mt-1">Discover our latest developments across Ireland</p>
           </div>
           <button
-            onClick={() => nav("properties")}
+            onClick={() => navigate("/properties")}
             className="text-sm font-semibold text-navy hover:text-amber flex items-center gap-1 transition-colors"
           >
             View all
@@ -120,7 +129,7 @@ export default function Home() {
       <section className="max-w-7xl mx-auto px-6 py-16">
         <div className="mb-8 flex items-end justify-between">
           <h2 className="text-burgundy font-display text-3xl font-bold">Latest News</h2>
-          <button onClick={() => nav("news")} className="text-sm font-semibold text-navy hover:text-amber flex items-center gap-1 transition-colors">
+          <button onClick={() => navigate("/news")} className="text-sm font-semibold text-navy hover:text-amber flex items-center gap-1 transition-colors">
             All news
             <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <path d="M5 12h14M12 5l7 7-7 7"/>
@@ -129,7 +138,7 @@ export default function Home() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {news.filter((n) => n.published).slice(0, 3).map((article) => (
-            <article key={article.id} className="bg-cream-dark group cursor-pointer" onClick={() => nav("news")}>
+            <article key={article.id} className="bg-cream-dark group cursor-pointer" onClick={() => navigate("/news")}>
               <div className="aspect-[16/9] overflow-hidden">
                 <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"/>
               </div>
