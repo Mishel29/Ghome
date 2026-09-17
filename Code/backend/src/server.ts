@@ -92,38 +92,168 @@ const schema = buildSchema(`
     updatedAt: String!
   }
 
-  type Query {
-    properties: [Property!]!
-    property(id: ID!): Property
-  }
+  input PropertyFilterInput {
+  search: String
+  county: String
+  status: PropertyStatus
+  stage: PropertyStage
+  minPrice: Float
+  maxPrice: Float
+  minBedrooms: Int
+  maxBedrooms: Int
+}
+
+type PropertyConnection {
+  nodes: [Property!]!
+  totalCount: Int!
+}
+
+type Query {
+  properties(
+    filter: PropertyFilterInput
+    limit: Int
+    offset: Int
+  ): PropertyConnection!
+
+  property(id: ID!): Property
+}
 `);
 
 const root = {
-  properties: async () => {
-  const properties = await prisma.property.findMany({
-    orderBy: {
-      createdAt: "desc",
-    },
-    include: {
-      agent: true,
-      media: true,
-      features: {
-        include: {
-          feature: true,
-        },
-      },
-      valueHistory: {
-        orderBy: {
-          year: "asc",
-        },
-      },
-    },
-  });
+  properties: async ({
+  filter,
+  limit = 20,
+  offset = 0,
+}: {
+  filter?: {
+    search?: string;
+    county?: string;
+    status?: "DRAFT" | "COMING_SOON" | "ON_SALE" | "SOLD_OUT" | "OFFLINE";
+    stage?: "PLANNING" | "UNDER_CONSTRUCTION" | "READY_TO_MOVE";
+    minPrice?: number;
+    maxPrice?: number;
+    minBedrooms?: number;
+    maxBedrooms?: number;
+  };
+  limit?: number;
+  offset?: number;
+}) => {
+  const where = {
+    ...(filter?.search
+      ? {
+          OR: [
+            {
+              name: {
+                contains: filter.search,
+                mode: "insensitive" as const,
+              },
+            },
+            {
+              address: {
+                contains: filter.search,
+                mode: "insensitive" as const,
+              },
+            },
+            {
+              county: {
+                contains: filter.search,
+                mode: "insensitive" as const,
+              },
+            },
+          ],
+        }
+      : {}),
 
-  return properties.map((property) => ({
-    ...property,
-    features: property.features.map((item) => item.feature),
-  }));
+    ...(filter?.county
+      ? {
+          county: {
+            equals: filter.county,
+            mode: "insensitive" as const,
+          },
+        }
+      : {}),
+
+    ...(filter?.status
+      ? {
+          status: filter.status,
+        }
+      : {}),
+
+    ...(filter?.stage
+      ? {
+          stage: filter.stage,
+        }
+      : {}),
+
+    ...(filter?.minPrice !== undefined
+      ? {
+          priceMin: {
+            gte: filter.minPrice,
+          },
+        }
+      : {}),
+
+    ...(filter?.maxPrice !== undefined
+      ? {
+          priceMax: {
+            lte: filter.maxPrice,
+          },
+        }
+      : {}),
+
+    ...(filter?.minBedrooms !== undefined
+      ? {
+          bedroomsMin: {
+            gte: filter.minBedrooms,
+          },
+        }
+      : {}),
+
+    ...(filter?.maxBedrooms !== undefined
+      ? {
+          bedroomsMax: {
+            lte: filter.maxBedrooms,
+          },
+        }
+      : {}),
+  };
+
+  const [properties, totalCount] = await Promise.all([
+    prisma.property.findMany({
+      where,
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: Math.min(limit, 100),
+      skip: Math.max(offset, 0),
+      include: {
+        agent: true,
+        media: true,
+        features: {
+          include: {
+            feature: true,
+          },
+        },
+        valueHistory: {
+          orderBy: {
+            year: "asc",
+          },
+        },
+      },
+    }),
+
+    prisma.property.count({
+      where,
+    }),
+  ]);
+
+  return {
+    nodes: properties.map((property) => ({
+      ...property,
+      features: property.features.map((item) => item.feature),
+    })),
+    totalCount,
+  };
 },
   property: async ({ id }: { id: string }) => {
   const property = await prisma.property.findUnique({
