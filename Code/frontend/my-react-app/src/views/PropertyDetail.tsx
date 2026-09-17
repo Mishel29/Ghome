@@ -1,10 +1,14 @@
 import { useState } from "react";
 import { useApp } from "../context";
 import { fmt, type Interest } from "../data";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function PropertyDetail() {
-  const { params, properties, nav, savedIds, toggleSave, interests, setInterests } = useApp();
-  const p = properties.find((x) => x.id === params.id) ?? properties[0];
+  const { properties, savedIds, toggleSave, interests, setInterests } = useApp();
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+
+  const p = properties.find((x) => x.id === id) ?? properties[0];
   const isSaved = savedIds.includes(p.id);
   const [photoIdx, setPhotoIdx] = useState(0);
   const [showForm, setShowForm] = useState(false);
@@ -83,7 +87,7 @@ export default function PropertyDetail() {
 
         {/* Back button */}
         <button
-          onClick={() => nav("properties")}
+          onClick={() => navigate("/properties")}
           className="absolute top-6 left-6 bg-white/20 backdrop-blur-sm text-white flex items-center gap-2 px-4 py-2 text-sm hover:bg-white/30 transition-all"
         >
           <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -172,7 +176,7 @@ export default function PropertyDetail() {
               Register Your Interest
             </button>
             <button
-              onClick={() => nav("mortgage")}
+              onClick={() => navigate("/mortgage")}
               className="w-full mt-2 border border-white/30 text-white/80 hover:text-white py-3 font-medium text-sm transition-colors"
             >
               Mortgage Calculator

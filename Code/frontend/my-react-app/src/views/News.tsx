@@ -1,8 +1,16 @@
 import { useApp } from "../context";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function News() {
-  const { news, properties, nav } = useApp();
+  const { news, properties } = useApp();
+  const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
+
   const published = news.filter((n) => n.published);
+  const selectedArticle = id
+    ? published.find((article) => article.id === id)
+   : null;
+  const articlesToShow = selectedArticle ? [selectedArticle] : published;
 
   return (
     <div className="bg-cream min-h-screen">
@@ -14,10 +22,10 @@ export default function News() {
       </div>
 
       <div className="max-w-5xl mx-auto px-6 py-12 space-y-10">
-        {published.map((article, i) => {
+        {articlesToShow.map((article, i) => {
           const relProps = properties.filter((p) => article.relatedProperties.includes(p.id));
           return (
-            <article key={article.id} className={`grid gap-8 ${i === 0 ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1 md:grid-cols-3"}`}>
+            <article key={article.id} onClick={() => navigate(`/news/${article.id}`)} className={`grid gap-8 cursor-pointer ${i === 0 ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1 md:grid-cols-3"}`}>
               <div className={`overflow-hidden ${i === 0 ? "" : ""}`}>
                 <img
                   src={article.image}
@@ -41,7 +49,7 @@ export default function News() {
                     {relProps.map((p) => (
                       <button
                         key={p.id}
-                        onClick={() => nav("property-detail", { id: p.id })}
+                        onClick={() => navigate(`/properties/${p.id}`)}
                         className="text-xs bg-cream-dark border border-[#ddd5c5] text-navy px-2.5 py-1 hover:border-amber hover:text-amber transition-all"
                       >
                         {p.name}

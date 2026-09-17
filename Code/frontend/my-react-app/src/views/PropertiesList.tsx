@@ -1,4 +1,5 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useApp } from "../context";
 import PropertyCard from "../components/PropertyCard";
 import { fmt } from "../data";
@@ -9,6 +10,8 @@ const STATUS = ["All", "on-sale", "coming-soon", "sold-out"];
 
 export default function PropertiesList() {
   const { properties } = useApp();
+  const [searchParams] = useSearchParams();
+  const urlSearch = searchParams.get("search") ?? "";
   const [county, setCounty] = useState("All");
   const [stage, setStage] = useState("All");
   const [status, setStatus] = useState("All");
@@ -16,7 +19,11 @@ export default function PropertiesList() {
   const [maxPrice, setMaxPrice] = useState(1000000);
   const [minBeds, setMinBeds] = useState(0);
   const [sort, setSort] = useState("latest");
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(urlSearch);
+
+  useEffect(() => {
+  setSearch(urlSearch);
+}, [urlSearch]);
 
   const filtered = useMemo(() => {
     let list = properties.filter((p) => p.status !== "offline" && p.status !== "draft");

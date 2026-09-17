@@ -1,8 +1,10 @@
 import { useApp } from "../context";
+import { useNavigate } from "react-router-dom";
 import PropertyCard from "../components/PropertyCard";
 
 export default function SavedProperties() {
-  const { savedIds, properties, nav } = useApp();
+  const { savedIds, properties} = useApp();
+  const navigate = useNavigate();
   const saved = properties.filter((p) => savedIds.includes(p.id));
 
   return (
@@ -21,7 +23,7 @@ export default function SavedProperties() {
             </svg>
             <p className="font-display text-2xl text-navy mb-2">No saved properties yet</p>
             <p className="text-stone mb-6">Click the bookmark icon on any property to save it here</p>
-            <button onClick={() => nav("properties")} className="bg-amber text-white px-8 py-3 font-semibold text-sm hover:bg-amber-hover transition-colors">
+            <button onClick={() => navigate("/properties")} className="bg-amber text-white px-8 py-3 font-semibold text-sm hover:bg-amber-hover transition-colors">
               Browse Properties
             </button>
           </div>

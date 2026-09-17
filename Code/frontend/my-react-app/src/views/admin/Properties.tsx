@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { useApp } from "../../context";
+import {useNavigate} from "react-router-dom";
 import { fmt } from "../../data";
 
 const COUNTIES = ["All", "Dublin", "Cork", "Galway", "Limerick", "Wicklow", "Kildare"];
 const STATUS_OPTS = ["All", "on-sale", "coming-soon", "sold-out", "offline", "draft"];
 
 export default function AdminProperties() {
-  const { properties, setProperties, nav } = useApp();
+  const { properties, setProperties} = useApp();
+  const navigate = useNavigate();
   const [county, setCounty] = useState("All");
   const [status, setStatus] = useState("All");
   const [minBeds, setMinBeds] = useState(0);
@@ -53,7 +55,7 @@ export default function AdminProperties() {
           <p className="text-stone text-sm mt-1">{filtered.length} of {properties.length} properties</p>
         </div>
         <button
-          onClick={() => nav("admin-property-form")}
+          onClick={() => navigate("/admin/properties/new")}
           className="bg-amber text-white px-5 py-2.5 text-sm font-semibold hover:bg-amber-hover transition-colors flex items-center gap-2"
         >
           <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
@@ -147,7 +149,7 @@ export default function AdminProperties() {
                   <td className="px-4 py-4">
                     <div className="flex items-center gap-2 justify-end">
                       <button
-                        onClick={() => nav("admin-property-form", { id: p.id })}
+                        onClick={() => navigate(`/admin/properties/${p.id}/edit`)}
                         className="text-xs text-navy border border-navy/30 px-3 py-1.5 hover:bg-navy hover:text-white transition-all"
                       >
                         Edit
@@ -186,7 +188,7 @@ export default function AdminProperties() {
                 <div className="text-xs text-stone mb-2">{p.location} · {p.stage}</div>
                 <div className="text-sm font-bold text-amber mb-3">{fmt(p.price.min)}–{fmt(p.price.max)}</div>
                 <div className="flex gap-2">
-                  <button onClick={() => nav("admin-property-form", { id: p.id })} className="flex-1 text-xs border border-navy text-navy py-1.5 hover:bg-navy hover:text-white transition-all">Edit</button>
+                  <button onClick={() => navigate(`/admin/properties/${p.id}/edit`)} className="flex-1 text-xs border border-navy text-navy py-1.5 hover:bg-navy hover:text-white transition-all">Edit</button>
                   <button onClick={() => setDeleteId(p.id)} className="flex-1 text-xs border border-red-300 text-red-500 py-1.5 hover:bg-red-500 hover:text-white transition-all">Delete</button>
                 </div>
               </div>

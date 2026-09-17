@@ -1,4 +1,5 @@
 import { useApp } from "../context";
+import { useNavigate } from "react-router-dom";
 import { fmt, type Property } from "../data";
 
 const statusLabel: Record<string, { label: string; bg: string }> = {
@@ -15,13 +16,14 @@ interface Props {
 }
 
 export default function PropertyCard({ property: p, showCompare = false }: Props) {
-  const { nav, savedIds, toggleSave, compareIds, toggleCompare } = useApp();
+  const { savedIds, toggleSave, compareIds, toggleCompare } = useApp();
+  const navigate = useNavigate();
   const badge = statusLabel[p.status] ?? { label: p.status, bg: "bg-stone" };
   const isSaved = savedIds.includes(p.id);
   const isCompared = compareIds.includes(p.id);
 
   return (
-    <div className="bg-cream-dark flex flex-col group cursor-pointer" onClick={() => nav("property-detail", { id: p.id })}>
+    <div className="bg-cream-dark flex flex-col group cursor-pointer" onClick={() => navigate(`/properties/${p.id}`)}>
       {/* Image */}
       <div className="relative property-img-wrap aspect-[4/3] overflow-hidden">
         <img src={p.image} alt={p.name} className="w-full h-full object-cover" loading="lazy"/>
@@ -33,7 +35,10 @@ export default function PropertyCard({ property: p, showCompare = false }: Props
 
         {/* Save button */}
         <button
-          onClick={(e) => { e.stopPropagation(); toggleSave(p.id); }}
+          onClick={(e) => {
+            e.stopPropagation();
+              toggleSave(p.id);
+            }}
           className={`absolute top-3 right-3 w-8 h-8 flex items-center justify-center backdrop-blur-sm transition-all ${isSaved ? "bg-amber text-white" : "bg-black/40 text-white hover:bg-amber"}`}
           title={isSaved ? "Remove from saved" : "Save property"}
         >
@@ -58,7 +63,7 @@ export default function PropertyCard({ property: p, showCompare = false }: Props
         </div>
         <div className="mt-auto flex items-center justify-between pt-2 border-t border-[#ddd5c5]">
           <button
-            onClick={(e) => { e.stopPropagation(); nav("property-detail", { id: p.id }); }}
+            onClick={(e) => {e.stopPropagation(); navigate(`/properties/${p.id}`);}}
             className="text-xs font-semibold text-navy hover:text-amber flex items-center gap-1 transition-colors"
           >
             View {p.name}

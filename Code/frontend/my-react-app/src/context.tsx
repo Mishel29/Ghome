@@ -64,7 +64,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
     return false;
   };
 
-  const logout = () => { setUser(null); nav("home"); };
+  const logout = () => {
+  setUser(null);
+  };
 
   const toggleSave = (id: string) =>
     setSavedIds((prev) => prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]);
