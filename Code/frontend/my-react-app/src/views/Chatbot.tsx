@@ -1,6 +1,11 @@
 import { useState, useRef, useEffect } from "react";
-import { useApp } from "../context";
-import { fmt } from "../data";
+import { Link } from "react-router-dom";
+import { graphqlRequest } from "../api/graphql";
+import { PROPERTY_FIELDS, viewProperty } from "../api/properties";
+import PropertyCard from "../components/PropertyCard";
+import type { Property as ApiProperty } from "../api/schemaTypes";
+import type { Property } from "../data";
+
 
 interface Msg { role: "user" | "bot"; text: string; timestamp: Date }
 
@@ -8,13 +13,14 @@ const SUGGESTIONS = [
   "Show me 3-bed homes under €500k",
   "Which properties are ready to move in?",
   "What's in Cork?",
-  "Compare Meridian and Oakfield",
-  "What is the Help to Buy scheme?",
+  "Show me 3-bedroom homes in Cork under 500k",
   "Show me the most affordable option",
 ];
 
 export default function Chatbot() {
-  const { properties } = useApp();
+  const [results, setResults] = useState<Property[]>([]);
+  const [filterJson,setFilterJson] = useState("{}");
+  const [resultCount,setResultCount] = useState(0);
   const [messages, setMessages] = useState<Msg[]>([
     {
       role: "bot",
@@ -28,91 +34,14 @@ export default function Chatbot() {
 
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages, thinking]);
 
-  const respond = (query: string): string => {
-    const q = query.toLowerCase();
-
-    // Price filter
-    const priceMatch = q.match(/under\s+[€£]?\s*(\d[\d,]*)/);
-    if (priceMatch) {
-      const max = parseInt(priceMatch[1].replace(/,/g, ""));
-      const found = properties.filter((p) => p.price.min <= max && p.status !== "sold-out" && p.status !== "offline");
-      if (found.length === 0) return `I couldn't find properties under €${max.toLocaleString()}. Try a higher budget or check our full listings.`;
-      return `Here are ${found.length} propert${found.length > 1 ? "ies" : "y"} under ${fmt(max)}:\n\n${found.map((p) => `• **${p.name}** (${p.location}) — from ${fmt(p.price.min)} · ${p.type}`).join("\n")}\n\nWould you like details on any of these?`;
-    }
-
-    // Beds filter
-    const bedMatch = q.match(/(\d)\s*[-\s]?bed/);
-    if (bedMatch) {
-      const beds = parseInt(bedMatch[1]);
-      const found = properties.filter((p) => p.beds.includes(beds) && p.status !== "offline");
-      if (found.length === 0) return `I don't currently have any ${beds}-bed homes available. Can I help with a different bedroom count?`;
-      return `I found ${found.length} development${found.length > 1 ? "s" : ""} with ${beds}-bed options:\n\n${found.map((p) => `• **${p.name}** — ${p.location}, from ${fmt(p.price.min)}`).join("\n")}`;
-    }
-
-    // Location query
-    const counties = ["dublin", "cork", "galway", "limerick", "wicklow", "kildare"];
-    const countyMatch = counties.find((c) => q.includes(c));
-    if (countyMatch) {
-      const found = properties.filter((p) => p.county.toLowerCase() === countyMatch);
-      if (found.length === 0) return `We don't currently have active listings in ${countyMatch.charAt(0).toUpperCase() + countyMatch.slice(1)}, but new developments are planned. Register your interest and we'll notify you.`;
-      return `We have ${found.length} development${found.length > 1 ? "s" : ""} in ${countyMatch.charAt(0).toUpperCase() + countyMatch.slice(1)}:\n\n${found.map((p) => `• **${p.name}** — ${p.type}, from ${fmt(p.price.min)}`).join("\n")}`;
-    }
-
-    // Ready to move
-    if (q.includes("ready") || q.includes("move in") || q.includes("available now")) {
-      const found = properties.filter((p) => p.stage === "Ready to Move" && p.status === "on-sale");
-      return `${found.length} developments are ready to move into now:\n\n${found.map((p) => `• **${p.name}** — ${p.location}, from ${fmt(p.price.min)}`).join("\n")}`;
-    }
-
-    // Most affordable
-    if (q.includes("affordable") || q.includes("cheapest") || q.includes("lowest price")) {
-      const sorted = [...properties].filter((p) => p.status !== "sold-out" && p.status !== "offline").sort((a, b) => a.price.min - b.price.min);
-      const p = sorted[0];
-      return `Our most affordable option is **${p.name}** in ${p.location}, starting from ${fmt(p.price.min)}. It offers ${p.type} — ${p.description.substring(0, 100)}...`;
-    }
-
-    // Help to Buy
-    if (q.includes("help to buy") || q.includes("htb") || q.includes("first time")) {
-      return "The **Help to Buy (HTB) scheme** allows first-time buyers to claim back up to €30,000 in income tax and DIRT paid over the previous 4 years. It applies to new builds priced up to €500,000. All our properties are HTB-eligible where applicable. Check with Revenue.ie or speak to our sales team for details.";
-    }
-
-    // Compare
-    if (q.includes("compar")) {
-      return "Our comparison tool lets you view up to 3 properties side by side — price, bedrooms, size, stage, and more. Click the **Compare** link in the navigation, or use the '+Compare' button on any property card.";
-    }
-
-    // Mortgage
-    if (q.includes("mortgage") || q.includes("repayment") || q.includes("loan")) {
-      return "Use our **Mortgage Calculator** to estimate your monthly repayments based on property price, deposit, interest rate, and term. It also checks affordability based on the 3.5× income rule. You'll find it in the navigation.";
-    }
-
-    // Property name lookup
-    for (const p of properties) {
-      if (q.includes(p.name.toLowerCase())) {
-        return `**${p.name}** is located in ${p.address}. It offers ${p.type}, starting from ${fmt(p.price.min)}. Current stage: ${p.stage}. ${p.description} \n\nWould you like to view the full details or register your interest?`;
-      }
-    }
-
-    // Greeting
-    if (q.match(/\b(hi|hello|hey|good morning|good afternoon)\b/)) {
-      return "Hello there! I'm happy to help you find your perfect home. You can ask me about specific properties, bedroom counts, locations, pricing, the Help to Buy scheme, mortgages, or anything else about Harborstone Homes.";
-    }
-
-    return "That's a great question! For detailed queries like this, our sales team would love to help. You can also browse all our properties using the search tool, or try asking me about a specific development, location, or price range.";
-  };
-
-  const send = (text?: string) => {
-    const q = (text ?? input).trim();
-    if (!q) return;
-    setInput("");
-    const userMsg: Msg = { role: "user", text: q, timestamp: new Date() };
-    setMessages((prev) => [...prev, userMsg]);
-    setThinking(true);
-    setTimeout(() => {
-      const botMsg: Msg = { role: "bot", text: respond(q), timestamp: new Date() };
-      setMessages((prev) => [...prev, botMsg]);
-      setThinking(false);
-    }, 800 + Math.random() * 400);
+  const send = async (text?: string) => {
+    const q = (text ?? input).trim(); if (!q || thinking) return;
+    setInput(""); setMessages((old)=>[...old,{role:"user",text:q,timestamp:new Date()}]);setThinking(true);
+    try {
+      const {propertyAssistant:reply}=await graphqlRequest<{propertyAssistant:{answer:string;filterJson:string;totalCount:number;properties:ApiProperty[]}}>(`query($message:String!,$previousFilterJson:String){propertyAssistant(message:$message,previousFilterJson:$previousFilterJson){answer filterJson totalCount properties{${PROPERTY_FIELDS}}}}`,{message:q,previousFilterJson:filterJson});
+      setMessages((old)=>[...old,{role:"bot",text:reply.answer,timestamp:new Date()}]);setFilterJson(reply.filterJson);setResults(reply.properties.map(viewProperty));setResultCount(reply.totalCount);
+    }catch(error){setMessages((old)=>[...old,{role:"bot",text:error instanceof Error?error.message:"The assistant is unavailable. Please retry.",timestamp:new Date()}]);}
+    finally{setThinking(false);}
   };
 
   const fmt2 = (d: Date) => d.toLocaleTimeString("en-IE", { hour: "2-digit", minute: "2-digit" });
@@ -145,7 +74,7 @@ export default function Chatbot() {
               <div className="font-semibold text-navy text-sm">Harborstone AI</div>
               <div className="text-[11px] text-stone flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 bg-sage rounded-full pulse-dot"/>
-                Online
+                Answers from published property records
               </div>
             </div>
           </div>
@@ -197,6 +126,7 @@ export default function Chatbot() {
           </div>
         </div>
 
+        {results.length > 0 && <section className="mt-6"><h2 className="font-display text-xl">Matching public properties ({resultCount})</h2><Link className="underline" to={`/properties?filters=${encodeURIComponent(filterJson)}`}>Open these filters in property search</Link><div className="grid sm:grid-cols-2 gap-4 mt-4">{results.map((p)=><PropertyCard key={p.id} property={p} showCompare />)}</div></section>}
         {/* Suggestions */}
         <div className="mt-5">
           <p className="text-xs text-stone mb-3 uppercase tracking-wider font-semibold">Try asking...</p>

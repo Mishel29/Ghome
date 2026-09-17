@@ -11,10 +11,12 @@ export interface Property {
   baths: number[];
   image: string;
   photos: string[];
+  videoUrl?: string;
+  historyIsSynthetic?: boolean;
   overlayColor: string;
   description: string;
   features: string[];
-  stage: "Planning" | "Under Construction" | "Ready to Move";
+  stage: "Planning" | "Under Construction" | "Ready to Move" | "Not specified";
   listedDate: string;
   sqft: { min: number; max: number };
   agent: string;

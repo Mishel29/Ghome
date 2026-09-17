@@ -103,7 +103,7 @@ export default function Compare() {
                   {selected.map((p) => (
                     <td key={p.id} className="px-5 py-4 border-r border-[#ddd5c5] last:border-r-0">
                       <button
-                        onClick={() => navigate(`/property/${p.id}`)}
+                        onClick={() => navigate(`/properties/${p.id}`)}
                         className="bg-navy text-white text-xs font-semibold px-4 py-2 hover:bg-amber transition-colors"
                       >
                         View Details

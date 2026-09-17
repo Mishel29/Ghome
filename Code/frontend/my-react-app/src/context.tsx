@@ -1,7 +1,10 @@
-import { createContext, useContext, useState } from "react";
+import { comparisonSelection } from "./lib/calculations";
+import { getAuthToken, setAuthToken, graphqlRequest } from "./api/graphql";
+import { propertyPage, viewProperty, propertyById, PROPERTY_FIELDS } from "./api/properties";
+import { createContext, useContext, useState, useEffect, useCallback } from "react";
 import type { ReactNode } from "react";
-import { appUsers, interests as initialInterests, subscribers as initialSubscribers, campaigns as initialCampaigns, newsArticles as initialNews, properties as initialProperties } from "./data";
-import type { Property, Interest, Subscriber, Campaign, NewsArticle } from "./data";
+import type { Property as ApiProperty, NewsConnection } from "./api/schemaTypes";
+import type { Property, NewsArticle } from "./data";
 
 type View =
   | "home" | "properties" | "property-detail" | "mortgage" | "compare"
@@ -17,7 +20,9 @@ interface AppCtx {
   nav: (v: View, params?: Record<string, string>) => void;
   params: Record<string, string>;
   user: AppUser | null;
-  login: (email: string, password: string) => boolean;
+  login: (email: string, password: string) => Promise<AppUser>;
+  authLoading: boolean;
+  refreshProperties: () => Promise<void>;
   logout: () => void;
   savedIds: string[];
   toggleSave: (id: string) => void;
@@ -25,12 +30,12 @@ interface AppCtx {
   toggleCompare: (id: string) => void;
   properties: Property[];
   setProperties: (p: Property[]) => void;
-  interests: Interest[];
-  setInterests: (i: Interest[]) => void;
-  subscribers: Subscriber[];
-  setSubscribers: (s: Subscriber[]) => void;
-  campaigns: Campaign[];
-  setCampaigns: (c: Campaign[]) => void;
+
+
+
+
+
+
   news: NewsArticle[];
   setNews: (n: NewsArticle[]) => void;
   showLogin: boolean;
@@ -45,12 +50,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AppUser | null>(null);
   const [savedIds, setSavedIds] = useState<string[]>([]);
   const [compareIds, setCompareIds] = useState<string[]>([]);
-  const [properties, setProperties] = useState<Property[]>(initialProperties);
-  const [interests, setInterests] = useState<Interest[]>(initialInterests);
-  const [subscribers, setSubscribers] = useState<Subscriber[]>(initialSubscribers);
-  const [campaigns, setCampaigns] = useState<Campaign[]>(initialCampaigns);
-  const [news, setNews] = useState<NewsArticle[]>(initialNews);
+  const [properties, setProperties] = useState<Property[]>([]);
+
+
+
+  const [news, setNews] = useState<NewsArticle[]>([]);
   const [showLogin, setShowLogin] = useState(false);
+
+  useEffect(() => { const expired = () => { setUser(null); setSavedIds([]); setShowLogin(true); }; window.addEventListener("auth-expired", expired); return () => window.removeEventListener("auth-expired", expired); }, []);
 
   const nav = (v: View, p?: Record<string, string>) => {
     setView(v);
@@ -58,29 +65,63 @@ export function AppProvider({ children }: { children: ReactNode }) {
     window.scrollTo(0, 0);
   };
 
-  const login = (email: string, password: string) => {
-    const u = appUsers.find((x) => x.email === email && x.password === password);
-    if (u) { setUser({ id: u.id, name: u.name, email: u.email, role: u.role }); return true; }
-    return false;
+  const [authLoading, setAuthLoading] = useState(true);
+  const refreshProperties = useCallback(async () => {
+    const page = await propertyPage(false, {}, 0, 100);
+    setProperties(page.nodes.map(viewProperty));
+  }, []);
+  useEffect(() => {
+    let active = true;
+    const restore = async () => {
+      try {
+        if (getAuthToken()) {
+          const { me } = await graphqlRequest<{ me: { id: string; name: string; email: string; role: string } }>("{me{id name email role}}");
+          if (active) setUser({ ...me, role: me.role === "ADMIN" ? "admin" : "user" });
+        }
+      } catch { setAuthToken(null); } finally { if (active) setAuthLoading(false); }
+    };
+    void restore();
+    void propertyPage(false, {}, 0, 100).then((page) => { if (active) setProperties(page.nodes.map(viewProperty)); }).catch(() => {});
+    return () => { active = false; };
+  }, [refreshProperties]);
+  const login = async (email: string, password: string) => {
+    const { login: result } = await graphqlRequest<{ login: { token: string; user: { id: string; name: string; email: string; role: string } } }>(
+      "mutation($email:String!,$password:String!){login(email:$email,password:$password){token user{id name email role}}}", { email, password });
+    const account: AppUser = { ...result.user, role: result.user.role === "ADMIN" ? "admin" : "user" }; setAuthToken(result.token); setUser(account); return account;
   };
-
   const logout = () => {
-  setUser(null);
+    void graphqlRequest("mutation{logout}").catch(() => {});
+    setAuthToken(null); setUser(null); setSavedIds([]);
   };
 
-  const toggleSave = (id: string) =>
-    setSavedIds((prev) => prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]);
-
-  const toggleCompare = (id: string) =>
-    setCompareIds((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : prev.length < 3 ? [...prev, id] : prev
-    );
-
+  useEffect(() => {
+    if (!user) return; let active = true;
+    graphqlRequest<{savedProperties:ApiProperty[]}>(`{savedProperties{${PROPERTY_FIELDS}}}`).then(({savedProperties}) => { if(active) { setSavedIds(savedProperties.map((p)=>p.id)); setProperties((current)=>[...new Map([...current,...savedProperties.map(viewProperty)].map((p)=>[p.id,p])).values()]); } }).catch(()=>{});
+    return () => { active = false; };
+  }, [user]);
+  useEffect(() => {
+    let active = true;
+    graphqlRequest<{publicNewsPage:NewsConnection}>('{publicNewsPage(input:{limit:20}){totalCount nodes{id title summary content imageUrl publishedAt activeFrom publicationStatus properties{id name}}}}').then(({publicNewsPage})=>{if(active)setNews(publicNewsPage.nodes.map((n)=>({id:n.id,title:n.title,summary:n.summary??"",content:n.content??"",image:n.imageUrl??"",publishDate:n.publishedAt??"",activeDate:n.activeFrom??"",published:true,relatedProperties:n.properties.map((p)=>p.id)})));}).catch(()=>{});
+    return () => { active=false; };
+  }, []);
+  const cacheProperty = async (id:string) => { const p=await propertyById(id); if(p)setProperties((old)=>[...old.filter((x)=>x.id!==id),viewProperty(p)]); };
+  const toggleSave = (id:string) => {
+    if(!user){setShowLogin(true);return;}
+    const saved=!savedIds.includes(id);const campaignToken=new URLSearchParams(window.location.search).get("campaignToken")??undefined;
+    void graphqlRequest('mutation($id:ID!,$saved:Boolean!,$campaignToken:String){setPropertySaved(propertyId:$id,saved:$saved,campaignToken:$campaignToken)}',{id,saved,campaignToken}).then(async()=>{setSavedIds((old)=>saved?[...new Set([...old,id])]:old.filter((x)=>x!==id));await cacheProperty(id);}).catch((e)=>window.alert(e.message));
+  };
+  const toggleCompare = (id:string) => {
+    setCompareIds((old)=>comparisonSelection(old,id));
+    void cacheProperty(id).catch(()=>{});
+  };
   return (
-    <Ctx.Provider value={{ view, nav, params, user, login, logout, savedIds, toggleSave, compareIds, toggleCompare, properties, setProperties, interests, setInterests, subscribers, setSubscribers, campaigns, setCampaigns, news, setNews, showLogin, setShowLogin }}>
+    <Ctx.Provider value={{ authLoading, refreshProperties, view, nav, params, user, login, logout, savedIds, toggleSave, compareIds, toggleCompare, properties, setProperties, news, setNews, showLogin, setShowLogin }}>
       {children}
     </Ctx.Provider>
   );
 }
 
+// The context hook is intentionally exported beside its provider.
+// eslint-disable-next-line react-refresh/only-export-components
 export const useApp = () => useContext(Ctx);
+

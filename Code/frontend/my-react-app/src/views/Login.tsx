@@ -14,19 +14,12 @@ export default function LoginModal() {
     e.preventDefault();
     setError("");
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 600));
-    console.log("LOGIN ATTEMPT:", email, password);
-    const ok = login(email, password);
-    setLoading(false);
-    if (ok) {
-  setShowLogin(false);
+    try {
+      const account = await login(email, password);
+      setShowLogin(false); navigate(account.role === "admin" ? "/admin" : "/saved");
+    } catch (error) { setError(error instanceof Error ? error.message : "Sign in failed"); }
+    finally { setLoading(false); }
 
-  if (email === "admin@harborstone.ie") {
-    navigate("/admin");
-  } else {
-    navigate("/");
-  }
-}
   };
 
   return (
@@ -79,12 +72,12 @@ export default function LoginModal() {
           </button>
 
           <div className="text-center text-xs text-stone pt-2 space-y-1 bg-cream-dark p-3 border border-[#ddd5c5]">
-            <div className="font-semibold text-navy mb-1">Demo Credentials</div>
-            <div>User: user@harborstone.ie / password</div>
-            <div>Admin: admin@harborstone.ie / admin123</div>
+            <div className="font-semibold text-navy mb-1">Administrator access</div>
+            <div>Use the admin credentials configured for this environment.</div>
           </div>
         </form>
       </div>
     </div>
   );
 }
+

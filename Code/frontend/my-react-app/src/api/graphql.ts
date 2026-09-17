@@ -1,9 +1,12 @@
-const GRAPHQL_URL = "http://localhost:4000/graphql";
+export const getAuthToken = () => sessionStorage.getItem("harborstone-token");
+export const setAuthToken = (token: string | null) => token ? sessionStorage.setItem("harborstone-token", token) : sessionStorage.removeItem("harborstone-token");
+const GRAPHQL_URL = import.meta.env.VITE_GRAPHQL_URL ?? "http://localhost:4000/graphql";
 
 type GraphQLResponse<T> = {
   data?: T;
   errors?: Array<{
     message: string;
+    extensions?: {code?: string};
   }>;
 };
 
@@ -15,6 +18,7 @@ export async function graphqlRequest<T>(
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      ...(getAuthToken() ? { Authorization: `Bearer ${getAuthToken()}` } : {}),
     },
     body: JSON.stringify({
       query,
@@ -29,6 +33,7 @@ export async function graphqlRequest<T>(
   const result: GraphQLResponse<T> = await response.json();
 
   if (result.errors?.length) {
+    if (result.errors.some((e) => e.extensions?.code === "UNAUTHENTICATED") && getAuthToken()) { setAuthToken(null); window.dispatchEvent(new Event("auth-expired")); }
     throw new Error(result.errors[0].message);
   }
 
@@ -38,83 +43,9 @@ export async function graphqlRequest<T>(
 
   return result.data;
 }
-export type Property = {
-  id: string;
-  name: string;
-  location: string;
-  county: string;
-  address: string;
-  postalCode: string;
-
-  type: string;
-  saleType: string;
-
-  status: string;
-  stage: string;
-
-  priceMin: number;
-  priceMax: number;
-
-  bedroomsMin: number;
-  bedroomsMax: number;
-
-  bathroomsMin: number;
-  bathroomsMax: number;
-
-  sizeSqm: number;
-  sizeCategory: string | null;
-
-  completionYear: number | null;
-
-  description: string | null;
-
-  agent: {
-    id: string;
-    name: string;
-    email: string;
-    role: string;
-  } | null;
-
-  media: Array<{
-    id: string;
-    url: string;
-    type: string;
-    isPrimary: boolean;
-    sortOrder: number;
-  }>;
-
-  features: Array<{
-    id: string;
-    name: string;
-  }>;
-
-  valueHistory: Array<{
-    id: string;
-    year: number;
-    value: number;
-    growthPercent: number | null;
-  }>;
-
-  listedDate: string | null;
-  createdAt: string;
-  updatedAt: string;
-};
-
-export type PropertyFilter = {
-  search?: string;
-  county?: string;
-  status?: string;
-  stage?: string;
-  minPrice?: number;
-  maxPrice?: number;
-  minBedrooms?: number;
-  maxBedrooms?: number;
-};
-
-export type PropertyConnection = {
-  nodes: Property[];
-  totalCount: number;
-};
+import type { PropertyConnection, PropertyFilterInput } from "./schemaTypes";
+export type { Property, PropertyConnection } from "./schemaTypes";
+export type PropertyFilter = PropertyFilterInput;
 
 const GET_PROPERTIES = `
   query GetProperties(
@@ -152,6 +83,13 @@ const GET_PROPERTIES = `
         bathroomsMin
         bathroomsMax
 
+        publicationStatus
+        publishedAt
+        slug
+        developmentId
+        sizeSqmMax
+        bedroomOptions
+        bathroomOptions
         sizeSqm
         sizeCategory
 
@@ -164,6 +102,7 @@ const GET_PROPERTIES = `
           name
           email
           role
+          createdAt
         }
 
         media {
