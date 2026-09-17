@@ -3,6 +3,22 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 import { useApp } from "../context";
 import { fmt } from "../data";
 
+const CustomTooltip = ({ active, payload, label }: {active?: boolean; payload?: readonly {name?: string | number; color?: string; value?: string | number}[]; label?: string | number}) => {
+    if (!active || !payload?.length) return null;
+    return (
+      <div className="bg-navy text-white p-3 text-xs shadow-xl">
+        <div className="font-semibold mb-2">{label}</div>
+        {payload.map((entry) => (
+          <div key={entry.name} className="flex gap-3 justify-between">
+            <span style={{ color: entry.color }}>{entry.name}</span>
+            <span className="font-bold">{typeof entry.value === "number" && entry.value > 1000 ? fmt(entry.value) : entry.value + "%"}</span>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+
 export default function Analytics() {
   const { properties } = useApp();
   const [selected, setSelected] = useState<string[]>(properties.slice(0, 3).map((p) => p.id));
@@ -15,7 +31,7 @@ export default function Analytics() {
   const selectedProps = properties.filter((p) => selected.includes(p.id));
 
   // Build chart data: rows per year, columns per property
-  const years = ["2020", "2021", "2022", "2023", "2024", "2025"];
+  const years = [...new Set(selectedProps.flatMap((p) => p.valueGrowth.map((v) => v.year)))].sort();
   const lineData = years.map((year) => {
     const row: Record<string, number | string> = { year };
     selectedProps.forEach((p) => {
@@ -34,20 +50,6 @@ export default function Analytics() {
     return row;
   });
 
-  const CustomTooltip = ({ active, payload, label }: any) => {
-    if (!active || !payload?.length) return null;
-    return (
-      <div className="bg-navy text-white p-3 text-xs shadow-xl">
-        <div className="font-semibold mb-2">{label}</div>
-        {payload.map((entry: any) => (
-          <div key={entry.name} className="flex gap-3 justify-between">
-            <span style={{ color: entry.color }}>{entry.name}</span>
-            <span className="font-bold">{typeof entry.value === "number" && entry.value > 1000 ? fmt(entry.value) : entry.value + "%"}</span>
-          </div>
-        ))}
-      </div>
-    );
-  };
 
   return (
     <div className="bg-cream min-h-screen">
@@ -59,6 +61,7 @@ export default function Analytics() {
       </div>
 
       <div className="max-w-6xl mx-auto px-6 py-10">
+        {properties.some((p)=>p.historyIsSynthetic) && <p className="mb-4 text-sm">Some stored histories are synthetic development data, not observed market prices.</p>}
         {/* Property selector */}
         <div className="bg-cream-dark p-5 mb-8">
           <h2 className="font-semibold text-navy text-sm mb-3">Select Developments to Compare</h2>
@@ -93,13 +96,14 @@ export default function Analytics() {
               {selectedProps.slice(0, 4).map((p) => {
                 const latest = p.valueGrowth[p.valueGrowth.length - 1];
                 const first = p.valueGrowth[0];
-                const totalGrowth = ((latest.value - first.value) / first.value * 100).toFixed(1);
+                if (!latest || !first) return <div key={p.id} className="bg-cream-dark p-5">{p.name}: historical values are unavailable.</div>;
+                const totalGrowth = first.value > 0 ? ((latest.value - first.value) / first.value * 100).toFixed(1) : null;
                 return (
                   <div key={p.id} className="bg-cream-dark p-5 border-l-4 border-amber">
                     <div className="text-xs text-stone mb-1">{p.name}</div>
                     <div className="font-display text-xl font-bold text-navy">{fmt(latest.value)}</div>
-                    <div className="text-xs text-sage font-semibold mt-1">+{totalGrowth}% since 2020</div>
-                    <div className="text-[10px] text-stone mt-0.5">YoY: +{latest.growth}%</div>
+                    <div className="text-xs text-sage font-semibold mt-1">{totalGrowth == null ? "Growth unavailable" : `${totalGrowth}% since ${first.year}`}</div>
+                    <div className="text-[10px] text-stone mt-0.5">Change from previous recorded year: {latest.growth}%</div>
                   </div>
                 );
               })}

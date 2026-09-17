@@ -1,75 +1,8 @@
-import { useApp } from "../context";
-import { useNavigate, useParams } from "react-router-dom";
-
-export default function News() {
-  const { news, properties } = useApp();
-  const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
-
-  const published = news.filter((n) => n.published);
-  const selectedArticle = id
-    ? published.find((article) => article.id === id)
-   : null;
-  const articlesToShow = selectedArticle ? [selectedArticle] : published;
-
-  return (
-    <div className="bg-cream min-h-screen">
-      <div className="bg-navy py-10 px-6">
-        <div className="max-w-5xl mx-auto">
-          <h1 className="font-display text-white text-3xl font-bold">Latest News</h1>
-          <p className="text-white/60 text-sm mt-1">Updates from Harborstone Homes</p>
-        </div>
-      </div>
-
-      <div className="max-w-5xl mx-auto px-6 py-12 space-y-10">
-        {articlesToShow.map((article, i) => {
-          const relProps = properties.filter((p) => article.relatedProperties.includes(p.id));
-          return (
-            <article key={article.id} onClick={() => navigate(`/news/${article.id}`)} className={`grid gap-8 cursor-pointer ${i === 0 ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1 md:grid-cols-3"}`}>
-              <div className={`overflow-hidden ${i === 0 ? "" : ""}`}>
-                <img
-                  src={article.image}
-                  alt={article.title}
-                  className={`w-full object-cover ${i === 0 ? "h-72" : "h-44"}`}
-                />
-              </div>
-              <div className={i === 0 ? "flex flex-col justify-center" : "md:col-span-2 flex flex-col justify-center"}>
-                <div className="text-[11px] text-stone uppercase tracking-widest mb-3">
-                  {new Date(article.publishDate).toLocaleDateString("en-IE", { day: "numeric", month: "long", year: "numeric" })}
-                </div>
-                <h2 className={`font-display font-bold text-navy leading-tight mb-3 ${i === 0 ? "text-2xl" : "text-xl"}`}>
-                  {article.title}
-                </h2>
-                <p className="text-stone leading-relaxed mb-4 text-sm">{article.summary}</p>
-                <p className="text-navy/70 text-sm leading-relaxed mb-4">{article.content}</p>
-
-                {relProps.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    <span className="text-xs text-stone">Related:</span>
-                    {relProps.map((p) => (
-                      <button
-                        key={p.id}
-                        onClick={() => navigate(`/properties/${p.id}`)}
-                        className="text-xs bg-cream-dark border border-[#ddd5c5] text-navy px-2.5 py-1 hover:border-amber hover:text-amber transition-all"
-                      >
-                        {p.name}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-              {i !== published.length - 1 && <div className="col-span-full h-px bg-[#ddd5c5] mt-4"/>}
-            </article>
-          );
-        })}
-
-        {published.length === 0 && (
-          <div className="text-center py-20 text-stone">
-            <p className="font-display text-xl text-navy mb-2">No news published yet</p>
-            <p className="text-sm">Check back soon for updates</p>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
+import { useState } from "react";
+import { Link,useParams } from "react-router-dom";
+import { useQuery } from "../api/useQuery";
+import type { NewsArticle,NewsConnection } from "../api/schemaTypes";
+import { Feedback,Pager } from "../components/AdminUI";
+const fields=`id title summary content imageUrl publishedAt activeFrom properties{id name}`;
+export default function News(){const {id}=useParams();const [offset,setOffset]=useState(0);const query=useQuery<{publicNewsPage?:NewsConnection;newsArticle?:NewsArticle|null}>(id?`query($id:ID!){newsArticle(id:$id){${fields}}}`:`query($input:AdminListInput){publicNewsPage(input:$input){totalCount nodes{${fields}}}}`,id?{id}:{input:{offset,limit:12}});const articles=id?(query.data?.newsArticle?[query.data.newsArticle]:[]):query.data?.publicNewsPage?.nodes??[];
+return <div className="bg-cream min-h-screen"><header className="bg-navy text-white px-6 py-10"><div className="max-w-5xl mx-auto"><h1 className="font-display text-3xl font-bold">Latest News</h1><p className="text-white/60 text-sm mt-2">Updates from Harborstone Homes</p></div></header><div className="max-w-5xl mx-auto px-6 py-10 space-y-8"><Feedback error={query.error} loading={query.loading}/>{articles.map((a)=><article key={a.id} className="grid md:grid-cols-2 gap-8">{a.imageUrl&&<img src={a.imageUrl} alt={a.title} className="w-full max-h-80 object-cover"/>}<div className="space-y-4"><p className="text-xs text-stone">{a.publishedAt?.slice(0,10)}</p><h2 className="font-display text-2xl font-bold"><Link to={`/news/${a.id}`}>{a.title}</Link></h2><p className="text-stone">{a.summary}</p>{id&&<p className="whitespace-pre-wrap">{a.content}</p>}<div className="flex gap-3 flex-wrap">{a.properties.map((p)=><Link key={p.id} className="border px-3 py-1 text-sm" to={`/properties/${p.id}`}>{p.name}</Link>)}</div></div></article>)}{!query.loading&&!articles.length&&<p className="text-center py-16">{id?"This article is not available.":"No news published yet."}</p>}{!id&&<Pager offset={offset} size={12} total={query.data?.publicNewsPage?.totalCount??0} onChange={setOffset}/>}</div></div>;}

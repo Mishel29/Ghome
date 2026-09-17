@@ -1,0 +1,7 @@
+import { useCallback,useEffect,useState } from "react";
+import { graphqlRequest } from "./graphql";
+export function useQuery<T>(query:string,variables:Record<string,unknown>={},pollMs=0){const key=JSON.stringify(variables);const [revision,setRevision]=useState(0);const [state,setState]=useState<{data:T|null;loading:boolean;error:string}>({data:null,loading:true,error:""});
+  const reload=useCallback(()=>setRevision((n)=>n+1),[]);
+  useEffect(()=>{let alive=true;let timer:ReturnType<typeof setTimeout>;async function load(){try{const data=await graphqlRequest<T>(query,JSON.parse(key));if(alive)setState({data,loading:false,error:""});}catch(e){if(alive)setState((s)=>({...s,loading:false,error:e instanceof Error?e.message:"Request failed"}));}if(alive&&pollMs)timer=setTimeout(()=>void load(),pollMs);}
+    timer=setTimeout(()=>{setState((s)=>({...s,loading:true,error:""}));void load();},0);return()=>{alive=false;clearTimeout(timer);};},[query,key,revision,pollMs]);return {...state,reload};}
+export function useAction(){const [busy,setBusy]=useState(false);const [error,setError]=useState("");const [success,setSuccess]=useState("");async function run(work:()=>Promise<void>,message="Saved successfully"){setBusy(true);setError("");setSuccess("");try{await work();setSuccess(message);}catch(e){setError(e instanceof Error?e.message:"Request failed");}finally{setBusy(false);}}return {busy,error,success,run,setError};}

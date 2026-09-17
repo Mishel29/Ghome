@@ -1,14 +1,23 @@
-import { useState } from "react";
+import { graphqlRequest } from "../api/graphql";
+import { propertyById, viewProperty } from "../api/properties";
+import { useState, useEffect } from "react";
 import { useApp } from "../context";
-import { fmt, type Interest } from "../data";
+import { fmt, type Property } from "../data";
 import { useNavigate, useParams } from "react-router-dom";
 
 export default function PropertyDetail() {
-  const { properties, savedIds, toggleSave, interests, setInterests } = useApp();
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams(); const [property, setProperty] = useState<Property | null>(null); const [error, setError] = useState(""); const [loaded, setLoaded] = useState("");
+  useEffect(() => { if (!id) return; let alive = true; propertyById(id).then((p) => { if (alive) { setProperty(p ? viewProperty(p) : null); setLoaded(id); } }).catch((e) => { if (alive) { setError(e.message); setLoaded(id); } }); return () => { alive = false; }; }, [id]);
+  if (loaded !== id) return <p className="p-10">Loading property…</p>;
+  if (error || !property) return <div className="p-10"><h1 className="text-2xl">Property unavailable</h1><p>{error || "This property is not published or could not be found."}</p></div>;
+  return <PropertyContent key={property.id} p={property}/>;
+}
+function PropertyContent({ p }: { p: Property }) {
+  const { savedIds, toggleSave, toggleCompare } = useApp();
+
   const navigate = useNavigate();
 
-  const p = properties.find((x) => x.id === id) ?? properties[0];
+
   const isSaved = savedIds.includes(p.id);
   const [photoIdx, setPhotoIdx] = useState(0);
   const [showForm, setShowForm] = useState(false);
@@ -26,25 +35,15 @@ export default function PropertyDetail() {
     return Object.keys(e).length === 0;
   };
 
-  const submit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!validate()) return;
-    const newInterest: Interest = {
-      id: `int-${Date.now()}`,
-      propertyId: p.id,
-      name: form.name,
-      email: form.email,
-      phone: form.phone,
-      message: form.message,
-      date: new Date().toISOString().split("T")[0],
-      agent: p.agent,
-      emailSent: false,
-      dataConsent: form.consent,
-    };
-    setInterests([...interests, newInterest]);
-    setFormSent(true);
+  const [sending,setSending] = useState(false);
+  const [submitError,setSubmitError] = useState("");
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault(); if(!validate())return; setSending(true);setSubmitError("");
+    try { await graphqlRequest('mutation($input:InterestInput!){submitInterest(input:$input){id}}',{input:{propertyId:p.id,...form,campaignToken:new URLSearchParams(window.location.search).get("campaignToken")??undefined}});setFormSent(true); }
+    catch(error) {setSubmitError(error instanceof Error?error.message:"Could not register interest");}
+    finally {setSending(false);}
   };
-
+  useEffect(()=>{if(sessionStorage.getItem(`viewed-${p.id}`))return;sessionStorage.setItem(`viewed-${p.id}`,"1");void graphqlRequest('mutation($id:ID!){recordPropertyView(propertyId:$id)}',{id:p.id}).catch(()=>{});},[p.id]);
   const statusColors: Record<string, string> = {
     "on-sale": "bg-amber",
     "coming-soon": "bg-burgundy",
@@ -97,13 +96,14 @@ export default function PropertyDetail() {
         </button>
       </section>
 
+      {p.videoUrl && <section id="home-tour" className="max-w-6xl mx-auto p-6"><h2 className="text-xl mb-4">Home tour</h2><video controls preload="metadata" src={p.videoUrl} className="w-full max-h-[600px]" aria-label="Property home tour" /></section>}
       {/* Quick actions bar */}
       <section className="bg-navy">
         <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 divide-x divide-white/10">
           {[
             { icon: "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z", label: "Register Interest", action: () => setShowForm(true) },
-            { icon: "M15 10l4.553-2.069A1 1 0 0121 8.87V15.13a1 1 0 01-1.447.9L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z", label: "Virtual Tour", action: () => {} },
-            { icon: "M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z", label: "Download Brochure", action: () => {} },
+            { icon: "M15 10l4.553-2.069A1 1 0 0121 8.87V15.13a1 1 0 01-1.447.9L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z", label: p.videoUrl ? "Virtual Tour" : "Tour unavailable", action: () => document.getElementById("home-tour")?.scrollIntoView({behavior:"smooth"}) },
+            { icon: "M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z", label: "Compare", action: () => {toggleCompare(p.id); navigate("/compare");} },
             { icon: "M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z", label: isSaved ? "Saved ✓" : "Save Property", action: () => toggleSave(p.id) },
           ].map(({ icon, label, action }) => (
             <button
@@ -176,7 +176,7 @@ export default function PropertyDetail() {
               Register Your Interest
             </button>
             <button
-              onClick={() => navigate("/mortgage")}
+              onClick={() => navigate(`/mortgage?price=${p.price.min}`)}
               className="w-full mt-2 border border-white/30 text-white/80 hover:text-white py-3 font-medium text-sm transition-colors"
             >
               Mortgage Calculator
@@ -220,11 +220,11 @@ export default function PropertyDetail() {
                   </svg>
                 </div>
                 <h4 className="font-display text-navy text-xl font-bold mb-2">Interest Registered!</h4>
-                <p className="text-stone text-sm">Our agent {p.agent} will be in touch within 24 hours.</p>
+                <p className="text-stone text-sm">Your enquiry has been saved for our sales team.</p>
                 <button onClick={() => { setShowForm(false); setFormSent(false); }} className="mt-6 bg-navy text-white px-8 py-2.5 text-sm font-semibold hover:bg-navy-light transition-colors">Close</button>
               </div>
             ) : (
-              <form onSubmit={submit} className="p-6 space-y-4">
+              <form onSubmit={submit} className="p-6 space-y-4">{submitError && <p role="alert" className="text-red-700">{submitError}</p>}
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="text-xs font-semibold text-stone block mb-1.5">Full Name *</label>
@@ -255,7 +255,7 @@ export default function PropertyDetail() {
                   </label>
                   {errors.consent && <p className="text-[11px] text-red-600 mt-1">{errors.consent}</p>}
                 </div>
-                <button type="submit" className="w-full bg-amber hover:bg-amber-hover text-white py-3 font-semibold text-sm transition-colors">
+                <button disabled={sending} type="submit" className="w-full bg-amber hover:bg-amber-hover text-white py-3 font-semibold text-sm transition-colors">
                   Submit Interest
                 </button>
               </form>
@@ -266,3 +266,5 @@ export default function PropertyDetail() {
     </div>
   );
 }
+
+

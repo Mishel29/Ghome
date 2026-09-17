@@ -1,6 +1,8 @@
 import { useState, useMemo, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import { useApp } from "../context";
+import { propertyPage, viewProperty } from "../api/properties";
+import type { Property } from "../data";
+import type { PropertyFilterInput } from "../api/schemaTypes";
 import PropertyCard from "../components/PropertyCard";
 import { fmt } from "../data";
 
@@ -9,43 +11,47 @@ const STAGES = ["All", "Planning", "Under Construction", "Ready to Move"];
 const STATUS = ["All", "on-sale", "coming-soon", "sold-out"];
 
 export default function PropertiesList() {
-  const { properties } = useApp();
   const [searchParams] = useSearchParams();
   const urlSearch = searchParams.get("search") ?? "";
-  const [county, setCounty] = useState("All");
-  const [stage, setStage] = useState("All");
-  const [status, setStatus] = useState("All");
-  const [minPrice, setMinPrice] = useState(0);
-  const [maxPrice, setMaxPrice] = useState(1000000);
-  const [minBeds, setMinBeds] = useState(0);
-  const [sort, setSort] = useState("latest");
-  const [search, setSearch] = useState(urlSearch);
+  const raw=searchParams.get("filters")??"{}";
+  let initial:PropertyFilterInput={};try{initial=JSON.parse(raw) as PropertyFilterInput;}catch{ /* ignore malformed shared search */ }
+  return <PropertyResults key={urlSearch+raw} initialSearch={urlSearch} initial={initial} />;
+}
+function PropertyResults({ initialSearch, initial }: { initialSearch: string; initial:PropertyFilterInput }) {
+  const [filtered, setFiltered] = useState<Property[]>([]);
+  const [total, setTotal] = useState(0); const [page, setPage] = useState({ filter: "", offset: 0 }); const [loading, setLoading] = useState(true); const [error, setError] = useState("");
+  const [county, setCounty] = useState(initial.county ?? "All");
+  const [stage, setStage] = useState(initial.stage === "READY_TO_MOVE" ? "Ready to Move" : initial.stage === "UNDER_CONSTRUCTION" ? "Under Construction" : initial.stage === "PLANNING" ? "Planning" : "All");
+  const [status, setStatus] = useState(initial.status?.toLowerCase().replaceAll("_","-") ?? "All");
+  const [minPrice, setMinPrice] = useState(initial.minPrice??0);
+  const [maxPrice, setMaxPrice] = useState(initial.maxPrice??1000000);
+  const [minBeds, setMinBeds] = useState(initial.minBedrooms??0);
+  const [sort, setSort] = useState(initial.sort??"latest");
+  const [search, setSearch] = useState(initial.search??initialSearch);
+  const [extra,setExtra]=useState({location:initial.location??"",maxBedrooms:initial.maxBedrooms,minBathrooms:initial.minBathrooms,maxBathrooms:initial.maxBathrooms,listedFrom:initial.listedFrom??"",listedTo:initial.listedTo??""});
 
+  const filter = useMemo<PropertyFilterInput>(() => ({ ...extra, search: search || undefined,
+    county: county === "All" ? undefined : county,
+    status: status === "All" ? undefined : status.toUpperCase().replaceAll("-", "_") as PropertyFilterInput["status"],
+    stage: stage === "All" ? undefined : stage.toUpperCase().replaceAll(" ", "_") as PropertyFilterInput["stage"],
+    minPrice: minPrice || undefined, maxPrice: maxPrice === 1000000 ? undefined : maxPrice,
+    minBedrooms: minBeds || undefined, sort,
+  }), [search, county, status, stage, minPrice, maxPrice, minBeds, sort, extra]);
+  const filterKey = JSON.stringify(filter);
+  const offset = page.filter === filterKey ? page.offset : 0;
+  const setOffset = (offset: number) => setPage({ filter: filterKey, offset });
   useEffect(() => {
-  setSearch(urlSearch);
-}, [urlSearch]);
-
-  const filtered = useMemo(() => {
-    let list = properties.filter((p) => p.status !== "offline" && p.status !== "draft");
-    if (search) list = list.filter((p) => `${p.name} ${p.location} ${p.county}`.toLowerCase().includes(search.toLowerCase()));
-    if (county !== "All") list = list.filter((p) => p.county === county);
-    if (stage !== "All") list = list.filter((p) => p.stage === stage);
-    if (status !== "All") list = list.filter((p) => p.status === status);
-    list = list.filter((p) => p.price.min >= minPrice && p.price.max <= (maxPrice || 9999999));
-    if (minBeds > 0) list = list.filter((p) => p.beds.some((b) => b >= minBeds));
-    if (sort === "latest") list = [...list].sort((a, b) => b.listedDate.localeCompare(a.listedDate));
-    if (sort === "price-asc") list = [...list].sort((a, b) => a.price.min - b.price.min);
-    if (sort === "price-desc") list = [...list].sort((a, b) => b.price.max - a.price.max);
-    return list;
-  }, [properties, search, county, stage, status, minPrice, maxPrice, minBeds, sort]);
-
+    let alive = true;
+    const timer = setTimeout(() => { setLoading(true); setError(""); propertyPage(false, filter, offset, 24).then((page) => { if (alive) { setFiltered(page.nodes.map(viewProperty)); setTotal(page.totalCount); } }).catch((e) => { if (alive) setError(e.message); }).finally(() => { if (alive) setLoading(false); }); }, 200);
+    return () => { alive = false; clearTimeout(timer); };
+  }, [filter, offset]);
   return (
     <div className="bg-cream min-h-screen">
       {/* Page header */}
       <div className="bg-navy py-10 px-6">
         <div className="max-w-7xl mx-auto">
           <h1 className="font-display text-white text-3xl font-bold">Find Your New Home</h1>
-          <p className="text-white/60 text-sm mt-1">{filtered.length} development{filtered.length !== 1 ? "s" : ""} available</p>
+          <p className="text-white/60 text-sm mt-1">{total} development{filtered.length !== 1 ? "s" : ""} available</p>
         </div>
       </div>
 
@@ -131,6 +137,11 @@ export default function PropertiesList() {
               </div>
             </div>
 
+            <div className="space-y-3">
+              <label className="block text-xs">Location<input aria-label="Location" className="w-full border p-2" value={extra.location} onChange={(e)=>setExtra({...extra,location:e.target.value})}/></label>
+              {([['maxBedrooms','Max bedrooms'],['minBathrooms','Min bathrooms'],['maxBathrooms','Max bathrooms']] as const).map(([key,label])=><label key={key} className="block text-xs">{label}<input aria-label={label} type="number" min="0" className="w-full border p-2" value={extra[key]??''} onChange={(e)=>setExtra({...extra,[key]:e.target.value?Number(e.target.value):undefined})}/></label>)}
+              {(['listedFrom','listedTo'] as const).map((key)=><label key={key} className="block text-xs">{key==='listedFrom'?'Listed from':'Listed to'}<input aria-label={key} type="date" className="w-full border p-2" value={extra[key]} onChange={(e)=>setExtra({...extra,[key]:e.target.value})}/></label>)}
+            </div>
             {/* Stage */}
             <div>
               <label className="text-xs font-semibold text-stone uppercase tracking-wider block mb-2">Stage</label>
@@ -144,7 +155,7 @@ export default function PropertiesList() {
             </div>
 
             <button
-              onClick={() => { setCounty("All"); setStage("All"); setStatus("All"); setMinPrice(0); setMaxPrice(1000000); setMinBeds(0); setSearch(""); }}
+              onClick={() => { setCounty("All"); setStage("All"); setStatus("All"); setMinPrice(0); setMaxPrice(1000000); setMinBeds(0); setSearch(""); setExtra({location:"",maxBedrooms:undefined,minBathrooms:undefined,maxBathrooms:undefined,listedFrom:"",listedTo:""}); }}
               className="w-full py-2 border border-navy text-navy text-xs font-semibold hover:bg-navy hover:text-white transition-all"
             >
               Clear Filters
@@ -155,7 +166,7 @@ export default function PropertiesList() {
         {/* Results */}
         <div className="flex-1">
           <div className="flex items-center justify-between mb-5">
-            <span className="text-stone text-sm">{filtered.length} result{filtered.length !== 1 ? "s" : ""}</span>
+            <span className="text-stone text-sm">{total} result{filtered.length !== 1 ? "s" : ""}</span>
             <select
               className="px-3 py-2 border border-[#ddd5c5] bg-cream text-sm text-navy"
               value={sort}
@@ -167,7 +178,7 @@ export default function PropertiesList() {
             </select>
           </div>
 
-          {filtered.length === 0 ? (
+          {error ? <p role="alert" className="text-red-700">{error}</p> : loading ? <p>Loading properties…</p> : filtered.length === 0 ? (
             <div className="text-center py-20 text-stone">
               <svg width="48" height="48" fill="none" stroke="currentColor" strokeWidth="1" viewBox="0 0 24 24" className="mx-auto mb-4 opacity-30">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16"/>
@@ -180,8 +191,10 @@ export default function PropertiesList() {
               {filtered.map((p) => <PropertyCard key={p.id} property={p} showCompare />)}
             </div>
           )}
+          {total > 24 && <div className="flex items-center gap-4 mt-6"><button disabled={offset === 0 || loading} onClick={() => setOffset(offset-24)} className="border px-4 py-2 disabled:opacity-40">Previous</button><span>{offset+1}–{Math.min(offset+24,total)} of {total}</span><button disabled={offset+24 >= total || loading} onClick={() => setOffset(offset+24)} className="border px-4 py-2 disabled:opacity-40">Next</button></div>}
         </div>
       </div>
     </div>
   );
 }
+

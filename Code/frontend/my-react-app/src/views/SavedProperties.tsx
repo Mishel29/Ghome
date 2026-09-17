@@ -3,9 +3,12 @@ import { useNavigate } from "react-router-dom";
 import PropertyCard from "../components/PropertyCard";
 
 export default function SavedProperties() {
-  const { savedIds, properties} = useApp();
+  const { savedIds, properties, user, authLoading, setShowLogin} = useApp();
   const navigate = useNavigate();
   const saved = properties.filter((p) => savedIds.includes(p.id));
+
+  if (authLoading) return <p className="p-10">Loading your account…</p>;
+  if (!user) return <div className="p-10"><h1>Sign in to view saved properties</h1><button className="mt-4 bg-navy text-white p-3" onClick={() => setShowLogin(true)}>Sign in</button></div>;
 
   return (
     <div className="bg-cream min-h-screen">
