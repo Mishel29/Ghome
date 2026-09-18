@@ -465,7 +465,7 @@ model NewsArticle {
 
   createdBy    User?          @relation(fields: [createdById], references: [id], onDelete: SetNull)
   properties   NewsProperty[]
-  slug         String?        @unique
+  externalUrl  String?
   activeFrom   DateTime?
   activeUntil  DateTime?
   campaigns    Campaign[]

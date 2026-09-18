@@ -191,7 +191,7 @@ export interface PageContent {
 
 export interface NewsArticle {
   id: string;
-  slug: string | null;
+  externalUrl: string | null;
   title: string;
   summary: string | null;
   content: string | null;
@@ -202,6 +202,8 @@ export interface NewsArticle {
   activeUntil: string | null;
   properties: Array<Property>;
   updatedAt: string;
+  newsClickCount: number;
+  taggedPropertyVisitCount: number;
 }
 
 export interface Subscriber {
@@ -282,7 +284,7 @@ export interface PageInput {
 }
 
 export interface NewsInput {
-  slug?: string | null;
+  externalUrl?: string | null;
   title: string;
   summary?: string | null;
   content?: string | null;

@@ -35,7 +35,7 @@ export type NewsArticleMinAggregateOutputType = {
   createdById: string | null
   createdAt: Date | null
   updatedAt: Date | null
-  slug: string | null
+  externalUrl: string | null
   activeFrom: Date | null
   activeUntil: Date | null
 }
@@ -51,7 +51,7 @@ export type NewsArticleMaxAggregateOutputType = {
   createdById: string | null
   createdAt: Date | null
   updatedAt: Date | null
-  slug: string | null
+  externalUrl: string | null
   activeFrom: Date | null
   activeUntil: Date | null
 }
@@ -67,7 +67,7 @@ export type NewsArticleCountAggregateOutputType = {
   createdById: number
   createdAt: number
   updatedAt: number
-  slug: number
+  externalUrl: number
   activeFrom: number
   activeUntil: number
   _all: number
@@ -85,7 +85,7 @@ export type NewsArticleMinAggregateInputType = {
   createdById?: true
   createdAt?: true
   updatedAt?: true
-  slug?: true
+  externalUrl?: true
   activeFrom?: true
   activeUntil?: true
 }
@@ -101,7 +101,7 @@ export type NewsArticleMaxAggregateInputType = {
   createdById?: true
   createdAt?: true
   updatedAt?: true
-  slug?: true
+  externalUrl?: true
   activeFrom?: true
   activeUntil?: true
 }
@@ -117,7 +117,7 @@ export type NewsArticleCountAggregateInputType = {
   createdById?: true
   createdAt?: true
   updatedAt?: true
-  slug?: true
+  externalUrl?: true
   activeFrom?: true
   activeUntil?: true
   _all?: true
@@ -206,7 +206,7 @@ export type NewsArticleGroupByOutputType = {
   createdById: string | null
   createdAt: Date
   updatedAt: Date
-  slug: string | null
+  externalUrl: string | null
   activeFrom: Date | null
   activeUntil: Date | null
   _count: NewsArticleCountAggregateOutputType | null
@@ -243,7 +243,7 @@ export type NewsArticleWhereInput = {
   createdById?: Prisma.StringNullableFilter<"NewsArticle"> | string | null
   createdAt?: Prisma.DateTimeFilter<"NewsArticle"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"NewsArticle"> | Date | string
-  slug?: Prisma.StringNullableFilter<"NewsArticle"> | string | null
+  externalUrl?: Prisma.StringNullableFilter<"NewsArticle"> | string | null
   activeFrom?: Prisma.DateTimeNullableFilter<"NewsArticle"> | Date | string | null
   activeUntil?: Prisma.DateTimeNullableFilter<"NewsArticle"> | Date | string | null
   createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
@@ -263,7 +263,7 @@ export type NewsArticleOrderByWithRelationInput = {
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  slug?: Prisma.SortOrderInput | Prisma.SortOrder
+  externalUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   activeFrom?: Prisma.SortOrderInput | Prisma.SortOrder
   activeUntil?: Prisma.SortOrderInput | Prisma.SortOrder
   createdBy?: Prisma.UserOrderByWithRelationInput
@@ -274,7 +274,6 @@ export type NewsArticleOrderByWithRelationInput = {
 
 export type NewsArticleWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  slug?: string
   AND?: Prisma.NewsArticleWhereInput | Prisma.NewsArticleWhereInput[]
   OR?: Prisma.NewsArticleWhereInput[]
   NOT?: Prisma.NewsArticleWhereInput | Prisma.NewsArticleWhereInput[]
@@ -287,13 +286,14 @@ export type NewsArticleWhereUniqueInput = Prisma.AtLeast<{
   createdById?: Prisma.StringNullableFilter<"NewsArticle"> | string | null
   createdAt?: Prisma.DateTimeFilter<"NewsArticle"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"NewsArticle"> | Date | string
+  externalUrl?: Prisma.StringNullableFilter<"NewsArticle"> | string | null
   activeFrom?: Prisma.DateTimeNullableFilter<"NewsArticle"> | Date | string | null
   activeUntil?: Prisma.DateTimeNullableFilter<"NewsArticle"> | Date | string | null
   createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   properties?: Prisma.NewsPropertyListRelationFilter
   campaigns?: Prisma.CampaignListRelationFilter
   ragDocuments?: Prisma.RagDocumentListRelationFilter
-}, "id" | "slug">
+}, "id">
 
 export type NewsArticleOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -306,7 +306,7 @@ export type NewsArticleOrderByWithAggregationInput = {
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  slug?: Prisma.SortOrderInput | Prisma.SortOrder
+  externalUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   activeFrom?: Prisma.SortOrderInput | Prisma.SortOrder
   activeUntil?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.NewsArticleCountOrderByAggregateInput
@@ -328,7 +328,7 @@ export type NewsArticleScalarWhereWithAggregatesInput = {
   createdById?: Prisma.StringNullableWithAggregatesFilter<"NewsArticle"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"NewsArticle"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"NewsArticle"> | Date | string
-  slug?: Prisma.StringNullableWithAggregatesFilter<"NewsArticle"> | string | null
+  externalUrl?: Prisma.StringNullableWithAggregatesFilter<"NewsArticle"> | string | null
   activeFrom?: Prisma.DateTimeNullableWithAggregatesFilter<"NewsArticle"> | Date | string | null
   activeUntil?: Prisma.DateTimeNullableWithAggregatesFilter<"NewsArticle"> | Date | string | null
 }
@@ -343,7 +343,7 @@ export type NewsArticleCreateInput = {
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  slug?: string | null
+  externalUrl?: string | null
   activeFrom?: Date | string | null
   activeUntil?: Date | string | null
   createdBy?: Prisma.UserCreateNestedOneWithoutNewsArticlesInput
@@ -363,7 +363,7 @@ export type NewsArticleUncheckedCreateInput = {
   createdById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  slug?: string | null
+  externalUrl?: string | null
   activeFrom?: Date | string | null
   activeUntil?: Date | string | null
   properties?: Prisma.NewsPropertyUncheckedCreateNestedManyWithoutNewsArticleInput
@@ -381,7 +381,7 @@ export type NewsArticleUpdateInput = {
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activeFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   activeUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdBy?: Prisma.UserUpdateOneWithoutNewsArticlesNestedInput
@@ -401,7 +401,7 @@ export type NewsArticleUncheckedUpdateInput = {
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activeFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   activeUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   properties?: Prisma.NewsPropertyUncheckedUpdateManyWithoutNewsArticleNestedInput
@@ -420,7 +420,7 @@ export type NewsArticleCreateManyInput = {
   createdById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  slug?: string | null
+  externalUrl?: string | null
   activeFrom?: Date | string | null
   activeUntil?: Date | string | null
 }
@@ -435,7 +435,7 @@ export type NewsArticleUpdateManyMutationInput = {
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activeFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   activeUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -451,7 +451,7 @@ export type NewsArticleUncheckedUpdateManyInput = {
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activeFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   activeUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -482,7 +482,7 @@ export type NewsArticleCountOrderByAggregateInput = {
   createdById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  slug?: Prisma.SortOrder
+  externalUrl?: Prisma.SortOrder
   activeFrom?: Prisma.SortOrder
   activeUntil?: Prisma.SortOrder
 }
@@ -498,7 +498,7 @@ export type NewsArticleMaxOrderByAggregateInput = {
   createdById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  slug?: Prisma.SortOrder
+  externalUrl?: Prisma.SortOrder
   activeFrom?: Prisma.SortOrder
   activeUntil?: Prisma.SortOrder
 }
@@ -514,7 +514,7 @@ export type NewsArticleMinOrderByAggregateInput = {
   createdById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  slug?: Prisma.SortOrder
+  externalUrl?: Prisma.SortOrder
   activeFrom?: Prisma.SortOrder
   activeUntil?: Prisma.SortOrder
 }
@@ -622,7 +622,7 @@ export type NewsArticleCreateWithoutCreatedByInput = {
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  slug?: string | null
+  externalUrl?: string | null
   activeFrom?: Date | string | null
   activeUntil?: Date | string | null
   properties?: Prisma.NewsPropertyCreateNestedManyWithoutNewsArticleInput
@@ -640,7 +640,7 @@ export type NewsArticleUncheckedCreateWithoutCreatedByInput = {
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  slug?: string | null
+  externalUrl?: string | null
   activeFrom?: Date | string | null
   activeUntil?: Date | string | null
   properties?: Prisma.NewsPropertyUncheckedCreateNestedManyWithoutNewsArticleInput
@@ -688,7 +688,7 @@ export type NewsArticleScalarWhereInput = {
   createdById?: Prisma.StringNullableFilter<"NewsArticle"> | string | null
   createdAt?: Prisma.DateTimeFilter<"NewsArticle"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"NewsArticle"> | Date | string
-  slug?: Prisma.StringNullableFilter<"NewsArticle"> | string | null
+  externalUrl?: Prisma.StringNullableFilter<"NewsArticle"> | string | null
   activeFrom?: Prisma.DateTimeNullableFilter<"NewsArticle"> | Date | string | null
   activeUntil?: Prisma.DateTimeNullableFilter<"NewsArticle"> | Date | string | null
 }
@@ -703,7 +703,7 @@ export type NewsArticleCreateWithoutCampaignsInput = {
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  slug?: string | null
+  externalUrl?: string | null
   activeFrom?: Date | string | null
   activeUntil?: Date | string | null
   createdBy?: Prisma.UserCreateNestedOneWithoutNewsArticlesInput
@@ -722,7 +722,7 @@ export type NewsArticleUncheckedCreateWithoutCampaignsInput = {
   createdById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  slug?: string | null
+  externalUrl?: string | null
   activeFrom?: Date | string | null
   activeUntil?: Date | string | null
   properties?: Prisma.NewsPropertyUncheckedCreateNestedManyWithoutNewsArticleInput
@@ -755,7 +755,7 @@ export type NewsArticleUpdateWithoutCampaignsInput = {
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activeFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   activeUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdBy?: Prisma.UserUpdateOneWithoutNewsArticlesNestedInput
@@ -774,7 +774,7 @@ export type NewsArticleUncheckedUpdateWithoutCampaignsInput = {
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activeFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   activeUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   properties?: Prisma.NewsPropertyUncheckedUpdateManyWithoutNewsArticleNestedInput
@@ -791,7 +791,7 @@ export type NewsArticleCreateWithoutPropertiesInput = {
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  slug?: string | null
+  externalUrl?: string | null
   activeFrom?: Date | string | null
   activeUntil?: Date | string | null
   createdBy?: Prisma.UserCreateNestedOneWithoutNewsArticlesInput
@@ -810,7 +810,7 @@ export type NewsArticleUncheckedCreateWithoutPropertiesInput = {
   createdById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  slug?: string | null
+  externalUrl?: string | null
   activeFrom?: Date | string | null
   activeUntil?: Date | string | null
   campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutNewsArticleInput
@@ -843,7 +843,7 @@ export type NewsArticleUpdateWithoutPropertiesInput = {
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activeFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   activeUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdBy?: Prisma.UserUpdateOneWithoutNewsArticlesNestedInput
@@ -862,7 +862,7 @@ export type NewsArticleUncheckedUpdateWithoutPropertiesInput = {
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activeFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   activeUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutNewsArticleNestedInput
@@ -879,7 +879,7 @@ export type NewsArticleCreateWithoutRagDocumentsInput = {
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  slug?: string | null
+  externalUrl?: string | null
   activeFrom?: Date | string | null
   activeUntil?: Date | string | null
   createdBy?: Prisma.UserCreateNestedOneWithoutNewsArticlesInput
@@ -898,7 +898,7 @@ export type NewsArticleUncheckedCreateWithoutRagDocumentsInput = {
   createdById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  slug?: string | null
+  externalUrl?: string | null
   activeFrom?: Date | string | null
   activeUntil?: Date | string | null
   properties?: Prisma.NewsPropertyUncheckedCreateNestedManyWithoutNewsArticleInput
@@ -931,7 +931,7 @@ export type NewsArticleUpdateWithoutRagDocumentsInput = {
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activeFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   activeUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdBy?: Prisma.UserUpdateOneWithoutNewsArticlesNestedInput
@@ -950,7 +950,7 @@ export type NewsArticleUncheckedUpdateWithoutRagDocumentsInput = {
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activeFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   activeUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   properties?: Prisma.NewsPropertyUncheckedUpdateManyWithoutNewsArticleNestedInput
@@ -967,7 +967,7 @@ export type NewsArticleCreateManyCreatedByInput = {
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  slug?: string | null
+  externalUrl?: string | null
   activeFrom?: Date | string | null
   activeUntil?: Date | string | null
 }
@@ -982,7 +982,7 @@ export type NewsArticleUpdateWithoutCreatedByInput = {
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activeFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   activeUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   properties?: Prisma.NewsPropertyUpdateManyWithoutNewsArticleNestedInput
@@ -1000,7 +1000,7 @@ export type NewsArticleUncheckedUpdateWithoutCreatedByInput = {
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activeFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   activeUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   properties?: Prisma.NewsPropertyUncheckedUpdateManyWithoutNewsArticleNestedInput
@@ -1018,7 +1018,7 @@ export type NewsArticleUncheckedUpdateManyWithoutCreatedByInput = {
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activeFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   activeUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -1083,7 +1083,7 @@ export type NewsArticleSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   createdById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  slug?: boolean
+  externalUrl?: boolean
   activeFrom?: boolean
   activeUntil?: boolean
   createdBy?: boolean | Prisma.NewsArticle$createdByArgs<ExtArgs>
@@ -1104,7 +1104,7 @@ export type NewsArticleSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   createdById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  slug?: boolean
+  externalUrl?: boolean
   activeFrom?: boolean
   activeUntil?: boolean
   createdBy?: boolean | Prisma.NewsArticle$createdByArgs<ExtArgs>
@@ -1121,7 +1121,7 @@ export type NewsArticleSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   createdById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  slug?: boolean
+  externalUrl?: boolean
   activeFrom?: boolean
   activeUntil?: boolean
   createdBy?: boolean | Prisma.NewsArticle$createdByArgs<ExtArgs>
@@ -1138,12 +1138,12 @@ export type NewsArticleSelectScalar = {
   createdById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  slug?: boolean
+  externalUrl?: boolean
   activeFrom?: boolean
   activeUntil?: boolean
 }
 
-export type NewsArticleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "summary" | "content" | "imageUrl" | "publicationStatus" | "publishedAt" | "createdById" | "createdAt" | "updatedAt" | "slug" | "activeFrom" | "activeUntil", ExtArgs["result"]["newsArticle"]>
+export type NewsArticleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "summary" | "content" | "imageUrl" | "publicationStatus" | "publishedAt" | "createdById" | "createdAt" | "updatedAt" | "externalUrl" | "activeFrom" | "activeUntil", ExtArgs["result"]["newsArticle"]>
 export type NewsArticleInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   createdBy?: boolean | Prisma.NewsArticle$createdByArgs<ExtArgs>
   properties?: boolean | Prisma.NewsArticle$propertiesArgs<ExtArgs>
@@ -1177,7 +1177,7 @@ export type $NewsArticlePayload<ExtArgs extends runtime.Types.Extensions.Interna
     createdById: string | null
     createdAt: Date
     updatedAt: Date
-    slug: string | null
+    externalUrl: string | null
     activeFrom: Date | null
     activeUntil: Date | null
   }, ExtArgs["result"]["newsArticle"]>
@@ -1617,7 +1617,7 @@ export interface NewsArticleFieldRefs {
   readonly createdById: Prisma.FieldRef<"NewsArticle", 'String'>
   readonly createdAt: Prisma.FieldRef<"NewsArticle", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"NewsArticle", 'DateTime'>
-  readonly slug: Prisma.FieldRef<"NewsArticle", 'String'>
+  readonly externalUrl: Prisma.FieldRef<"NewsArticle", 'String'>
   readonly activeFrom: Prisma.FieldRef<"NewsArticle", 'DateTime'>
   readonly activeUntil: Prisma.FieldRef<"NewsArticle", 'DateTime'>
 }

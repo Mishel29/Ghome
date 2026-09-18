@@ -34,12 +34,46 @@ const schema = buildSchema(`
     UNSUBSCRIBED
   }
 
+  enum PublicationStatus {
+    DRAFT
+    PUBLISHED
+  }
+
   type User {
     id: ID!
     name: String!
     email: String!
     role: String!
     createdAt: String!
+  }
+
+  input AdminListInput {
+    search: String
+    offset: Int
+    limit: Int
+  }
+
+  type UserConnection {
+    nodes: [User!]!
+    totalCount: Int!
+  }
+
+  input CreateUserInput {
+    name: String!
+    email: String!
+    password: String!
+    isAdmin: Boolean!
+  }
+
+  input NewsInput {
+    externalUrl: String
+    title: String!
+    summary: String
+    content: String
+    imageUrl: String
+    activeFrom: String
+    activeUntil: String
+    propertyIds: [ID!]
   }
 
   type PropertyMedia {
@@ -69,6 +103,28 @@ const schema = buildSchema(`
   type PropertyHistoricalPrice {
     year: Int!
     price: Float!
+  }
+
+  type NewsConnection {
+    nodes: [NewsArticle!]!
+    totalCount: Int!
+  }
+
+  type NewsArticle {
+    id: ID!
+    externalUrl: String
+    title: String!
+    summary: String
+    content: String
+    imageUrl: String
+    publicationStatus: String!
+    publishedAt: String
+    activeFrom: String
+    activeUntil: String
+    updatedAt: String!
+    properties: [Property!]!
+    newsClickCount: Int!
+    taggedPropertyVisitCount: Int!
   }
 
   input HistoricalPriceInput {
@@ -321,6 +377,7 @@ const schema = buildSchema(`
   minBathrooms: Int
   maxBathrooms: Int
   completionYear: Int
+  publicationStatus: PublicationStatus
   listedFrom: String
   listedTo: String
   sort: String
@@ -445,6 +502,12 @@ type PropertyConnection {
   type Mutation {
     login(email: String!, password: String!): AuthPayload!
     logout: Boolean!
+    createUser(input: CreateUserInput!): User!
+    saveNews(id: ID, input: NewsInput!): NewsArticle!
+    publishNews(id: ID!): NewsArticle!
+    deleteNews(id: ID!): Boolean!
+    recordNewsClick(newsArticleId: ID!): Boolean!
+    recordNewsPropertyVisit(newsArticleId: ID!, propertyId: ID!): Boolean!
     uploadPropertyCsv(filename: String!, contentBase64: String!): PropertyUpload!
       uploadSubscriberFile(filename: String!, contentBase64: String!): PropertyUpload!
     validatePropertyCsv(uploadId: ID!): PropertyUpload!
@@ -492,6 +555,10 @@ type Query {
   subscribersPage(input: SubscriberFilter): SubscriberConnection!
   exportSubscribers(status: SubscriberStatus!): FileDownload!
   subscriberStats(from: String, to: String): SubscriberStats!
+  usersPage(input: AdminListInput): UserConnection!
+  newsPage(input: AdminListInput): NewsConnection!
+  publicNewsPage(input: AdminListInput): NewsConnection!
+  newsArticle(id: ID!): NewsArticle
 }
 `);
 
@@ -506,6 +573,11 @@ function passwordMatches(password: string, hash: string | null) {
   const expected = Buffer.from(encoded, "hex");
   const actual = scryptSync(password, salt, 64);
   return expected.length === actual.length && timingSafeEqual(expected, actual);
+}
+
+function passwordHash(password: string) {
+  const salt = randomBytes(16).toString("hex");
+  return `scrypt:${salt}:${scryptSync(password, salt, 64).toString("hex")}`;
 }
 
 async function requireAdmin(context: { token?: string }) {
@@ -697,6 +769,48 @@ function serializeProperty<T extends { features: Array<{ feature: unknown }>; va
   };
 }
 
+function serializeNews(article: { id: string; externalUrl: string | null; title: string; summary: string | null; content: string | null; imageUrl: string | null; publicationStatus: string; publishedAt: Date | null; activeFrom: Date | null; activeUntil: Date | null; updatedAt: Date; properties: Array<{ property: unknown }> }) {
+  return {
+    id: article.id,
+    externalUrl: article.externalUrl,
+    title: article.title,
+    summary: article.summary,
+    content: article.content,
+    imageUrl: article.imageUrl,
+    publicationStatus: article.publicationStatus,
+    publishedAt: article.publishedAt?.toISOString() ?? null,
+    activeFrom: article.activeFrom?.toISOString() ?? null,
+    activeUntil: article.activeUntil?.toISOString() ?? null,
+    updatedAt: article.updatedAt.toISOString(),
+    properties: article.properties.map((link) => link.property),
+    newsClickCount: 0,
+    taggedPropertyVisitCount: 0,
+  };
+}
+
+async function newsAnalyticsCounts(articleIds: string[]) {
+  const counts = new Map<string, { newsClickCount: number; taggedPropertyVisitCount: number }>();
+  for (const id of articleIds) counts.set(id, { newsClickCount: 0, taggedPropertyVisitCount: 0 });
+  if (!articleIds.length) return counts;
+  const events = await prisma.analyticsEvent.findMany({
+    where: { eventType: { in: ["NEWS_VIEW", "PROPERTY_VIEW"] } },
+    select: { eventType: true, propertyId: true, metadata: true },
+  });
+  for (const event of events) {
+    const metadata = event.metadata && typeof event.metadata === "object" && !Array.isArray(event.metadata) ? event.metadata as Record<string, unknown> : null;
+    const articleId = typeof metadata?.newsArticleId === "string" ? metadata.newsArticleId : null;
+    const count = articleId ? counts.get(articleId) : undefined;
+    if (!count) continue;
+    if (event.eventType === "NEWS_VIEW") count.newsClickCount += 1;
+    if (event.eventType === "PROPERTY_VIEW" && event.propertyId) count.taggedPropertyVisitCount += 1;
+  }
+  return counts;
+}
+
+function serializeNewsWithCounts(article: Parameters<typeof serializeNews>[0], counts?: { newsClickCount: number; taggedPropertyVisitCount: number }) {
+  return { ...serializeNews(article), ...counts };
+}
+
 const root = {
   login: async ({ email, password }: { email: string; password: string }) => {
     const user = await prisma.user.findUnique({ where: { email: email.trim().toLowerCase() } });
@@ -726,6 +840,82 @@ const root = {
     if (context.token) {
       await prisma.session.deleteMany({ where: { tokenHash: tokenDigest(context.token) } });
     }
+    return true;
+  },
+  createUser: async ({ input }: { input: { name: string; email: string; password: string; isAdmin: boolean } }, context: { token?: string }) => {
+    await requireAdmin(context);
+    const name = input.name.trim();
+    const email = input.email.trim().toLowerCase();
+    if (!name) throw new Error("Name is required");
+    if (!/^\S+@\S+\.\S+$/.test(email)) throw new Error("Email must be valid");
+    if (input.password.length < 12 || input.password.length > 128) throw new Error("Password must be 12 to 128 characters");
+    const user = await prisma.user.create({
+      data: {
+        name,
+        email,
+        passwordHash: passwordHash(input.password),
+        role: input.isAdmin ? "ADMIN" : "USER",
+      },
+    });
+    return { id: user.id, name: user.name, email: user.email, role: user.role, createdAt: user.createdAt.toISOString() };
+  },
+  saveNews: async ({ id, input }: { id?: string; input: { externalUrl?: string; title: string; summary?: string; content?: string; imageUrl?: string; activeFrom?: string | null; activeUntil?: string | null; propertyIds?: string[] } }, context: { token?: string }) => {
+    const admin = await requireAdmin(context);
+    const title = input.title.trim();
+    if (!title) throw new Error("Headline is required");
+    const externalUrl = input.externalUrl?.trim() || null;
+    if (externalUrl) {
+      let parsedUrl: URL;
+      try {
+        parsedUrl = new URL(externalUrl);
+      } catch {
+        throw new Error("External article URL must be a valid URL");
+      }
+      if (parsedUrl.protocol !== "http:" && parsedUrl.protocol !== "https:") throw new Error("External article URL must use http or https");
+    }
+    const data = {
+      externalUrl,
+      title,
+      summary: input.summary?.trim() || null,
+      content: input.content?.trim() || null,
+      imageUrl: input.imageUrl?.trim() || null,
+      activeFrom: input.activeFrom ? new Date(`${input.activeFrom}T00:00:00.000Z`) : null,
+      activeUntil: input.activeUntil ? new Date(`${input.activeUntil}T23:59:59.999Z`) : null,
+      ...(id ? {} : { createdById: admin.id }),
+    };
+    const propertyIds = [...new Set(input.propertyIds ?? [])];
+    if (propertyIds.length) {
+      const publishedProperties = await prisma.property.findMany({ where: { id: { in: propertyIds }, publicationStatus: "PUBLISHED" }, select: { id: true } });
+      if (publishedProperties.length !== propertyIds.length) throw new Error("News can only be linked to published properties");
+    }
+    const article = await prisma.$transaction(async (tx) => {
+      const saved = id
+        ? await tx.newsArticle.update({ where: { id }, data })
+        : await tx.newsArticle.create({ data });
+      await tx.newsProperty.deleteMany({ where: { newsArticleId: saved.id } });
+      if (propertyIds.length) {
+        await tx.newsProperty.createMany({ data: propertyIds.map((propertyId) => ({ newsArticleId: saved.id, propertyId })) });
+      }
+      return tx.newsArticle.findUniqueOrThrow({ where: { id: saved.id }, include: { properties: { include: { property: true } } } });
+    });
+    return serializeNews(article);
+  },
+  publishNews: async ({ id }: { id: string }, context: { token?: string }) => {
+    await requireAdmin(context);
+    const article = await prisma.newsArticle.update({ where: { id }, data: { publicationStatus: "PUBLISHED", publishedAt: new Date() }, include: { properties: { include: { property: true } } } });
+    return serializeNews(article);
+  },
+  deleteNews: async ({ id }: { id: string }, context: { token?: string }) => {
+    await requireAdmin(context);
+    await prisma.newsArticle.delete({ where: { id } });
+    return true;
+  },
+  recordNewsClick: async ({ newsArticleId }: { newsArticleId: string }) => {
+    await prisma.analyticsEvent.create({ data: { eventType: "NEWS_VIEW", metadata: { newsArticleId } } });
+    return true;
+  },
+  recordNewsPropertyVisit: async ({ newsArticleId, propertyId }: { newsArticleId: string; propertyId: string }) => {
+    await prisma.analyticsEvent.create({ data: { eventType: "PROPERTY_VIEW", propertyId, metadata: { newsArticleId } } });
     return true;
   },
   saveProperty: async ({ id, input }: { id?: string; input: Record<string, any> }, context: { token?: string }) => {
@@ -993,6 +1183,47 @@ const root = {
     const rows = await prisma.subscriber.findMany({ select: { subscribedAt: true, unsubscribedAt: true } });
     return calculateSubscriberStats(rows, from, to);
   },
+  usersPage: async ({ input }: { input?: { search?: string; offset?: number; limit?: number } }, context: { token?: string }) => {
+    await requireAdmin(context);
+    const search = input?.search?.trim();
+    const where = search ? { OR: [{ name: { contains: search, mode: "insensitive" as const } }, { email: { contains: search, mode: "insensitive" as const } }] } : undefined;
+    const [nodes, totalCount] = await Promise.all([
+      prisma.user.findMany({ where, orderBy: { createdAt: "desc" }, skip: Math.max(input?.offset ?? 0, 0), take: Math.min(Math.max(input?.limit ?? 20, 1), 100) }),
+      prisma.user.count({ where }),
+    ]);
+    return { nodes: nodes.map((user) => ({ id: user.id, name: user.name, email: user.email, role: user.role, createdAt: user.createdAt.toISOString() })), totalCount };
+  },
+  newsPage: async ({ input }: { input?: { search?: string; offset?: number; limit?: number } }, context: { token?: string }) => {
+    await requireAdmin(context);
+    const search = input?.search?.trim();
+    const where = search ? { OR: [{ title: { contains: search, mode: "insensitive" as const } }, { summary: { contains: search, mode: "insensitive" as const } }] } : undefined;
+    const [nodes, totalCount] = await Promise.all([
+      prisma.newsArticle.findMany({ where, orderBy: { updatedAt: "desc" }, skip: Math.max(input?.offset ?? 0, 0), take: Math.min(Math.max(input?.limit ?? 20, 1), 100), include: { properties: { include: { property: true } } } }),
+      prisma.newsArticle.count({ where }),
+    ]);
+    const counts = await newsAnalyticsCounts(nodes.map((article) => article.id));
+    return { nodes: nodes.map((article) => serializeNewsWithCounts(article, counts.get(article.id))), totalCount };
+  },
+  publicNewsPage: async ({ input }: { input?: { search?: string; offset?: number; limit?: number } }) => {
+    const now = new Date();
+    const search = input?.search?.trim();
+    const where = {
+      publicationStatus: "PUBLISHED" as const,
+      activeFrom: { lte: now },
+      OR: [{ activeUntil: null }, { activeUntil: { gte: now } }],
+      ...(search ? { AND: [{ OR: [{ title: { contains: search, mode: "insensitive" as const } }, { summary: { contains: search, mode: "insensitive" as const } }] }] } : {}),
+    };
+    const [nodes, totalCount] = await Promise.all([
+      prisma.newsArticle.findMany({ where, orderBy: { publishedAt: "desc" }, skip: Math.max(input?.offset ?? 0, 0), take: Math.min(Math.max(input?.limit ?? 20, 1), 100), include: { properties: { include: { property: true } } } }),
+      prisma.newsArticle.count({ where }),
+    ]);
+    return { nodes: nodes.map(serializeNews), totalCount };
+  },
+  newsArticle: async ({ id }: { id: string }) => {
+    const now = new Date();
+    const article = await prisma.newsArticle.findFirst({ where: { id, publicationStatus: "PUBLISHED", activeFrom: { lte: now }, OR: [{ activeUntil: null }, { activeUntil: { gte: now } }] }, include: { properties: { include: { property: true } } } });
+    return article ? serializeNews(article) : null;
+  },
   interestGroups: async ({ input }: { input?: { propertyId?: string; pendingOnly?: boolean; offset?: number } }, context: { token?: string }) => {
     await requireAdmin(context);
     const where = { ...(input?.propertyId ? { propertyId: input.propertyId } : {}), ...(input?.pendingOnly ? { followUpSent: false } : {}) };
@@ -1134,6 +1365,7 @@ const root = {
     minBathrooms?: number;
     maxBathrooms?: number;
     completionYear?: number;
+    publicationStatus?: "DRAFT" | "PUBLISHED";
     listedFrom?: string;
     listedTo?: string;
     sort?: string;
@@ -1202,6 +1434,12 @@ const root = {
     ...(filter?.stage
       ? {
           stage: filter.stage,
+        }
+      : {}),
+
+    ...(context.admin && filter?.publicationStatus
+      ? {
+          publicationStatus: filter.publicationStatus,
         }
       : {}),
 

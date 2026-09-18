@@ -3342,7 +3342,7 @@ export const NewsArticleScalarFieldEnum = {
   createdById: 'createdById',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  slug: 'slug',
+  externalUrl: 'externalUrl',
   activeFrom: 'activeFrom',
   activeUntil: 'activeUntil'
 } as const
