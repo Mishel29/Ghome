@@ -242,6 +242,7 @@ export type InterestWhereInput = {
   user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   agent?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   consents?: Prisma.ConsentListRelationFilter
+  followUps?: Prisma.InterestFollowUpListRelationFilter
 }
 
 export type InterestOrderByWithRelationInput = {
@@ -261,6 +262,7 @@ export type InterestOrderByWithRelationInput = {
   user?: Prisma.UserOrderByWithRelationInput
   agent?: Prisma.UserOrderByWithRelationInput
   consents?: Prisma.ConsentOrderByRelationAggregateInput
+  followUps?: Prisma.InterestFollowUpOrderByRelationAggregateInput
 }
 
 export type InterestWhereUniqueInput = Prisma.AtLeast<{
@@ -283,6 +285,7 @@ export type InterestWhereUniqueInput = Prisma.AtLeast<{
   user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   agent?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   consents?: Prisma.ConsentListRelationFilter
+  followUps?: Prisma.InterestFollowUpListRelationFilter
 }, "id">
 
 export type InterestOrderByWithAggregationInput = {
@@ -335,6 +338,7 @@ export type InterestCreateInput = {
   user?: Prisma.UserCreateNestedOneWithoutInterestsInput
   agent?: Prisma.UserCreateNestedOneWithoutAssignedInterestsInput
   consents?: Prisma.ConsentCreateNestedManyWithoutInterestInput
+  followUps?: Prisma.InterestFollowUpCreateNestedManyWithoutInterestInput
 }
 
 export type InterestUncheckedCreateInput = {
@@ -351,6 +355,7 @@ export type InterestUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   consents?: Prisma.ConsentUncheckedCreateNestedManyWithoutInterestInput
+  followUps?: Prisma.InterestFollowUpUncheckedCreateNestedManyWithoutInterestInput
 }
 
 export type InterestUpdateInput = {
@@ -367,6 +372,7 @@ export type InterestUpdateInput = {
   user?: Prisma.UserUpdateOneWithoutInterestsNestedInput
   agent?: Prisma.UserUpdateOneWithoutAssignedInterestsNestedInput
   consents?: Prisma.ConsentUpdateManyWithoutInterestNestedInput
+  followUps?: Prisma.InterestFollowUpUpdateManyWithoutInterestNestedInput
 }
 
 export type InterestUncheckedUpdateInput = {
@@ -383,6 +389,7 @@ export type InterestUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   consents?: Prisma.ConsentUncheckedUpdateManyWithoutInterestNestedInput
+  followUps?: Prisma.InterestFollowUpUncheckedUpdateManyWithoutInterestNestedInput
 }
 
 export type InterestCreateManyInput = {
@@ -485,6 +492,11 @@ export type InterestMinOrderByAggregateInput = {
 export type InterestNullableScalarRelationFilter = {
   is?: Prisma.InterestWhereInput | null
   isNot?: Prisma.InterestWhereInput | null
+}
+
+export type InterestScalarRelationFilter = {
+  is?: Prisma.InterestWhereInput
+  isNot?: Prisma.InterestWhereInput
 }
 
 export type InterestCreateNestedManyWithoutUserInput = {
@@ -629,6 +641,20 @@ export type InterestUpdateOneWithoutConsentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.InterestUpdateToOneWithWhereWithoutConsentsInput, Prisma.InterestUpdateWithoutConsentsInput>, Prisma.InterestUncheckedUpdateWithoutConsentsInput>
 }
 
+export type InterestCreateNestedOneWithoutFollowUpsInput = {
+  create?: Prisma.XOR<Prisma.InterestCreateWithoutFollowUpsInput, Prisma.InterestUncheckedCreateWithoutFollowUpsInput>
+  connectOrCreate?: Prisma.InterestCreateOrConnectWithoutFollowUpsInput
+  connect?: Prisma.InterestWhereUniqueInput
+}
+
+export type InterestUpdateOneRequiredWithoutFollowUpsNestedInput = {
+  create?: Prisma.XOR<Prisma.InterestCreateWithoutFollowUpsInput, Prisma.InterestUncheckedCreateWithoutFollowUpsInput>
+  connectOrCreate?: Prisma.InterestCreateOrConnectWithoutFollowUpsInput
+  upsert?: Prisma.InterestUpsertWithoutFollowUpsInput
+  connect?: Prisma.InterestWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.InterestUpdateToOneWithWhereWithoutFollowUpsInput, Prisma.InterestUpdateWithoutFollowUpsInput>, Prisma.InterestUncheckedUpdateWithoutFollowUpsInput>
+}
+
 export type InterestCreateWithoutUserInput = {
   id?: string
   name: string
@@ -642,6 +668,7 @@ export type InterestCreateWithoutUserInput = {
   property: Prisma.PropertyCreateNestedOneWithoutInterestsInput
   agent?: Prisma.UserCreateNestedOneWithoutAssignedInterestsInput
   consents?: Prisma.ConsentCreateNestedManyWithoutInterestInput
+  followUps?: Prisma.InterestFollowUpCreateNestedManyWithoutInterestInput
 }
 
 export type InterestUncheckedCreateWithoutUserInput = {
@@ -657,6 +684,7 @@ export type InterestUncheckedCreateWithoutUserInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   consents?: Prisma.ConsentUncheckedCreateNestedManyWithoutInterestInput
+  followUps?: Prisma.InterestFollowUpUncheckedCreateNestedManyWithoutInterestInput
 }
 
 export type InterestCreateOrConnectWithoutUserInput = {
@@ -682,6 +710,7 @@ export type InterestCreateWithoutAgentInput = {
   property: Prisma.PropertyCreateNestedOneWithoutInterestsInput
   user?: Prisma.UserCreateNestedOneWithoutInterestsInput
   consents?: Prisma.ConsentCreateNestedManyWithoutInterestInput
+  followUps?: Prisma.InterestFollowUpCreateNestedManyWithoutInterestInput
 }
 
 export type InterestUncheckedCreateWithoutAgentInput = {
@@ -697,6 +726,7 @@ export type InterestUncheckedCreateWithoutAgentInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   consents?: Prisma.ConsentUncheckedCreateNestedManyWithoutInterestInput
+  followUps?: Prisma.InterestFollowUpUncheckedCreateNestedManyWithoutInterestInput
 }
 
 export type InterestCreateOrConnectWithoutAgentInput = {
@@ -772,6 +802,7 @@ export type InterestCreateWithoutPropertyInput = {
   user?: Prisma.UserCreateNestedOneWithoutInterestsInput
   agent?: Prisma.UserCreateNestedOneWithoutAssignedInterestsInput
   consents?: Prisma.ConsentCreateNestedManyWithoutInterestInput
+  followUps?: Prisma.InterestFollowUpCreateNestedManyWithoutInterestInput
 }
 
 export type InterestUncheckedCreateWithoutPropertyInput = {
@@ -787,6 +818,7 @@ export type InterestUncheckedCreateWithoutPropertyInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   consents?: Prisma.ConsentUncheckedCreateNestedManyWithoutInterestInput
+  followUps?: Prisma.InterestFollowUpUncheckedCreateNestedManyWithoutInterestInput
 }
 
 export type InterestCreateOrConnectWithoutPropertyInput = {
@@ -828,6 +860,7 @@ export type InterestCreateWithoutConsentsInput = {
   property: Prisma.PropertyCreateNestedOneWithoutInterestsInput
   user?: Prisma.UserCreateNestedOneWithoutInterestsInput
   agent?: Prisma.UserCreateNestedOneWithoutAssignedInterestsInput
+  followUps?: Prisma.InterestFollowUpCreateNestedManyWithoutInterestInput
 }
 
 export type InterestUncheckedCreateWithoutConsentsInput = {
@@ -843,6 +876,7 @@ export type InterestUncheckedCreateWithoutConsentsInput = {
   followUpSent?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  followUps?: Prisma.InterestFollowUpUncheckedCreateNestedManyWithoutInterestInput
 }
 
 export type InterestCreateOrConnectWithoutConsentsInput = {
@@ -874,6 +908,7 @@ export type InterestUpdateWithoutConsentsInput = {
   property?: Prisma.PropertyUpdateOneRequiredWithoutInterestsNestedInput
   user?: Prisma.UserUpdateOneWithoutInterestsNestedInput
   agent?: Prisma.UserUpdateOneWithoutAssignedInterestsNestedInput
+  followUps?: Prisma.InterestFollowUpUpdateManyWithoutInterestNestedInput
 }
 
 export type InterestUncheckedUpdateWithoutConsentsInput = {
@@ -889,6 +924,87 @@ export type InterestUncheckedUpdateWithoutConsentsInput = {
   followUpSent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  followUps?: Prisma.InterestFollowUpUncheckedUpdateManyWithoutInterestNestedInput
+}
+
+export type InterestCreateWithoutFollowUpsInput = {
+  id?: string
+  name: string
+  email: string
+  phone?: string | null
+  message?: string | null
+  dataConsent?: boolean
+  followUpSent?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  property: Prisma.PropertyCreateNestedOneWithoutInterestsInput
+  user?: Prisma.UserCreateNestedOneWithoutInterestsInput
+  agent?: Prisma.UserCreateNestedOneWithoutAssignedInterestsInput
+  consents?: Prisma.ConsentCreateNestedManyWithoutInterestInput
+}
+
+export type InterestUncheckedCreateWithoutFollowUpsInput = {
+  id?: string
+  propertyId: string
+  userId?: string | null
+  agentId?: string | null
+  name: string
+  email: string
+  phone?: string | null
+  message?: string | null
+  dataConsent?: boolean
+  followUpSent?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  consents?: Prisma.ConsentUncheckedCreateNestedManyWithoutInterestInput
+}
+
+export type InterestCreateOrConnectWithoutFollowUpsInput = {
+  where: Prisma.InterestWhereUniqueInput
+  create: Prisma.XOR<Prisma.InterestCreateWithoutFollowUpsInput, Prisma.InterestUncheckedCreateWithoutFollowUpsInput>
+}
+
+export type InterestUpsertWithoutFollowUpsInput = {
+  update: Prisma.XOR<Prisma.InterestUpdateWithoutFollowUpsInput, Prisma.InterestUncheckedUpdateWithoutFollowUpsInput>
+  create: Prisma.XOR<Prisma.InterestCreateWithoutFollowUpsInput, Prisma.InterestUncheckedCreateWithoutFollowUpsInput>
+  where?: Prisma.InterestWhereInput
+}
+
+export type InterestUpdateToOneWithWhereWithoutFollowUpsInput = {
+  where?: Prisma.InterestWhereInput
+  data: Prisma.XOR<Prisma.InterestUpdateWithoutFollowUpsInput, Prisma.InterestUncheckedUpdateWithoutFollowUpsInput>
+}
+
+export type InterestUpdateWithoutFollowUpsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataConsent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  followUpSent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  property?: Prisma.PropertyUpdateOneRequiredWithoutInterestsNestedInput
+  user?: Prisma.UserUpdateOneWithoutInterestsNestedInput
+  agent?: Prisma.UserUpdateOneWithoutAssignedInterestsNestedInput
+  consents?: Prisma.ConsentUpdateManyWithoutInterestNestedInput
+}
+
+export type InterestUncheckedUpdateWithoutFollowUpsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataConsent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  followUpSent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  consents?: Prisma.ConsentUncheckedUpdateManyWithoutInterestNestedInput
 }
 
 export type InterestCreateManyUserInput = {
@@ -932,6 +1048,7 @@ export type InterestUpdateWithoutUserInput = {
   property?: Prisma.PropertyUpdateOneRequiredWithoutInterestsNestedInput
   agent?: Prisma.UserUpdateOneWithoutAssignedInterestsNestedInput
   consents?: Prisma.ConsentUpdateManyWithoutInterestNestedInput
+  followUps?: Prisma.InterestFollowUpUpdateManyWithoutInterestNestedInput
 }
 
 export type InterestUncheckedUpdateWithoutUserInput = {
@@ -947,6 +1064,7 @@ export type InterestUncheckedUpdateWithoutUserInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   consents?: Prisma.ConsentUncheckedUpdateManyWithoutInterestNestedInput
+  followUps?: Prisma.InterestFollowUpUncheckedUpdateManyWithoutInterestNestedInput
 }
 
 export type InterestUncheckedUpdateManyWithoutUserInput = {
@@ -976,6 +1094,7 @@ export type InterestUpdateWithoutAgentInput = {
   property?: Prisma.PropertyUpdateOneRequiredWithoutInterestsNestedInput
   user?: Prisma.UserUpdateOneWithoutInterestsNestedInput
   consents?: Prisma.ConsentUpdateManyWithoutInterestNestedInput
+  followUps?: Prisma.InterestFollowUpUpdateManyWithoutInterestNestedInput
 }
 
 export type InterestUncheckedUpdateWithoutAgentInput = {
@@ -991,6 +1110,7 @@ export type InterestUncheckedUpdateWithoutAgentInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   consents?: Prisma.ConsentUncheckedUpdateManyWithoutInterestNestedInput
+  followUps?: Prisma.InterestFollowUpUncheckedUpdateManyWithoutInterestNestedInput
 }
 
 export type InterestUncheckedUpdateManyWithoutAgentInput = {
@@ -1034,6 +1154,7 @@ export type InterestUpdateWithoutPropertyInput = {
   user?: Prisma.UserUpdateOneWithoutInterestsNestedInput
   agent?: Prisma.UserUpdateOneWithoutAssignedInterestsNestedInput
   consents?: Prisma.ConsentUpdateManyWithoutInterestNestedInput
+  followUps?: Prisma.InterestFollowUpUpdateManyWithoutInterestNestedInput
 }
 
 export type InterestUncheckedUpdateWithoutPropertyInput = {
@@ -1049,6 +1170,7 @@ export type InterestUncheckedUpdateWithoutPropertyInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   consents?: Prisma.ConsentUncheckedUpdateManyWithoutInterestNestedInput
+  followUps?: Prisma.InterestFollowUpUncheckedUpdateManyWithoutInterestNestedInput
 }
 
 export type InterestUncheckedUpdateManyWithoutPropertyInput = {
@@ -1072,10 +1194,12 @@ export type InterestUncheckedUpdateManyWithoutPropertyInput = {
 
 export type InterestCountOutputType = {
   consents: number
+  followUps: number
 }
 
 export type InterestCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   consents?: boolean | InterestCountOutputTypeCountConsentsArgs
+  followUps?: boolean | InterestCountOutputTypeCountFollowUpsArgs
 }
 
 /**
@@ -1093,6 +1217,13 @@ export type InterestCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Ext
  */
 export type InterestCountOutputTypeCountConsentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.ConsentWhereInput
+}
+
+/**
+ * InterestCountOutputType without action
+ */
+export type InterestCountOutputTypeCountFollowUpsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.InterestFollowUpWhereInput
 }
 
 
@@ -1113,6 +1244,7 @@ export type InterestSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   user?: boolean | Prisma.Interest$userArgs<ExtArgs>
   agent?: boolean | Prisma.Interest$agentArgs<ExtArgs>
   consents?: boolean | Prisma.Interest$consentsArgs<ExtArgs>
+  followUps?: boolean | Prisma.Interest$followUpsArgs<ExtArgs>
   _count?: boolean | Prisma.InterestCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["interest"]>
 
@@ -1173,6 +1305,7 @@ export type InterestInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   user?: boolean | Prisma.Interest$userArgs<ExtArgs>
   agent?: boolean | Prisma.Interest$agentArgs<ExtArgs>
   consents?: boolean | Prisma.Interest$consentsArgs<ExtArgs>
+  followUps?: boolean | Prisma.Interest$followUpsArgs<ExtArgs>
   _count?: boolean | Prisma.InterestCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type InterestIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1193,6 +1326,7 @@ export type $InterestPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     user: Prisma.$UserPayload<ExtArgs> | null
     agent: Prisma.$UserPayload<ExtArgs> | null
     consents: Prisma.$ConsentPayload<ExtArgs>[]
+    followUps: Prisma.$InterestFollowUpPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1605,6 +1739,7 @@ export interface Prisma__InterestClient<T, Null = never, ExtArgs extends runtime
   user<T extends Prisma.Interest$userArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Interest$userArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   agent<T extends Prisma.Interest$agentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Interest$agentArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   consents<T extends Prisma.Interest$consentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Interest$consentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ConsentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  followUps<T extends Prisma.Interest$followUpsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Interest$followUpsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InterestFollowUpPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2106,6 +2241,30 @@ export type Interest$consentsArgs<ExtArgs extends runtime.Types.Extensions.Inter
   take?: number
   skip?: number
   distinct?: Prisma.ConsentScalarFieldEnum | Prisma.ConsentScalarFieldEnum[]
+}
+
+/**
+ * Interest.followUps
+ */
+export type Interest$followUpsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the InterestFollowUp
+   */
+  select?: Prisma.InterestFollowUpSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the InterestFollowUp
+   */
+  omit?: Prisma.InterestFollowUpOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.InterestFollowUpInclude<ExtArgs> | null
+  where?: Prisma.InterestFollowUpWhereInput
+  orderBy?: Prisma.InterestFollowUpOrderByWithRelationInput | Prisma.InterestFollowUpOrderByWithRelationInput[]
+  cursor?: Prisma.InterestFollowUpWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.InterestFollowUpScalarFieldEnum | Prisma.InterestFollowUpScalarFieldEnum[]
 }
 
 /**

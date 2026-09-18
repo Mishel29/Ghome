@@ -216,6 +216,13 @@ export type UserWhereInput = {
   analyticsEvents?: Prisma.AnalyticsEventListRelationFilter
   auditLogs?: Prisma.AuditLogListRelationFilter
   importJobs?: Prisma.ImportJobListRelationFilter
+  sessions?: Prisma.SessionListRelationFilter
+  reviewedJobs?: Prisma.AiJobListRelationFilter
+  followUps?: Prisma.InterestFollowUpListRelationFilter
+  pageContent?: Prisma.PageContentListRelationFilter
+  templates?: Prisma.CampaignTemplateListRelationFilter
+  propertyUploads?: Prisma.PropertyImportUploadListRelationFilter
+  createdAiJobs?: Prisma.AiJobListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -237,6 +244,13 @@ export type UserOrderByWithRelationInput = {
   analyticsEvents?: Prisma.AnalyticsEventOrderByRelationAggregateInput
   auditLogs?: Prisma.AuditLogOrderByRelationAggregateInput
   importJobs?: Prisma.ImportJobOrderByRelationAggregateInput
+  sessions?: Prisma.SessionOrderByRelationAggregateInput
+  reviewedJobs?: Prisma.AiJobOrderByRelationAggregateInput
+  followUps?: Prisma.InterestFollowUpOrderByRelationAggregateInput
+  pageContent?: Prisma.PageContentOrderByRelationAggregateInput
+  templates?: Prisma.CampaignTemplateOrderByRelationAggregateInput
+  propertyUploads?: Prisma.PropertyImportUploadOrderByRelationAggregateInput
+  createdAiJobs?: Prisma.AiJobOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -261,6 +275,13 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   analyticsEvents?: Prisma.AnalyticsEventListRelationFilter
   auditLogs?: Prisma.AuditLogListRelationFilter
   importJobs?: Prisma.ImportJobListRelationFilter
+  sessions?: Prisma.SessionListRelationFilter
+  reviewedJobs?: Prisma.AiJobListRelationFilter
+  followUps?: Prisma.InterestFollowUpListRelationFilter
+  pageContent?: Prisma.PageContentListRelationFilter
+  templates?: Prisma.CampaignTemplateListRelationFilter
+  propertyUploads?: Prisma.PropertyImportUploadListRelationFilter
+  createdAiJobs?: Prisma.AiJobListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -310,6 +331,13 @@ export type UserCreateInput = {
   analyticsEvents?: Prisma.AnalyticsEventCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   importJobs?: Prisma.ImportJobCreateNestedManyWithoutCreatedByInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  reviewedJobs?: Prisma.AiJobCreateNestedManyWithoutReviewedByInput
+  followUps?: Prisma.InterestFollowUpCreateNestedManyWithoutSentByInput
+  pageContent?: Prisma.PageContentCreateNestedManyWithoutCreatedByInput
+  templates?: Prisma.CampaignTemplateCreateNestedManyWithoutCreatedByInput
+  propertyUploads?: Prisma.PropertyImportUploadCreateNestedManyWithoutCreatedByInput
+  createdAiJobs?: Prisma.AiJobCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -331,6 +359,13 @@ export type UserUncheckedCreateInput = {
   analyticsEvents?: Prisma.AnalyticsEventUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   importJobs?: Prisma.ImportJobUncheckedCreateNestedManyWithoutCreatedByInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  reviewedJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutReviewedByInput
+  followUps?: Prisma.InterestFollowUpUncheckedCreateNestedManyWithoutSentByInput
+  pageContent?: Prisma.PageContentUncheckedCreateNestedManyWithoutCreatedByInput
+  templates?: Prisma.CampaignTemplateUncheckedCreateNestedManyWithoutCreatedByInput
+  propertyUploads?: Prisma.PropertyImportUploadUncheckedCreateNestedManyWithoutCreatedByInput
+  createdAiJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUpdateInput = {
@@ -352,6 +387,13 @@ export type UserUpdateInput = {
   analyticsEvents?: Prisma.AnalyticsEventUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   importJobs?: Prisma.ImportJobUpdateManyWithoutCreatedByNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  reviewedJobs?: Prisma.AiJobUpdateManyWithoutReviewedByNestedInput
+  followUps?: Prisma.InterestFollowUpUpdateManyWithoutSentByNestedInput
+  pageContent?: Prisma.PageContentUpdateManyWithoutCreatedByNestedInput
+  templates?: Prisma.CampaignTemplateUpdateManyWithoutCreatedByNestedInput
+  propertyUploads?: Prisma.PropertyImportUploadUpdateManyWithoutCreatedByNestedInput
+  createdAiJobs?: Prisma.AiJobUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -373,6 +415,13 @@ export type UserUncheckedUpdateInput = {
   analyticsEvents?: Prisma.AnalyticsEventUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   importJobs?: Prisma.ImportJobUncheckedUpdateManyWithoutCreatedByNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  reviewedJobs?: Prisma.AiJobUncheckedUpdateManyWithoutReviewedByNestedInput
+  followUps?: Prisma.InterestFollowUpUncheckedUpdateManyWithoutSentByNestedInput
+  pageContent?: Prisma.PageContentUncheckedUpdateManyWithoutCreatedByNestedInput
+  templates?: Prisma.CampaignTemplateUncheckedUpdateManyWithoutCreatedByNestedInput
+  propertyUploads?: Prisma.PropertyImportUploadUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdAiJobs?: Prisma.AiJobUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -561,6 +610,22 @@ export type UserUpdateOneWithoutCampaignsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCampaignsInput, Prisma.UserUpdateWithoutCampaignsInput>, Prisma.UserUncheckedUpdateWithoutCampaignsInput>
 }
 
+export type UserCreateNestedOneWithoutTemplatesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutTemplatesInput, Prisma.UserUncheckedCreateWithoutTemplatesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTemplatesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutTemplatesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutTemplatesInput, Prisma.UserUncheckedCreateWithoutTemplatesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTemplatesInput
+  upsert?: Prisma.UserUpsertWithoutTemplatesInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutTemplatesInput, Prisma.UserUpdateWithoutTemplatesInput>, Prisma.UserUncheckedUpdateWithoutTemplatesInput>
+}
+
 export type UserCreateNestedOneWithoutNewsArticlesInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutNewsArticlesInput, Prisma.UserUncheckedCreateWithoutNewsArticlesInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutNewsArticlesInput
@@ -591,6 +656,38 @@ export type UserUpdateOneWithoutAnalyticsEventsNestedInput = {
   delete?: Prisma.UserWhereInput | boolean
   connect?: Prisma.UserWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAnalyticsEventsInput, Prisma.UserUpdateWithoutAnalyticsEventsInput>, Prisma.UserUncheckedUpdateWithoutAnalyticsEventsInput>
+}
+
+export type UserCreateNestedOneWithoutCreatedAiJobsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedAiJobsInput, Prisma.UserUncheckedCreateWithoutCreatedAiJobsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedAiJobsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutReviewedJobsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReviewedJobsInput, Prisma.UserUncheckedCreateWithoutReviewedJobsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReviewedJobsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutCreatedAiJobsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedAiJobsInput, Prisma.UserUncheckedCreateWithoutCreatedAiJobsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedAiJobsInput
+  upsert?: Prisma.UserUpsertWithoutCreatedAiJobsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCreatedAiJobsInput, Prisma.UserUpdateWithoutCreatedAiJobsInput>, Prisma.UserUncheckedUpdateWithoutCreatedAiJobsInput>
+}
+
+export type UserUpdateOneWithoutReviewedJobsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReviewedJobsInput, Prisma.UserUncheckedCreateWithoutReviewedJobsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReviewedJobsInput
+  upsert?: Prisma.UserUpsertWithoutReviewedJobsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutReviewedJobsInput, Prisma.UserUpdateWithoutReviewedJobsInput>, Prisma.UserUncheckedUpdateWithoutReviewedJobsInput>
 }
 
 export type UserCreateNestedOneWithoutImportJobsInput = {
@@ -625,6 +722,66 @@ export type UserUpdateOneWithoutAuditLogsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAuditLogsInput, Prisma.UserUpdateWithoutAuditLogsInput>, Prisma.UserUncheckedUpdateWithoutAuditLogsInput>
 }
 
+export type UserCreateNestedOneWithoutPageContentInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPageContentInput, Prisma.UserUncheckedCreateWithoutPageContentInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPageContentInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutPageContentNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPageContentInput, Prisma.UserUncheckedCreateWithoutPageContentInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPageContentInput
+  upsert?: Prisma.UserUpsertWithoutPageContentInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPageContentInput, Prisma.UserUpdateWithoutPageContentInput>, Prisma.UserUncheckedUpdateWithoutPageContentInput>
+}
+
+export type UserCreateNestedOneWithoutSessionsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSessionsInput, Prisma.UserUncheckedCreateWithoutSessionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSessionsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutSessionsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSessionsInput, Prisma.UserUncheckedCreateWithoutSessionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSessionsInput
+  upsert?: Prisma.UserUpsertWithoutSessionsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSessionsInput, Prisma.UserUpdateWithoutSessionsInput>, Prisma.UserUncheckedUpdateWithoutSessionsInput>
+}
+
+export type UserCreateNestedOneWithoutFollowUpsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutFollowUpsInput, Prisma.UserUncheckedCreateWithoutFollowUpsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutFollowUpsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutFollowUpsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutFollowUpsInput, Prisma.UserUncheckedCreateWithoutFollowUpsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutFollowUpsInput
+  upsert?: Prisma.UserUpsertWithoutFollowUpsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutFollowUpsInput, Prisma.UserUpdateWithoutFollowUpsInput>, Prisma.UserUncheckedUpdateWithoutFollowUpsInput>
+}
+
+export type UserCreateNestedOneWithoutPropertyUploadsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPropertyUploadsInput, Prisma.UserUncheckedCreateWithoutPropertyUploadsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPropertyUploadsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutPropertyUploadsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPropertyUploadsInput, Prisma.UserUncheckedCreateWithoutPropertyUploadsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPropertyUploadsInput
+  upsert?: Prisma.UserUpsertWithoutPropertyUploadsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPropertyUploadsInput, Prisma.UserUpdateWithoutPropertyUploadsInput>, Prisma.UserUncheckedUpdateWithoutPropertyUploadsInput>
+}
+
 export type UserCreateWithoutPropertiesInput = {
   id?: string
   name: string
@@ -643,6 +800,13 @@ export type UserCreateWithoutPropertiesInput = {
   analyticsEvents?: Prisma.AnalyticsEventCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   importJobs?: Prisma.ImportJobCreateNestedManyWithoutCreatedByInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  reviewedJobs?: Prisma.AiJobCreateNestedManyWithoutReviewedByInput
+  followUps?: Prisma.InterestFollowUpCreateNestedManyWithoutSentByInput
+  pageContent?: Prisma.PageContentCreateNestedManyWithoutCreatedByInput
+  templates?: Prisma.CampaignTemplateCreateNestedManyWithoutCreatedByInput
+  propertyUploads?: Prisma.PropertyImportUploadCreateNestedManyWithoutCreatedByInput
+  createdAiJobs?: Prisma.AiJobCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutPropertiesInput = {
@@ -663,6 +827,13 @@ export type UserUncheckedCreateWithoutPropertiesInput = {
   analyticsEvents?: Prisma.AnalyticsEventUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   importJobs?: Prisma.ImportJobUncheckedCreateNestedManyWithoutCreatedByInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  reviewedJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutReviewedByInput
+  followUps?: Prisma.InterestFollowUpUncheckedCreateNestedManyWithoutSentByInput
+  pageContent?: Prisma.PageContentUncheckedCreateNestedManyWithoutCreatedByInput
+  templates?: Prisma.CampaignTemplateUncheckedCreateNestedManyWithoutCreatedByInput
+  propertyUploads?: Prisma.PropertyImportUploadUncheckedCreateNestedManyWithoutCreatedByInput
+  createdAiJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutPropertiesInput = {
@@ -699,6 +870,13 @@ export type UserUpdateWithoutPropertiesInput = {
   analyticsEvents?: Prisma.AnalyticsEventUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   importJobs?: Prisma.ImportJobUpdateManyWithoutCreatedByNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  reviewedJobs?: Prisma.AiJobUpdateManyWithoutReviewedByNestedInput
+  followUps?: Prisma.InterestFollowUpUpdateManyWithoutSentByNestedInput
+  pageContent?: Prisma.PageContentUpdateManyWithoutCreatedByNestedInput
+  templates?: Prisma.CampaignTemplateUpdateManyWithoutCreatedByNestedInput
+  propertyUploads?: Prisma.PropertyImportUploadUpdateManyWithoutCreatedByNestedInput
+  createdAiJobs?: Prisma.AiJobUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPropertiesInput = {
@@ -719,6 +897,13 @@ export type UserUncheckedUpdateWithoutPropertiesInput = {
   analyticsEvents?: Prisma.AnalyticsEventUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   importJobs?: Prisma.ImportJobUncheckedUpdateManyWithoutCreatedByNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  reviewedJobs?: Prisma.AiJobUncheckedUpdateManyWithoutReviewedByNestedInput
+  followUps?: Prisma.InterestFollowUpUncheckedUpdateManyWithoutSentByNestedInput
+  pageContent?: Prisma.PageContentUncheckedUpdateManyWithoutCreatedByNestedInput
+  templates?: Prisma.CampaignTemplateUncheckedUpdateManyWithoutCreatedByNestedInput
+  propertyUploads?: Prisma.PropertyImportUploadUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdAiJobs?: Prisma.AiJobUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutSavedPropertiesInput = {
@@ -739,6 +924,13 @@ export type UserCreateWithoutSavedPropertiesInput = {
   analyticsEvents?: Prisma.AnalyticsEventCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   importJobs?: Prisma.ImportJobCreateNestedManyWithoutCreatedByInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  reviewedJobs?: Prisma.AiJobCreateNestedManyWithoutReviewedByInput
+  followUps?: Prisma.InterestFollowUpCreateNestedManyWithoutSentByInput
+  pageContent?: Prisma.PageContentCreateNestedManyWithoutCreatedByInput
+  templates?: Prisma.CampaignTemplateCreateNestedManyWithoutCreatedByInput
+  propertyUploads?: Prisma.PropertyImportUploadCreateNestedManyWithoutCreatedByInput
+  createdAiJobs?: Prisma.AiJobCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutSavedPropertiesInput = {
@@ -759,6 +951,13 @@ export type UserUncheckedCreateWithoutSavedPropertiesInput = {
   analyticsEvents?: Prisma.AnalyticsEventUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   importJobs?: Prisma.ImportJobUncheckedCreateNestedManyWithoutCreatedByInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  reviewedJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutReviewedByInput
+  followUps?: Prisma.InterestFollowUpUncheckedCreateNestedManyWithoutSentByInput
+  pageContent?: Prisma.PageContentUncheckedCreateNestedManyWithoutCreatedByInput
+  templates?: Prisma.CampaignTemplateUncheckedCreateNestedManyWithoutCreatedByInput
+  propertyUploads?: Prisma.PropertyImportUploadUncheckedCreateNestedManyWithoutCreatedByInput
+  createdAiJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutSavedPropertiesInput = {
@@ -795,6 +994,13 @@ export type UserUpdateWithoutSavedPropertiesInput = {
   analyticsEvents?: Prisma.AnalyticsEventUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   importJobs?: Prisma.ImportJobUpdateManyWithoutCreatedByNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  reviewedJobs?: Prisma.AiJobUpdateManyWithoutReviewedByNestedInput
+  followUps?: Prisma.InterestFollowUpUpdateManyWithoutSentByNestedInput
+  pageContent?: Prisma.PageContentUpdateManyWithoutCreatedByNestedInput
+  templates?: Prisma.CampaignTemplateUpdateManyWithoutCreatedByNestedInput
+  propertyUploads?: Prisma.PropertyImportUploadUpdateManyWithoutCreatedByNestedInput
+  createdAiJobs?: Prisma.AiJobUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSavedPropertiesInput = {
@@ -815,6 +1021,13 @@ export type UserUncheckedUpdateWithoutSavedPropertiesInput = {
   analyticsEvents?: Prisma.AnalyticsEventUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   importJobs?: Prisma.ImportJobUncheckedUpdateManyWithoutCreatedByNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  reviewedJobs?: Prisma.AiJobUncheckedUpdateManyWithoutReviewedByNestedInput
+  followUps?: Prisma.InterestFollowUpUncheckedUpdateManyWithoutSentByNestedInput
+  pageContent?: Prisma.PageContentUncheckedUpdateManyWithoutCreatedByNestedInput
+  templates?: Prisma.CampaignTemplateUncheckedUpdateManyWithoutCreatedByNestedInput
+  propertyUploads?: Prisma.PropertyImportUploadUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdAiJobs?: Prisma.AiJobUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutInterestsInput = {
@@ -835,6 +1048,13 @@ export type UserCreateWithoutInterestsInput = {
   analyticsEvents?: Prisma.AnalyticsEventCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   importJobs?: Prisma.ImportJobCreateNestedManyWithoutCreatedByInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  reviewedJobs?: Prisma.AiJobCreateNestedManyWithoutReviewedByInput
+  followUps?: Prisma.InterestFollowUpCreateNestedManyWithoutSentByInput
+  pageContent?: Prisma.PageContentCreateNestedManyWithoutCreatedByInput
+  templates?: Prisma.CampaignTemplateCreateNestedManyWithoutCreatedByInput
+  propertyUploads?: Prisma.PropertyImportUploadCreateNestedManyWithoutCreatedByInput
+  createdAiJobs?: Prisma.AiJobCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutInterestsInput = {
@@ -855,6 +1075,13 @@ export type UserUncheckedCreateWithoutInterestsInput = {
   analyticsEvents?: Prisma.AnalyticsEventUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   importJobs?: Prisma.ImportJobUncheckedCreateNestedManyWithoutCreatedByInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  reviewedJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutReviewedByInput
+  followUps?: Prisma.InterestFollowUpUncheckedCreateNestedManyWithoutSentByInput
+  pageContent?: Prisma.PageContentUncheckedCreateNestedManyWithoutCreatedByInput
+  templates?: Prisma.CampaignTemplateUncheckedCreateNestedManyWithoutCreatedByInput
+  propertyUploads?: Prisma.PropertyImportUploadUncheckedCreateNestedManyWithoutCreatedByInput
+  createdAiJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutInterestsInput = {
@@ -880,6 +1107,13 @@ export type UserCreateWithoutAssignedInterestsInput = {
   analyticsEvents?: Prisma.AnalyticsEventCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   importJobs?: Prisma.ImportJobCreateNestedManyWithoutCreatedByInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  reviewedJobs?: Prisma.AiJobCreateNestedManyWithoutReviewedByInput
+  followUps?: Prisma.InterestFollowUpCreateNestedManyWithoutSentByInput
+  pageContent?: Prisma.PageContentCreateNestedManyWithoutCreatedByInput
+  templates?: Prisma.CampaignTemplateCreateNestedManyWithoutCreatedByInput
+  propertyUploads?: Prisma.PropertyImportUploadCreateNestedManyWithoutCreatedByInput
+  createdAiJobs?: Prisma.AiJobCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutAssignedInterestsInput = {
@@ -900,6 +1134,13 @@ export type UserUncheckedCreateWithoutAssignedInterestsInput = {
   analyticsEvents?: Prisma.AnalyticsEventUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   importJobs?: Prisma.ImportJobUncheckedCreateNestedManyWithoutCreatedByInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  reviewedJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutReviewedByInput
+  followUps?: Prisma.InterestFollowUpUncheckedCreateNestedManyWithoutSentByInput
+  pageContent?: Prisma.PageContentUncheckedCreateNestedManyWithoutCreatedByInput
+  templates?: Prisma.CampaignTemplateUncheckedCreateNestedManyWithoutCreatedByInput
+  propertyUploads?: Prisma.PropertyImportUploadUncheckedCreateNestedManyWithoutCreatedByInput
+  createdAiJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutAssignedInterestsInput = {
@@ -936,6 +1177,13 @@ export type UserUpdateWithoutInterestsInput = {
   analyticsEvents?: Prisma.AnalyticsEventUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   importJobs?: Prisma.ImportJobUpdateManyWithoutCreatedByNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  reviewedJobs?: Prisma.AiJobUpdateManyWithoutReviewedByNestedInput
+  followUps?: Prisma.InterestFollowUpUpdateManyWithoutSentByNestedInput
+  pageContent?: Prisma.PageContentUpdateManyWithoutCreatedByNestedInput
+  templates?: Prisma.CampaignTemplateUpdateManyWithoutCreatedByNestedInput
+  propertyUploads?: Prisma.PropertyImportUploadUpdateManyWithoutCreatedByNestedInput
+  createdAiJobs?: Prisma.AiJobUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutInterestsInput = {
@@ -956,6 +1204,13 @@ export type UserUncheckedUpdateWithoutInterestsInput = {
   analyticsEvents?: Prisma.AnalyticsEventUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   importJobs?: Prisma.ImportJobUncheckedUpdateManyWithoutCreatedByNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  reviewedJobs?: Prisma.AiJobUncheckedUpdateManyWithoutReviewedByNestedInput
+  followUps?: Prisma.InterestFollowUpUncheckedUpdateManyWithoutSentByNestedInput
+  pageContent?: Prisma.PageContentUncheckedUpdateManyWithoutCreatedByNestedInput
+  templates?: Prisma.CampaignTemplateUncheckedUpdateManyWithoutCreatedByNestedInput
+  propertyUploads?: Prisma.PropertyImportUploadUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdAiJobs?: Prisma.AiJobUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUpsertWithoutAssignedInterestsInput = {
@@ -987,6 +1242,13 @@ export type UserUpdateWithoutAssignedInterestsInput = {
   analyticsEvents?: Prisma.AnalyticsEventUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   importJobs?: Prisma.ImportJobUpdateManyWithoutCreatedByNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  reviewedJobs?: Prisma.AiJobUpdateManyWithoutReviewedByNestedInput
+  followUps?: Prisma.InterestFollowUpUpdateManyWithoutSentByNestedInput
+  pageContent?: Prisma.PageContentUpdateManyWithoutCreatedByNestedInput
+  templates?: Prisma.CampaignTemplateUpdateManyWithoutCreatedByNestedInput
+  propertyUploads?: Prisma.PropertyImportUploadUpdateManyWithoutCreatedByNestedInput
+  createdAiJobs?: Prisma.AiJobUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAssignedInterestsInput = {
@@ -1007,6 +1269,13 @@ export type UserUncheckedUpdateWithoutAssignedInterestsInput = {
   analyticsEvents?: Prisma.AnalyticsEventUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   importJobs?: Prisma.ImportJobUncheckedUpdateManyWithoutCreatedByNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  reviewedJobs?: Prisma.AiJobUncheckedUpdateManyWithoutReviewedByNestedInput
+  followUps?: Prisma.InterestFollowUpUncheckedUpdateManyWithoutSentByNestedInput
+  pageContent?: Prisma.PageContentUncheckedUpdateManyWithoutCreatedByNestedInput
+  templates?: Prisma.CampaignTemplateUncheckedUpdateManyWithoutCreatedByNestedInput
+  propertyUploads?: Prisma.PropertyImportUploadUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdAiJobs?: Prisma.AiJobUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutConsentsInput = {
@@ -1027,6 +1296,13 @@ export type UserCreateWithoutConsentsInput = {
   analyticsEvents?: Prisma.AnalyticsEventCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   importJobs?: Prisma.ImportJobCreateNestedManyWithoutCreatedByInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  reviewedJobs?: Prisma.AiJobCreateNestedManyWithoutReviewedByInput
+  followUps?: Prisma.InterestFollowUpCreateNestedManyWithoutSentByInput
+  pageContent?: Prisma.PageContentCreateNestedManyWithoutCreatedByInput
+  templates?: Prisma.CampaignTemplateCreateNestedManyWithoutCreatedByInput
+  propertyUploads?: Prisma.PropertyImportUploadCreateNestedManyWithoutCreatedByInput
+  createdAiJobs?: Prisma.AiJobCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutConsentsInput = {
@@ -1047,6 +1323,13 @@ export type UserUncheckedCreateWithoutConsentsInput = {
   analyticsEvents?: Prisma.AnalyticsEventUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   importJobs?: Prisma.ImportJobUncheckedCreateNestedManyWithoutCreatedByInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  reviewedJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutReviewedByInput
+  followUps?: Prisma.InterestFollowUpUncheckedCreateNestedManyWithoutSentByInput
+  pageContent?: Prisma.PageContentUncheckedCreateNestedManyWithoutCreatedByInput
+  templates?: Prisma.CampaignTemplateUncheckedCreateNestedManyWithoutCreatedByInput
+  propertyUploads?: Prisma.PropertyImportUploadUncheckedCreateNestedManyWithoutCreatedByInput
+  createdAiJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutConsentsInput = {
@@ -1083,6 +1366,13 @@ export type UserUpdateWithoutConsentsInput = {
   analyticsEvents?: Prisma.AnalyticsEventUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   importJobs?: Prisma.ImportJobUpdateManyWithoutCreatedByNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  reviewedJobs?: Prisma.AiJobUpdateManyWithoutReviewedByNestedInput
+  followUps?: Prisma.InterestFollowUpUpdateManyWithoutSentByNestedInput
+  pageContent?: Prisma.PageContentUpdateManyWithoutCreatedByNestedInput
+  templates?: Prisma.CampaignTemplateUpdateManyWithoutCreatedByNestedInput
+  propertyUploads?: Prisma.PropertyImportUploadUpdateManyWithoutCreatedByNestedInput
+  createdAiJobs?: Prisma.AiJobUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutConsentsInput = {
@@ -1103,6 +1393,13 @@ export type UserUncheckedUpdateWithoutConsentsInput = {
   analyticsEvents?: Prisma.AnalyticsEventUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   importJobs?: Prisma.ImportJobUncheckedUpdateManyWithoutCreatedByNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  reviewedJobs?: Prisma.AiJobUncheckedUpdateManyWithoutReviewedByNestedInput
+  followUps?: Prisma.InterestFollowUpUncheckedUpdateManyWithoutSentByNestedInput
+  pageContent?: Prisma.PageContentUncheckedUpdateManyWithoutCreatedByNestedInput
+  templates?: Prisma.CampaignTemplateUncheckedUpdateManyWithoutCreatedByNestedInput
+  propertyUploads?: Prisma.PropertyImportUploadUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdAiJobs?: Prisma.AiJobUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutCampaignsInput = {
@@ -1123,6 +1420,13 @@ export type UserCreateWithoutCampaignsInput = {
   analyticsEvents?: Prisma.AnalyticsEventCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   importJobs?: Prisma.ImportJobCreateNestedManyWithoutCreatedByInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  reviewedJobs?: Prisma.AiJobCreateNestedManyWithoutReviewedByInput
+  followUps?: Prisma.InterestFollowUpCreateNestedManyWithoutSentByInput
+  pageContent?: Prisma.PageContentCreateNestedManyWithoutCreatedByInput
+  templates?: Prisma.CampaignTemplateCreateNestedManyWithoutCreatedByInput
+  propertyUploads?: Prisma.PropertyImportUploadCreateNestedManyWithoutCreatedByInput
+  createdAiJobs?: Prisma.AiJobCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutCampaignsInput = {
@@ -1143,6 +1447,13 @@ export type UserUncheckedCreateWithoutCampaignsInput = {
   analyticsEvents?: Prisma.AnalyticsEventUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   importJobs?: Prisma.ImportJobUncheckedCreateNestedManyWithoutCreatedByInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  reviewedJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutReviewedByInput
+  followUps?: Prisma.InterestFollowUpUncheckedCreateNestedManyWithoutSentByInput
+  pageContent?: Prisma.PageContentUncheckedCreateNestedManyWithoutCreatedByInput
+  templates?: Prisma.CampaignTemplateUncheckedCreateNestedManyWithoutCreatedByInput
+  propertyUploads?: Prisma.PropertyImportUploadUncheckedCreateNestedManyWithoutCreatedByInput
+  createdAiJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutCampaignsInput = {
@@ -1179,6 +1490,13 @@ export type UserUpdateWithoutCampaignsInput = {
   analyticsEvents?: Prisma.AnalyticsEventUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   importJobs?: Prisma.ImportJobUpdateManyWithoutCreatedByNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  reviewedJobs?: Prisma.AiJobUpdateManyWithoutReviewedByNestedInput
+  followUps?: Prisma.InterestFollowUpUpdateManyWithoutSentByNestedInput
+  pageContent?: Prisma.PageContentUpdateManyWithoutCreatedByNestedInput
+  templates?: Prisma.CampaignTemplateUpdateManyWithoutCreatedByNestedInput
+  propertyUploads?: Prisma.PropertyImportUploadUpdateManyWithoutCreatedByNestedInput
+  createdAiJobs?: Prisma.AiJobUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCampaignsInput = {
@@ -1199,6 +1517,137 @@ export type UserUncheckedUpdateWithoutCampaignsInput = {
   analyticsEvents?: Prisma.AnalyticsEventUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   importJobs?: Prisma.ImportJobUncheckedUpdateManyWithoutCreatedByNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  reviewedJobs?: Prisma.AiJobUncheckedUpdateManyWithoutReviewedByNestedInput
+  followUps?: Prisma.InterestFollowUpUncheckedUpdateManyWithoutSentByNestedInput
+  pageContent?: Prisma.PageContentUncheckedUpdateManyWithoutCreatedByNestedInput
+  templates?: Prisma.CampaignTemplateUncheckedUpdateManyWithoutCreatedByNestedInput
+  propertyUploads?: Prisma.PropertyImportUploadUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdAiJobs?: Prisma.AiJobUncheckedUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserCreateWithoutTemplatesInput = {
+  id?: string
+  name: string
+  email: string
+  passwordHash?: string | null
+  role?: $Enums.UserRole
+  phone?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  properties?: Prisma.PropertyCreateNestedManyWithoutAgentInput
+  interests?: Prisma.InterestCreateNestedManyWithoutUserInput
+  assignedInterests?: Prisma.InterestCreateNestedManyWithoutAgentInput
+  savedProperties?: Prisma.SavedPropertyCreateNestedManyWithoutUserInput
+  consents?: Prisma.ConsentCreateNestedManyWithoutUserInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
+  newsArticles?: Prisma.NewsArticleCreateNestedManyWithoutCreatedByInput
+  analyticsEvents?: Prisma.AnalyticsEventCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+  importJobs?: Prisma.ImportJobCreateNestedManyWithoutCreatedByInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  reviewedJobs?: Prisma.AiJobCreateNestedManyWithoutReviewedByInput
+  followUps?: Prisma.InterestFollowUpCreateNestedManyWithoutSentByInput
+  pageContent?: Prisma.PageContentCreateNestedManyWithoutCreatedByInput
+  propertyUploads?: Prisma.PropertyImportUploadCreateNestedManyWithoutCreatedByInput
+  createdAiJobs?: Prisma.AiJobCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserUncheckedCreateWithoutTemplatesInput = {
+  id?: string
+  name: string
+  email: string
+  passwordHash?: string | null
+  role?: $Enums.UserRole
+  phone?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutAgentInput
+  interests?: Prisma.InterestUncheckedCreateNestedManyWithoutUserInput
+  assignedInterests?: Prisma.InterestUncheckedCreateNestedManyWithoutAgentInput
+  savedProperties?: Prisma.SavedPropertyUncheckedCreateNestedManyWithoutUserInput
+  consents?: Prisma.ConsentUncheckedCreateNestedManyWithoutUserInput
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
+  newsArticles?: Prisma.NewsArticleUncheckedCreateNestedManyWithoutCreatedByInput
+  analyticsEvents?: Prisma.AnalyticsEventUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+  importJobs?: Prisma.ImportJobUncheckedCreateNestedManyWithoutCreatedByInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  reviewedJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutReviewedByInput
+  followUps?: Prisma.InterestFollowUpUncheckedCreateNestedManyWithoutSentByInput
+  pageContent?: Prisma.PageContentUncheckedCreateNestedManyWithoutCreatedByInput
+  propertyUploads?: Prisma.PropertyImportUploadUncheckedCreateNestedManyWithoutCreatedByInput
+  createdAiJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserCreateOrConnectWithoutTemplatesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutTemplatesInput, Prisma.UserUncheckedCreateWithoutTemplatesInput>
+}
+
+export type UserUpsertWithoutTemplatesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutTemplatesInput, Prisma.UserUncheckedUpdateWithoutTemplatesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutTemplatesInput, Prisma.UserUncheckedCreateWithoutTemplatesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutTemplatesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutTemplatesInput, Prisma.UserUncheckedUpdateWithoutTemplatesInput>
+}
+
+export type UserUpdateWithoutTemplatesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  properties?: Prisma.PropertyUpdateManyWithoutAgentNestedInput
+  interests?: Prisma.InterestUpdateManyWithoutUserNestedInput
+  assignedInterests?: Prisma.InterestUpdateManyWithoutAgentNestedInput
+  savedProperties?: Prisma.SavedPropertyUpdateManyWithoutUserNestedInput
+  consents?: Prisma.ConsentUpdateManyWithoutUserNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
+  newsArticles?: Prisma.NewsArticleUpdateManyWithoutCreatedByNestedInput
+  analyticsEvents?: Prisma.AnalyticsEventUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+  importJobs?: Prisma.ImportJobUpdateManyWithoutCreatedByNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  reviewedJobs?: Prisma.AiJobUpdateManyWithoutReviewedByNestedInput
+  followUps?: Prisma.InterestFollowUpUpdateManyWithoutSentByNestedInput
+  pageContent?: Prisma.PageContentUpdateManyWithoutCreatedByNestedInput
+  propertyUploads?: Prisma.PropertyImportUploadUpdateManyWithoutCreatedByNestedInput
+  createdAiJobs?: Prisma.AiJobUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutTemplatesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  properties?: Prisma.PropertyUncheckedUpdateManyWithoutAgentNestedInput
+  interests?: Prisma.InterestUncheckedUpdateManyWithoutUserNestedInput
+  assignedInterests?: Prisma.InterestUncheckedUpdateManyWithoutAgentNestedInput
+  savedProperties?: Prisma.SavedPropertyUncheckedUpdateManyWithoutUserNestedInput
+  consents?: Prisma.ConsentUncheckedUpdateManyWithoutUserNestedInput
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
+  newsArticles?: Prisma.NewsArticleUncheckedUpdateManyWithoutCreatedByNestedInput
+  analyticsEvents?: Prisma.AnalyticsEventUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  importJobs?: Prisma.ImportJobUncheckedUpdateManyWithoutCreatedByNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  reviewedJobs?: Prisma.AiJobUncheckedUpdateManyWithoutReviewedByNestedInput
+  followUps?: Prisma.InterestFollowUpUncheckedUpdateManyWithoutSentByNestedInput
+  pageContent?: Prisma.PageContentUncheckedUpdateManyWithoutCreatedByNestedInput
+  propertyUploads?: Prisma.PropertyImportUploadUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdAiJobs?: Prisma.AiJobUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutNewsArticlesInput = {
@@ -1219,6 +1668,13 @@ export type UserCreateWithoutNewsArticlesInput = {
   analyticsEvents?: Prisma.AnalyticsEventCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   importJobs?: Prisma.ImportJobCreateNestedManyWithoutCreatedByInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  reviewedJobs?: Prisma.AiJobCreateNestedManyWithoutReviewedByInput
+  followUps?: Prisma.InterestFollowUpCreateNestedManyWithoutSentByInput
+  pageContent?: Prisma.PageContentCreateNestedManyWithoutCreatedByInput
+  templates?: Prisma.CampaignTemplateCreateNestedManyWithoutCreatedByInput
+  propertyUploads?: Prisma.PropertyImportUploadCreateNestedManyWithoutCreatedByInput
+  createdAiJobs?: Prisma.AiJobCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutNewsArticlesInput = {
@@ -1239,6 +1695,13 @@ export type UserUncheckedCreateWithoutNewsArticlesInput = {
   analyticsEvents?: Prisma.AnalyticsEventUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   importJobs?: Prisma.ImportJobUncheckedCreateNestedManyWithoutCreatedByInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  reviewedJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutReviewedByInput
+  followUps?: Prisma.InterestFollowUpUncheckedCreateNestedManyWithoutSentByInput
+  pageContent?: Prisma.PageContentUncheckedCreateNestedManyWithoutCreatedByInput
+  templates?: Prisma.CampaignTemplateUncheckedCreateNestedManyWithoutCreatedByInput
+  propertyUploads?: Prisma.PropertyImportUploadUncheckedCreateNestedManyWithoutCreatedByInput
+  createdAiJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutNewsArticlesInput = {
@@ -1275,6 +1738,13 @@ export type UserUpdateWithoutNewsArticlesInput = {
   analyticsEvents?: Prisma.AnalyticsEventUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   importJobs?: Prisma.ImportJobUpdateManyWithoutCreatedByNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  reviewedJobs?: Prisma.AiJobUpdateManyWithoutReviewedByNestedInput
+  followUps?: Prisma.InterestFollowUpUpdateManyWithoutSentByNestedInput
+  pageContent?: Prisma.PageContentUpdateManyWithoutCreatedByNestedInput
+  templates?: Prisma.CampaignTemplateUpdateManyWithoutCreatedByNestedInput
+  propertyUploads?: Prisma.PropertyImportUploadUpdateManyWithoutCreatedByNestedInput
+  createdAiJobs?: Prisma.AiJobUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNewsArticlesInput = {
@@ -1295,6 +1765,13 @@ export type UserUncheckedUpdateWithoutNewsArticlesInput = {
   analyticsEvents?: Prisma.AnalyticsEventUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   importJobs?: Prisma.ImportJobUncheckedUpdateManyWithoutCreatedByNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  reviewedJobs?: Prisma.AiJobUncheckedUpdateManyWithoutReviewedByNestedInput
+  followUps?: Prisma.InterestFollowUpUncheckedUpdateManyWithoutSentByNestedInput
+  pageContent?: Prisma.PageContentUncheckedUpdateManyWithoutCreatedByNestedInput
+  templates?: Prisma.CampaignTemplateUncheckedUpdateManyWithoutCreatedByNestedInput
+  propertyUploads?: Prisma.PropertyImportUploadUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdAiJobs?: Prisma.AiJobUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutAnalyticsEventsInput = {
@@ -1315,6 +1792,13 @@ export type UserCreateWithoutAnalyticsEventsInput = {
   newsArticles?: Prisma.NewsArticleCreateNestedManyWithoutCreatedByInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   importJobs?: Prisma.ImportJobCreateNestedManyWithoutCreatedByInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  reviewedJobs?: Prisma.AiJobCreateNestedManyWithoutReviewedByInput
+  followUps?: Prisma.InterestFollowUpCreateNestedManyWithoutSentByInput
+  pageContent?: Prisma.PageContentCreateNestedManyWithoutCreatedByInput
+  templates?: Prisma.CampaignTemplateCreateNestedManyWithoutCreatedByInput
+  propertyUploads?: Prisma.PropertyImportUploadCreateNestedManyWithoutCreatedByInput
+  createdAiJobs?: Prisma.AiJobCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutAnalyticsEventsInput = {
@@ -1335,6 +1819,13 @@ export type UserUncheckedCreateWithoutAnalyticsEventsInput = {
   newsArticles?: Prisma.NewsArticleUncheckedCreateNestedManyWithoutCreatedByInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   importJobs?: Prisma.ImportJobUncheckedCreateNestedManyWithoutCreatedByInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  reviewedJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutReviewedByInput
+  followUps?: Prisma.InterestFollowUpUncheckedCreateNestedManyWithoutSentByInput
+  pageContent?: Prisma.PageContentUncheckedCreateNestedManyWithoutCreatedByInput
+  templates?: Prisma.CampaignTemplateUncheckedCreateNestedManyWithoutCreatedByInput
+  propertyUploads?: Prisma.PropertyImportUploadUncheckedCreateNestedManyWithoutCreatedByInput
+  createdAiJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutAnalyticsEventsInput = {
@@ -1371,6 +1862,13 @@ export type UserUpdateWithoutAnalyticsEventsInput = {
   newsArticles?: Prisma.NewsArticleUpdateManyWithoutCreatedByNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   importJobs?: Prisma.ImportJobUpdateManyWithoutCreatedByNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  reviewedJobs?: Prisma.AiJobUpdateManyWithoutReviewedByNestedInput
+  followUps?: Prisma.InterestFollowUpUpdateManyWithoutSentByNestedInput
+  pageContent?: Prisma.PageContentUpdateManyWithoutCreatedByNestedInput
+  templates?: Prisma.CampaignTemplateUpdateManyWithoutCreatedByNestedInput
+  propertyUploads?: Prisma.PropertyImportUploadUpdateManyWithoutCreatedByNestedInput
+  createdAiJobs?: Prisma.AiJobUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAnalyticsEventsInput = {
@@ -1391,6 +1889,261 @@ export type UserUncheckedUpdateWithoutAnalyticsEventsInput = {
   newsArticles?: Prisma.NewsArticleUncheckedUpdateManyWithoutCreatedByNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   importJobs?: Prisma.ImportJobUncheckedUpdateManyWithoutCreatedByNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  reviewedJobs?: Prisma.AiJobUncheckedUpdateManyWithoutReviewedByNestedInput
+  followUps?: Prisma.InterestFollowUpUncheckedUpdateManyWithoutSentByNestedInput
+  pageContent?: Prisma.PageContentUncheckedUpdateManyWithoutCreatedByNestedInput
+  templates?: Prisma.CampaignTemplateUncheckedUpdateManyWithoutCreatedByNestedInput
+  propertyUploads?: Prisma.PropertyImportUploadUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdAiJobs?: Prisma.AiJobUncheckedUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserCreateWithoutCreatedAiJobsInput = {
+  id?: string
+  name: string
+  email: string
+  passwordHash?: string | null
+  role?: $Enums.UserRole
+  phone?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  properties?: Prisma.PropertyCreateNestedManyWithoutAgentInput
+  interests?: Prisma.InterestCreateNestedManyWithoutUserInput
+  assignedInterests?: Prisma.InterestCreateNestedManyWithoutAgentInput
+  savedProperties?: Prisma.SavedPropertyCreateNestedManyWithoutUserInput
+  consents?: Prisma.ConsentCreateNestedManyWithoutUserInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
+  newsArticles?: Prisma.NewsArticleCreateNestedManyWithoutCreatedByInput
+  analyticsEvents?: Prisma.AnalyticsEventCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+  importJobs?: Prisma.ImportJobCreateNestedManyWithoutCreatedByInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  reviewedJobs?: Prisma.AiJobCreateNestedManyWithoutReviewedByInput
+  followUps?: Prisma.InterestFollowUpCreateNestedManyWithoutSentByInput
+  pageContent?: Prisma.PageContentCreateNestedManyWithoutCreatedByInput
+  templates?: Prisma.CampaignTemplateCreateNestedManyWithoutCreatedByInput
+  propertyUploads?: Prisma.PropertyImportUploadCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserUncheckedCreateWithoutCreatedAiJobsInput = {
+  id?: string
+  name: string
+  email: string
+  passwordHash?: string | null
+  role?: $Enums.UserRole
+  phone?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutAgentInput
+  interests?: Prisma.InterestUncheckedCreateNestedManyWithoutUserInput
+  assignedInterests?: Prisma.InterestUncheckedCreateNestedManyWithoutAgentInput
+  savedProperties?: Prisma.SavedPropertyUncheckedCreateNestedManyWithoutUserInput
+  consents?: Prisma.ConsentUncheckedCreateNestedManyWithoutUserInput
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
+  newsArticles?: Prisma.NewsArticleUncheckedCreateNestedManyWithoutCreatedByInput
+  analyticsEvents?: Prisma.AnalyticsEventUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+  importJobs?: Prisma.ImportJobUncheckedCreateNestedManyWithoutCreatedByInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  reviewedJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutReviewedByInput
+  followUps?: Prisma.InterestFollowUpUncheckedCreateNestedManyWithoutSentByInput
+  pageContent?: Prisma.PageContentUncheckedCreateNestedManyWithoutCreatedByInput
+  templates?: Prisma.CampaignTemplateUncheckedCreateNestedManyWithoutCreatedByInput
+  propertyUploads?: Prisma.PropertyImportUploadUncheckedCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserCreateOrConnectWithoutCreatedAiJobsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedAiJobsInput, Prisma.UserUncheckedCreateWithoutCreatedAiJobsInput>
+}
+
+export type UserCreateWithoutReviewedJobsInput = {
+  id?: string
+  name: string
+  email: string
+  passwordHash?: string | null
+  role?: $Enums.UserRole
+  phone?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  properties?: Prisma.PropertyCreateNestedManyWithoutAgentInput
+  interests?: Prisma.InterestCreateNestedManyWithoutUserInput
+  assignedInterests?: Prisma.InterestCreateNestedManyWithoutAgentInput
+  savedProperties?: Prisma.SavedPropertyCreateNestedManyWithoutUserInput
+  consents?: Prisma.ConsentCreateNestedManyWithoutUserInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
+  newsArticles?: Prisma.NewsArticleCreateNestedManyWithoutCreatedByInput
+  analyticsEvents?: Prisma.AnalyticsEventCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+  importJobs?: Prisma.ImportJobCreateNestedManyWithoutCreatedByInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  followUps?: Prisma.InterestFollowUpCreateNestedManyWithoutSentByInput
+  pageContent?: Prisma.PageContentCreateNestedManyWithoutCreatedByInput
+  templates?: Prisma.CampaignTemplateCreateNestedManyWithoutCreatedByInput
+  propertyUploads?: Prisma.PropertyImportUploadCreateNestedManyWithoutCreatedByInput
+  createdAiJobs?: Prisma.AiJobCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserUncheckedCreateWithoutReviewedJobsInput = {
+  id?: string
+  name: string
+  email: string
+  passwordHash?: string | null
+  role?: $Enums.UserRole
+  phone?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutAgentInput
+  interests?: Prisma.InterestUncheckedCreateNestedManyWithoutUserInput
+  assignedInterests?: Prisma.InterestUncheckedCreateNestedManyWithoutAgentInput
+  savedProperties?: Prisma.SavedPropertyUncheckedCreateNestedManyWithoutUserInput
+  consents?: Prisma.ConsentUncheckedCreateNestedManyWithoutUserInput
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
+  newsArticles?: Prisma.NewsArticleUncheckedCreateNestedManyWithoutCreatedByInput
+  analyticsEvents?: Prisma.AnalyticsEventUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+  importJobs?: Prisma.ImportJobUncheckedCreateNestedManyWithoutCreatedByInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  followUps?: Prisma.InterestFollowUpUncheckedCreateNestedManyWithoutSentByInput
+  pageContent?: Prisma.PageContentUncheckedCreateNestedManyWithoutCreatedByInput
+  templates?: Prisma.CampaignTemplateUncheckedCreateNestedManyWithoutCreatedByInput
+  propertyUploads?: Prisma.PropertyImportUploadUncheckedCreateNestedManyWithoutCreatedByInput
+  createdAiJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserCreateOrConnectWithoutReviewedJobsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutReviewedJobsInput, Prisma.UserUncheckedCreateWithoutReviewedJobsInput>
+}
+
+export type UserUpsertWithoutCreatedAiJobsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCreatedAiJobsInput, Prisma.UserUncheckedUpdateWithoutCreatedAiJobsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedAiJobsInput, Prisma.UserUncheckedCreateWithoutCreatedAiJobsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCreatedAiJobsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCreatedAiJobsInput, Prisma.UserUncheckedUpdateWithoutCreatedAiJobsInput>
+}
+
+export type UserUpdateWithoutCreatedAiJobsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  properties?: Prisma.PropertyUpdateManyWithoutAgentNestedInput
+  interests?: Prisma.InterestUpdateManyWithoutUserNestedInput
+  assignedInterests?: Prisma.InterestUpdateManyWithoutAgentNestedInput
+  savedProperties?: Prisma.SavedPropertyUpdateManyWithoutUserNestedInput
+  consents?: Prisma.ConsentUpdateManyWithoutUserNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
+  newsArticles?: Prisma.NewsArticleUpdateManyWithoutCreatedByNestedInput
+  analyticsEvents?: Prisma.AnalyticsEventUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+  importJobs?: Prisma.ImportJobUpdateManyWithoutCreatedByNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  reviewedJobs?: Prisma.AiJobUpdateManyWithoutReviewedByNestedInput
+  followUps?: Prisma.InterestFollowUpUpdateManyWithoutSentByNestedInput
+  pageContent?: Prisma.PageContentUpdateManyWithoutCreatedByNestedInput
+  templates?: Prisma.CampaignTemplateUpdateManyWithoutCreatedByNestedInput
+  propertyUploads?: Prisma.PropertyImportUploadUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCreatedAiJobsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  properties?: Prisma.PropertyUncheckedUpdateManyWithoutAgentNestedInput
+  interests?: Prisma.InterestUncheckedUpdateManyWithoutUserNestedInput
+  assignedInterests?: Prisma.InterestUncheckedUpdateManyWithoutAgentNestedInput
+  savedProperties?: Prisma.SavedPropertyUncheckedUpdateManyWithoutUserNestedInput
+  consents?: Prisma.ConsentUncheckedUpdateManyWithoutUserNestedInput
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
+  newsArticles?: Prisma.NewsArticleUncheckedUpdateManyWithoutCreatedByNestedInput
+  analyticsEvents?: Prisma.AnalyticsEventUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  importJobs?: Prisma.ImportJobUncheckedUpdateManyWithoutCreatedByNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  reviewedJobs?: Prisma.AiJobUncheckedUpdateManyWithoutReviewedByNestedInput
+  followUps?: Prisma.InterestFollowUpUncheckedUpdateManyWithoutSentByNestedInput
+  pageContent?: Prisma.PageContentUncheckedUpdateManyWithoutCreatedByNestedInput
+  templates?: Prisma.CampaignTemplateUncheckedUpdateManyWithoutCreatedByNestedInput
+  propertyUploads?: Prisma.PropertyImportUploadUncheckedUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserUpsertWithoutReviewedJobsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutReviewedJobsInput, Prisma.UserUncheckedUpdateWithoutReviewedJobsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutReviewedJobsInput, Prisma.UserUncheckedCreateWithoutReviewedJobsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutReviewedJobsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutReviewedJobsInput, Prisma.UserUncheckedUpdateWithoutReviewedJobsInput>
+}
+
+export type UserUpdateWithoutReviewedJobsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  properties?: Prisma.PropertyUpdateManyWithoutAgentNestedInput
+  interests?: Prisma.InterestUpdateManyWithoutUserNestedInput
+  assignedInterests?: Prisma.InterestUpdateManyWithoutAgentNestedInput
+  savedProperties?: Prisma.SavedPropertyUpdateManyWithoutUserNestedInput
+  consents?: Prisma.ConsentUpdateManyWithoutUserNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
+  newsArticles?: Prisma.NewsArticleUpdateManyWithoutCreatedByNestedInput
+  analyticsEvents?: Prisma.AnalyticsEventUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+  importJobs?: Prisma.ImportJobUpdateManyWithoutCreatedByNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  followUps?: Prisma.InterestFollowUpUpdateManyWithoutSentByNestedInput
+  pageContent?: Prisma.PageContentUpdateManyWithoutCreatedByNestedInput
+  templates?: Prisma.CampaignTemplateUpdateManyWithoutCreatedByNestedInput
+  propertyUploads?: Prisma.PropertyImportUploadUpdateManyWithoutCreatedByNestedInput
+  createdAiJobs?: Prisma.AiJobUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutReviewedJobsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  properties?: Prisma.PropertyUncheckedUpdateManyWithoutAgentNestedInput
+  interests?: Prisma.InterestUncheckedUpdateManyWithoutUserNestedInput
+  assignedInterests?: Prisma.InterestUncheckedUpdateManyWithoutAgentNestedInput
+  savedProperties?: Prisma.SavedPropertyUncheckedUpdateManyWithoutUserNestedInput
+  consents?: Prisma.ConsentUncheckedUpdateManyWithoutUserNestedInput
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
+  newsArticles?: Prisma.NewsArticleUncheckedUpdateManyWithoutCreatedByNestedInput
+  analyticsEvents?: Prisma.AnalyticsEventUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  importJobs?: Prisma.ImportJobUncheckedUpdateManyWithoutCreatedByNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  followUps?: Prisma.InterestFollowUpUncheckedUpdateManyWithoutSentByNestedInput
+  pageContent?: Prisma.PageContentUncheckedUpdateManyWithoutCreatedByNestedInput
+  templates?: Prisma.CampaignTemplateUncheckedUpdateManyWithoutCreatedByNestedInput
+  propertyUploads?: Prisma.PropertyImportUploadUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdAiJobs?: Prisma.AiJobUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutImportJobsInput = {
@@ -1411,6 +2164,13 @@ export type UserCreateWithoutImportJobsInput = {
   newsArticles?: Prisma.NewsArticleCreateNestedManyWithoutCreatedByInput
   analyticsEvents?: Prisma.AnalyticsEventCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  reviewedJobs?: Prisma.AiJobCreateNestedManyWithoutReviewedByInput
+  followUps?: Prisma.InterestFollowUpCreateNestedManyWithoutSentByInput
+  pageContent?: Prisma.PageContentCreateNestedManyWithoutCreatedByInput
+  templates?: Prisma.CampaignTemplateCreateNestedManyWithoutCreatedByInput
+  propertyUploads?: Prisma.PropertyImportUploadCreateNestedManyWithoutCreatedByInput
+  createdAiJobs?: Prisma.AiJobCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutImportJobsInput = {
@@ -1431,6 +2191,13 @@ export type UserUncheckedCreateWithoutImportJobsInput = {
   newsArticles?: Prisma.NewsArticleUncheckedCreateNestedManyWithoutCreatedByInput
   analyticsEvents?: Prisma.AnalyticsEventUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  reviewedJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutReviewedByInput
+  followUps?: Prisma.InterestFollowUpUncheckedCreateNestedManyWithoutSentByInput
+  pageContent?: Prisma.PageContentUncheckedCreateNestedManyWithoutCreatedByInput
+  templates?: Prisma.CampaignTemplateUncheckedCreateNestedManyWithoutCreatedByInput
+  propertyUploads?: Prisma.PropertyImportUploadUncheckedCreateNestedManyWithoutCreatedByInput
+  createdAiJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutImportJobsInput = {
@@ -1467,6 +2234,13 @@ export type UserUpdateWithoutImportJobsInput = {
   newsArticles?: Prisma.NewsArticleUpdateManyWithoutCreatedByNestedInput
   analyticsEvents?: Prisma.AnalyticsEventUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  reviewedJobs?: Prisma.AiJobUpdateManyWithoutReviewedByNestedInput
+  followUps?: Prisma.InterestFollowUpUpdateManyWithoutSentByNestedInput
+  pageContent?: Prisma.PageContentUpdateManyWithoutCreatedByNestedInput
+  templates?: Prisma.CampaignTemplateUpdateManyWithoutCreatedByNestedInput
+  propertyUploads?: Prisma.PropertyImportUploadUpdateManyWithoutCreatedByNestedInput
+  createdAiJobs?: Prisma.AiJobUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutImportJobsInput = {
@@ -1487,6 +2261,13 @@ export type UserUncheckedUpdateWithoutImportJobsInput = {
   newsArticles?: Prisma.NewsArticleUncheckedUpdateManyWithoutCreatedByNestedInput
   analyticsEvents?: Prisma.AnalyticsEventUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  reviewedJobs?: Prisma.AiJobUncheckedUpdateManyWithoutReviewedByNestedInput
+  followUps?: Prisma.InterestFollowUpUncheckedUpdateManyWithoutSentByNestedInput
+  pageContent?: Prisma.PageContentUncheckedUpdateManyWithoutCreatedByNestedInput
+  templates?: Prisma.CampaignTemplateUncheckedUpdateManyWithoutCreatedByNestedInput
+  propertyUploads?: Prisma.PropertyImportUploadUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdAiJobs?: Prisma.AiJobUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutAuditLogsInput = {
@@ -1507,6 +2288,13 @@ export type UserCreateWithoutAuditLogsInput = {
   newsArticles?: Prisma.NewsArticleCreateNestedManyWithoutCreatedByInput
   analyticsEvents?: Prisma.AnalyticsEventCreateNestedManyWithoutUserInput
   importJobs?: Prisma.ImportJobCreateNestedManyWithoutCreatedByInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  reviewedJobs?: Prisma.AiJobCreateNestedManyWithoutReviewedByInput
+  followUps?: Prisma.InterestFollowUpCreateNestedManyWithoutSentByInput
+  pageContent?: Prisma.PageContentCreateNestedManyWithoutCreatedByInput
+  templates?: Prisma.CampaignTemplateCreateNestedManyWithoutCreatedByInput
+  propertyUploads?: Prisma.PropertyImportUploadCreateNestedManyWithoutCreatedByInput
+  createdAiJobs?: Prisma.AiJobCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutAuditLogsInput = {
@@ -1527,6 +2315,13 @@ export type UserUncheckedCreateWithoutAuditLogsInput = {
   newsArticles?: Prisma.NewsArticleUncheckedCreateNestedManyWithoutCreatedByInput
   analyticsEvents?: Prisma.AnalyticsEventUncheckedCreateNestedManyWithoutUserInput
   importJobs?: Prisma.ImportJobUncheckedCreateNestedManyWithoutCreatedByInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  reviewedJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutReviewedByInput
+  followUps?: Prisma.InterestFollowUpUncheckedCreateNestedManyWithoutSentByInput
+  pageContent?: Prisma.PageContentUncheckedCreateNestedManyWithoutCreatedByInput
+  templates?: Prisma.CampaignTemplateUncheckedCreateNestedManyWithoutCreatedByInput
+  propertyUploads?: Prisma.PropertyImportUploadUncheckedCreateNestedManyWithoutCreatedByInput
+  createdAiJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutAuditLogsInput = {
@@ -1563,6 +2358,13 @@ export type UserUpdateWithoutAuditLogsInput = {
   newsArticles?: Prisma.NewsArticleUpdateManyWithoutCreatedByNestedInput
   analyticsEvents?: Prisma.AnalyticsEventUpdateManyWithoutUserNestedInput
   importJobs?: Prisma.ImportJobUpdateManyWithoutCreatedByNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  reviewedJobs?: Prisma.AiJobUpdateManyWithoutReviewedByNestedInput
+  followUps?: Prisma.InterestFollowUpUpdateManyWithoutSentByNestedInput
+  pageContent?: Prisma.PageContentUpdateManyWithoutCreatedByNestedInput
+  templates?: Prisma.CampaignTemplateUpdateManyWithoutCreatedByNestedInput
+  propertyUploads?: Prisma.PropertyImportUploadUpdateManyWithoutCreatedByNestedInput
+  createdAiJobs?: Prisma.AiJobUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAuditLogsInput = {
@@ -1583,6 +2385,509 @@ export type UserUncheckedUpdateWithoutAuditLogsInput = {
   newsArticles?: Prisma.NewsArticleUncheckedUpdateManyWithoutCreatedByNestedInput
   analyticsEvents?: Prisma.AnalyticsEventUncheckedUpdateManyWithoutUserNestedInput
   importJobs?: Prisma.ImportJobUncheckedUpdateManyWithoutCreatedByNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  reviewedJobs?: Prisma.AiJobUncheckedUpdateManyWithoutReviewedByNestedInput
+  followUps?: Prisma.InterestFollowUpUncheckedUpdateManyWithoutSentByNestedInput
+  pageContent?: Prisma.PageContentUncheckedUpdateManyWithoutCreatedByNestedInput
+  templates?: Prisma.CampaignTemplateUncheckedUpdateManyWithoutCreatedByNestedInput
+  propertyUploads?: Prisma.PropertyImportUploadUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdAiJobs?: Prisma.AiJobUncheckedUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserCreateWithoutPageContentInput = {
+  id?: string
+  name: string
+  email: string
+  passwordHash?: string | null
+  role?: $Enums.UserRole
+  phone?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  properties?: Prisma.PropertyCreateNestedManyWithoutAgentInput
+  interests?: Prisma.InterestCreateNestedManyWithoutUserInput
+  assignedInterests?: Prisma.InterestCreateNestedManyWithoutAgentInput
+  savedProperties?: Prisma.SavedPropertyCreateNestedManyWithoutUserInput
+  consents?: Prisma.ConsentCreateNestedManyWithoutUserInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
+  newsArticles?: Prisma.NewsArticleCreateNestedManyWithoutCreatedByInput
+  analyticsEvents?: Prisma.AnalyticsEventCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+  importJobs?: Prisma.ImportJobCreateNestedManyWithoutCreatedByInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  reviewedJobs?: Prisma.AiJobCreateNestedManyWithoutReviewedByInput
+  followUps?: Prisma.InterestFollowUpCreateNestedManyWithoutSentByInput
+  templates?: Prisma.CampaignTemplateCreateNestedManyWithoutCreatedByInput
+  propertyUploads?: Prisma.PropertyImportUploadCreateNestedManyWithoutCreatedByInput
+  createdAiJobs?: Prisma.AiJobCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserUncheckedCreateWithoutPageContentInput = {
+  id?: string
+  name: string
+  email: string
+  passwordHash?: string | null
+  role?: $Enums.UserRole
+  phone?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutAgentInput
+  interests?: Prisma.InterestUncheckedCreateNestedManyWithoutUserInput
+  assignedInterests?: Prisma.InterestUncheckedCreateNestedManyWithoutAgentInput
+  savedProperties?: Prisma.SavedPropertyUncheckedCreateNestedManyWithoutUserInput
+  consents?: Prisma.ConsentUncheckedCreateNestedManyWithoutUserInput
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
+  newsArticles?: Prisma.NewsArticleUncheckedCreateNestedManyWithoutCreatedByInput
+  analyticsEvents?: Prisma.AnalyticsEventUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+  importJobs?: Prisma.ImportJobUncheckedCreateNestedManyWithoutCreatedByInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  reviewedJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutReviewedByInput
+  followUps?: Prisma.InterestFollowUpUncheckedCreateNestedManyWithoutSentByInput
+  templates?: Prisma.CampaignTemplateUncheckedCreateNestedManyWithoutCreatedByInput
+  propertyUploads?: Prisma.PropertyImportUploadUncheckedCreateNestedManyWithoutCreatedByInput
+  createdAiJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserCreateOrConnectWithoutPageContentInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutPageContentInput, Prisma.UserUncheckedCreateWithoutPageContentInput>
+}
+
+export type UserUpsertWithoutPageContentInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutPageContentInput, Prisma.UserUncheckedUpdateWithoutPageContentInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutPageContentInput, Prisma.UserUncheckedCreateWithoutPageContentInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutPageContentInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutPageContentInput, Prisma.UserUncheckedUpdateWithoutPageContentInput>
+}
+
+export type UserUpdateWithoutPageContentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  properties?: Prisma.PropertyUpdateManyWithoutAgentNestedInput
+  interests?: Prisma.InterestUpdateManyWithoutUserNestedInput
+  assignedInterests?: Prisma.InterestUpdateManyWithoutAgentNestedInput
+  savedProperties?: Prisma.SavedPropertyUpdateManyWithoutUserNestedInput
+  consents?: Prisma.ConsentUpdateManyWithoutUserNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
+  newsArticles?: Prisma.NewsArticleUpdateManyWithoutCreatedByNestedInput
+  analyticsEvents?: Prisma.AnalyticsEventUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+  importJobs?: Prisma.ImportJobUpdateManyWithoutCreatedByNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  reviewedJobs?: Prisma.AiJobUpdateManyWithoutReviewedByNestedInput
+  followUps?: Prisma.InterestFollowUpUpdateManyWithoutSentByNestedInput
+  templates?: Prisma.CampaignTemplateUpdateManyWithoutCreatedByNestedInput
+  propertyUploads?: Prisma.PropertyImportUploadUpdateManyWithoutCreatedByNestedInput
+  createdAiJobs?: Prisma.AiJobUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutPageContentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  properties?: Prisma.PropertyUncheckedUpdateManyWithoutAgentNestedInput
+  interests?: Prisma.InterestUncheckedUpdateManyWithoutUserNestedInput
+  assignedInterests?: Prisma.InterestUncheckedUpdateManyWithoutAgentNestedInput
+  savedProperties?: Prisma.SavedPropertyUncheckedUpdateManyWithoutUserNestedInput
+  consents?: Prisma.ConsentUncheckedUpdateManyWithoutUserNestedInput
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
+  newsArticles?: Prisma.NewsArticleUncheckedUpdateManyWithoutCreatedByNestedInput
+  analyticsEvents?: Prisma.AnalyticsEventUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  importJobs?: Prisma.ImportJobUncheckedUpdateManyWithoutCreatedByNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  reviewedJobs?: Prisma.AiJobUncheckedUpdateManyWithoutReviewedByNestedInput
+  followUps?: Prisma.InterestFollowUpUncheckedUpdateManyWithoutSentByNestedInput
+  templates?: Prisma.CampaignTemplateUncheckedUpdateManyWithoutCreatedByNestedInput
+  propertyUploads?: Prisma.PropertyImportUploadUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdAiJobs?: Prisma.AiJobUncheckedUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserCreateWithoutSessionsInput = {
+  id?: string
+  name: string
+  email: string
+  passwordHash?: string | null
+  role?: $Enums.UserRole
+  phone?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  properties?: Prisma.PropertyCreateNestedManyWithoutAgentInput
+  interests?: Prisma.InterestCreateNestedManyWithoutUserInput
+  assignedInterests?: Prisma.InterestCreateNestedManyWithoutAgentInput
+  savedProperties?: Prisma.SavedPropertyCreateNestedManyWithoutUserInput
+  consents?: Prisma.ConsentCreateNestedManyWithoutUserInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
+  newsArticles?: Prisma.NewsArticleCreateNestedManyWithoutCreatedByInput
+  analyticsEvents?: Prisma.AnalyticsEventCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+  importJobs?: Prisma.ImportJobCreateNestedManyWithoutCreatedByInput
+  reviewedJobs?: Prisma.AiJobCreateNestedManyWithoutReviewedByInput
+  followUps?: Prisma.InterestFollowUpCreateNestedManyWithoutSentByInput
+  pageContent?: Prisma.PageContentCreateNestedManyWithoutCreatedByInput
+  templates?: Prisma.CampaignTemplateCreateNestedManyWithoutCreatedByInput
+  propertyUploads?: Prisma.PropertyImportUploadCreateNestedManyWithoutCreatedByInput
+  createdAiJobs?: Prisma.AiJobCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserUncheckedCreateWithoutSessionsInput = {
+  id?: string
+  name: string
+  email: string
+  passwordHash?: string | null
+  role?: $Enums.UserRole
+  phone?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutAgentInput
+  interests?: Prisma.InterestUncheckedCreateNestedManyWithoutUserInput
+  assignedInterests?: Prisma.InterestUncheckedCreateNestedManyWithoutAgentInput
+  savedProperties?: Prisma.SavedPropertyUncheckedCreateNestedManyWithoutUserInput
+  consents?: Prisma.ConsentUncheckedCreateNestedManyWithoutUserInput
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
+  newsArticles?: Prisma.NewsArticleUncheckedCreateNestedManyWithoutCreatedByInput
+  analyticsEvents?: Prisma.AnalyticsEventUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+  importJobs?: Prisma.ImportJobUncheckedCreateNestedManyWithoutCreatedByInput
+  reviewedJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutReviewedByInput
+  followUps?: Prisma.InterestFollowUpUncheckedCreateNestedManyWithoutSentByInput
+  pageContent?: Prisma.PageContentUncheckedCreateNestedManyWithoutCreatedByInput
+  templates?: Prisma.CampaignTemplateUncheckedCreateNestedManyWithoutCreatedByInput
+  propertyUploads?: Prisma.PropertyImportUploadUncheckedCreateNestedManyWithoutCreatedByInput
+  createdAiJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserCreateOrConnectWithoutSessionsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutSessionsInput, Prisma.UserUncheckedCreateWithoutSessionsInput>
+}
+
+export type UserUpsertWithoutSessionsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutSessionsInput, Prisma.UserUncheckedUpdateWithoutSessionsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutSessionsInput, Prisma.UserUncheckedCreateWithoutSessionsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutSessionsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutSessionsInput, Prisma.UserUncheckedUpdateWithoutSessionsInput>
+}
+
+export type UserUpdateWithoutSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  properties?: Prisma.PropertyUpdateManyWithoutAgentNestedInput
+  interests?: Prisma.InterestUpdateManyWithoutUserNestedInput
+  assignedInterests?: Prisma.InterestUpdateManyWithoutAgentNestedInput
+  savedProperties?: Prisma.SavedPropertyUpdateManyWithoutUserNestedInput
+  consents?: Prisma.ConsentUpdateManyWithoutUserNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
+  newsArticles?: Prisma.NewsArticleUpdateManyWithoutCreatedByNestedInput
+  analyticsEvents?: Prisma.AnalyticsEventUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+  importJobs?: Prisma.ImportJobUpdateManyWithoutCreatedByNestedInput
+  reviewedJobs?: Prisma.AiJobUpdateManyWithoutReviewedByNestedInput
+  followUps?: Prisma.InterestFollowUpUpdateManyWithoutSentByNestedInput
+  pageContent?: Prisma.PageContentUpdateManyWithoutCreatedByNestedInput
+  templates?: Prisma.CampaignTemplateUpdateManyWithoutCreatedByNestedInput
+  propertyUploads?: Prisma.PropertyImportUploadUpdateManyWithoutCreatedByNestedInput
+  createdAiJobs?: Prisma.AiJobUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  properties?: Prisma.PropertyUncheckedUpdateManyWithoutAgentNestedInput
+  interests?: Prisma.InterestUncheckedUpdateManyWithoutUserNestedInput
+  assignedInterests?: Prisma.InterestUncheckedUpdateManyWithoutAgentNestedInput
+  savedProperties?: Prisma.SavedPropertyUncheckedUpdateManyWithoutUserNestedInput
+  consents?: Prisma.ConsentUncheckedUpdateManyWithoutUserNestedInput
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
+  newsArticles?: Prisma.NewsArticleUncheckedUpdateManyWithoutCreatedByNestedInput
+  analyticsEvents?: Prisma.AnalyticsEventUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  importJobs?: Prisma.ImportJobUncheckedUpdateManyWithoutCreatedByNestedInput
+  reviewedJobs?: Prisma.AiJobUncheckedUpdateManyWithoutReviewedByNestedInput
+  followUps?: Prisma.InterestFollowUpUncheckedUpdateManyWithoutSentByNestedInput
+  pageContent?: Prisma.PageContentUncheckedUpdateManyWithoutCreatedByNestedInput
+  templates?: Prisma.CampaignTemplateUncheckedUpdateManyWithoutCreatedByNestedInput
+  propertyUploads?: Prisma.PropertyImportUploadUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdAiJobs?: Prisma.AiJobUncheckedUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserCreateWithoutFollowUpsInput = {
+  id?: string
+  name: string
+  email: string
+  passwordHash?: string | null
+  role?: $Enums.UserRole
+  phone?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  properties?: Prisma.PropertyCreateNestedManyWithoutAgentInput
+  interests?: Prisma.InterestCreateNestedManyWithoutUserInput
+  assignedInterests?: Prisma.InterestCreateNestedManyWithoutAgentInput
+  savedProperties?: Prisma.SavedPropertyCreateNestedManyWithoutUserInput
+  consents?: Prisma.ConsentCreateNestedManyWithoutUserInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
+  newsArticles?: Prisma.NewsArticleCreateNestedManyWithoutCreatedByInput
+  analyticsEvents?: Prisma.AnalyticsEventCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+  importJobs?: Prisma.ImportJobCreateNestedManyWithoutCreatedByInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  reviewedJobs?: Prisma.AiJobCreateNestedManyWithoutReviewedByInput
+  pageContent?: Prisma.PageContentCreateNestedManyWithoutCreatedByInput
+  templates?: Prisma.CampaignTemplateCreateNestedManyWithoutCreatedByInput
+  propertyUploads?: Prisma.PropertyImportUploadCreateNestedManyWithoutCreatedByInput
+  createdAiJobs?: Prisma.AiJobCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserUncheckedCreateWithoutFollowUpsInput = {
+  id?: string
+  name: string
+  email: string
+  passwordHash?: string | null
+  role?: $Enums.UserRole
+  phone?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutAgentInput
+  interests?: Prisma.InterestUncheckedCreateNestedManyWithoutUserInput
+  assignedInterests?: Prisma.InterestUncheckedCreateNestedManyWithoutAgentInput
+  savedProperties?: Prisma.SavedPropertyUncheckedCreateNestedManyWithoutUserInput
+  consents?: Prisma.ConsentUncheckedCreateNestedManyWithoutUserInput
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
+  newsArticles?: Prisma.NewsArticleUncheckedCreateNestedManyWithoutCreatedByInput
+  analyticsEvents?: Prisma.AnalyticsEventUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+  importJobs?: Prisma.ImportJobUncheckedCreateNestedManyWithoutCreatedByInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  reviewedJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutReviewedByInput
+  pageContent?: Prisma.PageContentUncheckedCreateNestedManyWithoutCreatedByInput
+  templates?: Prisma.CampaignTemplateUncheckedCreateNestedManyWithoutCreatedByInput
+  propertyUploads?: Prisma.PropertyImportUploadUncheckedCreateNestedManyWithoutCreatedByInput
+  createdAiJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserCreateOrConnectWithoutFollowUpsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutFollowUpsInput, Prisma.UserUncheckedCreateWithoutFollowUpsInput>
+}
+
+export type UserUpsertWithoutFollowUpsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutFollowUpsInput, Prisma.UserUncheckedUpdateWithoutFollowUpsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutFollowUpsInput, Prisma.UserUncheckedCreateWithoutFollowUpsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutFollowUpsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutFollowUpsInput, Prisma.UserUncheckedUpdateWithoutFollowUpsInput>
+}
+
+export type UserUpdateWithoutFollowUpsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  properties?: Prisma.PropertyUpdateManyWithoutAgentNestedInput
+  interests?: Prisma.InterestUpdateManyWithoutUserNestedInput
+  assignedInterests?: Prisma.InterestUpdateManyWithoutAgentNestedInput
+  savedProperties?: Prisma.SavedPropertyUpdateManyWithoutUserNestedInput
+  consents?: Prisma.ConsentUpdateManyWithoutUserNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
+  newsArticles?: Prisma.NewsArticleUpdateManyWithoutCreatedByNestedInput
+  analyticsEvents?: Prisma.AnalyticsEventUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+  importJobs?: Prisma.ImportJobUpdateManyWithoutCreatedByNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  reviewedJobs?: Prisma.AiJobUpdateManyWithoutReviewedByNestedInput
+  pageContent?: Prisma.PageContentUpdateManyWithoutCreatedByNestedInput
+  templates?: Prisma.CampaignTemplateUpdateManyWithoutCreatedByNestedInput
+  propertyUploads?: Prisma.PropertyImportUploadUpdateManyWithoutCreatedByNestedInput
+  createdAiJobs?: Prisma.AiJobUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutFollowUpsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  properties?: Prisma.PropertyUncheckedUpdateManyWithoutAgentNestedInput
+  interests?: Prisma.InterestUncheckedUpdateManyWithoutUserNestedInput
+  assignedInterests?: Prisma.InterestUncheckedUpdateManyWithoutAgentNestedInput
+  savedProperties?: Prisma.SavedPropertyUncheckedUpdateManyWithoutUserNestedInput
+  consents?: Prisma.ConsentUncheckedUpdateManyWithoutUserNestedInput
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
+  newsArticles?: Prisma.NewsArticleUncheckedUpdateManyWithoutCreatedByNestedInput
+  analyticsEvents?: Prisma.AnalyticsEventUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  importJobs?: Prisma.ImportJobUncheckedUpdateManyWithoutCreatedByNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  reviewedJobs?: Prisma.AiJobUncheckedUpdateManyWithoutReviewedByNestedInput
+  pageContent?: Prisma.PageContentUncheckedUpdateManyWithoutCreatedByNestedInput
+  templates?: Prisma.CampaignTemplateUncheckedUpdateManyWithoutCreatedByNestedInput
+  propertyUploads?: Prisma.PropertyImportUploadUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdAiJobs?: Prisma.AiJobUncheckedUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserCreateWithoutPropertyUploadsInput = {
+  id?: string
+  name: string
+  email: string
+  passwordHash?: string | null
+  role?: $Enums.UserRole
+  phone?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  properties?: Prisma.PropertyCreateNestedManyWithoutAgentInput
+  interests?: Prisma.InterestCreateNestedManyWithoutUserInput
+  assignedInterests?: Prisma.InterestCreateNestedManyWithoutAgentInput
+  savedProperties?: Prisma.SavedPropertyCreateNestedManyWithoutUserInput
+  consents?: Prisma.ConsentCreateNestedManyWithoutUserInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
+  newsArticles?: Prisma.NewsArticleCreateNestedManyWithoutCreatedByInput
+  analyticsEvents?: Prisma.AnalyticsEventCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+  importJobs?: Prisma.ImportJobCreateNestedManyWithoutCreatedByInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  reviewedJobs?: Prisma.AiJobCreateNestedManyWithoutReviewedByInput
+  followUps?: Prisma.InterestFollowUpCreateNestedManyWithoutSentByInput
+  pageContent?: Prisma.PageContentCreateNestedManyWithoutCreatedByInput
+  templates?: Prisma.CampaignTemplateCreateNestedManyWithoutCreatedByInput
+  createdAiJobs?: Prisma.AiJobCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserUncheckedCreateWithoutPropertyUploadsInput = {
+  id?: string
+  name: string
+  email: string
+  passwordHash?: string | null
+  role?: $Enums.UserRole
+  phone?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutAgentInput
+  interests?: Prisma.InterestUncheckedCreateNestedManyWithoutUserInput
+  assignedInterests?: Prisma.InterestUncheckedCreateNestedManyWithoutAgentInput
+  savedProperties?: Prisma.SavedPropertyUncheckedCreateNestedManyWithoutUserInput
+  consents?: Prisma.ConsentUncheckedCreateNestedManyWithoutUserInput
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
+  newsArticles?: Prisma.NewsArticleUncheckedCreateNestedManyWithoutCreatedByInput
+  analyticsEvents?: Prisma.AnalyticsEventUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+  importJobs?: Prisma.ImportJobUncheckedCreateNestedManyWithoutCreatedByInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  reviewedJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutReviewedByInput
+  followUps?: Prisma.InterestFollowUpUncheckedCreateNestedManyWithoutSentByInput
+  pageContent?: Prisma.PageContentUncheckedCreateNestedManyWithoutCreatedByInput
+  templates?: Prisma.CampaignTemplateUncheckedCreateNestedManyWithoutCreatedByInput
+  createdAiJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserCreateOrConnectWithoutPropertyUploadsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutPropertyUploadsInput, Prisma.UserUncheckedCreateWithoutPropertyUploadsInput>
+}
+
+export type UserUpsertWithoutPropertyUploadsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutPropertyUploadsInput, Prisma.UserUncheckedUpdateWithoutPropertyUploadsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutPropertyUploadsInput, Prisma.UserUncheckedCreateWithoutPropertyUploadsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutPropertyUploadsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutPropertyUploadsInput, Prisma.UserUncheckedUpdateWithoutPropertyUploadsInput>
+}
+
+export type UserUpdateWithoutPropertyUploadsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  properties?: Prisma.PropertyUpdateManyWithoutAgentNestedInput
+  interests?: Prisma.InterestUpdateManyWithoutUserNestedInput
+  assignedInterests?: Prisma.InterestUpdateManyWithoutAgentNestedInput
+  savedProperties?: Prisma.SavedPropertyUpdateManyWithoutUserNestedInput
+  consents?: Prisma.ConsentUpdateManyWithoutUserNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
+  newsArticles?: Prisma.NewsArticleUpdateManyWithoutCreatedByNestedInput
+  analyticsEvents?: Prisma.AnalyticsEventUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+  importJobs?: Prisma.ImportJobUpdateManyWithoutCreatedByNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  reviewedJobs?: Prisma.AiJobUpdateManyWithoutReviewedByNestedInput
+  followUps?: Prisma.InterestFollowUpUpdateManyWithoutSentByNestedInput
+  pageContent?: Prisma.PageContentUpdateManyWithoutCreatedByNestedInput
+  templates?: Prisma.CampaignTemplateUpdateManyWithoutCreatedByNestedInput
+  createdAiJobs?: Prisma.AiJobUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutPropertyUploadsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  properties?: Prisma.PropertyUncheckedUpdateManyWithoutAgentNestedInput
+  interests?: Prisma.InterestUncheckedUpdateManyWithoutUserNestedInput
+  assignedInterests?: Prisma.InterestUncheckedUpdateManyWithoutAgentNestedInput
+  savedProperties?: Prisma.SavedPropertyUncheckedUpdateManyWithoutUserNestedInput
+  consents?: Prisma.ConsentUncheckedUpdateManyWithoutUserNestedInput
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
+  newsArticles?: Prisma.NewsArticleUncheckedUpdateManyWithoutCreatedByNestedInput
+  analyticsEvents?: Prisma.AnalyticsEventUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  importJobs?: Prisma.ImportJobUncheckedUpdateManyWithoutCreatedByNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  reviewedJobs?: Prisma.AiJobUncheckedUpdateManyWithoutReviewedByNestedInput
+  followUps?: Prisma.InterestFollowUpUncheckedUpdateManyWithoutSentByNestedInput
+  pageContent?: Prisma.PageContentUncheckedUpdateManyWithoutCreatedByNestedInput
+  templates?: Prisma.CampaignTemplateUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdAiJobs?: Prisma.AiJobUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 
@@ -1601,6 +2906,13 @@ export type UserCountOutputType = {
   analyticsEvents: number
   auditLogs: number
   importJobs: number
+  sessions: number
+  reviewedJobs: number
+  followUps: number
+  pageContent: number
+  templates: number
+  propertyUploads: number
+  createdAiJobs: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1614,6 +2926,13 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   analyticsEvents?: boolean | UserCountOutputTypeCountAnalyticsEventsArgs
   auditLogs?: boolean | UserCountOutputTypeCountAuditLogsArgs
   importJobs?: boolean | UserCountOutputTypeCountImportJobsArgs
+  sessions?: boolean | UserCountOutputTypeCountSessionsArgs
+  reviewedJobs?: boolean | UserCountOutputTypeCountReviewedJobsArgs
+  followUps?: boolean | UserCountOutputTypeCountFollowUpsArgs
+  pageContent?: boolean | UserCountOutputTypeCountPageContentArgs
+  templates?: boolean | UserCountOutputTypeCountTemplatesArgs
+  propertyUploads?: boolean | UserCountOutputTypeCountPropertyUploadsArgs
+  createdAiJobs?: boolean | UserCountOutputTypeCountCreatedAiJobsArgs
 }
 
 /**
@@ -1696,6 +3015,55 @@ export type UserCountOutputTypeCountImportJobsArgs<ExtArgs extends runtime.Types
   where?: Prisma.ImportJobWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SessionWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountReviewedJobsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AiJobWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountFollowUpsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.InterestFollowUpWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountPageContentArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PageContentWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountTemplatesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CampaignTemplateWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountPropertyUploadsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PropertyImportUploadWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCreatedAiJobsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AiJobWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1716,6 +3084,13 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   analyticsEvents?: boolean | Prisma.User$analyticsEventsArgs<ExtArgs>
   auditLogs?: boolean | Prisma.User$auditLogsArgs<ExtArgs>
   importJobs?: boolean | Prisma.User$importJobsArgs<ExtArgs>
+  sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
+  reviewedJobs?: boolean | Prisma.User$reviewedJobsArgs<ExtArgs>
+  followUps?: boolean | Prisma.User$followUpsArgs<ExtArgs>
+  pageContent?: boolean | Prisma.User$pageContentArgs<ExtArgs>
+  templates?: boolean | Prisma.User$templatesArgs<ExtArgs>
+  propertyUploads?: boolean | Prisma.User$propertyUploadsArgs<ExtArgs>
+  createdAiJobs?: boolean | Prisma.User$createdAiJobsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1764,6 +3139,13 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   analyticsEvents?: boolean | Prisma.User$analyticsEventsArgs<ExtArgs>
   auditLogs?: boolean | Prisma.User$auditLogsArgs<ExtArgs>
   importJobs?: boolean | Prisma.User$importJobsArgs<ExtArgs>
+  sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
+  reviewedJobs?: boolean | Prisma.User$reviewedJobsArgs<ExtArgs>
+  followUps?: boolean | Prisma.User$followUpsArgs<ExtArgs>
+  pageContent?: boolean | Prisma.User$pageContentArgs<ExtArgs>
+  templates?: boolean | Prisma.User$templatesArgs<ExtArgs>
+  propertyUploads?: boolean | Prisma.User$propertyUploadsArgs<ExtArgs>
+  createdAiJobs?: boolean | Prisma.User$createdAiJobsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1782,6 +3164,13 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     analyticsEvents: Prisma.$AnalyticsEventPayload<ExtArgs>[]
     auditLogs: Prisma.$AuditLogPayload<ExtArgs>[]
     importJobs: Prisma.$ImportJobPayload<ExtArgs>[]
+    sessions: Prisma.$SessionPayload<ExtArgs>[]
+    reviewedJobs: Prisma.$AiJobPayload<ExtArgs>[]
+    followUps: Prisma.$InterestFollowUpPayload<ExtArgs>[]
+    pageContent: Prisma.$PageContentPayload<ExtArgs>[]
+    templates: Prisma.$CampaignTemplatePayload<ExtArgs>[]
+    propertyUploads: Prisma.$PropertyImportUploadPayload<ExtArgs>[]
+    createdAiJobs: Prisma.$AiJobPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2196,6 +3585,13 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   analyticsEvents<T extends Prisma.User$analyticsEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$analyticsEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AnalyticsEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   auditLogs<T extends Prisma.User$auditLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   importJobs<T extends Prisma.User$importJobsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$importJobsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ImportJobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  sessions<T extends Prisma.User$sessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  reviewedJobs<T extends Prisma.User$reviewedJobsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$reviewedJobsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AiJobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  followUps<T extends Prisma.User$followUpsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$followUpsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InterestFollowUpPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  pageContent<T extends Prisma.User$pageContentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$pageContentArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PageContentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  templates<T extends Prisma.User$templatesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$templatesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CampaignTemplatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  propertyUploads<T extends Prisma.User$propertyUploadsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$propertyUploadsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PropertyImportUploadPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  createdAiJobs<T extends Prisma.User$createdAiJobsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdAiJobsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AiJobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2863,6 +4259,174 @@ export type User$importJobsArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.ImportJobScalarFieldEnum | Prisma.ImportJobScalarFieldEnum[]
+}
+
+/**
+ * User.sessions
+ */
+export type User$sessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Session
+   */
+  select?: Prisma.SessionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Session
+   */
+  omit?: Prisma.SessionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SessionInclude<ExtArgs> | null
+  where?: Prisma.SessionWhereInput
+  orderBy?: Prisma.SessionOrderByWithRelationInput | Prisma.SessionOrderByWithRelationInput[]
+  cursor?: Prisma.SessionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SessionScalarFieldEnum | Prisma.SessionScalarFieldEnum[]
+}
+
+/**
+ * User.reviewedJobs
+ */
+export type User$reviewedJobsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AiJob
+   */
+  select?: Prisma.AiJobSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AiJob
+   */
+  omit?: Prisma.AiJobOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AiJobInclude<ExtArgs> | null
+  where?: Prisma.AiJobWhereInput
+  orderBy?: Prisma.AiJobOrderByWithRelationInput | Prisma.AiJobOrderByWithRelationInput[]
+  cursor?: Prisma.AiJobWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AiJobScalarFieldEnum | Prisma.AiJobScalarFieldEnum[]
+}
+
+/**
+ * User.followUps
+ */
+export type User$followUpsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the InterestFollowUp
+   */
+  select?: Prisma.InterestFollowUpSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the InterestFollowUp
+   */
+  omit?: Prisma.InterestFollowUpOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.InterestFollowUpInclude<ExtArgs> | null
+  where?: Prisma.InterestFollowUpWhereInput
+  orderBy?: Prisma.InterestFollowUpOrderByWithRelationInput | Prisma.InterestFollowUpOrderByWithRelationInput[]
+  cursor?: Prisma.InterestFollowUpWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.InterestFollowUpScalarFieldEnum | Prisma.InterestFollowUpScalarFieldEnum[]
+}
+
+/**
+ * User.pageContent
+ */
+export type User$pageContentArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PageContent
+   */
+  select?: Prisma.PageContentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PageContent
+   */
+  omit?: Prisma.PageContentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PageContentInclude<ExtArgs> | null
+  where?: Prisma.PageContentWhereInput
+  orderBy?: Prisma.PageContentOrderByWithRelationInput | Prisma.PageContentOrderByWithRelationInput[]
+  cursor?: Prisma.PageContentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PageContentScalarFieldEnum | Prisma.PageContentScalarFieldEnum[]
+}
+
+/**
+ * User.templates
+ */
+export type User$templatesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CampaignTemplate
+   */
+  select?: Prisma.CampaignTemplateSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CampaignTemplate
+   */
+  omit?: Prisma.CampaignTemplateOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CampaignTemplateInclude<ExtArgs> | null
+  where?: Prisma.CampaignTemplateWhereInput
+  orderBy?: Prisma.CampaignTemplateOrderByWithRelationInput | Prisma.CampaignTemplateOrderByWithRelationInput[]
+  cursor?: Prisma.CampaignTemplateWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CampaignTemplateScalarFieldEnum | Prisma.CampaignTemplateScalarFieldEnum[]
+}
+
+/**
+ * User.propertyUploads
+ */
+export type User$propertyUploadsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PropertyImportUpload
+   */
+  select?: Prisma.PropertyImportUploadSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PropertyImportUpload
+   */
+  omit?: Prisma.PropertyImportUploadOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PropertyImportUploadInclude<ExtArgs> | null
+  where?: Prisma.PropertyImportUploadWhereInput
+  orderBy?: Prisma.PropertyImportUploadOrderByWithRelationInput | Prisma.PropertyImportUploadOrderByWithRelationInput[]
+  cursor?: Prisma.PropertyImportUploadWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PropertyImportUploadScalarFieldEnum | Prisma.PropertyImportUploadScalarFieldEnum[]
+}
+
+/**
+ * User.createdAiJobs
+ */
+export type User$createdAiJobsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AiJob
+   */
+  select?: Prisma.AiJobSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AiJob
+   */
+  omit?: Prisma.AiJobOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AiJobInclude<ExtArgs> | null
+  where?: Prisma.AiJobWhereInput
+  orderBy?: Prisma.AiJobOrderByWithRelationInput | Prisma.AiJobOrderByWithRelationInput[]
+  cursor?: Prisma.AiJobWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AiJobScalarFieldEnum | Prisma.AiJobScalarFieldEnum[]
 }
 
 /**

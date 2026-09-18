@@ -18,8 +18,7 @@ export default function Compare() {
     { label: "Size from", key: (p) => `${p.sqft.min} sq ft` },
     { label: "Size to", key: (p) => `${p.sqft.max} sq ft` },
     { label: "Status", key: (p) => p.status.replace("-", " ") },
-    { label: "Agent", key: (p) => p.agent },
-    { label: "Listed", key: (p) => new Date(p.listedDate).toLocaleDateString("en-IE") },
+    { label: "Completed", key: (p) => p.completionYear ? String(p.completionYear) : "Not specified" },
   ];
 
   return (

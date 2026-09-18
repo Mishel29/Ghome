@@ -33,8 +33,11 @@ export type PropertyAvgAggregateOutputType = {
   bedroomsMax: number | null
   bathroomsMin: number | null
   bathroomsMax: number | null
-  sizeSqm: number | null
+  sizeSqm: runtime.Decimal | null
   completionYear: number | null
+  sizeSqmMax: runtime.Decimal | null
+  bedroomOptions: number | null
+  bathroomOptions: number | null
 }
 
 export type PropertySumAggregateOutputType = {
@@ -44,8 +47,11 @@ export type PropertySumAggregateOutputType = {
   bedroomsMax: number | null
   bathroomsMin: number | null
   bathroomsMax: number | null
-  sizeSqm: number | null
+  sizeSqm: runtime.Decimal | null
   completionYear: number | null
+  sizeSqmMax: runtime.Decimal | null
+  bedroomOptions: number[]
+  bathroomOptions: number[]
 }
 
 export type PropertyMinAggregateOutputType = {
@@ -66,7 +72,7 @@ export type PropertyMinAggregateOutputType = {
   bedroomsMax: number | null
   bathroomsMin: number | null
   bathroomsMax: number | null
-  sizeSqm: number | null
+  sizeSqm: runtime.Decimal | null
   sizeCategory: string | null
   completionYear: number | null
   description: string | null
@@ -75,6 +81,10 @@ export type PropertyMinAggregateOutputType = {
   agentId: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  publicationStatus: $Enums.PublicationStatus | null
+  developmentId: string | null
+  slug: string | null
+  sizeSqmMax: runtime.Decimal | null
 }
 
 export type PropertyMaxAggregateOutputType = {
@@ -95,7 +105,7 @@ export type PropertyMaxAggregateOutputType = {
   bedroomsMax: number | null
   bathroomsMin: number | null
   bathroomsMax: number | null
-  sizeSqm: number | null
+  sizeSqm: runtime.Decimal | null
   sizeCategory: string | null
   completionYear: number | null
   description: string | null
@@ -104,6 +114,10 @@ export type PropertyMaxAggregateOutputType = {
   agentId: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  publicationStatus: $Enums.PublicationStatus | null
+  developmentId: string | null
+  slug: string | null
+  sizeSqmMax: runtime.Decimal | null
 }
 
 export type PropertyCountAggregateOutputType = {
@@ -133,6 +147,12 @@ export type PropertyCountAggregateOutputType = {
   agentId: number
   createdAt: number
   updatedAt: number
+  publicationStatus: number
+  developmentId: number
+  slug: number
+  sizeSqmMax: number
+  bedroomOptions: number
+  bathroomOptions: number
   _all: number
 }
 
@@ -146,6 +166,9 @@ export type PropertyAvgAggregateInputType = {
   bathroomsMax?: true
   sizeSqm?: true
   completionYear?: true
+  sizeSqmMax?: true
+  bedroomOptions?: true
+  bathroomOptions?: true
 }
 
 export type PropertySumAggregateInputType = {
@@ -157,6 +180,9 @@ export type PropertySumAggregateInputType = {
   bathroomsMax?: true
   sizeSqm?: true
   completionYear?: true
+  sizeSqmMax?: true
+  bedroomOptions?: true
+  bathroomOptions?: true
 }
 
 export type PropertyMinAggregateInputType = {
@@ -186,6 +212,10 @@ export type PropertyMinAggregateInputType = {
   agentId?: true
   createdAt?: true
   updatedAt?: true
+  publicationStatus?: true
+  developmentId?: true
+  slug?: true
+  sizeSqmMax?: true
 }
 
 export type PropertyMaxAggregateInputType = {
@@ -215,6 +245,10 @@ export type PropertyMaxAggregateInputType = {
   agentId?: true
   createdAt?: true
   updatedAt?: true
+  publicationStatus?: true
+  developmentId?: true
+  slug?: true
+  sizeSqmMax?: true
 }
 
 export type PropertyCountAggregateInputType = {
@@ -244,6 +278,12 @@ export type PropertyCountAggregateInputType = {
   agentId?: true
   createdAt?: true
   updatedAt?: true
+  publicationStatus?: true
+  developmentId?: true
+  slug?: true
+  sizeSqmMax?: true
+  bedroomOptions?: true
+  bathroomOptions?: true
   _all?: true
 }
 
@@ -335,23 +375,23 @@ export type PropertyGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
 
 export type PropertyGroupByOutputType = {
   id: string
-  sourceKey: string
+  sourceKey: string | null
   name: string
-  location: string
-  county: string
-  address: string
-  postalCode: string
-  type: string
-  saleType: string
+  location: string | null
+  county: string | null
+  address: string | null
+  postalCode: string | null
+  type: string | null
+  saleType: string | null
   status: $Enums.PropertyStatus
-  stage: $Enums.PropertyStage
-  priceMin: runtime.Decimal
-  priceMax: runtime.Decimal
-  bedroomsMin: number
-  bedroomsMax: number
-  bathroomsMin: number
-  bathroomsMax: number
-  sizeSqm: number
+  stage: $Enums.PropertyStage | null
+  priceMin: runtime.Decimal | null
+  priceMax: runtime.Decimal | null
+  bedroomsMin: number | null
+  bedroomsMax: number | null
+  bathroomsMin: number | null
+  bathroomsMax: number | null
+  sizeSqm: runtime.Decimal | null
   sizeCategory: string | null
   completionYear: number | null
   description: string | null
@@ -360,6 +400,12 @@ export type PropertyGroupByOutputType = {
   agentId: string | null
   createdAt: Date
   updatedAt: Date
+  publicationStatus: $Enums.PublicationStatus
+  developmentId: string | null
+  slug: string | null
+  sizeSqmMax: runtime.Decimal | null
+  bedroomOptions: number[]
+  bathroomOptions: number[]
   _count: PropertyCountAggregateOutputType | null
   _avg: PropertyAvgAggregateOutputType | null
   _sum: PropertySumAggregateOutputType | null
@@ -387,23 +433,23 @@ export type PropertyWhereInput = {
   OR?: Prisma.PropertyWhereInput[]
   NOT?: Prisma.PropertyWhereInput | Prisma.PropertyWhereInput[]
   id?: Prisma.StringFilter<"Property"> | string
-  sourceKey?: Prisma.StringFilter<"Property"> | string
+  sourceKey?: Prisma.StringNullableFilter<"Property"> | string | null
   name?: Prisma.StringFilter<"Property"> | string
-  location?: Prisma.StringFilter<"Property"> | string
-  county?: Prisma.StringFilter<"Property"> | string
-  address?: Prisma.StringFilter<"Property"> | string
-  postalCode?: Prisma.StringFilter<"Property"> | string
-  type?: Prisma.StringFilter<"Property"> | string
-  saleType?: Prisma.StringFilter<"Property"> | string
+  location?: Prisma.StringNullableFilter<"Property"> | string | null
+  county?: Prisma.StringNullableFilter<"Property"> | string | null
+  address?: Prisma.StringNullableFilter<"Property"> | string | null
+  postalCode?: Prisma.StringNullableFilter<"Property"> | string | null
+  type?: Prisma.StringNullableFilter<"Property"> | string | null
+  saleType?: Prisma.StringNullableFilter<"Property"> | string | null
   status?: Prisma.EnumPropertyStatusFilter<"Property"> | $Enums.PropertyStatus
-  stage?: Prisma.EnumPropertyStageFilter<"Property"> | $Enums.PropertyStage
-  priceMin?: Prisma.DecimalFilter<"Property"> | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax?: Prisma.DecimalFilter<"Property"> | runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin?: Prisma.IntFilter<"Property"> | number
-  bedroomsMax?: Prisma.IntFilter<"Property"> | number
-  bathroomsMin?: Prisma.IntFilter<"Property"> | number
-  bathroomsMax?: Prisma.IntFilter<"Property"> | number
-  sizeSqm?: Prisma.IntFilter<"Property"> | number
+  stage?: Prisma.EnumPropertyStageNullableFilter<"Property"> | $Enums.PropertyStage | null
+  priceMin?: Prisma.DecimalNullableFilter<"Property"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: Prisma.DecimalNullableFilter<"Property"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: Prisma.IntNullableFilter<"Property"> | number | null
+  bedroomsMax?: Prisma.IntNullableFilter<"Property"> | number | null
+  bathroomsMin?: Prisma.IntNullableFilter<"Property"> | number | null
+  bathroomsMax?: Prisma.IntNullableFilter<"Property"> | number | null
+  sizeSqm?: Prisma.DecimalNullableFilter<"Property"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: Prisma.StringNullableFilter<"Property"> | string | null
   completionYear?: Prisma.IntNullableFilter<"Property"> | number | null
   description?: Prisma.StringNullableFilter<"Property"> | string | null
@@ -412,6 +458,12 @@ export type PropertyWhereInput = {
   agentId?: Prisma.StringNullableFilter<"Property"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Property"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Property"> | Date | string
+  publicationStatus?: Prisma.EnumPublicationStatusFilter<"Property"> | $Enums.PublicationStatus
+  developmentId?: Prisma.StringNullableFilter<"Property"> | string | null
+  slug?: Prisma.StringNullableFilter<"Property"> | string | null
+  sizeSqmMax?: Prisma.DecimalNullableFilter<"Property"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.IntNullableListFilter<"Property">
+  bathroomOptions?: Prisma.IntNullableListFilter<"Property">
   agent?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   media?: Prisma.PropertyMediaListRelationFilter
   features?: Prisma.PropertyFeatureListRelationFilter
@@ -424,27 +476,29 @@ export type PropertyWhereInput = {
   analyticsEvents?: Prisma.AnalyticsEventListRelationFilter
   ragDocuments?: Prisma.RagDocumentListRelationFilter
   aiJobs?: Prisma.AiJobListRelationFilter
+  templateLinks?: Prisma.TemplatePropertyListRelationFilter
+  development?: Prisma.XOR<Prisma.DevelopmentNullableScalarRelationFilter, Prisma.DevelopmentWhereInput> | null
 }
 
 export type PropertyOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  sourceKey?: Prisma.SortOrder
+  sourceKey?: Prisma.SortOrderInput | Prisma.SortOrder
   name?: Prisma.SortOrder
-  location?: Prisma.SortOrder
-  county?: Prisma.SortOrder
-  address?: Prisma.SortOrder
-  postalCode?: Prisma.SortOrder
-  type?: Prisma.SortOrder
-  saleType?: Prisma.SortOrder
+  location?: Prisma.SortOrderInput | Prisma.SortOrder
+  county?: Prisma.SortOrderInput | Prisma.SortOrder
+  address?: Prisma.SortOrderInput | Prisma.SortOrder
+  postalCode?: Prisma.SortOrderInput | Prisma.SortOrder
+  type?: Prisma.SortOrderInput | Prisma.SortOrder
+  saleType?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
-  stage?: Prisma.SortOrder
-  priceMin?: Prisma.SortOrder
-  priceMax?: Prisma.SortOrder
-  bedroomsMin?: Prisma.SortOrder
-  bedroomsMax?: Prisma.SortOrder
-  bathroomsMin?: Prisma.SortOrder
-  bathroomsMax?: Prisma.SortOrder
-  sizeSqm?: Prisma.SortOrder
+  stage?: Prisma.SortOrderInput | Prisma.SortOrder
+  priceMin?: Prisma.SortOrderInput | Prisma.SortOrder
+  priceMax?: Prisma.SortOrderInput | Prisma.SortOrder
+  bedroomsMin?: Prisma.SortOrderInput | Prisma.SortOrder
+  bedroomsMax?: Prisma.SortOrderInput | Prisma.SortOrder
+  bathroomsMin?: Prisma.SortOrderInput | Prisma.SortOrder
+  bathroomsMax?: Prisma.SortOrderInput | Prisma.SortOrder
+  sizeSqm?: Prisma.SortOrderInput | Prisma.SortOrder
   sizeCategory?: Prisma.SortOrderInput | Prisma.SortOrder
   completionYear?: Prisma.SortOrderInput | Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -453,6 +507,12 @@ export type PropertyOrderByWithRelationInput = {
   agentId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  publicationStatus?: Prisma.SortOrder
+  developmentId?: Prisma.SortOrderInput | Prisma.SortOrder
+  slug?: Prisma.SortOrderInput | Prisma.SortOrder
+  sizeSqmMax?: Prisma.SortOrderInput | Prisma.SortOrder
+  bedroomOptions?: Prisma.SortOrder
+  bathroomOptions?: Prisma.SortOrder
   agent?: Prisma.UserOrderByWithRelationInput
   media?: Prisma.PropertyMediaOrderByRelationAggregateInput
   features?: Prisma.PropertyFeatureOrderByRelationAggregateInput
@@ -465,30 +525,33 @@ export type PropertyOrderByWithRelationInput = {
   analyticsEvents?: Prisma.AnalyticsEventOrderByRelationAggregateInput
   ragDocuments?: Prisma.RagDocumentOrderByRelationAggregateInput
   aiJobs?: Prisma.AiJobOrderByRelationAggregateInput
+  templateLinks?: Prisma.TemplatePropertyOrderByRelationAggregateInput
+  development?: Prisma.DevelopmentOrderByWithRelationInput
 }
 
 export type PropertyWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   sourceKey?: string
+  slug?: string
   AND?: Prisma.PropertyWhereInput | Prisma.PropertyWhereInput[]
   OR?: Prisma.PropertyWhereInput[]
   NOT?: Prisma.PropertyWhereInput | Prisma.PropertyWhereInput[]
   name?: Prisma.StringFilter<"Property"> | string
-  location?: Prisma.StringFilter<"Property"> | string
-  county?: Prisma.StringFilter<"Property"> | string
-  address?: Prisma.StringFilter<"Property"> | string
-  postalCode?: Prisma.StringFilter<"Property"> | string
-  type?: Prisma.StringFilter<"Property"> | string
-  saleType?: Prisma.StringFilter<"Property"> | string
+  location?: Prisma.StringNullableFilter<"Property"> | string | null
+  county?: Prisma.StringNullableFilter<"Property"> | string | null
+  address?: Prisma.StringNullableFilter<"Property"> | string | null
+  postalCode?: Prisma.StringNullableFilter<"Property"> | string | null
+  type?: Prisma.StringNullableFilter<"Property"> | string | null
+  saleType?: Prisma.StringNullableFilter<"Property"> | string | null
   status?: Prisma.EnumPropertyStatusFilter<"Property"> | $Enums.PropertyStatus
-  stage?: Prisma.EnumPropertyStageFilter<"Property"> | $Enums.PropertyStage
-  priceMin?: Prisma.DecimalFilter<"Property"> | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax?: Prisma.DecimalFilter<"Property"> | runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin?: Prisma.IntFilter<"Property"> | number
-  bedroomsMax?: Prisma.IntFilter<"Property"> | number
-  bathroomsMin?: Prisma.IntFilter<"Property"> | number
-  bathroomsMax?: Prisma.IntFilter<"Property"> | number
-  sizeSqm?: Prisma.IntFilter<"Property"> | number
+  stage?: Prisma.EnumPropertyStageNullableFilter<"Property"> | $Enums.PropertyStage | null
+  priceMin?: Prisma.DecimalNullableFilter<"Property"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: Prisma.DecimalNullableFilter<"Property"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: Prisma.IntNullableFilter<"Property"> | number | null
+  bedroomsMax?: Prisma.IntNullableFilter<"Property"> | number | null
+  bathroomsMin?: Prisma.IntNullableFilter<"Property"> | number | null
+  bathroomsMax?: Prisma.IntNullableFilter<"Property"> | number | null
+  sizeSqm?: Prisma.DecimalNullableFilter<"Property"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: Prisma.StringNullableFilter<"Property"> | string | null
   completionYear?: Prisma.IntNullableFilter<"Property"> | number | null
   description?: Prisma.StringNullableFilter<"Property"> | string | null
@@ -497,6 +560,11 @@ export type PropertyWhereUniqueInput = Prisma.AtLeast<{
   agentId?: Prisma.StringNullableFilter<"Property"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Property"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Property"> | Date | string
+  publicationStatus?: Prisma.EnumPublicationStatusFilter<"Property"> | $Enums.PublicationStatus
+  developmentId?: Prisma.StringNullableFilter<"Property"> | string | null
+  sizeSqmMax?: Prisma.DecimalNullableFilter<"Property"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.IntNullableListFilter<"Property">
+  bathroomOptions?: Prisma.IntNullableListFilter<"Property">
   agent?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   media?: Prisma.PropertyMediaListRelationFilter
   features?: Prisma.PropertyFeatureListRelationFilter
@@ -509,27 +577,29 @@ export type PropertyWhereUniqueInput = Prisma.AtLeast<{
   analyticsEvents?: Prisma.AnalyticsEventListRelationFilter
   ragDocuments?: Prisma.RagDocumentListRelationFilter
   aiJobs?: Prisma.AiJobListRelationFilter
-}, "id" | "sourceKey">
+  templateLinks?: Prisma.TemplatePropertyListRelationFilter
+  development?: Prisma.XOR<Prisma.DevelopmentNullableScalarRelationFilter, Prisma.DevelopmentWhereInput> | null
+}, "id" | "sourceKey" | "slug">
 
 export type PropertyOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  sourceKey?: Prisma.SortOrder
+  sourceKey?: Prisma.SortOrderInput | Prisma.SortOrder
   name?: Prisma.SortOrder
-  location?: Prisma.SortOrder
-  county?: Prisma.SortOrder
-  address?: Prisma.SortOrder
-  postalCode?: Prisma.SortOrder
-  type?: Prisma.SortOrder
-  saleType?: Prisma.SortOrder
+  location?: Prisma.SortOrderInput | Prisma.SortOrder
+  county?: Prisma.SortOrderInput | Prisma.SortOrder
+  address?: Prisma.SortOrderInput | Prisma.SortOrder
+  postalCode?: Prisma.SortOrderInput | Prisma.SortOrder
+  type?: Prisma.SortOrderInput | Prisma.SortOrder
+  saleType?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
-  stage?: Prisma.SortOrder
-  priceMin?: Prisma.SortOrder
-  priceMax?: Prisma.SortOrder
-  bedroomsMin?: Prisma.SortOrder
-  bedroomsMax?: Prisma.SortOrder
-  bathroomsMin?: Prisma.SortOrder
-  bathroomsMax?: Prisma.SortOrder
-  sizeSqm?: Prisma.SortOrder
+  stage?: Prisma.SortOrderInput | Prisma.SortOrder
+  priceMin?: Prisma.SortOrderInput | Prisma.SortOrder
+  priceMax?: Prisma.SortOrderInput | Prisma.SortOrder
+  bedroomsMin?: Prisma.SortOrderInput | Prisma.SortOrder
+  bedroomsMax?: Prisma.SortOrderInput | Prisma.SortOrder
+  bathroomsMin?: Prisma.SortOrderInput | Prisma.SortOrder
+  bathroomsMax?: Prisma.SortOrderInput | Prisma.SortOrder
+  sizeSqm?: Prisma.SortOrderInput | Prisma.SortOrder
   sizeCategory?: Prisma.SortOrderInput | Prisma.SortOrder
   completionYear?: Prisma.SortOrderInput | Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -538,6 +608,12 @@ export type PropertyOrderByWithAggregationInput = {
   agentId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  publicationStatus?: Prisma.SortOrder
+  developmentId?: Prisma.SortOrderInput | Prisma.SortOrder
+  slug?: Prisma.SortOrderInput | Prisma.SortOrder
+  sizeSqmMax?: Prisma.SortOrderInput | Prisma.SortOrder
+  bedroomOptions?: Prisma.SortOrder
+  bathroomOptions?: Prisma.SortOrder
   _count?: Prisma.PropertyCountOrderByAggregateInput
   _avg?: Prisma.PropertyAvgOrderByAggregateInput
   _max?: Prisma.PropertyMaxOrderByAggregateInput
@@ -550,23 +626,23 @@ export type PropertyScalarWhereWithAggregatesInput = {
   OR?: Prisma.PropertyScalarWhereWithAggregatesInput[]
   NOT?: Prisma.PropertyScalarWhereWithAggregatesInput | Prisma.PropertyScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Property"> | string
-  sourceKey?: Prisma.StringWithAggregatesFilter<"Property"> | string
+  sourceKey?: Prisma.StringNullableWithAggregatesFilter<"Property"> | string | null
   name?: Prisma.StringWithAggregatesFilter<"Property"> | string
-  location?: Prisma.StringWithAggregatesFilter<"Property"> | string
-  county?: Prisma.StringWithAggregatesFilter<"Property"> | string
-  address?: Prisma.StringWithAggregatesFilter<"Property"> | string
-  postalCode?: Prisma.StringWithAggregatesFilter<"Property"> | string
-  type?: Prisma.StringWithAggregatesFilter<"Property"> | string
-  saleType?: Prisma.StringWithAggregatesFilter<"Property"> | string
+  location?: Prisma.StringNullableWithAggregatesFilter<"Property"> | string | null
+  county?: Prisma.StringNullableWithAggregatesFilter<"Property"> | string | null
+  address?: Prisma.StringNullableWithAggregatesFilter<"Property"> | string | null
+  postalCode?: Prisma.StringNullableWithAggregatesFilter<"Property"> | string | null
+  type?: Prisma.StringNullableWithAggregatesFilter<"Property"> | string | null
+  saleType?: Prisma.StringNullableWithAggregatesFilter<"Property"> | string | null
   status?: Prisma.EnumPropertyStatusWithAggregatesFilter<"Property"> | $Enums.PropertyStatus
-  stage?: Prisma.EnumPropertyStageWithAggregatesFilter<"Property"> | $Enums.PropertyStage
-  priceMin?: Prisma.DecimalWithAggregatesFilter<"Property"> | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax?: Prisma.DecimalWithAggregatesFilter<"Property"> | runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin?: Prisma.IntWithAggregatesFilter<"Property"> | number
-  bedroomsMax?: Prisma.IntWithAggregatesFilter<"Property"> | number
-  bathroomsMin?: Prisma.IntWithAggregatesFilter<"Property"> | number
-  bathroomsMax?: Prisma.IntWithAggregatesFilter<"Property"> | number
-  sizeSqm?: Prisma.IntWithAggregatesFilter<"Property"> | number
+  stage?: Prisma.EnumPropertyStageNullableWithAggregatesFilter<"Property"> | $Enums.PropertyStage | null
+  priceMin?: Prisma.DecimalNullableWithAggregatesFilter<"Property"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: Prisma.DecimalNullableWithAggregatesFilter<"Property"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: Prisma.IntNullableWithAggregatesFilter<"Property"> | number | null
+  bedroomsMax?: Prisma.IntNullableWithAggregatesFilter<"Property"> | number | null
+  bathroomsMin?: Prisma.IntNullableWithAggregatesFilter<"Property"> | number | null
+  bathroomsMax?: Prisma.IntNullableWithAggregatesFilter<"Property"> | number | null
+  sizeSqm?: Prisma.DecimalNullableWithAggregatesFilter<"Property"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: Prisma.StringNullableWithAggregatesFilter<"Property"> | string | null
   completionYear?: Prisma.IntNullableWithAggregatesFilter<"Property"> | number | null
   description?: Prisma.StringNullableWithAggregatesFilter<"Property"> | string | null
@@ -575,27 +651,33 @@ export type PropertyScalarWhereWithAggregatesInput = {
   agentId?: Prisma.StringNullableWithAggregatesFilter<"Property"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Property"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Property"> | Date | string
+  publicationStatus?: Prisma.EnumPublicationStatusWithAggregatesFilter<"Property"> | $Enums.PublicationStatus
+  developmentId?: Prisma.StringNullableWithAggregatesFilter<"Property"> | string | null
+  slug?: Prisma.StringNullableWithAggregatesFilter<"Property"> | string | null
+  sizeSqmMax?: Prisma.DecimalNullableWithAggregatesFilter<"Property"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.IntNullableListFilter<"Property">
+  bathroomOptions?: Prisma.IntNullableListFilter<"Property">
 }
 
 export type PropertyCreateInput = {
   id?: string
-  sourceKey: string
+  sourceKey?: string | null
   name: string
-  location: string
-  county: string
-  address: string
-  postalCode: string
-  type: string
-  saleType: string
-  status: $Enums.PropertyStatus
-  stage: $Enums.PropertyStage
-  priceMin: runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax: runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin: number
-  bedroomsMax: number
-  bathroomsMin: number
-  bathroomsMax: number
-  sizeSqm: number
+  location?: string | null
+  county?: string | null
+  address?: string | null
+  postalCode?: string | null
+  type?: string | null
+  saleType?: string | null
+  status?: $Enums.PropertyStatus
+  stage?: $Enums.PropertyStage | null
+  priceMin?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: number | null
+  bedroomsMax?: number | null
+  bathroomsMin?: number | null
+  bathroomsMax?: number | null
+  sizeSqm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: string | null
   completionYear?: number | null
   description?: string | null
@@ -603,6 +685,11 @@ export type PropertyCreateInput = {
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  publicationStatus?: $Enums.PublicationStatus
+  slug?: string | null
+  sizeSqmMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyCreatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyCreatebathroomOptionsInput | number[]
   agent?: Prisma.UserCreateNestedOneWithoutPropertiesInput
   media?: Prisma.PropertyMediaCreateNestedManyWithoutPropertyInput
   features?: Prisma.PropertyFeatureCreateNestedManyWithoutPropertyInput
@@ -615,27 +702,29 @@ export type PropertyCreateInput = {
   analyticsEvents?: Prisma.AnalyticsEventCreateNestedManyWithoutPropertyInput
   ragDocuments?: Prisma.RagDocumentCreateNestedManyWithoutPropertyInput
   aiJobs?: Prisma.AiJobCreateNestedManyWithoutPropertyInput
+  templateLinks?: Prisma.TemplatePropertyCreateNestedManyWithoutPropertyInput
+  development?: Prisma.DevelopmentCreateNestedOneWithoutPropertiesInput
 }
 
 export type PropertyUncheckedCreateInput = {
   id?: string
-  sourceKey: string
+  sourceKey?: string | null
   name: string
-  location: string
-  county: string
-  address: string
-  postalCode: string
-  type: string
-  saleType: string
-  status: $Enums.PropertyStatus
-  stage: $Enums.PropertyStage
-  priceMin: runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax: runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin: number
-  bedroomsMax: number
-  bathroomsMin: number
-  bathroomsMax: number
-  sizeSqm: number
+  location?: string | null
+  county?: string | null
+  address?: string | null
+  postalCode?: string | null
+  type?: string | null
+  saleType?: string | null
+  status?: $Enums.PropertyStatus
+  stage?: $Enums.PropertyStage | null
+  priceMin?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: number | null
+  bedroomsMax?: number | null
+  bathroomsMin?: number | null
+  bathroomsMax?: number | null
+  sizeSqm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: string | null
   completionYear?: number | null
   description?: string | null
@@ -644,6 +733,12 @@ export type PropertyUncheckedCreateInput = {
   agentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  publicationStatus?: $Enums.PublicationStatus
+  developmentId?: string | null
+  slug?: string | null
+  sizeSqmMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyCreatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyCreatebathroomOptionsInput | number[]
   media?: Prisma.PropertyMediaUncheckedCreateNestedManyWithoutPropertyInput
   features?: Prisma.PropertyFeatureUncheckedCreateNestedManyWithoutPropertyInput
   valueHistory?: Prisma.PropertyValueHistoryUncheckedCreateNestedManyWithoutPropertyInput
@@ -655,27 +750,28 @@ export type PropertyUncheckedCreateInput = {
   analyticsEvents?: Prisma.AnalyticsEventUncheckedCreateNestedManyWithoutPropertyInput
   ragDocuments?: Prisma.RagDocumentUncheckedCreateNestedManyWithoutPropertyInput
   aiJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutPropertyInput
+  templateLinks?: Prisma.TemplatePropertyUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  sourceKey?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  location?: Prisma.StringFieldUpdateOperationsInput | string
-  county?: Prisma.StringFieldUpdateOperationsInput | string
-  address?: Prisma.StringFieldUpdateOperationsInput | string
-  postalCode?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  saleType?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  county?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  saleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPropertyStatusFieldUpdateOperationsInput | $Enums.PropertyStatus
-  stage?: Prisma.EnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage
-  priceMin?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bedroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
+  stage?: Prisma.NullableEnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage | null
+  priceMin?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bedroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -683,6 +779,11 @@ export type PropertyUpdateInput = {
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publicationStatus?: Prisma.EnumPublicationStatusFieldUpdateOperationsInput | $Enums.PublicationStatus
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeSqmMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyUpdatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyUpdatebathroomOptionsInput | number[]
   agent?: Prisma.UserUpdateOneWithoutPropertiesNestedInput
   media?: Prisma.PropertyMediaUpdateManyWithoutPropertyNestedInput
   features?: Prisma.PropertyFeatureUpdateManyWithoutPropertyNestedInput
@@ -695,27 +796,29 @@ export type PropertyUpdateInput = {
   analyticsEvents?: Prisma.AnalyticsEventUpdateManyWithoutPropertyNestedInput
   ragDocuments?: Prisma.RagDocumentUpdateManyWithoutPropertyNestedInput
   aiJobs?: Prisma.AiJobUpdateManyWithoutPropertyNestedInput
+  templateLinks?: Prisma.TemplatePropertyUpdateManyWithoutPropertyNestedInput
+  development?: Prisma.DevelopmentUpdateOneWithoutPropertiesNestedInput
 }
 
 export type PropertyUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  sourceKey?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  location?: Prisma.StringFieldUpdateOperationsInput | string
-  county?: Prisma.StringFieldUpdateOperationsInput | string
-  address?: Prisma.StringFieldUpdateOperationsInput | string
-  postalCode?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  saleType?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  county?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  saleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPropertyStatusFieldUpdateOperationsInput | $Enums.PropertyStatus
-  stage?: Prisma.EnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage
-  priceMin?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bedroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
+  stage?: Prisma.NullableEnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage | null
+  priceMin?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bedroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -724,6 +827,12 @@ export type PropertyUncheckedUpdateInput = {
   agentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publicationStatus?: Prisma.EnumPublicationStatusFieldUpdateOperationsInput | $Enums.PublicationStatus
+  developmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeSqmMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyUpdatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyUpdatebathroomOptionsInput | number[]
   media?: Prisma.PropertyMediaUncheckedUpdateManyWithoutPropertyNestedInput
   features?: Prisma.PropertyFeatureUncheckedUpdateManyWithoutPropertyNestedInput
   valueHistory?: Prisma.PropertyValueHistoryUncheckedUpdateManyWithoutPropertyNestedInput
@@ -735,27 +844,28 @@ export type PropertyUncheckedUpdateInput = {
   analyticsEvents?: Prisma.AnalyticsEventUncheckedUpdateManyWithoutPropertyNestedInput
   ragDocuments?: Prisma.RagDocumentUncheckedUpdateManyWithoutPropertyNestedInput
   aiJobs?: Prisma.AiJobUncheckedUpdateManyWithoutPropertyNestedInput
+  templateLinks?: Prisma.TemplatePropertyUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateManyInput = {
   id?: string
-  sourceKey: string
+  sourceKey?: string | null
   name: string
-  location: string
-  county: string
-  address: string
-  postalCode: string
-  type: string
-  saleType: string
-  status: $Enums.PropertyStatus
-  stage: $Enums.PropertyStage
-  priceMin: runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax: runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin: number
-  bedroomsMax: number
-  bathroomsMin: number
-  bathroomsMax: number
-  sizeSqm: number
+  location?: string | null
+  county?: string | null
+  address?: string | null
+  postalCode?: string | null
+  type?: string | null
+  saleType?: string | null
+  status?: $Enums.PropertyStatus
+  stage?: $Enums.PropertyStage | null
+  priceMin?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: number | null
+  bedroomsMax?: number | null
+  bathroomsMin?: number | null
+  bathroomsMax?: number | null
+  sizeSqm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: string | null
   completionYear?: number | null
   description?: string | null
@@ -764,27 +874,33 @@ export type PropertyCreateManyInput = {
   agentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  publicationStatus?: $Enums.PublicationStatus
+  developmentId?: string | null
+  slug?: string | null
+  sizeSqmMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyCreatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyCreatebathroomOptionsInput | number[]
 }
 
 export type PropertyUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  sourceKey?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  location?: Prisma.StringFieldUpdateOperationsInput | string
-  county?: Prisma.StringFieldUpdateOperationsInput | string
-  address?: Prisma.StringFieldUpdateOperationsInput | string
-  postalCode?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  saleType?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  county?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  saleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPropertyStatusFieldUpdateOperationsInput | $Enums.PropertyStatus
-  stage?: Prisma.EnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage
-  priceMin?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bedroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
+  stage?: Prisma.NullableEnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage | null
+  priceMin?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bedroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -792,27 +908,32 @@ export type PropertyUpdateManyMutationInput = {
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publicationStatus?: Prisma.EnumPublicationStatusFieldUpdateOperationsInput | $Enums.PublicationStatus
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeSqmMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyUpdatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyUpdatebathroomOptionsInput | number[]
 }
 
 export type PropertyUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  sourceKey?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  location?: Prisma.StringFieldUpdateOperationsInput | string
-  county?: Prisma.StringFieldUpdateOperationsInput | string
-  address?: Prisma.StringFieldUpdateOperationsInput | string
-  postalCode?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  saleType?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  county?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  saleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPropertyStatusFieldUpdateOperationsInput | $Enums.PropertyStatus
-  stage?: Prisma.EnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage
-  priceMin?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bedroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
+  stage?: Prisma.NullableEnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage | null
+  priceMin?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bedroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -821,6 +942,12 @@ export type PropertyUncheckedUpdateManyInput = {
   agentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publicationStatus?: Prisma.EnumPublicationStatusFieldUpdateOperationsInput | $Enums.PublicationStatus
+  developmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeSqmMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyUpdatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyUpdatebathroomOptionsInput | number[]
 }
 
 export type PropertyListRelationFilter = {
@@ -831,6 +958,14 @@ export type PropertyListRelationFilter = {
 
 export type PropertyOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type IntNullableListFilter<$PrismaModel = never> = {
+  equals?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel> | null
+  has?: number | Prisma.IntFieldRefInput<$PrismaModel> | null
+  hasEvery?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>
+  hasSome?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>
+  isEmpty?: boolean
 }
 
 export type PropertyCountOrderByAggregateInput = {
@@ -860,6 +995,12 @@ export type PropertyCountOrderByAggregateInput = {
   agentId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  publicationStatus?: Prisma.SortOrder
+  developmentId?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
+  sizeSqmMax?: Prisma.SortOrder
+  bedroomOptions?: Prisma.SortOrder
+  bathroomOptions?: Prisma.SortOrder
 }
 
 export type PropertyAvgOrderByAggregateInput = {
@@ -871,6 +1012,9 @@ export type PropertyAvgOrderByAggregateInput = {
   bathroomsMax?: Prisma.SortOrder
   sizeSqm?: Prisma.SortOrder
   completionYear?: Prisma.SortOrder
+  sizeSqmMax?: Prisma.SortOrder
+  bedroomOptions?: Prisma.SortOrder
+  bathroomOptions?: Prisma.SortOrder
 }
 
 export type PropertyMaxOrderByAggregateInput = {
@@ -900,6 +1044,10 @@ export type PropertyMaxOrderByAggregateInput = {
   agentId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  publicationStatus?: Prisma.SortOrder
+  developmentId?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
+  sizeSqmMax?: Prisma.SortOrder
 }
 
 export type PropertyMinOrderByAggregateInput = {
@@ -929,6 +1077,10 @@ export type PropertyMinOrderByAggregateInput = {
   agentId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  publicationStatus?: Prisma.SortOrder
+  developmentId?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
+  sizeSqmMax?: Prisma.SortOrder
 }
 
 export type PropertySumOrderByAggregateInput = {
@@ -940,6 +1092,9 @@ export type PropertySumOrderByAggregateInput = {
   bathroomsMax?: Prisma.SortOrder
   sizeSqm?: Prisma.SortOrder
   completionYear?: Prisma.SortOrder
+  sizeSqmMax?: Prisma.SortOrder
+  bedroomOptions?: Prisma.SortOrder
+  bathroomOptions?: Prisma.SortOrder
 }
 
 export type PropertyScalarRelationFilter = {
@@ -994,28 +1149,28 @@ export type PropertyUncheckedUpdateManyWithoutAgentNestedInput = {
   deleteMany?: Prisma.PropertyScalarWhereInput | Prisma.PropertyScalarWhereInput[]
 }
 
+export type PropertyCreatebedroomOptionsInput = {
+  set: number[]
+}
+
+export type PropertyCreatebathroomOptionsInput = {
+  set: number[]
+}
+
 export type EnumPropertyStatusFieldUpdateOperationsInput = {
   set?: $Enums.PropertyStatus
 }
 
-export type EnumPropertyStageFieldUpdateOperationsInput = {
-  set?: $Enums.PropertyStage
+export type NullableEnumPropertyStageFieldUpdateOperationsInput = {
+  set?: $Enums.PropertyStage | null
 }
 
-export type DecimalFieldUpdateOperationsInput = {
-  set?: runtime.Decimal | runtime.DecimalJsLike | number | string
+export type NullableDecimalFieldUpdateOperationsInput = {
+  set?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   increment?: runtime.Decimal | runtime.DecimalJsLike | number | string
   decrement?: runtime.Decimal | runtime.DecimalJsLike | number | string
   multiply?: runtime.Decimal | runtime.DecimalJsLike | number | string
   divide?: runtime.Decimal | runtime.DecimalJsLike | number | string
-}
-
-export type IntFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
 }
 
 export type NullableIntFieldUpdateOperationsInput = {
@@ -1028,6 +1183,20 @@ export type NullableIntFieldUpdateOperationsInput = {
 
 export type NullableDateTimeFieldUpdateOperationsInput = {
   set?: Date | string | null
+}
+
+export type EnumPublicationStatusFieldUpdateOperationsInput = {
+  set?: $Enums.PublicationStatus
+}
+
+export type PropertyUpdatebedroomOptionsInput = {
+  set?: number[]
+  push?: number | number[]
+}
+
+export type PropertyUpdatebathroomOptionsInput = {
+  set?: number[]
+  push?: number | number[]
 }
 
 export type PropertyCreateNestedOneWithoutMediaInput = {
@@ -1106,10 +1275,12 @@ export type PropertyCreateNestedOneWithoutCampaignLinksInput = {
   connect?: Prisma.PropertyWhereUniqueInput
 }
 
-export type PropertyUpdateOneRequiredWithoutCampaignLinksNestedInput = {
+export type PropertyUpdateOneWithoutCampaignLinksNestedInput = {
   create?: Prisma.XOR<Prisma.PropertyCreateWithoutCampaignLinksInput, Prisma.PropertyUncheckedCreateWithoutCampaignLinksInput>
   connectOrCreate?: Prisma.PropertyCreateOrConnectWithoutCampaignLinksInput
   upsert?: Prisma.PropertyUpsertWithoutCampaignLinksInput
+  disconnect?: Prisma.PropertyWhereInput | boolean
+  delete?: Prisma.PropertyWhereInput | boolean
   connect?: Prisma.PropertyWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.PropertyUpdateToOneWithWhereWithoutCampaignLinksInput, Prisma.PropertyUpdateWithoutCampaignLinksInput>, Prisma.PropertyUncheckedUpdateWithoutCampaignLinksInput>
 }
@@ -1128,6 +1299,20 @@ export type PropertyUpdateOneWithoutCampaignEventsNestedInput = {
   delete?: Prisma.PropertyWhereInput | boolean
   connect?: Prisma.PropertyWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.PropertyUpdateToOneWithWhereWithoutCampaignEventsInput, Prisma.PropertyUpdateWithoutCampaignEventsInput>, Prisma.PropertyUncheckedUpdateWithoutCampaignEventsInput>
+}
+
+export type PropertyCreateNestedOneWithoutTemplateLinksInput = {
+  create?: Prisma.XOR<Prisma.PropertyCreateWithoutTemplateLinksInput, Prisma.PropertyUncheckedCreateWithoutTemplateLinksInput>
+  connectOrCreate?: Prisma.PropertyCreateOrConnectWithoutTemplateLinksInput
+  connect?: Prisma.PropertyWhereUniqueInput
+}
+
+export type PropertyUpdateOneRequiredWithoutTemplateLinksNestedInput = {
+  create?: Prisma.XOR<Prisma.PropertyCreateWithoutTemplateLinksInput, Prisma.PropertyUncheckedCreateWithoutTemplateLinksInput>
+  connectOrCreate?: Prisma.PropertyCreateOrConnectWithoutTemplateLinksInput
+  upsert?: Prisma.PropertyUpsertWithoutTemplateLinksInput
+  connect?: Prisma.PropertyWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PropertyUpdateToOneWithWhereWithoutTemplateLinksInput, Prisma.PropertyUpdateWithoutTemplateLinksInput>, Prisma.PropertyUncheckedUpdateWithoutTemplateLinksInput>
 }
 
 export type PropertyCreateNestedOneWithoutNewsLinksInput = {
@@ -1192,25 +1377,67 @@ export type PropertyUpdateOneWithoutAiJobsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.PropertyUpdateToOneWithWhereWithoutAiJobsInput, Prisma.PropertyUpdateWithoutAiJobsInput>, Prisma.PropertyUncheckedUpdateWithoutAiJobsInput>
 }
 
+export type PropertyCreateNestedManyWithoutDevelopmentInput = {
+  create?: Prisma.XOR<Prisma.PropertyCreateWithoutDevelopmentInput, Prisma.PropertyUncheckedCreateWithoutDevelopmentInput> | Prisma.PropertyCreateWithoutDevelopmentInput[] | Prisma.PropertyUncheckedCreateWithoutDevelopmentInput[]
+  connectOrCreate?: Prisma.PropertyCreateOrConnectWithoutDevelopmentInput | Prisma.PropertyCreateOrConnectWithoutDevelopmentInput[]
+  createMany?: Prisma.PropertyCreateManyDevelopmentInputEnvelope
+  connect?: Prisma.PropertyWhereUniqueInput | Prisma.PropertyWhereUniqueInput[]
+}
+
+export type PropertyUncheckedCreateNestedManyWithoutDevelopmentInput = {
+  create?: Prisma.XOR<Prisma.PropertyCreateWithoutDevelopmentInput, Prisma.PropertyUncheckedCreateWithoutDevelopmentInput> | Prisma.PropertyCreateWithoutDevelopmentInput[] | Prisma.PropertyUncheckedCreateWithoutDevelopmentInput[]
+  connectOrCreate?: Prisma.PropertyCreateOrConnectWithoutDevelopmentInput | Prisma.PropertyCreateOrConnectWithoutDevelopmentInput[]
+  createMany?: Prisma.PropertyCreateManyDevelopmentInputEnvelope
+  connect?: Prisma.PropertyWhereUniqueInput | Prisma.PropertyWhereUniqueInput[]
+}
+
+export type PropertyUpdateManyWithoutDevelopmentNestedInput = {
+  create?: Prisma.XOR<Prisma.PropertyCreateWithoutDevelopmentInput, Prisma.PropertyUncheckedCreateWithoutDevelopmentInput> | Prisma.PropertyCreateWithoutDevelopmentInput[] | Prisma.PropertyUncheckedCreateWithoutDevelopmentInput[]
+  connectOrCreate?: Prisma.PropertyCreateOrConnectWithoutDevelopmentInput | Prisma.PropertyCreateOrConnectWithoutDevelopmentInput[]
+  upsert?: Prisma.PropertyUpsertWithWhereUniqueWithoutDevelopmentInput | Prisma.PropertyUpsertWithWhereUniqueWithoutDevelopmentInput[]
+  createMany?: Prisma.PropertyCreateManyDevelopmentInputEnvelope
+  set?: Prisma.PropertyWhereUniqueInput | Prisma.PropertyWhereUniqueInput[]
+  disconnect?: Prisma.PropertyWhereUniqueInput | Prisma.PropertyWhereUniqueInput[]
+  delete?: Prisma.PropertyWhereUniqueInput | Prisma.PropertyWhereUniqueInput[]
+  connect?: Prisma.PropertyWhereUniqueInput | Prisma.PropertyWhereUniqueInput[]
+  update?: Prisma.PropertyUpdateWithWhereUniqueWithoutDevelopmentInput | Prisma.PropertyUpdateWithWhereUniqueWithoutDevelopmentInput[]
+  updateMany?: Prisma.PropertyUpdateManyWithWhereWithoutDevelopmentInput | Prisma.PropertyUpdateManyWithWhereWithoutDevelopmentInput[]
+  deleteMany?: Prisma.PropertyScalarWhereInput | Prisma.PropertyScalarWhereInput[]
+}
+
+export type PropertyUncheckedUpdateManyWithoutDevelopmentNestedInput = {
+  create?: Prisma.XOR<Prisma.PropertyCreateWithoutDevelopmentInput, Prisma.PropertyUncheckedCreateWithoutDevelopmentInput> | Prisma.PropertyCreateWithoutDevelopmentInput[] | Prisma.PropertyUncheckedCreateWithoutDevelopmentInput[]
+  connectOrCreate?: Prisma.PropertyCreateOrConnectWithoutDevelopmentInput | Prisma.PropertyCreateOrConnectWithoutDevelopmentInput[]
+  upsert?: Prisma.PropertyUpsertWithWhereUniqueWithoutDevelopmentInput | Prisma.PropertyUpsertWithWhereUniqueWithoutDevelopmentInput[]
+  createMany?: Prisma.PropertyCreateManyDevelopmentInputEnvelope
+  set?: Prisma.PropertyWhereUniqueInput | Prisma.PropertyWhereUniqueInput[]
+  disconnect?: Prisma.PropertyWhereUniqueInput | Prisma.PropertyWhereUniqueInput[]
+  delete?: Prisma.PropertyWhereUniqueInput | Prisma.PropertyWhereUniqueInput[]
+  connect?: Prisma.PropertyWhereUniqueInput | Prisma.PropertyWhereUniqueInput[]
+  update?: Prisma.PropertyUpdateWithWhereUniqueWithoutDevelopmentInput | Prisma.PropertyUpdateWithWhereUniqueWithoutDevelopmentInput[]
+  updateMany?: Prisma.PropertyUpdateManyWithWhereWithoutDevelopmentInput | Prisma.PropertyUpdateManyWithWhereWithoutDevelopmentInput[]
+  deleteMany?: Prisma.PropertyScalarWhereInput | Prisma.PropertyScalarWhereInput[]
+}
+
 export type PropertyCreateWithoutAgentInput = {
   id?: string
-  sourceKey: string
+  sourceKey?: string | null
   name: string
-  location: string
-  county: string
-  address: string
-  postalCode: string
-  type: string
-  saleType: string
-  status: $Enums.PropertyStatus
-  stage: $Enums.PropertyStage
-  priceMin: runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax: runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin: number
-  bedroomsMax: number
-  bathroomsMin: number
-  bathroomsMax: number
-  sizeSqm: number
+  location?: string | null
+  county?: string | null
+  address?: string | null
+  postalCode?: string | null
+  type?: string | null
+  saleType?: string | null
+  status?: $Enums.PropertyStatus
+  stage?: $Enums.PropertyStage | null
+  priceMin?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: number | null
+  bedroomsMax?: number | null
+  bathroomsMin?: number | null
+  bathroomsMax?: number | null
+  sizeSqm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: string | null
   completionYear?: number | null
   description?: string | null
@@ -1218,6 +1445,11 @@ export type PropertyCreateWithoutAgentInput = {
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  publicationStatus?: $Enums.PublicationStatus
+  slug?: string | null
+  sizeSqmMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyCreatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyCreatebathroomOptionsInput | number[]
   media?: Prisma.PropertyMediaCreateNestedManyWithoutPropertyInput
   features?: Prisma.PropertyFeatureCreateNestedManyWithoutPropertyInput
   valueHistory?: Prisma.PropertyValueHistoryCreateNestedManyWithoutPropertyInput
@@ -1229,27 +1461,29 @@ export type PropertyCreateWithoutAgentInput = {
   analyticsEvents?: Prisma.AnalyticsEventCreateNestedManyWithoutPropertyInput
   ragDocuments?: Prisma.RagDocumentCreateNestedManyWithoutPropertyInput
   aiJobs?: Prisma.AiJobCreateNestedManyWithoutPropertyInput
+  templateLinks?: Prisma.TemplatePropertyCreateNestedManyWithoutPropertyInput
+  development?: Prisma.DevelopmentCreateNestedOneWithoutPropertiesInput
 }
 
 export type PropertyUncheckedCreateWithoutAgentInput = {
   id?: string
-  sourceKey: string
+  sourceKey?: string | null
   name: string
-  location: string
-  county: string
-  address: string
-  postalCode: string
-  type: string
-  saleType: string
-  status: $Enums.PropertyStatus
-  stage: $Enums.PropertyStage
-  priceMin: runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax: runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin: number
-  bedroomsMax: number
-  bathroomsMin: number
-  bathroomsMax: number
-  sizeSqm: number
+  location?: string | null
+  county?: string | null
+  address?: string | null
+  postalCode?: string | null
+  type?: string | null
+  saleType?: string | null
+  status?: $Enums.PropertyStatus
+  stage?: $Enums.PropertyStage | null
+  priceMin?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: number | null
+  bedroomsMax?: number | null
+  bathroomsMin?: number | null
+  bathroomsMax?: number | null
+  sizeSqm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: string | null
   completionYear?: number | null
   description?: string | null
@@ -1257,6 +1491,12 @@ export type PropertyUncheckedCreateWithoutAgentInput = {
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  publicationStatus?: $Enums.PublicationStatus
+  developmentId?: string | null
+  slug?: string | null
+  sizeSqmMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyCreatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyCreatebathroomOptionsInput | number[]
   media?: Prisma.PropertyMediaUncheckedCreateNestedManyWithoutPropertyInput
   features?: Prisma.PropertyFeatureUncheckedCreateNestedManyWithoutPropertyInput
   valueHistory?: Prisma.PropertyValueHistoryUncheckedCreateNestedManyWithoutPropertyInput
@@ -1268,6 +1508,7 @@ export type PropertyUncheckedCreateWithoutAgentInput = {
   analyticsEvents?: Prisma.AnalyticsEventUncheckedCreateNestedManyWithoutPropertyInput
   ragDocuments?: Prisma.RagDocumentUncheckedCreateNestedManyWithoutPropertyInput
   aiJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutPropertyInput
+  templateLinks?: Prisma.TemplatePropertyUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutAgentInput = {
@@ -1301,23 +1542,23 @@ export type PropertyScalarWhereInput = {
   OR?: Prisma.PropertyScalarWhereInput[]
   NOT?: Prisma.PropertyScalarWhereInput | Prisma.PropertyScalarWhereInput[]
   id?: Prisma.StringFilter<"Property"> | string
-  sourceKey?: Prisma.StringFilter<"Property"> | string
+  sourceKey?: Prisma.StringNullableFilter<"Property"> | string | null
   name?: Prisma.StringFilter<"Property"> | string
-  location?: Prisma.StringFilter<"Property"> | string
-  county?: Prisma.StringFilter<"Property"> | string
-  address?: Prisma.StringFilter<"Property"> | string
-  postalCode?: Prisma.StringFilter<"Property"> | string
-  type?: Prisma.StringFilter<"Property"> | string
-  saleType?: Prisma.StringFilter<"Property"> | string
+  location?: Prisma.StringNullableFilter<"Property"> | string | null
+  county?: Prisma.StringNullableFilter<"Property"> | string | null
+  address?: Prisma.StringNullableFilter<"Property"> | string | null
+  postalCode?: Prisma.StringNullableFilter<"Property"> | string | null
+  type?: Prisma.StringNullableFilter<"Property"> | string | null
+  saleType?: Prisma.StringNullableFilter<"Property"> | string | null
   status?: Prisma.EnumPropertyStatusFilter<"Property"> | $Enums.PropertyStatus
-  stage?: Prisma.EnumPropertyStageFilter<"Property"> | $Enums.PropertyStage
-  priceMin?: Prisma.DecimalFilter<"Property"> | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax?: Prisma.DecimalFilter<"Property"> | runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin?: Prisma.IntFilter<"Property"> | number
-  bedroomsMax?: Prisma.IntFilter<"Property"> | number
-  bathroomsMin?: Prisma.IntFilter<"Property"> | number
-  bathroomsMax?: Prisma.IntFilter<"Property"> | number
-  sizeSqm?: Prisma.IntFilter<"Property"> | number
+  stage?: Prisma.EnumPropertyStageNullableFilter<"Property"> | $Enums.PropertyStage | null
+  priceMin?: Prisma.DecimalNullableFilter<"Property"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: Prisma.DecimalNullableFilter<"Property"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: Prisma.IntNullableFilter<"Property"> | number | null
+  bedroomsMax?: Prisma.IntNullableFilter<"Property"> | number | null
+  bathroomsMin?: Prisma.IntNullableFilter<"Property"> | number | null
+  bathroomsMax?: Prisma.IntNullableFilter<"Property"> | number | null
+  sizeSqm?: Prisma.DecimalNullableFilter<"Property"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: Prisma.StringNullableFilter<"Property"> | string | null
   completionYear?: Prisma.IntNullableFilter<"Property"> | number | null
   description?: Prisma.StringNullableFilter<"Property"> | string | null
@@ -1326,27 +1567,33 @@ export type PropertyScalarWhereInput = {
   agentId?: Prisma.StringNullableFilter<"Property"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Property"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Property"> | Date | string
+  publicationStatus?: Prisma.EnumPublicationStatusFilter<"Property"> | $Enums.PublicationStatus
+  developmentId?: Prisma.StringNullableFilter<"Property"> | string | null
+  slug?: Prisma.StringNullableFilter<"Property"> | string | null
+  sizeSqmMax?: Prisma.DecimalNullableFilter<"Property"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.IntNullableListFilter<"Property">
+  bathroomOptions?: Prisma.IntNullableListFilter<"Property">
 }
 
 export type PropertyCreateWithoutMediaInput = {
   id?: string
-  sourceKey: string
+  sourceKey?: string | null
   name: string
-  location: string
-  county: string
-  address: string
-  postalCode: string
-  type: string
-  saleType: string
-  status: $Enums.PropertyStatus
-  stage: $Enums.PropertyStage
-  priceMin: runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax: runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin: number
-  bedroomsMax: number
-  bathroomsMin: number
-  bathroomsMax: number
-  sizeSqm: number
+  location?: string | null
+  county?: string | null
+  address?: string | null
+  postalCode?: string | null
+  type?: string | null
+  saleType?: string | null
+  status?: $Enums.PropertyStatus
+  stage?: $Enums.PropertyStage | null
+  priceMin?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: number | null
+  bedroomsMax?: number | null
+  bathroomsMin?: number | null
+  bathroomsMax?: number | null
+  sizeSqm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: string | null
   completionYear?: number | null
   description?: string | null
@@ -1354,6 +1601,11 @@ export type PropertyCreateWithoutMediaInput = {
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  publicationStatus?: $Enums.PublicationStatus
+  slug?: string | null
+  sizeSqmMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyCreatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyCreatebathroomOptionsInput | number[]
   agent?: Prisma.UserCreateNestedOneWithoutPropertiesInput
   features?: Prisma.PropertyFeatureCreateNestedManyWithoutPropertyInput
   valueHistory?: Prisma.PropertyValueHistoryCreateNestedManyWithoutPropertyInput
@@ -1365,27 +1617,29 @@ export type PropertyCreateWithoutMediaInput = {
   analyticsEvents?: Prisma.AnalyticsEventCreateNestedManyWithoutPropertyInput
   ragDocuments?: Prisma.RagDocumentCreateNestedManyWithoutPropertyInput
   aiJobs?: Prisma.AiJobCreateNestedManyWithoutPropertyInput
+  templateLinks?: Prisma.TemplatePropertyCreateNestedManyWithoutPropertyInput
+  development?: Prisma.DevelopmentCreateNestedOneWithoutPropertiesInput
 }
 
 export type PropertyUncheckedCreateWithoutMediaInput = {
   id?: string
-  sourceKey: string
+  sourceKey?: string | null
   name: string
-  location: string
-  county: string
-  address: string
-  postalCode: string
-  type: string
-  saleType: string
-  status: $Enums.PropertyStatus
-  stage: $Enums.PropertyStage
-  priceMin: runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax: runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin: number
-  bedroomsMax: number
-  bathroomsMin: number
-  bathroomsMax: number
-  sizeSqm: number
+  location?: string | null
+  county?: string | null
+  address?: string | null
+  postalCode?: string | null
+  type?: string | null
+  saleType?: string | null
+  status?: $Enums.PropertyStatus
+  stage?: $Enums.PropertyStage | null
+  priceMin?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: number | null
+  bedroomsMax?: number | null
+  bathroomsMin?: number | null
+  bathroomsMax?: number | null
+  sizeSqm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: string | null
   completionYear?: number | null
   description?: string | null
@@ -1394,6 +1648,12 @@ export type PropertyUncheckedCreateWithoutMediaInput = {
   agentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  publicationStatus?: $Enums.PublicationStatus
+  developmentId?: string | null
+  slug?: string | null
+  sizeSqmMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyCreatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyCreatebathroomOptionsInput | number[]
   features?: Prisma.PropertyFeatureUncheckedCreateNestedManyWithoutPropertyInput
   valueHistory?: Prisma.PropertyValueHistoryUncheckedCreateNestedManyWithoutPropertyInput
   savedBy?: Prisma.SavedPropertyUncheckedCreateNestedManyWithoutPropertyInput
@@ -1404,6 +1664,7 @@ export type PropertyUncheckedCreateWithoutMediaInput = {
   analyticsEvents?: Prisma.AnalyticsEventUncheckedCreateNestedManyWithoutPropertyInput
   ragDocuments?: Prisma.RagDocumentUncheckedCreateNestedManyWithoutPropertyInput
   aiJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutPropertyInput
+  templateLinks?: Prisma.TemplatePropertyUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutMediaInput = {
@@ -1424,23 +1685,23 @@ export type PropertyUpdateToOneWithWhereWithoutMediaInput = {
 
 export type PropertyUpdateWithoutMediaInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  sourceKey?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  location?: Prisma.StringFieldUpdateOperationsInput | string
-  county?: Prisma.StringFieldUpdateOperationsInput | string
-  address?: Prisma.StringFieldUpdateOperationsInput | string
-  postalCode?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  saleType?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  county?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  saleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPropertyStatusFieldUpdateOperationsInput | $Enums.PropertyStatus
-  stage?: Prisma.EnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage
-  priceMin?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bedroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
+  stage?: Prisma.NullableEnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage | null
+  priceMin?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bedroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1448,6 +1709,11 @@ export type PropertyUpdateWithoutMediaInput = {
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publicationStatus?: Prisma.EnumPublicationStatusFieldUpdateOperationsInput | $Enums.PublicationStatus
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeSqmMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyUpdatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyUpdatebathroomOptionsInput | number[]
   agent?: Prisma.UserUpdateOneWithoutPropertiesNestedInput
   features?: Prisma.PropertyFeatureUpdateManyWithoutPropertyNestedInput
   valueHistory?: Prisma.PropertyValueHistoryUpdateManyWithoutPropertyNestedInput
@@ -1459,27 +1725,29 @@ export type PropertyUpdateWithoutMediaInput = {
   analyticsEvents?: Prisma.AnalyticsEventUpdateManyWithoutPropertyNestedInput
   ragDocuments?: Prisma.RagDocumentUpdateManyWithoutPropertyNestedInput
   aiJobs?: Prisma.AiJobUpdateManyWithoutPropertyNestedInput
+  templateLinks?: Prisma.TemplatePropertyUpdateManyWithoutPropertyNestedInput
+  development?: Prisma.DevelopmentUpdateOneWithoutPropertiesNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutMediaInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  sourceKey?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  location?: Prisma.StringFieldUpdateOperationsInput | string
-  county?: Prisma.StringFieldUpdateOperationsInput | string
-  address?: Prisma.StringFieldUpdateOperationsInput | string
-  postalCode?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  saleType?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  county?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  saleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPropertyStatusFieldUpdateOperationsInput | $Enums.PropertyStatus
-  stage?: Prisma.EnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage
-  priceMin?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bedroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
+  stage?: Prisma.NullableEnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage | null
+  priceMin?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bedroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1488,6 +1756,12 @@ export type PropertyUncheckedUpdateWithoutMediaInput = {
   agentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publicationStatus?: Prisma.EnumPublicationStatusFieldUpdateOperationsInput | $Enums.PublicationStatus
+  developmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeSqmMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyUpdatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyUpdatebathroomOptionsInput | number[]
   features?: Prisma.PropertyFeatureUncheckedUpdateManyWithoutPropertyNestedInput
   valueHistory?: Prisma.PropertyValueHistoryUncheckedUpdateManyWithoutPropertyNestedInput
   savedBy?: Prisma.SavedPropertyUncheckedUpdateManyWithoutPropertyNestedInput
@@ -1498,27 +1772,28 @@ export type PropertyUncheckedUpdateWithoutMediaInput = {
   analyticsEvents?: Prisma.AnalyticsEventUncheckedUpdateManyWithoutPropertyNestedInput
   ragDocuments?: Prisma.RagDocumentUncheckedUpdateManyWithoutPropertyNestedInput
   aiJobs?: Prisma.AiJobUncheckedUpdateManyWithoutPropertyNestedInput
+  templateLinks?: Prisma.TemplatePropertyUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutFeaturesInput = {
   id?: string
-  sourceKey: string
+  sourceKey?: string | null
   name: string
-  location: string
-  county: string
-  address: string
-  postalCode: string
-  type: string
-  saleType: string
-  status: $Enums.PropertyStatus
-  stage: $Enums.PropertyStage
-  priceMin: runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax: runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin: number
-  bedroomsMax: number
-  bathroomsMin: number
-  bathroomsMax: number
-  sizeSqm: number
+  location?: string | null
+  county?: string | null
+  address?: string | null
+  postalCode?: string | null
+  type?: string | null
+  saleType?: string | null
+  status?: $Enums.PropertyStatus
+  stage?: $Enums.PropertyStage | null
+  priceMin?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: number | null
+  bedroomsMax?: number | null
+  bathroomsMin?: number | null
+  bathroomsMax?: number | null
+  sizeSqm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: string | null
   completionYear?: number | null
   description?: string | null
@@ -1526,6 +1801,11 @@ export type PropertyCreateWithoutFeaturesInput = {
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  publicationStatus?: $Enums.PublicationStatus
+  slug?: string | null
+  sizeSqmMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyCreatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyCreatebathroomOptionsInput | number[]
   agent?: Prisma.UserCreateNestedOneWithoutPropertiesInput
   media?: Prisma.PropertyMediaCreateNestedManyWithoutPropertyInput
   valueHistory?: Prisma.PropertyValueHistoryCreateNestedManyWithoutPropertyInput
@@ -1537,27 +1817,29 @@ export type PropertyCreateWithoutFeaturesInput = {
   analyticsEvents?: Prisma.AnalyticsEventCreateNestedManyWithoutPropertyInput
   ragDocuments?: Prisma.RagDocumentCreateNestedManyWithoutPropertyInput
   aiJobs?: Prisma.AiJobCreateNestedManyWithoutPropertyInput
+  templateLinks?: Prisma.TemplatePropertyCreateNestedManyWithoutPropertyInput
+  development?: Prisma.DevelopmentCreateNestedOneWithoutPropertiesInput
 }
 
 export type PropertyUncheckedCreateWithoutFeaturesInput = {
   id?: string
-  sourceKey: string
+  sourceKey?: string | null
   name: string
-  location: string
-  county: string
-  address: string
-  postalCode: string
-  type: string
-  saleType: string
-  status: $Enums.PropertyStatus
-  stage: $Enums.PropertyStage
-  priceMin: runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax: runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin: number
-  bedroomsMax: number
-  bathroomsMin: number
-  bathroomsMax: number
-  sizeSqm: number
+  location?: string | null
+  county?: string | null
+  address?: string | null
+  postalCode?: string | null
+  type?: string | null
+  saleType?: string | null
+  status?: $Enums.PropertyStatus
+  stage?: $Enums.PropertyStage | null
+  priceMin?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: number | null
+  bedroomsMax?: number | null
+  bathroomsMin?: number | null
+  bathroomsMax?: number | null
+  sizeSqm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: string | null
   completionYear?: number | null
   description?: string | null
@@ -1566,6 +1848,12 @@ export type PropertyUncheckedCreateWithoutFeaturesInput = {
   agentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  publicationStatus?: $Enums.PublicationStatus
+  developmentId?: string | null
+  slug?: string | null
+  sizeSqmMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyCreatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyCreatebathroomOptionsInput | number[]
   media?: Prisma.PropertyMediaUncheckedCreateNestedManyWithoutPropertyInput
   valueHistory?: Prisma.PropertyValueHistoryUncheckedCreateNestedManyWithoutPropertyInput
   savedBy?: Prisma.SavedPropertyUncheckedCreateNestedManyWithoutPropertyInput
@@ -1576,6 +1864,7 @@ export type PropertyUncheckedCreateWithoutFeaturesInput = {
   analyticsEvents?: Prisma.AnalyticsEventUncheckedCreateNestedManyWithoutPropertyInput
   ragDocuments?: Prisma.RagDocumentUncheckedCreateNestedManyWithoutPropertyInput
   aiJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutPropertyInput
+  templateLinks?: Prisma.TemplatePropertyUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutFeaturesInput = {
@@ -1596,23 +1885,23 @@ export type PropertyUpdateToOneWithWhereWithoutFeaturesInput = {
 
 export type PropertyUpdateWithoutFeaturesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  sourceKey?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  location?: Prisma.StringFieldUpdateOperationsInput | string
-  county?: Prisma.StringFieldUpdateOperationsInput | string
-  address?: Prisma.StringFieldUpdateOperationsInput | string
-  postalCode?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  saleType?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  county?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  saleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPropertyStatusFieldUpdateOperationsInput | $Enums.PropertyStatus
-  stage?: Prisma.EnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage
-  priceMin?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bedroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
+  stage?: Prisma.NullableEnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage | null
+  priceMin?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bedroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1620,6 +1909,11 @@ export type PropertyUpdateWithoutFeaturesInput = {
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publicationStatus?: Prisma.EnumPublicationStatusFieldUpdateOperationsInput | $Enums.PublicationStatus
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeSqmMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyUpdatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyUpdatebathroomOptionsInput | number[]
   agent?: Prisma.UserUpdateOneWithoutPropertiesNestedInput
   media?: Prisma.PropertyMediaUpdateManyWithoutPropertyNestedInput
   valueHistory?: Prisma.PropertyValueHistoryUpdateManyWithoutPropertyNestedInput
@@ -1631,27 +1925,29 @@ export type PropertyUpdateWithoutFeaturesInput = {
   analyticsEvents?: Prisma.AnalyticsEventUpdateManyWithoutPropertyNestedInput
   ragDocuments?: Prisma.RagDocumentUpdateManyWithoutPropertyNestedInput
   aiJobs?: Prisma.AiJobUpdateManyWithoutPropertyNestedInput
+  templateLinks?: Prisma.TemplatePropertyUpdateManyWithoutPropertyNestedInput
+  development?: Prisma.DevelopmentUpdateOneWithoutPropertiesNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutFeaturesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  sourceKey?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  location?: Prisma.StringFieldUpdateOperationsInput | string
-  county?: Prisma.StringFieldUpdateOperationsInput | string
-  address?: Prisma.StringFieldUpdateOperationsInput | string
-  postalCode?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  saleType?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  county?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  saleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPropertyStatusFieldUpdateOperationsInput | $Enums.PropertyStatus
-  stage?: Prisma.EnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage
-  priceMin?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bedroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
+  stage?: Prisma.NullableEnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage | null
+  priceMin?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bedroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1660,6 +1956,12 @@ export type PropertyUncheckedUpdateWithoutFeaturesInput = {
   agentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publicationStatus?: Prisma.EnumPublicationStatusFieldUpdateOperationsInput | $Enums.PublicationStatus
+  developmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeSqmMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyUpdatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyUpdatebathroomOptionsInput | number[]
   media?: Prisma.PropertyMediaUncheckedUpdateManyWithoutPropertyNestedInput
   valueHistory?: Prisma.PropertyValueHistoryUncheckedUpdateManyWithoutPropertyNestedInput
   savedBy?: Prisma.SavedPropertyUncheckedUpdateManyWithoutPropertyNestedInput
@@ -1670,27 +1972,28 @@ export type PropertyUncheckedUpdateWithoutFeaturesInput = {
   analyticsEvents?: Prisma.AnalyticsEventUncheckedUpdateManyWithoutPropertyNestedInput
   ragDocuments?: Prisma.RagDocumentUncheckedUpdateManyWithoutPropertyNestedInput
   aiJobs?: Prisma.AiJobUncheckedUpdateManyWithoutPropertyNestedInput
+  templateLinks?: Prisma.TemplatePropertyUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutValueHistoryInput = {
   id?: string
-  sourceKey: string
+  sourceKey?: string | null
   name: string
-  location: string
-  county: string
-  address: string
-  postalCode: string
-  type: string
-  saleType: string
-  status: $Enums.PropertyStatus
-  stage: $Enums.PropertyStage
-  priceMin: runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax: runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin: number
-  bedroomsMax: number
-  bathroomsMin: number
-  bathroomsMax: number
-  sizeSqm: number
+  location?: string | null
+  county?: string | null
+  address?: string | null
+  postalCode?: string | null
+  type?: string | null
+  saleType?: string | null
+  status?: $Enums.PropertyStatus
+  stage?: $Enums.PropertyStage | null
+  priceMin?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: number | null
+  bedroomsMax?: number | null
+  bathroomsMin?: number | null
+  bathroomsMax?: number | null
+  sizeSqm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: string | null
   completionYear?: number | null
   description?: string | null
@@ -1698,6 +2001,11 @@ export type PropertyCreateWithoutValueHistoryInput = {
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  publicationStatus?: $Enums.PublicationStatus
+  slug?: string | null
+  sizeSqmMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyCreatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyCreatebathroomOptionsInput | number[]
   agent?: Prisma.UserCreateNestedOneWithoutPropertiesInput
   media?: Prisma.PropertyMediaCreateNestedManyWithoutPropertyInput
   features?: Prisma.PropertyFeatureCreateNestedManyWithoutPropertyInput
@@ -1709,27 +2017,29 @@ export type PropertyCreateWithoutValueHistoryInput = {
   analyticsEvents?: Prisma.AnalyticsEventCreateNestedManyWithoutPropertyInput
   ragDocuments?: Prisma.RagDocumentCreateNestedManyWithoutPropertyInput
   aiJobs?: Prisma.AiJobCreateNestedManyWithoutPropertyInput
+  templateLinks?: Prisma.TemplatePropertyCreateNestedManyWithoutPropertyInput
+  development?: Prisma.DevelopmentCreateNestedOneWithoutPropertiesInput
 }
 
 export type PropertyUncheckedCreateWithoutValueHistoryInput = {
   id?: string
-  sourceKey: string
+  sourceKey?: string | null
   name: string
-  location: string
-  county: string
-  address: string
-  postalCode: string
-  type: string
-  saleType: string
-  status: $Enums.PropertyStatus
-  stage: $Enums.PropertyStage
-  priceMin: runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax: runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin: number
-  bedroomsMax: number
-  bathroomsMin: number
-  bathroomsMax: number
-  sizeSqm: number
+  location?: string | null
+  county?: string | null
+  address?: string | null
+  postalCode?: string | null
+  type?: string | null
+  saleType?: string | null
+  status?: $Enums.PropertyStatus
+  stage?: $Enums.PropertyStage | null
+  priceMin?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: number | null
+  bedroomsMax?: number | null
+  bathroomsMin?: number | null
+  bathroomsMax?: number | null
+  sizeSqm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: string | null
   completionYear?: number | null
   description?: string | null
@@ -1738,6 +2048,12 @@ export type PropertyUncheckedCreateWithoutValueHistoryInput = {
   agentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  publicationStatus?: $Enums.PublicationStatus
+  developmentId?: string | null
+  slug?: string | null
+  sizeSqmMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyCreatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyCreatebathroomOptionsInput | number[]
   media?: Prisma.PropertyMediaUncheckedCreateNestedManyWithoutPropertyInput
   features?: Prisma.PropertyFeatureUncheckedCreateNestedManyWithoutPropertyInput
   savedBy?: Prisma.SavedPropertyUncheckedCreateNestedManyWithoutPropertyInput
@@ -1748,6 +2064,7 @@ export type PropertyUncheckedCreateWithoutValueHistoryInput = {
   analyticsEvents?: Prisma.AnalyticsEventUncheckedCreateNestedManyWithoutPropertyInput
   ragDocuments?: Prisma.RagDocumentUncheckedCreateNestedManyWithoutPropertyInput
   aiJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutPropertyInput
+  templateLinks?: Prisma.TemplatePropertyUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutValueHistoryInput = {
@@ -1768,23 +2085,23 @@ export type PropertyUpdateToOneWithWhereWithoutValueHistoryInput = {
 
 export type PropertyUpdateWithoutValueHistoryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  sourceKey?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  location?: Prisma.StringFieldUpdateOperationsInput | string
-  county?: Prisma.StringFieldUpdateOperationsInput | string
-  address?: Prisma.StringFieldUpdateOperationsInput | string
-  postalCode?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  saleType?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  county?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  saleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPropertyStatusFieldUpdateOperationsInput | $Enums.PropertyStatus
-  stage?: Prisma.EnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage
-  priceMin?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bedroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
+  stage?: Prisma.NullableEnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage | null
+  priceMin?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bedroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1792,6 +2109,11 @@ export type PropertyUpdateWithoutValueHistoryInput = {
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publicationStatus?: Prisma.EnumPublicationStatusFieldUpdateOperationsInput | $Enums.PublicationStatus
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeSqmMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyUpdatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyUpdatebathroomOptionsInput | number[]
   agent?: Prisma.UserUpdateOneWithoutPropertiesNestedInput
   media?: Prisma.PropertyMediaUpdateManyWithoutPropertyNestedInput
   features?: Prisma.PropertyFeatureUpdateManyWithoutPropertyNestedInput
@@ -1803,27 +2125,29 @@ export type PropertyUpdateWithoutValueHistoryInput = {
   analyticsEvents?: Prisma.AnalyticsEventUpdateManyWithoutPropertyNestedInput
   ragDocuments?: Prisma.RagDocumentUpdateManyWithoutPropertyNestedInput
   aiJobs?: Prisma.AiJobUpdateManyWithoutPropertyNestedInput
+  templateLinks?: Prisma.TemplatePropertyUpdateManyWithoutPropertyNestedInput
+  development?: Prisma.DevelopmentUpdateOneWithoutPropertiesNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutValueHistoryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  sourceKey?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  location?: Prisma.StringFieldUpdateOperationsInput | string
-  county?: Prisma.StringFieldUpdateOperationsInput | string
-  address?: Prisma.StringFieldUpdateOperationsInput | string
-  postalCode?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  saleType?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  county?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  saleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPropertyStatusFieldUpdateOperationsInput | $Enums.PropertyStatus
-  stage?: Prisma.EnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage
-  priceMin?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bedroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
+  stage?: Prisma.NullableEnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage | null
+  priceMin?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bedroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1832,6 +2156,12 @@ export type PropertyUncheckedUpdateWithoutValueHistoryInput = {
   agentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publicationStatus?: Prisma.EnumPublicationStatusFieldUpdateOperationsInput | $Enums.PublicationStatus
+  developmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeSqmMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyUpdatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyUpdatebathroomOptionsInput | number[]
   media?: Prisma.PropertyMediaUncheckedUpdateManyWithoutPropertyNestedInput
   features?: Prisma.PropertyFeatureUncheckedUpdateManyWithoutPropertyNestedInput
   savedBy?: Prisma.SavedPropertyUncheckedUpdateManyWithoutPropertyNestedInput
@@ -1842,27 +2172,28 @@ export type PropertyUncheckedUpdateWithoutValueHistoryInput = {
   analyticsEvents?: Prisma.AnalyticsEventUncheckedUpdateManyWithoutPropertyNestedInput
   ragDocuments?: Prisma.RagDocumentUncheckedUpdateManyWithoutPropertyNestedInput
   aiJobs?: Prisma.AiJobUncheckedUpdateManyWithoutPropertyNestedInput
+  templateLinks?: Prisma.TemplatePropertyUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutSavedByInput = {
   id?: string
-  sourceKey: string
+  sourceKey?: string | null
   name: string
-  location: string
-  county: string
-  address: string
-  postalCode: string
-  type: string
-  saleType: string
-  status: $Enums.PropertyStatus
-  stage: $Enums.PropertyStage
-  priceMin: runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax: runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin: number
-  bedroomsMax: number
-  bathroomsMin: number
-  bathroomsMax: number
-  sizeSqm: number
+  location?: string | null
+  county?: string | null
+  address?: string | null
+  postalCode?: string | null
+  type?: string | null
+  saleType?: string | null
+  status?: $Enums.PropertyStatus
+  stage?: $Enums.PropertyStage | null
+  priceMin?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: number | null
+  bedroomsMax?: number | null
+  bathroomsMin?: number | null
+  bathroomsMax?: number | null
+  sizeSqm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: string | null
   completionYear?: number | null
   description?: string | null
@@ -1870,6 +2201,11 @@ export type PropertyCreateWithoutSavedByInput = {
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  publicationStatus?: $Enums.PublicationStatus
+  slug?: string | null
+  sizeSqmMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyCreatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyCreatebathroomOptionsInput | number[]
   agent?: Prisma.UserCreateNestedOneWithoutPropertiesInput
   media?: Prisma.PropertyMediaCreateNestedManyWithoutPropertyInput
   features?: Prisma.PropertyFeatureCreateNestedManyWithoutPropertyInput
@@ -1881,27 +2217,29 @@ export type PropertyCreateWithoutSavedByInput = {
   analyticsEvents?: Prisma.AnalyticsEventCreateNestedManyWithoutPropertyInput
   ragDocuments?: Prisma.RagDocumentCreateNestedManyWithoutPropertyInput
   aiJobs?: Prisma.AiJobCreateNestedManyWithoutPropertyInput
+  templateLinks?: Prisma.TemplatePropertyCreateNestedManyWithoutPropertyInput
+  development?: Prisma.DevelopmentCreateNestedOneWithoutPropertiesInput
 }
 
 export type PropertyUncheckedCreateWithoutSavedByInput = {
   id?: string
-  sourceKey: string
+  sourceKey?: string | null
   name: string
-  location: string
-  county: string
-  address: string
-  postalCode: string
-  type: string
-  saleType: string
-  status: $Enums.PropertyStatus
-  stage: $Enums.PropertyStage
-  priceMin: runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax: runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin: number
-  bedroomsMax: number
-  bathroomsMin: number
-  bathroomsMax: number
-  sizeSqm: number
+  location?: string | null
+  county?: string | null
+  address?: string | null
+  postalCode?: string | null
+  type?: string | null
+  saleType?: string | null
+  status?: $Enums.PropertyStatus
+  stage?: $Enums.PropertyStage | null
+  priceMin?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: number | null
+  bedroomsMax?: number | null
+  bathroomsMin?: number | null
+  bathroomsMax?: number | null
+  sizeSqm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: string | null
   completionYear?: number | null
   description?: string | null
@@ -1910,6 +2248,12 @@ export type PropertyUncheckedCreateWithoutSavedByInput = {
   agentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  publicationStatus?: $Enums.PublicationStatus
+  developmentId?: string | null
+  slug?: string | null
+  sizeSqmMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyCreatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyCreatebathroomOptionsInput | number[]
   media?: Prisma.PropertyMediaUncheckedCreateNestedManyWithoutPropertyInput
   features?: Prisma.PropertyFeatureUncheckedCreateNestedManyWithoutPropertyInput
   valueHistory?: Prisma.PropertyValueHistoryUncheckedCreateNestedManyWithoutPropertyInput
@@ -1920,6 +2264,7 @@ export type PropertyUncheckedCreateWithoutSavedByInput = {
   analyticsEvents?: Prisma.AnalyticsEventUncheckedCreateNestedManyWithoutPropertyInput
   ragDocuments?: Prisma.RagDocumentUncheckedCreateNestedManyWithoutPropertyInput
   aiJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutPropertyInput
+  templateLinks?: Prisma.TemplatePropertyUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutSavedByInput = {
@@ -1940,23 +2285,23 @@ export type PropertyUpdateToOneWithWhereWithoutSavedByInput = {
 
 export type PropertyUpdateWithoutSavedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  sourceKey?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  location?: Prisma.StringFieldUpdateOperationsInput | string
-  county?: Prisma.StringFieldUpdateOperationsInput | string
-  address?: Prisma.StringFieldUpdateOperationsInput | string
-  postalCode?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  saleType?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  county?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  saleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPropertyStatusFieldUpdateOperationsInput | $Enums.PropertyStatus
-  stage?: Prisma.EnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage
-  priceMin?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bedroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
+  stage?: Prisma.NullableEnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage | null
+  priceMin?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bedroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1964,6 +2309,11 @@ export type PropertyUpdateWithoutSavedByInput = {
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publicationStatus?: Prisma.EnumPublicationStatusFieldUpdateOperationsInput | $Enums.PublicationStatus
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeSqmMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyUpdatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyUpdatebathroomOptionsInput | number[]
   agent?: Prisma.UserUpdateOneWithoutPropertiesNestedInput
   media?: Prisma.PropertyMediaUpdateManyWithoutPropertyNestedInput
   features?: Prisma.PropertyFeatureUpdateManyWithoutPropertyNestedInput
@@ -1975,27 +2325,29 @@ export type PropertyUpdateWithoutSavedByInput = {
   analyticsEvents?: Prisma.AnalyticsEventUpdateManyWithoutPropertyNestedInput
   ragDocuments?: Prisma.RagDocumentUpdateManyWithoutPropertyNestedInput
   aiJobs?: Prisma.AiJobUpdateManyWithoutPropertyNestedInput
+  templateLinks?: Prisma.TemplatePropertyUpdateManyWithoutPropertyNestedInput
+  development?: Prisma.DevelopmentUpdateOneWithoutPropertiesNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutSavedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  sourceKey?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  location?: Prisma.StringFieldUpdateOperationsInput | string
-  county?: Prisma.StringFieldUpdateOperationsInput | string
-  address?: Prisma.StringFieldUpdateOperationsInput | string
-  postalCode?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  saleType?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  county?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  saleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPropertyStatusFieldUpdateOperationsInput | $Enums.PropertyStatus
-  stage?: Prisma.EnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage
-  priceMin?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bedroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
+  stage?: Prisma.NullableEnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage | null
+  priceMin?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bedroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2004,6 +2356,12 @@ export type PropertyUncheckedUpdateWithoutSavedByInput = {
   agentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publicationStatus?: Prisma.EnumPublicationStatusFieldUpdateOperationsInput | $Enums.PublicationStatus
+  developmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeSqmMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyUpdatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyUpdatebathroomOptionsInput | number[]
   media?: Prisma.PropertyMediaUncheckedUpdateManyWithoutPropertyNestedInput
   features?: Prisma.PropertyFeatureUncheckedUpdateManyWithoutPropertyNestedInput
   valueHistory?: Prisma.PropertyValueHistoryUncheckedUpdateManyWithoutPropertyNestedInput
@@ -2014,27 +2372,28 @@ export type PropertyUncheckedUpdateWithoutSavedByInput = {
   analyticsEvents?: Prisma.AnalyticsEventUncheckedUpdateManyWithoutPropertyNestedInput
   ragDocuments?: Prisma.RagDocumentUncheckedUpdateManyWithoutPropertyNestedInput
   aiJobs?: Prisma.AiJobUncheckedUpdateManyWithoutPropertyNestedInput
+  templateLinks?: Prisma.TemplatePropertyUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutInterestsInput = {
   id?: string
-  sourceKey: string
+  sourceKey?: string | null
   name: string
-  location: string
-  county: string
-  address: string
-  postalCode: string
-  type: string
-  saleType: string
-  status: $Enums.PropertyStatus
-  stage: $Enums.PropertyStage
-  priceMin: runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax: runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin: number
-  bedroomsMax: number
-  bathroomsMin: number
-  bathroomsMax: number
-  sizeSqm: number
+  location?: string | null
+  county?: string | null
+  address?: string | null
+  postalCode?: string | null
+  type?: string | null
+  saleType?: string | null
+  status?: $Enums.PropertyStatus
+  stage?: $Enums.PropertyStage | null
+  priceMin?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: number | null
+  bedroomsMax?: number | null
+  bathroomsMin?: number | null
+  bathroomsMax?: number | null
+  sizeSqm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: string | null
   completionYear?: number | null
   description?: string | null
@@ -2042,6 +2401,11 @@ export type PropertyCreateWithoutInterestsInput = {
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  publicationStatus?: $Enums.PublicationStatus
+  slug?: string | null
+  sizeSqmMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyCreatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyCreatebathroomOptionsInput | number[]
   agent?: Prisma.UserCreateNestedOneWithoutPropertiesInput
   media?: Prisma.PropertyMediaCreateNestedManyWithoutPropertyInput
   features?: Prisma.PropertyFeatureCreateNestedManyWithoutPropertyInput
@@ -2053,27 +2417,29 @@ export type PropertyCreateWithoutInterestsInput = {
   analyticsEvents?: Prisma.AnalyticsEventCreateNestedManyWithoutPropertyInput
   ragDocuments?: Prisma.RagDocumentCreateNestedManyWithoutPropertyInput
   aiJobs?: Prisma.AiJobCreateNestedManyWithoutPropertyInput
+  templateLinks?: Prisma.TemplatePropertyCreateNestedManyWithoutPropertyInput
+  development?: Prisma.DevelopmentCreateNestedOneWithoutPropertiesInput
 }
 
 export type PropertyUncheckedCreateWithoutInterestsInput = {
   id?: string
-  sourceKey: string
+  sourceKey?: string | null
   name: string
-  location: string
-  county: string
-  address: string
-  postalCode: string
-  type: string
-  saleType: string
-  status: $Enums.PropertyStatus
-  stage: $Enums.PropertyStage
-  priceMin: runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax: runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin: number
-  bedroomsMax: number
-  bathroomsMin: number
-  bathroomsMax: number
-  sizeSqm: number
+  location?: string | null
+  county?: string | null
+  address?: string | null
+  postalCode?: string | null
+  type?: string | null
+  saleType?: string | null
+  status?: $Enums.PropertyStatus
+  stage?: $Enums.PropertyStage | null
+  priceMin?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: number | null
+  bedroomsMax?: number | null
+  bathroomsMin?: number | null
+  bathroomsMax?: number | null
+  sizeSqm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: string | null
   completionYear?: number | null
   description?: string | null
@@ -2082,6 +2448,12 @@ export type PropertyUncheckedCreateWithoutInterestsInput = {
   agentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  publicationStatus?: $Enums.PublicationStatus
+  developmentId?: string | null
+  slug?: string | null
+  sizeSqmMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyCreatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyCreatebathroomOptionsInput | number[]
   media?: Prisma.PropertyMediaUncheckedCreateNestedManyWithoutPropertyInput
   features?: Prisma.PropertyFeatureUncheckedCreateNestedManyWithoutPropertyInput
   valueHistory?: Prisma.PropertyValueHistoryUncheckedCreateNestedManyWithoutPropertyInput
@@ -2092,6 +2464,7 @@ export type PropertyUncheckedCreateWithoutInterestsInput = {
   analyticsEvents?: Prisma.AnalyticsEventUncheckedCreateNestedManyWithoutPropertyInput
   ragDocuments?: Prisma.RagDocumentUncheckedCreateNestedManyWithoutPropertyInput
   aiJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutPropertyInput
+  templateLinks?: Prisma.TemplatePropertyUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutInterestsInput = {
@@ -2112,23 +2485,23 @@ export type PropertyUpdateToOneWithWhereWithoutInterestsInput = {
 
 export type PropertyUpdateWithoutInterestsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  sourceKey?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  location?: Prisma.StringFieldUpdateOperationsInput | string
-  county?: Prisma.StringFieldUpdateOperationsInput | string
-  address?: Prisma.StringFieldUpdateOperationsInput | string
-  postalCode?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  saleType?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  county?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  saleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPropertyStatusFieldUpdateOperationsInput | $Enums.PropertyStatus
-  stage?: Prisma.EnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage
-  priceMin?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bedroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
+  stage?: Prisma.NullableEnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage | null
+  priceMin?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bedroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2136,6 +2509,11 @@ export type PropertyUpdateWithoutInterestsInput = {
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publicationStatus?: Prisma.EnumPublicationStatusFieldUpdateOperationsInput | $Enums.PublicationStatus
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeSqmMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyUpdatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyUpdatebathroomOptionsInput | number[]
   agent?: Prisma.UserUpdateOneWithoutPropertiesNestedInput
   media?: Prisma.PropertyMediaUpdateManyWithoutPropertyNestedInput
   features?: Prisma.PropertyFeatureUpdateManyWithoutPropertyNestedInput
@@ -2147,27 +2525,29 @@ export type PropertyUpdateWithoutInterestsInput = {
   analyticsEvents?: Prisma.AnalyticsEventUpdateManyWithoutPropertyNestedInput
   ragDocuments?: Prisma.RagDocumentUpdateManyWithoutPropertyNestedInput
   aiJobs?: Prisma.AiJobUpdateManyWithoutPropertyNestedInput
+  templateLinks?: Prisma.TemplatePropertyUpdateManyWithoutPropertyNestedInput
+  development?: Prisma.DevelopmentUpdateOneWithoutPropertiesNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutInterestsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  sourceKey?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  location?: Prisma.StringFieldUpdateOperationsInput | string
-  county?: Prisma.StringFieldUpdateOperationsInput | string
-  address?: Prisma.StringFieldUpdateOperationsInput | string
-  postalCode?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  saleType?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  county?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  saleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPropertyStatusFieldUpdateOperationsInput | $Enums.PropertyStatus
-  stage?: Prisma.EnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage
-  priceMin?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bedroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
+  stage?: Prisma.NullableEnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage | null
+  priceMin?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bedroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2176,6 +2556,12 @@ export type PropertyUncheckedUpdateWithoutInterestsInput = {
   agentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publicationStatus?: Prisma.EnumPublicationStatusFieldUpdateOperationsInput | $Enums.PublicationStatus
+  developmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeSqmMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyUpdatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyUpdatebathroomOptionsInput | number[]
   media?: Prisma.PropertyMediaUncheckedUpdateManyWithoutPropertyNestedInput
   features?: Prisma.PropertyFeatureUncheckedUpdateManyWithoutPropertyNestedInput
   valueHistory?: Prisma.PropertyValueHistoryUncheckedUpdateManyWithoutPropertyNestedInput
@@ -2186,27 +2572,28 @@ export type PropertyUncheckedUpdateWithoutInterestsInput = {
   analyticsEvents?: Prisma.AnalyticsEventUncheckedUpdateManyWithoutPropertyNestedInput
   ragDocuments?: Prisma.RagDocumentUncheckedUpdateManyWithoutPropertyNestedInput
   aiJobs?: Prisma.AiJobUncheckedUpdateManyWithoutPropertyNestedInput
+  templateLinks?: Prisma.TemplatePropertyUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutCampaignLinksInput = {
   id?: string
-  sourceKey: string
+  sourceKey?: string | null
   name: string
-  location: string
-  county: string
-  address: string
-  postalCode: string
-  type: string
-  saleType: string
-  status: $Enums.PropertyStatus
-  stage: $Enums.PropertyStage
-  priceMin: runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax: runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin: number
-  bedroomsMax: number
-  bathroomsMin: number
-  bathroomsMax: number
-  sizeSqm: number
+  location?: string | null
+  county?: string | null
+  address?: string | null
+  postalCode?: string | null
+  type?: string | null
+  saleType?: string | null
+  status?: $Enums.PropertyStatus
+  stage?: $Enums.PropertyStage | null
+  priceMin?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: number | null
+  bedroomsMax?: number | null
+  bathroomsMin?: number | null
+  bathroomsMax?: number | null
+  sizeSqm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: string | null
   completionYear?: number | null
   description?: string | null
@@ -2214,6 +2601,11 @@ export type PropertyCreateWithoutCampaignLinksInput = {
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  publicationStatus?: $Enums.PublicationStatus
+  slug?: string | null
+  sizeSqmMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyCreatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyCreatebathroomOptionsInput | number[]
   agent?: Prisma.UserCreateNestedOneWithoutPropertiesInput
   media?: Prisma.PropertyMediaCreateNestedManyWithoutPropertyInput
   features?: Prisma.PropertyFeatureCreateNestedManyWithoutPropertyInput
@@ -2225,27 +2617,29 @@ export type PropertyCreateWithoutCampaignLinksInput = {
   analyticsEvents?: Prisma.AnalyticsEventCreateNestedManyWithoutPropertyInput
   ragDocuments?: Prisma.RagDocumentCreateNestedManyWithoutPropertyInput
   aiJobs?: Prisma.AiJobCreateNestedManyWithoutPropertyInput
+  templateLinks?: Prisma.TemplatePropertyCreateNestedManyWithoutPropertyInput
+  development?: Prisma.DevelopmentCreateNestedOneWithoutPropertiesInput
 }
 
 export type PropertyUncheckedCreateWithoutCampaignLinksInput = {
   id?: string
-  sourceKey: string
+  sourceKey?: string | null
   name: string
-  location: string
-  county: string
-  address: string
-  postalCode: string
-  type: string
-  saleType: string
-  status: $Enums.PropertyStatus
-  stage: $Enums.PropertyStage
-  priceMin: runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax: runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin: number
-  bedroomsMax: number
-  bathroomsMin: number
-  bathroomsMax: number
-  sizeSqm: number
+  location?: string | null
+  county?: string | null
+  address?: string | null
+  postalCode?: string | null
+  type?: string | null
+  saleType?: string | null
+  status?: $Enums.PropertyStatus
+  stage?: $Enums.PropertyStage | null
+  priceMin?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: number | null
+  bedroomsMax?: number | null
+  bathroomsMin?: number | null
+  bathroomsMax?: number | null
+  sizeSqm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: string | null
   completionYear?: number | null
   description?: string | null
@@ -2254,6 +2648,12 @@ export type PropertyUncheckedCreateWithoutCampaignLinksInput = {
   agentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  publicationStatus?: $Enums.PublicationStatus
+  developmentId?: string | null
+  slug?: string | null
+  sizeSqmMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyCreatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyCreatebathroomOptionsInput | number[]
   media?: Prisma.PropertyMediaUncheckedCreateNestedManyWithoutPropertyInput
   features?: Prisma.PropertyFeatureUncheckedCreateNestedManyWithoutPropertyInput
   valueHistory?: Prisma.PropertyValueHistoryUncheckedCreateNestedManyWithoutPropertyInput
@@ -2264,6 +2664,7 @@ export type PropertyUncheckedCreateWithoutCampaignLinksInput = {
   analyticsEvents?: Prisma.AnalyticsEventUncheckedCreateNestedManyWithoutPropertyInput
   ragDocuments?: Prisma.RagDocumentUncheckedCreateNestedManyWithoutPropertyInput
   aiJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutPropertyInput
+  templateLinks?: Prisma.TemplatePropertyUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutCampaignLinksInput = {
@@ -2284,23 +2685,23 @@ export type PropertyUpdateToOneWithWhereWithoutCampaignLinksInput = {
 
 export type PropertyUpdateWithoutCampaignLinksInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  sourceKey?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  location?: Prisma.StringFieldUpdateOperationsInput | string
-  county?: Prisma.StringFieldUpdateOperationsInput | string
-  address?: Prisma.StringFieldUpdateOperationsInput | string
-  postalCode?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  saleType?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  county?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  saleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPropertyStatusFieldUpdateOperationsInput | $Enums.PropertyStatus
-  stage?: Prisma.EnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage
-  priceMin?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bedroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
+  stage?: Prisma.NullableEnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage | null
+  priceMin?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bedroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2308,6 +2709,11 @@ export type PropertyUpdateWithoutCampaignLinksInput = {
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publicationStatus?: Prisma.EnumPublicationStatusFieldUpdateOperationsInput | $Enums.PublicationStatus
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeSqmMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyUpdatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyUpdatebathroomOptionsInput | number[]
   agent?: Prisma.UserUpdateOneWithoutPropertiesNestedInput
   media?: Prisma.PropertyMediaUpdateManyWithoutPropertyNestedInput
   features?: Prisma.PropertyFeatureUpdateManyWithoutPropertyNestedInput
@@ -2319,27 +2725,29 @@ export type PropertyUpdateWithoutCampaignLinksInput = {
   analyticsEvents?: Prisma.AnalyticsEventUpdateManyWithoutPropertyNestedInput
   ragDocuments?: Prisma.RagDocumentUpdateManyWithoutPropertyNestedInput
   aiJobs?: Prisma.AiJobUpdateManyWithoutPropertyNestedInput
+  templateLinks?: Prisma.TemplatePropertyUpdateManyWithoutPropertyNestedInput
+  development?: Prisma.DevelopmentUpdateOneWithoutPropertiesNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutCampaignLinksInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  sourceKey?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  location?: Prisma.StringFieldUpdateOperationsInput | string
-  county?: Prisma.StringFieldUpdateOperationsInput | string
-  address?: Prisma.StringFieldUpdateOperationsInput | string
-  postalCode?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  saleType?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  county?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  saleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPropertyStatusFieldUpdateOperationsInput | $Enums.PropertyStatus
-  stage?: Prisma.EnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage
-  priceMin?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bedroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
+  stage?: Prisma.NullableEnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage | null
+  priceMin?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bedroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2348,6 +2756,12 @@ export type PropertyUncheckedUpdateWithoutCampaignLinksInput = {
   agentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publicationStatus?: Prisma.EnumPublicationStatusFieldUpdateOperationsInput | $Enums.PublicationStatus
+  developmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeSqmMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyUpdatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyUpdatebathroomOptionsInput | number[]
   media?: Prisma.PropertyMediaUncheckedUpdateManyWithoutPropertyNestedInput
   features?: Prisma.PropertyFeatureUncheckedUpdateManyWithoutPropertyNestedInput
   valueHistory?: Prisma.PropertyValueHistoryUncheckedUpdateManyWithoutPropertyNestedInput
@@ -2358,27 +2772,28 @@ export type PropertyUncheckedUpdateWithoutCampaignLinksInput = {
   analyticsEvents?: Prisma.AnalyticsEventUncheckedUpdateManyWithoutPropertyNestedInput
   ragDocuments?: Prisma.RagDocumentUncheckedUpdateManyWithoutPropertyNestedInput
   aiJobs?: Prisma.AiJobUncheckedUpdateManyWithoutPropertyNestedInput
+  templateLinks?: Prisma.TemplatePropertyUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutCampaignEventsInput = {
   id?: string
-  sourceKey: string
+  sourceKey?: string | null
   name: string
-  location: string
-  county: string
-  address: string
-  postalCode: string
-  type: string
-  saleType: string
-  status: $Enums.PropertyStatus
-  stage: $Enums.PropertyStage
-  priceMin: runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax: runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin: number
-  bedroomsMax: number
-  bathroomsMin: number
-  bathroomsMax: number
-  sizeSqm: number
+  location?: string | null
+  county?: string | null
+  address?: string | null
+  postalCode?: string | null
+  type?: string | null
+  saleType?: string | null
+  status?: $Enums.PropertyStatus
+  stage?: $Enums.PropertyStage | null
+  priceMin?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: number | null
+  bedroomsMax?: number | null
+  bathroomsMin?: number | null
+  bathroomsMax?: number | null
+  sizeSqm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: string | null
   completionYear?: number | null
   description?: string | null
@@ -2386,6 +2801,11 @@ export type PropertyCreateWithoutCampaignEventsInput = {
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  publicationStatus?: $Enums.PublicationStatus
+  slug?: string | null
+  sizeSqmMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyCreatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyCreatebathroomOptionsInput | number[]
   agent?: Prisma.UserCreateNestedOneWithoutPropertiesInput
   media?: Prisma.PropertyMediaCreateNestedManyWithoutPropertyInput
   features?: Prisma.PropertyFeatureCreateNestedManyWithoutPropertyInput
@@ -2397,27 +2817,29 @@ export type PropertyCreateWithoutCampaignEventsInput = {
   analyticsEvents?: Prisma.AnalyticsEventCreateNestedManyWithoutPropertyInput
   ragDocuments?: Prisma.RagDocumentCreateNestedManyWithoutPropertyInput
   aiJobs?: Prisma.AiJobCreateNestedManyWithoutPropertyInput
+  templateLinks?: Prisma.TemplatePropertyCreateNestedManyWithoutPropertyInput
+  development?: Prisma.DevelopmentCreateNestedOneWithoutPropertiesInput
 }
 
 export type PropertyUncheckedCreateWithoutCampaignEventsInput = {
   id?: string
-  sourceKey: string
+  sourceKey?: string | null
   name: string
-  location: string
-  county: string
-  address: string
-  postalCode: string
-  type: string
-  saleType: string
-  status: $Enums.PropertyStatus
-  stage: $Enums.PropertyStage
-  priceMin: runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax: runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin: number
-  bedroomsMax: number
-  bathroomsMin: number
-  bathroomsMax: number
-  sizeSqm: number
+  location?: string | null
+  county?: string | null
+  address?: string | null
+  postalCode?: string | null
+  type?: string | null
+  saleType?: string | null
+  status?: $Enums.PropertyStatus
+  stage?: $Enums.PropertyStage | null
+  priceMin?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: number | null
+  bedroomsMax?: number | null
+  bathroomsMin?: number | null
+  bathroomsMax?: number | null
+  sizeSqm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: string | null
   completionYear?: number | null
   description?: string | null
@@ -2426,6 +2848,12 @@ export type PropertyUncheckedCreateWithoutCampaignEventsInput = {
   agentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  publicationStatus?: $Enums.PublicationStatus
+  developmentId?: string | null
+  slug?: string | null
+  sizeSqmMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyCreatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyCreatebathroomOptionsInput | number[]
   media?: Prisma.PropertyMediaUncheckedCreateNestedManyWithoutPropertyInput
   features?: Prisma.PropertyFeatureUncheckedCreateNestedManyWithoutPropertyInput
   valueHistory?: Prisma.PropertyValueHistoryUncheckedCreateNestedManyWithoutPropertyInput
@@ -2436,6 +2864,7 @@ export type PropertyUncheckedCreateWithoutCampaignEventsInput = {
   analyticsEvents?: Prisma.AnalyticsEventUncheckedCreateNestedManyWithoutPropertyInput
   ragDocuments?: Prisma.RagDocumentUncheckedCreateNestedManyWithoutPropertyInput
   aiJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutPropertyInput
+  templateLinks?: Prisma.TemplatePropertyUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutCampaignEventsInput = {
@@ -2456,23 +2885,23 @@ export type PropertyUpdateToOneWithWhereWithoutCampaignEventsInput = {
 
 export type PropertyUpdateWithoutCampaignEventsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  sourceKey?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  location?: Prisma.StringFieldUpdateOperationsInput | string
-  county?: Prisma.StringFieldUpdateOperationsInput | string
-  address?: Prisma.StringFieldUpdateOperationsInput | string
-  postalCode?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  saleType?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  county?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  saleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPropertyStatusFieldUpdateOperationsInput | $Enums.PropertyStatus
-  stage?: Prisma.EnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage
-  priceMin?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bedroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
+  stage?: Prisma.NullableEnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage | null
+  priceMin?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bedroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2480,6 +2909,11 @@ export type PropertyUpdateWithoutCampaignEventsInput = {
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publicationStatus?: Prisma.EnumPublicationStatusFieldUpdateOperationsInput | $Enums.PublicationStatus
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeSqmMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyUpdatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyUpdatebathroomOptionsInput | number[]
   agent?: Prisma.UserUpdateOneWithoutPropertiesNestedInput
   media?: Prisma.PropertyMediaUpdateManyWithoutPropertyNestedInput
   features?: Prisma.PropertyFeatureUpdateManyWithoutPropertyNestedInput
@@ -2491,27 +2925,29 @@ export type PropertyUpdateWithoutCampaignEventsInput = {
   analyticsEvents?: Prisma.AnalyticsEventUpdateManyWithoutPropertyNestedInput
   ragDocuments?: Prisma.RagDocumentUpdateManyWithoutPropertyNestedInput
   aiJobs?: Prisma.AiJobUpdateManyWithoutPropertyNestedInput
+  templateLinks?: Prisma.TemplatePropertyUpdateManyWithoutPropertyNestedInput
+  development?: Prisma.DevelopmentUpdateOneWithoutPropertiesNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutCampaignEventsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  sourceKey?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  location?: Prisma.StringFieldUpdateOperationsInput | string
-  county?: Prisma.StringFieldUpdateOperationsInput | string
-  address?: Prisma.StringFieldUpdateOperationsInput | string
-  postalCode?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  saleType?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  county?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  saleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPropertyStatusFieldUpdateOperationsInput | $Enums.PropertyStatus
-  stage?: Prisma.EnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage
-  priceMin?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bedroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
+  stage?: Prisma.NullableEnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage | null
+  priceMin?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bedroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2520,6 +2956,12 @@ export type PropertyUncheckedUpdateWithoutCampaignEventsInput = {
   agentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publicationStatus?: Prisma.EnumPublicationStatusFieldUpdateOperationsInput | $Enums.PublicationStatus
+  developmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeSqmMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyUpdatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyUpdatebathroomOptionsInput | number[]
   media?: Prisma.PropertyMediaUncheckedUpdateManyWithoutPropertyNestedInput
   features?: Prisma.PropertyFeatureUncheckedUpdateManyWithoutPropertyNestedInput
   valueHistory?: Prisma.PropertyValueHistoryUncheckedUpdateManyWithoutPropertyNestedInput
@@ -2530,27 +2972,28 @@ export type PropertyUncheckedUpdateWithoutCampaignEventsInput = {
   analyticsEvents?: Prisma.AnalyticsEventUncheckedUpdateManyWithoutPropertyNestedInput
   ragDocuments?: Prisma.RagDocumentUncheckedUpdateManyWithoutPropertyNestedInput
   aiJobs?: Prisma.AiJobUncheckedUpdateManyWithoutPropertyNestedInput
+  templateLinks?: Prisma.TemplatePropertyUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
-export type PropertyCreateWithoutNewsLinksInput = {
+export type PropertyCreateWithoutTemplateLinksInput = {
   id?: string
-  sourceKey: string
+  sourceKey?: string | null
   name: string
-  location: string
-  county: string
-  address: string
-  postalCode: string
-  type: string
-  saleType: string
-  status: $Enums.PropertyStatus
-  stage: $Enums.PropertyStage
-  priceMin: runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax: runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin: number
-  bedroomsMax: number
-  bathroomsMin: number
-  bathroomsMax: number
-  sizeSqm: number
+  location?: string | null
+  county?: string | null
+  address?: string | null
+  postalCode?: string | null
+  type?: string | null
+  saleType?: string | null
+  status?: $Enums.PropertyStatus
+  stage?: $Enums.PropertyStage | null
+  priceMin?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: number | null
+  bedroomsMax?: number | null
+  bathroomsMin?: number | null
+  bathroomsMax?: number | null
+  sizeSqm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: string | null
   completionYear?: number | null
   description?: string | null
@@ -2558,6 +3001,211 @@ export type PropertyCreateWithoutNewsLinksInput = {
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  publicationStatus?: $Enums.PublicationStatus
+  slug?: string | null
+  sizeSqmMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyCreatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyCreatebathroomOptionsInput | number[]
+  agent?: Prisma.UserCreateNestedOneWithoutPropertiesInput
+  media?: Prisma.PropertyMediaCreateNestedManyWithoutPropertyInput
+  features?: Prisma.PropertyFeatureCreateNestedManyWithoutPropertyInput
+  valueHistory?: Prisma.PropertyValueHistoryCreateNestedManyWithoutPropertyInput
+  savedBy?: Prisma.SavedPropertyCreateNestedManyWithoutPropertyInput
+  interests?: Prisma.InterestCreateNestedManyWithoutPropertyInput
+  campaignEvents?: Prisma.CampaignEventCreateNestedManyWithoutPropertyInput
+  campaignLinks?: Prisma.CampaignPropertyCreateNestedManyWithoutPropertyInput
+  newsLinks?: Prisma.NewsPropertyCreateNestedManyWithoutPropertyInput
+  analyticsEvents?: Prisma.AnalyticsEventCreateNestedManyWithoutPropertyInput
+  ragDocuments?: Prisma.RagDocumentCreateNestedManyWithoutPropertyInput
+  aiJobs?: Prisma.AiJobCreateNestedManyWithoutPropertyInput
+  development?: Prisma.DevelopmentCreateNestedOneWithoutPropertiesInput
+}
+
+export type PropertyUncheckedCreateWithoutTemplateLinksInput = {
+  id?: string
+  sourceKey?: string | null
+  name: string
+  location?: string | null
+  county?: string | null
+  address?: string | null
+  postalCode?: string | null
+  type?: string | null
+  saleType?: string | null
+  status?: $Enums.PropertyStatus
+  stage?: $Enums.PropertyStage | null
+  priceMin?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: number | null
+  bedroomsMax?: number | null
+  bathroomsMin?: number | null
+  bathroomsMax?: number | null
+  sizeSqm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sizeCategory?: string | null
+  completionYear?: number | null
+  description?: string | null
+  listedDate?: Date | string | null
+  publishedAt?: Date | string | null
+  agentId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  publicationStatus?: $Enums.PublicationStatus
+  developmentId?: string | null
+  slug?: string | null
+  sizeSqmMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyCreatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyCreatebathroomOptionsInput | number[]
+  media?: Prisma.PropertyMediaUncheckedCreateNestedManyWithoutPropertyInput
+  features?: Prisma.PropertyFeatureUncheckedCreateNestedManyWithoutPropertyInput
+  valueHistory?: Prisma.PropertyValueHistoryUncheckedCreateNestedManyWithoutPropertyInput
+  savedBy?: Prisma.SavedPropertyUncheckedCreateNestedManyWithoutPropertyInput
+  interests?: Prisma.InterestUncheckedCreateNestedManyWithoutPropertyInput
+  campaignEvents?: Prisma.CampaignEventUncheckedCreateNestedManyWithoutPropertyInput
+  campaignLinks?: Prisma.CampaignPropertyUncheckedCreateNestedManyWithoutPropertyInput
+  newsLinks?: Prisma.NewsPropertyUncheckedCreateNestedManyWithoutPropertyInput
+  analyticsEvents?: Prisma.AnalyticsEventUncheckedCreateNestedManyWithoutPropertyInput
+  ragDocuments?: Prisma.RagDocumentUncheckedCreateNestedManyWithoutPropertyInput
+  aiJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutPropertyInput
+}
+
+export type PropertyCreateOrConnectWithoutTemplateLinksInput = {
+  where: Prisma.PropertyWhereUniqueInput
+  create: Prisma.XOR<Prisma.PropertyCreateWithoutTemplateLinksInput, Prisma.PropertyUncheckedCreateWithoutTemplateLinksInput>
+}
+
+export type PropertyUpsertWithoutTemplateLinksInput = {
+  update: Prisma.XOR<Prisma.PropertyUpdateWithoutTemplateLinksInput, Prisma.PropertyUncheckedUpdateWithoutTemplateLinksInput>
+  create: Prisma.XOR<Prisma.PropertyCreateWithoutTemplateLinksInput, Prisma.PropertyUncheckedCreateWithoutTemplateLinksInput>
+  where?: Prisma.PropertyWhereInput
+}
+
+export type PropertyUpdateToOneWithWhereWithoutTemplateLinksInput = {
+  where?: Prisma.PropertyWhereInput
+  data: Prisma.XOR<Prisma.PropertyUpdateWithoutTemplateLinksInput, Prisma.PropertyUncheckedUpdateWithoutTemplateLinksInput>
+}
+
+export type PropertyUpdateWithoutTemplateLinksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  county?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  saleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumPropertyStatusFieldUpdateOperationsInput | $Enums.PropertyStatus
+  stage?: Prisma.NullableEnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage | null
+  priceMin?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bedroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sizeCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  listedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publicationStatus?: Prisma.EnumPublicationStatusFieldUpdateOperationsInput | $Enums.PublicationStatus
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeSqmMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyUpdatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyUpdatebathroomOptionsInput | number[]
+  agent?: Prisma.UserUpdateOneWithoutPropertiesNestedInput
+  media?: Prisma.PropertyMediaUpdateManyWithoutPropertyNestedInput
+  features?: Prisma.PropertyFeatureUpdateManyWithoutPropertyNestedInput
+  valueHistory?: Prisma.PropertyValueHistoryUpdateManyWithoutPropertyNestedInput
+  savedBy?: Prisma.SavedPropertyUpdateManyWithoutPropertyNestedInput
+  interests?: Prisma.InterestUpdateManyWithoutPropertyNestedInput
+  campaignEvents?: Prisma.CampaignEventUpdateManyWithoutPropertyNestedInput
+  campaignLinks?: Prisma.CampaignPropertyUpdateManyWithoutPropertyNestedInput
+  newsLinks?: Prisma.NewsPropertyUpdateManyWithoutPropertyNestedInput
+  analyticsEvents?: Prisma.AnalyticsEventUpdateManyWithoutPropertyNestedInput
+  ragDocuments?: Prisma.RagDocumentUpdateManyWithoutPropertyNestedInput
+  aiJobs?: Prisma.AiJobUpdateManyWithoutPropertyNestedInput
+  development?: Prisma.DevelopmentUpdateOneWithoutPropertiesNestedInput
+}
+
+export type PropertyUncheckedUpdateWithoutTemplateLinksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  county?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  saleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumPropertyStatusFieldUpdateOperationsInput | $Enums.PropertyStatus
+  stage?: Prisma.NullableEnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage | null
+  priceMin?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bedroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sizeCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  listedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  agentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publicationStatus?: Prisma.EnumPublicationStatusFieldUpdateOperationsInput | $Enums.PublicationStatus
+  developmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeSqmMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyUpdatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyUpdatebathroomOptionsInput | number[]
+  media?: Prisma.PropertyMediaUncheckedUpdateManyWithoutPropertyNestedInput
+  features?: Prisma.PropertyFeatureUncheckedUpdateManyWithoutPropertyNestedInput
+  valueHistory?: Prisma.PropertyValueHistoryUncheckedUpdateManyWithoutPropertyNestedInput
+  savedBy?: Prisma.SavedPropertyUncheckedUpdateManyWithoutPropertyNestedInput
+  interests?: Prisma.InterestUncheckedUpdateManyWithoutPropertyNestedInput
+  campaignEvents?: Prisma.CampaignEventUncheckedUpdateManyWithoutPropertyNestedInput
+  campaignLinks?: Prisma.CampaignPropertyUncheckedUpdateManyWithoutPropertyNestedInput
+  newsLinks?: Prisma.NewsPropertyUncheckedUpdateManyWithoutPropertyNestedInput
+  analyticsEvents?: Prisma.AnalyticsEventUncheckedUpdateManyWithoutPropertyNestedInput
+  ragDocuments?: Prisma.RagDocumentUncheckedUpdateManyWithoutPropertyNestedInput
+  aiJobs?: Prisma.AiJobUncheckedUpdateManyWithoutPropertyNestedInput
+}
+
+export type PropertyCreateWithoutNewsLinksInput = {
+  id?: string
+  sourceKey?: string | null
+  name: string
+  location?: string | null
+  county?: string | null
+  address?: string | null
+  postalCode?: string | null
+  type?: string | null
+  saleType?: string | null
+  status?: $Enums.PropertyStatus
+  stage?: $Enums.PropertyStage | null
+  priceMin?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: number | null
+  bedroomsMax?: number | null
+  bathroomsMin?: number | null
+  bathroomsMax?: number | null
+  sizeSqm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sizeCategory?: string | null
+  completionYear?: number | null
+  description?: string | null
+  listedDate?: Date | string | null
+  publishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  publicationStatus?: $Enums.PublicationStatus
+  slug?: string | null
+  sizeSqmMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyCreatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyCreatebathroomOptionsInput | number[]
   agent?: Prisma.UserCreateNestedOneWithoutPropertiesInput
   media?: Prisma.PropertyMediaCreateNestedManyWithoutPropertyInput
   features?: Prisma.PropertyFeatureCreateNestedManyWithoutPropertyInput
@@ -2569,27 +3217,29 @@ export type PropertyCreateWithoutNewsLinksInput = {
   analyticsEvents?: Prisma.AnalyticsEventCreateNestedManyWithoutPropertyInput
   ragDocuments?: Prisma.RagDocumentCreateNestedManyWithoutPropertyInput
   aiJobs?: Prisma.AiJobCreateNestedManyWithoutPropertyInput
+  templateLinks?: Prisma.TemplatePropertyCreateNestedManyWithoutPropertyInput
+  development?: Prisma.DevelopmentCreateNestedOneWithoutPropertiesInput
 }
 
 export type PropertyUncheckedCreateWithoutNewsLinksInput = {
   id?: string
-  sourceKey: string
+  sourceKey?: string | null
   name: string
-  location: string
-  county: string
-  address: string
-  postalCode: string
-  type: string
-  saleType: string
-  status: $Enums.PropertyStatus
-  stage: $Enums.PropertyStage
-  priceMin: runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax: runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin: number
-  bedroomsMax: number
-  bathroomsMin: number
-  bathroomsMax: number
-  sizeSqm: number
+  location?: string | null
+  county?: string | null
+  address?: string | null
+  postalCode?: string | null
+  type?: string | null
+  saleType?: string | null
+  status?: $Enums.PropertyStatus
+  stage?: $Enums.PropertyStage | null
+  priceMin?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: number | null
+  bedroomsMax?: number | null
+  bathroomsMin?: number | null
+  bathroomsMax?: number | null
+  sizeSqm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: string | null
   completionYear?: number | null
   description?: string | null
@@ -2598,6 +3248,12 @@ export type PropertyUncheckedCreateWithoutNewsLinksInput = {
   agentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  publicationStatus?: $Enums.PublicationStatus
+  developmentId?: string | null
+  slug?: string | null
+  sizeSqmMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyCreatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyCreatebathroomOptionsInput | number[]
   media?: Prisma.PropertyMediaUncheckedCreateNestedManyWithoutPropertyInput
   features?: Prisma.PropertyFeatureUncheckedCreateNestedManyWithoutPropertyInput
   valueHistory?: Prisma.PropertyValueHistoryUncheckedCreateNestedManyWithoutPropertyInput
@@ -2608,6 +3264,7 @@ export type PropertyUncheckedCreateWithoutNewsLinksInput = {
   analyticsEvents?: Prisma.AnalyticsEventUncheckedCreateNestedManyWithoutPropertyInput
   ragDocuments?: Prisma.RagDocumentUncheckedCreateNestedManyWithoutPropertyInput
   aiJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutPropertyInput
+  templateLinks?: Prisma.TemplatePropertyUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutNewsLinksInput = {
@@ -2628,23 +3285,23 @@ export type PropertyUpdateToOneWithWhereWithoutNewsLinksInput = {
 
 export type PropertyUpdateWithoutNewsLinksInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  sourceKey?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  location?: Prisma.StringFieldUpdateOperationsInput | string
-  county?: Prisma.StringFieldUpdateOperationsInput | string
-  address?: Prisma.StringFieldUpdateOperationsInput | string
-  postalCode?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  saleType?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  county?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  saleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPropertyStatusFieldUpdateOperationsInput | $Enums.PropertyStatus
-  stage?: Prisma.EnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage
-  priceMin?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bedroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
+  stage?: Prisma.NullableEnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage | null
+  priceMin?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bedroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2652,6 +3309,11 @@ export type PropertyUpdateWithoutNewsLinksInput = {
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publicationStatus?: Prisma.EnumPublicationStatusFieldUpdateOperationsInput | $Enums.PublicationStatus
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeSqmMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyUpdatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyUpdatebathroomOptionsInput | number[]
   agent?: Prisma.UserUpdateOneWithoutPropertiesNestedInput
   media?: Prisma.PropertyMediaUpdateManyWithoutPropertyNestedInput
   features?: Prisma.PropertyFeatureUpdateManyWithoutPropertyNestedInput
@@ -2663,27 +3325,29 @@ export type PropertyUpdateWithoutNewsLinksInput = {
   analyticsEvents?: Prisma.AnalyticsEventUpdateManyWithoutPropertyNestedInput
   ragDocuments?: Prisma.RagDocumentUpdateManyWithoutPropertyNestedInput
   aiJobs?: Prisma.AiJobUpdateManyWithoutPropertyNestedInput
+  templateLinks?: Prisma.TemplatePropertyUpdateManyWithoutPropertyNestedInput
+  development?: Prisma.DevelopmentUpdateOneWithoutPropertiesNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutNewsLinksInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  sourceKey?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  location?: Prisma.StringFieldUpdateOperationsInput | string
-  county?: Prisma.StringFieldUpdateOperationsInput | string
-  address?: Prisma.StringFieldUpdateOperationsInput | string
-  postalCode?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  saleType?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  county?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  saleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPropertyStatusFieldUpdateOperationsInput | $Enums.PropertyStatus
-  stage?: Prisma.EnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage
-  priceMin?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bedroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
+  stage?: Prisma.NullableEnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage | null
+  priceMin?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bedroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2692,6 +3356,12 @@ export type PropertyUncheckedUpdateWithoutNewsLinksInput = {
   agentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publicationStatus?: Prisma.EnumPublicationStatusFieldUpdateOperationsInput | $Enums.PublicationStatus
+  developmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeSqmMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyUpdatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyUpdatebathroomOptionsInput | number[]
   media?: Prisma.PropertyMediaUncheckedUpdateManyWithoutPropertyNestedInput
   features?: Prisma.PropertyFeatureUncheckedUpdateManyWithoutPropertyNestedInput
   valueHistory?: Prisma.PropertyValueHistoryUncheckedUpdateManyWithoutPropertyNestedInput
@@ -2702,27 +3372,28 @@ export type PropertyUncheckedUpdateWithoutNewsLinksInput = {
   analyticsEvents?: Prisma.AnalyticsEventUncheckedUpdateManyWithoutPropertyNestedInput
   ragDocuments?: Prisma.RagDocumentUncheckedUpdateManyWithoutPropertyNestedInput
   aiJobs?: Prisma.AiJobUncheckedUpdateManyWithoutPropertyNestedInput
+  templateLinks?: Prisma.TemplatePropertyUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutAnalyticsEventsInput = {
   id?: string
-  sourceKey: string
+  sourceKey?: string | null
   name: string
-  location: string
-  county: string
-  address: string
-  postalCode: string
-  type: string
-  saleType: string
-  status: $Enums.PropertyStatus
-  stage: $Enums.PropertyStage
-  priceMin: runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax: runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin: number
-  bedroomsMax: number
-  bathroomsMin: number
-  bathroomsMax: number
-  sizeSqm: number
+  location?: string | null
+  county?: string | null
+  address?: string | null
+  postalCode?: string | null
+  type?: string | null
+  saleType?: string | null
+  status?: $Enums.PropertyStatus
+  stage?: $Enums.PropertyStage | null
+  priceMin?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: number | null
+  bedroomsMax?: number | null
+  bathroomsMin?: number | null
+  bathroomsMax?: number | null
+  sizeSqm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: string | null
   completionYear?: number | null
   description?: string | null
@@ -2730,6 +3401,11 @@ export type PropertyCreateWithoutAnalyticsEventsInput = {
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  publicationStatus?: $Enums.PublicationStatus
+  slug?: string | null
+  sizeSqmMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyCreatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyCreatebathroomOptionsInput | number[]
   agent?: Prisma.UserCreateNestedOneWithoutPropertiesInput
   media?: Prisma.PropertyMediaCreateNestedManyWithoutPropertyInput
   features?: Prisma.PropertyFeatureCreateNestedManyWithoutPropertyInput
@@ -2741,27 +3417,29 @@ export type PropertyCreateWithoutAnalyticsEventsInput = {
   newsLinks?: Prisma.NewsPropertyCreateNestedManyWithoutPropertyInput
   ragDocuments?: Prisma.RagDocumentCreateNestedManyWithoutPropertyInput
   aiJobs?: Prisma.AiJobCreateNestedManyWithoutPropertyInput
+  templateLinks?: Prisma.TemplatePropertyCreateNestedManyWithoutPropertyInput
+  development?: Prisma.DevelopmentCreateNestedOneWithoutPropertiesInput
 }
 
 export type PropertyUncheckedCreateWithoutAnalyticsEventsInput = {
   id?: string
-  sourceKey: string
+  sourceKey?: string | null
   name: string
-  location: string
-  county: string
-  address: string
-  postalCode: string
-  type: string
-  saleType: string
-  status: $Enums.PropertyStatus
-  stage: $Enums.PropertyStage
-  priceMin: runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax: runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin: number
-  bedroomsMax: number
-  bathroomsMin: number
-  bathroomsMax: number
-  sizeSqm: number
+  location?: string | null
+  county?: string | null
+  address?: string | null
+  postalCode?: string | null
+  type?: string | null
+  saleType?: string | null
+  status?: $Enums.PropertyStatus
+  stage?: $Enums.PropertyStage | null
+  priceMin?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: number | null
+  bedroomsMax?: number | null
+  bathroomsMin?: number | null
+  bathroomsMax?: number | null
+  sizeSqm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: string | null
   completionYear?: number | null
   description?: string | null
@@ -2770,6 +3448,12 @@ export type PropertyUncheckedCreateWithoutAnalyticsEventsInput = {
   agentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  publicationStatus?: $Enums.PublicationStatus
+  developmentId?: string | null
+  slug?: string | null
+  sizeSqmMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyCreatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyCreatebathroomOptionsInput | number[]
   media?: Prisma.PropertyMediaUncheckedCreateNestedManyWithoutPropertyInput
   features?: Prisma.PropertyFeatureUncheckedCreateNestedManyWithoutPropertyInput
   valueHistory?: Prisma.PropertyValueHistoryUncheckedCreateNestedManyWithoutPropertyInput
@@ -2780,6 +3464,7 @@ export type PropertyUncheckedCreateWithoutAnalyticsEventsInput = {
   newsLinks?: Prisma.NewsPropertyUncheckedCreateNestedManyWithoutPropertyInput
   ragDocuments?: Prisma.RagDocumentUncheckedCreateNestedManyWithoutPropertyInput
   aiJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutPropertyInput
+  templateLinks?: Prisma.TemplatePropertyUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutAnalyticsEventsInput = {
@@ -2800,23 +3485,23 @@ export type PropertyUpdateToOneWithWhereWithoutAnalyticsEventsInput = {
 
 export type PropertyUpdateWithoutAnalyticsEventsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  sourceKey?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  location?: Prisma.StringFieldUpdateOperationsInput | string
-  county?: Prisma.StringFieldUpdateOperationsInput | string
-  address?: Prisma.StringFieldUpdateOperationsInput | string
-  postalCode?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  saleType?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  county?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  saleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPropertyStatusFieldUpdateOperationsInput | $Enums.PropertyStatus
-  stage?: Prisma.EnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage
-  priceMin?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bedroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
+  stage?: Prisma.NullableEnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage | null
+  priceMin?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bedroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2824,6 +3509,11 @@ export type PropertyUpdateWithoutAnalyticsEventsInput = {
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publicationStatus?: Prisma.EnumPublicationStatusFieldUpdateOperationsInput | $Enums.PublicationStatus
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeSqmMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyUpdatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyUpdatebathroomOptionsInput | number[]
   agent?: Prisma.UserUpdateOneWithoutPropertiesNestedInput
   media?: Prisma.PropertyMediaUpdateManyWithoutPropertyNestedInput
   features?: Prisma.PropertyFeatureUpdateManyWithoutPropertyNestedInput
@@ -2835,27 +3525,29 @@ export type PropertyUpdateWithoutAnalyticsEventsInput = {
   newsLinks?: Prisma.NewsPropertyUpdateManyWithoutPropertyNestedInput
   ragDocuments?: Prisma.RagDocumentUpdateManyWithoutPropertyNestedInput
   aiJobs?: Prisma.AiJobUpdateManyWithoutPropertyNestedInput
+  templateLinks?: Prisma.TemplatePropertyUpdateManyWithoutPropertyNestedInput
+  development?: Prisma.DevelopmentUpdateOneWithoutPropertiesNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutAnalyticsEventsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  sourceKey?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  location?: Prisma.StringFieldUpdateOperationsInput | string
-  county?: Prisma.StringFieldUpdateOperationsInput | string
-  address?: Prisma.StringFieldUpdateOperationsInput | string
-  postalCode?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  saleType?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  county?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  saleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPropertyStatusFieldUpdateOperationsInput | $Enums.PropertyStatus
-  stage?: Prisma.EnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage
-  priceMin?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bedroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
+  stage?: Prisma.NullableEnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage | null
+  priceMin?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bedroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2864,6 +3556,12 @@ export type PropertyUncheckedUpdateWithoutAnalyticsEventsInput = {
   agentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publicationStatus?: Prisma.EnumPublicationStatusFieldUpdateOperationsInput | $Enums.PublicationStatus
+  developmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeSqmMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyUpdatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyUpdatebathroomOptionsInput | number[]
   media?: Prisma.PropertyMediaUncheckedUpdateManyWithoutPropertyNestedInput
   features?: Prisma.PropertyFeatureUncheckedUpdateManyWithoutPropertyNestedInput
   valueHistory?: Prisma.PropertyValueHistoryUncheckedUpdateManyWithoutPropertyNestedInput
@@ -2874,27 +3572,28 @@ export type PropertyUncheckedUpdateWithoutAnalyticsEventsInput = {
   newsLinks?: Prisma.NewsPropertyUncheckedUpdateManyWithoutPropertyNestedInput
   ragDocuments?: Prisma.RagDocumentUncheckedUpdateManyWithoutPropertyNestedInput
   aiJobs?: Prisma.AiJobUncheckedUpdateManyWithoutPropertyNestedInput
+  templateLinks?: Prisma.TemplatePropertyUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutRagDocumentsInput = {
   id?: string
-  sourceKey: string
+  sourceKey?: string | null
   name: string
-  location: string
-  county: string
-  address: string
-  postalCode: string
-  type: string
-  saleType: string
-  status: $Enums.PropertyStatus
-  stage: $Enums.PropertyStage
-  priceMin: runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax: runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin: number
-  bedroomsMax: number
-  bathroomsMin: number
-  bathroomsMax: number
-  sizeSqm: number
+  location?: string | null
+  county?: string | null
+  address?: string | null
+  postalCode?: string | null
+  type?: string | null
+  saleType?: string | null
+  status?: $Enums.PropertyStatus
+  stage?: $Enums.PropertyStage | null
+  priceMin?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: number | null
+  bedroomsMax?: number | null
+  bathroomsMin?: number | null
+  bathroomsMax?: number | null
+  sizeSqm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: string | null
   completionYear?: number | null
   description?: string | null
@@ -2902,6 +3601,11 @@ export type PropertyCreateWithoutRagDocumentsInput = {
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  publicationStatus?: $Enums.PublicationStatus
+  slug?: string | null
+  sizeSqmMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyCreatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyCreatebathroomOptionsInput | number[]
   agent?: Prisma.UserCreateNestedOneWithoutPropertiesInput
   media?: Prisma.PropertyMediaCreateNestedManyWithoutPropertyInput
   features?: Prisma.PropertyFeatureCreateNestedManyWithoutPropertyInput
@@ -2913,27 +3617,29 @@ export type PropertyCreateWithoutRagDocumentsInput = {
   newsLinks?: Prisma.NewsPropertyCreateNestedManyWithoutPropertyInput
   analyticsEvents?: Prisma.AnalyticsEventCreateNestedManyWithoutPropertyInput
   aiJobs?: Prisma.AiJobCreateNestedManyWithoutPropertyInput
+  templateLinks?: Prisma.TemplatePropertyCreateNestedManyWithoutPropertyInput
+  development?: Prisma.DevelopmentCreateNestedOneWithoutPropertiesInput
 }
 
 export type PropertyUncheckedCreateWithoutRagDocumentsInput = {
   id?: string
-  sourceKey: string
+  sourceKey?: string | null
   name: string
-  location: string
-  county: string
-  address: string
-  postalCode: string
-  type: string
-  saleType: string
-  status: $Enums.PropertyStatus
-  stage: $Enums.PropertyStage
-  priceMin: runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax: runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin: number
-  bedroomsMax: number
-  bathroomsMin: number
-  bathroomsMax: number
-  sizeSqm: number
+  location?: string | null
+  county?: string | null
+  address?: string | null
+  postalCode?: string | null
+  type?: string | null
+  saleType?: string | null
+  status?: $Enums.PropertyStatus
+  stage?: $Enums.PropertyStage | null
+  priceMin?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: number | null
+  bedroomsMax?: number | null
+  bathroomsMin?: number | null
+  bathroomsMax?: number | null
+  sizeSqm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: string | null
   completionYear?: number | null
   description?: string | null
@@ -2942,6 +3648,12 @@ export type PropertyUncheckedCreateWithoutRagDocumentsInput = {
   agentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  publicationStatus?: $Enums.PublicationStatus
+  developmentId?: string | null
+  slug?: string | null
+  sizeSqmMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyCreatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyCreatebathroomOptionsInput | number[]
   media?: Prisma.PropertyMediaUncheckedCreateNestedManyWithoutPropertyInput
   features?: Prisma.PropertyFeatureUncheckedCreateNestedManyWithoutPropertyInput
   valueHistory?: Prisma.PropertyValueHistoryUncheckedCreateNestedManyWithoutPropertyInput
@@ -2952,6 +3664,7 @@ export type PropertyUncheckedCreateWithoutRagDocumentsInput = {
   newsLinks?: Prisma.NewsPropertyUncheckedCreateNestedManyWithoutPropertyInput
   analyticsEvents?: Prisma.AnalyticsEventUncheckedCreateNestedManyWithoutPropertyInput
   aiJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutPropertyInput
+  templateLinks?: Prisma.TemplatePropertyUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutRagDocumentsInput = {
@@ -2972,23 +3685,23 @@ export type PropertyUpdateToOneWithWhereWithoutRagDocumentsInput = {
 
 export type PropertyUpdateWithoutRagDocumentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  sourceKey?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  location?: Prisma.StringFieldUpdateOperationsInput | string
-  county?: Prisma.StringFieldUpdateOperationsInput | string
-  address?: Prisma.StringFieldUpdateOperationsInput | string
-  postalCode?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  saleType?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  county?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  saleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPropertyStatusFieldUpdateOperationsInput | $Enums.PropertyStatus
-  stage?: Prisma.EnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage
-  priceMin?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bedroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
+  stage?: Prisma.NullableEnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage | null
+  priceMin?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bedroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2996,6 +3709,11 @@ export type PropertyUpdateWithoutRagDocumentsInput = {
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publicationStatus?: Prisma.EnumPublicationStatusFieldUpdateOperationsInput | $Enums.PublicationStatus
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeSqmMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyUpdatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyUpdatebathroomOptionsInput | number[]
   agent?: Prisma.UserUpdateOneWithoutPropertiesNestedInput
   media?: Prisma.PropertyMediaUpdateManyWithoutPropertyNestedInput
   features?: Prisma.PropertyFeatureUpdateManyWithoutPropertyNestedInput
@@ -3007,27 +3725,29 @@ export type PropertyUpdateWithoutRagDocumentsInput = {
   newsLinks?: Prisma.NewsPropertyUpdateManyWithoutPropertyNestedInput
   analyticsEvents?: Prisma.AnalyticsEventUpdateManyWithoutPropertyNestedInput
   aiJobs?: Prisma.AiJobUpdateManyWithoutPropertyNestedInput
+  templateLinks?: Prisma.TemplatePropertyUpdateManyWithoutPropertyNestedInput
+  development?: Prisma.DevelopmentUpdateOneWithoutPropertiesNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutRagDocumentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  sourceKey?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  location?: Prisma.StringFieldUpdateOperationsInput | string
-  county?: Prisma.StringFieldUpdateOperationsInput | string
-  address?: Prisma.StringFieldUpdateOperationsInput | string
-  postalCode?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  saleType?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  county?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  saleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPropertyStatusFieldUpdateOperationsInput | $Enums.PropertyStatus
-  stage?: Prisma.EnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage
-  priceMin?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bedroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
+  stage?: Prisma.NullableEnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage | null
+  priceMin?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bedroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3036,6 +3756,12 @@ export type PropertyUncheckedUpdateWithoutRagDocumentsInput = {
   agentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publicationStatus?: Prisma.EnumPublicationStatusFieldUpdateOperationsInput | $Enums.PublicationStatus
+  developmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeSqmMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyUpdatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyUpdatebathroomOptionsInput | number[]
   media?: Prisma.PropertyMediaUncheckedUpdateManyWithoutPropertyNestedInput
   features?: Prisma.PropertyFeatureUncheckedUpdateManyWithoutPropertyNestedInput
   valueHistory?: Prisma.PropertyValueHistoryUncheckedUpdateManyWithoutPropertyNestedInput
@@ -3046,27 +3772,28 @@ export type PropertyUncheckedUpdateWithoutRagDocumentsInput = {
   newsLinks?: Prisma.NewsPropertyUncheckedUpdateManyWithoutPropertyNestedInput
   analyticsEvents?: Prisma.AnalyticsEventUncheckedUpdateManyWithoutPropertyNestedInput
   aiJobs?: Prisma.AiJobUncheckedUpdateManyWithoutPropertyNestedInput
+  templateLinks?: Prisma.TemplatePropertyUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutAiJobsInput = {
   id?: string
-  sourceKey: string
+  sourceKey?: string | null
   name: string
-  location: string
-  county: string
-  address: string
-  postalCode: string
-  type: string
-  saleType: string
-  status: $Enums.PropertyStatus
-  stage: $Enums.PropertyStage
-  priceMin: runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax: runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin: number
-  bedroomsMax: number
-  bathroomsMin: number
-  bathroomsMax: number
-  sizeSqm: number
+  location?: string | null
+  county?: string | null
+  address?: string | null
+  postalCode?: string | null
+  type?: string | null
+  saleType?: string | null
+  status?: $Enums.PropertyStatus
+  stage?: $Enums.PropertyStage | null
+  priceMin?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: number | null
+  bedroomsMax?: number | null
+  bathroomsMin?: number | null
+  bathroomsMax?: number | null
+  sizeSqm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: string | null
   completionYear?: number | null
   description?: string | null
@@ -3074,6 +3801,11 @@ export type PropertyCreateWithoutAiJobsInput = {
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  publicationStatus?: $Enums.PublicationStatus
+  slug?: string | null
+  sizeSqmMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyCreatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyCreatebathroomOptionsInput | number[]
   agent?: Prisma.UserCreateNestedOneWithoutPropertiesInput
   media?: Prisma.PropertyMediaCreateNestedManyWithoutPropertyInput
   features?: Prisma.PropertyFeatureCreateNestedManyWithoutPropertyInput
@@ -3085,27 +3817,29 @@ export type PropertyCreateWithoutAiJobsInput = {
   newsLinks?: Prisma.NewsPropertyCreateNestedManyWithoutPropertyInput
   analyticsEvents?: Prisma.AnalyticsEventCreateNestedManyWithoutPropertyInput
   ragDocuments?: Prisma.RagDocumentCreateNestedManyWithoutPropertyInput
+  templateLinks?: Prisma.TemplatePropertyCreateNestedManyWithoutPropertyInput
+  development?: Prisma.DevelopmentCreateNestedOneWithoutPropertiesInput
 }
 
 export type PropertyUncheckedCreateWithoutAiJobsInput = {
   id?: string
-  sourceKey: string
+  sourceKey?: string | null
   name: string
-  location: string
-  county: string
-  address: string
-  postalCode: string
-  type: string
-  saleType: string
-  status: $Enums.PropertyStatus
-  stage: $Enums.PropertyStage
-  priceMin: runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax: runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin: number
-  bedroomsMax: number
-  bathroomsMin: number
-  bathroomsMax: number
-  sizeSqm: number
+  location?: string | null
+  county?: string | null
+  address?: string | null
+  postalCode?: string | null
+  type?: string | null
+  saleType?: string | null
+  status?: $Enums.PropertyStatus
+  stage?: $Enums.PropertyStage | null
+  priceMin?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: number | null
+  bedroomsMax?: number | null
+  bathroomsMin?: number | null
+  bathroomsMax?: number | null
+  sizeSqm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: string | null
   completionYear?: number | null
   description?: string | null
@@ -3114,6 +3848,12 @@ export type PropertyUncheckedCreateWithoutAiJobsInput = {
   agentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  publicationStatus?: $Enums.PublicationStatus
+  developmentId?: string | null
+  slug?: string | null
+  sizeSqmMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyCreatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyCreatebathroomOptionsInput | number[]
   media?: Prisma.PropertyMediaUncheckedCreateNestedManyWithoutPropertyInput
   features?: Prisma.PropertyFeatureUncheckedCreateNestedManyWithoutPropertyInput
   valueHistory?: Prisma.PropertyValueHistoryUncheckedCreateNestedManyWithoutPropertyInput
@@ -3124,6 +3864,7 @@ export type PropertyUncheckedCreateWithoutAiJobsInput = {
   newsLinks?: Prisma.NewsPropertyUncheckedCreateNestedManyWithoutPropertyInput
   analyticsEvents?: Prisma.AnalyticsEventUncheckedCreateNestedManyWithoutPropertyInput
   ragDocuments?: Prisma.RagDocumentUncheckedCreateNestedManyWithoutPropertyInput
+  templateLinks?: Prisma.TemplatePropertyUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutAiJobsInput = {
@@ -3144,23 +3885,23 @@ export type PropertyUpdateToOneWithWhereWithoutAiJobsInput = {
 
 export type PropertyUpdateWithoutAiJobsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  sourceKey?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  location?: Prisma.StringFieldUpdateOperationsInput | string
-  county?: Prisma.StringFieldUpdateOperationsInput | string
-  address?: Prisma.StringFieldUpdateOperationsInput | string
-  postalCode?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  saleType?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  county?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  saleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPropertyStatusFieldUpdateOperationsInput | $Enums.PropertyStatus
-  stage?: Prisma.EnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage
-  priceMin?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bedroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
+  stage?: Prisma.NullableEnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage | null
+  priceMin?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bedroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3168,6 +3909,11 @@ export type PropertyUpdateWithoutAiJobsInput = {
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publicationStatus?: Prisma.EnumPublicationStatusFieldUpdateOperationsInput | $Enums.PublicationStatus
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeSqmMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyUpdatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyUpdatebathroomOptionsInput | number[]
   agent?: Prisma.UserUpdateOneWithoutPropertiesNestedInput
   media?: Prisma.PropertyMediaUpdateManyWithoutPropertyNestedInput
   features?: Prisma.PropertyFeatureUpdateManyWithoutPropertyNestedInput
@@ -3179,27 +3925,29 @@ export type PropertyUpdateWithoutAiJobsInput = {
   newsLinks?: Prisma.NewsPropertyUpdateManyWithoutPropertyNestedInput
   analyticsEvents?: Prisma.AnalyticsEventUpdateManyWithoutPropertyNestedInput
   ragDocuments?: Prisma.RagDocumentUpdateManyWithoutPropertyNestedInput
+  templateLinks?: Prisma.TemplatePropertyUpdateManyWithoutPropertyNestedInput
+  development?: Prisma.DevelopmentUpdateOneWithoutPropertiesNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutAiJobsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  sourceKey?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  location?: Prisma.StringFieldUpdateOperationsInput | string
-  county?: Prisma.StringFieldUpdateOperationsInput | string
-  address?: Prisma.StringFieldUpdateOperationsInput | string
-  postalCode?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  saleType?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  county?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  saleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPropertyStatusFieldUpdateOperationsInput | $Enums.PropertyStatus
-  stage?: Prisma.EnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage
-  priceMin?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bedroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
+  stage?: Prisma.NullableEnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage | null
+  priceMin?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bedroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3208,6 +3956,12 @@ export type PropertyUncheckedUpdateWithoutAiJobsInput = {
   agentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publicationStatus?: Prisma.EnumPublicationStatusFieldUpdateOperationsInput | $Enums.PublicationStatus
+  developmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeSqmMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyUpdatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyUpdatebathroomOptionsInput | number[]
   media?: Prisma.PropertyMediaUncheckedUpdateManyWithoutPropertyNestedInput
   features?: Prisma.PropertyFeatureUncheckedUpdateManyWithoutPropertyNestedInput
   valueHistory?: Prisma.PropertyValueHistoryUncheckedUpdateManyWithoutPropertyNestedInput
@@ -3218,27 +3972,28 @@ export type PropertyUncheckedUpdateWithoutAiJobsInput = {
   newsLinks?: Prisma.NewsPropertyUncheckedUpdateManyWithoutPropertyNestedInput
   analyticsEvents?: Prisma.AnalyticsEventUncheckedUpdateManyWithoutPropertyNestedInput
   ragDocuments?: Prisma.RagDocumentUncheckedUpdateManyWithoutPropertyNestedInput
+  templateLinks?: Prisma.TemplatePropertyUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
-export type PropertyCreateManyAgentInput = {
+export type PropertyCreateWithoutDevelopmentInput = {
   id?: string
-  sourceKey: string
+  sourceKey?: string | null
   name: string
-  location: string
-  county: string
-  address: string
-  postalCode: string
-  type: string
-  saleType: string
-  status: $Enums.PropertyStatus
-  stage: $Enums.PropertyStage
-  priceMin: runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax: runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin: number
-  bedroomsMax: number
-  bathroomsMin: number
-  bathroomsMax: number
-  sizeSqm: number
+  location?: string | null
+  county?: string | null
+  address?: string | null
+  postalCode?: string | null
+  type?: string | null
+  saleType?: string | null
+  status?: $Enums.PropertyStatus
+  stage?: $Enums.PropertyStage | null
+  priceMin?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: number | null
+  bedroomsMax?: number | null
+  bathroomsMin?: number | null
+  bathroomsMax?: number | null
+  sizeSqm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: string | null
   completionYear?: number | null
   description?: string | null
@@ -3246,27 +4001,151 @@ export type PropertyCreateManyAgentInput = {
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  publicationStatus?: $Enums.PublicationStatus
+  slug?: string | null
+  sizeSqmMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyCreatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyCreatebathroomOptionsInput | number[]
+  agent?: Prisma.UserCreateNestedOneWithoutPropertiesInput
+  media?: Prisma.PropertyMediaCreateNestedManyWithoutPropertyInput
+  features?: Prisma.PropertyFeatureCreateNestedManyWithoutPropertyInput
+  valueHistory?: Prisma.PropertyValueHistoryCreateNestedManyWithoutPropertyInput
+  savedBy?: Prisma.SavedPropertyCreateNestedManyWithoutPropertyInput
+  interests?: Prisma.InterestCreateNestedManyWithoutPropertyInput
+  campaignEvents?: Prisma.CampaignEventCreateNestedManyWithoutPropertyInput
+  campaignLinks?: Prisma.CampaignPropertyCreateNestedManyWithoutPropertyInput
+  newsLinks?: Prisma.NewsPropertyCreateNestedManyWithoutPropertyInput
+  analyticsEvents?: Prisma.AnalyticsEventCreateNestedManyWithoutPropertyInput
+  ragDocuments?: Prisma.RagDocumentCreateNestedManyWithoutPropertyInput
+  aiJobs?: Prisma.AiJobCreateNestedManyWithoutPropertyInput
+  templateLinks?: Prisma.TemplatePropertyCreateNestedManyWithoutPropertyInput
+}
+
+export type PropertyUncheckedCreateWithoutDevelopmentInput = {
+  id?: string
+  sourceKey?: string | null
+  name: string
+  location?: string | null
+  county?: string | null
+  address?: string | null
+  postalCode?: string | null
+  type?: string | null
+  saleType?: string | null
+  status?: $Enums.PropertyStatus
+  stage?: $Enums.PropertyStage | null
+  priceMin?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: number | null
+  bedroomsMax?: number | null
+  bathroomsMin?: number | null
+  bathroomsMax?: number | null
+  sizeSqm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sizeCategory?: string | null
+  completionYear?: number | null
+  description?: string | null
+  listedDate?: Date | string | null
+  publishedAt?: Date | string | null
+  agentId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  publicationStatus?: $Enums.PublicationStatus
+  slug?: string | null
+  sizeSqmMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyCreatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyCreatebathroomOptionsInput | number[]
+  media?: Prisma.PropertyMediaUncheckedCreateNestedManyWithoutPropertyInput
+  features?: Prisma.PropertyFeatureUncheckedCreateNestedManyWithoutPropertyInput
+  valueHistory?: Prisma.PropertyValueHistoryUncheckedCreateNestedManyWithoutPropertyInput
+  savedBy?: Prisma.SavedPropertyUncheckedCreateNestedManyWithoutPropertyInput
+  interests?: Prisma.InterestUncheckedCreateNestedManyWithoutPropertyInput
+  campaignEvents?: Prisma.CampaignEventUncheckedCreateNestedManyWithoutPropertyInput
+  campaignLinks?: Prisma.CampaignPropertyUncheckedCreateNestedManyWithoutPropertyInput
+  newsLinks?: Prisma.NewsPropertyUncheckedCreateNestedManyWithoutPropertyInput
+  analyticsEvents?: Prisma.AnalyticsEventUncheckedCreateNestedManyWithoutPropertyInput
+  ragDocuments?: Prisma.RagDocumentUncheckedCreateNestedManyWithoutPropertyInput
+  aiJobs?: Prisma.AiJobUncheckedCreateNestedManyWithoutPropertyInput
+  templateLinks?: Prisma.TemplatePropertyUncheckedCreateNestedManyWithoutPropertyInput
+}
+
+export type PropertyCreateOrConnectWithoutDevelopmentInput = {
+  where: Prisma.PropertyWhereUniqueInput
+  create: Prisma.XOR<Prisma.PropertyCreateWithoutDevelopmentInput, Prisma.PropertyUncheckedCreateWithoutDevelopmentInput>
+}
+
+export type PropertyCreateManyDevelopmentInputEnvelope = {
+  data: Prisma.PropertyCreateManyDevelopmentInput | Prisma.PropertyCreateManyDevelopmentInput[]
+  skipDuplicates?: boolean
+}
+
+export type PropertyUpsertWithWhereUniqueWithoutDevelopmentInput = {
+  where: Prisma.PropertyWhereUniqueInput
+  update: Prisma.XOR<Prisma.PropertyUpdateWithoutDevelopmentInput, Prisma.PropertyUncheckedUpdateWithoutDevelopmentInput>
+  create: Prisma.XOR<Prisma.PropertyCreateWithoutDevelopmentInput, Prisma.PropertyUncheckedCreateWithoutDevelopmentInput>
+}
+
+export type PropertyUpdateWithWhereUniqueWithoutDevelopmentInput = {
+  where: Prisma.PropertyWhereUniqueInput
+  data: Prisma.XOR<Prisma.PropertyUpdateWithoutDevelopmentInput, Prisma.PropertyUncheckedUpdateWithoutDevelopmentInput>
+}
+
+export type PropertyUpdateManyWithWhereWithoutDevelopmentInput = {
+  where: Prisma.PropertyScalarWhereInput
+  data: Prisma.XOR<Prisma.PropertyUpdateManyMutationInput, Prisma.PropertyUncheckedUpdateManyWithoutDevelopmentInput>
+}
+
+export type PropertyCreateManyAgentInput = {
+  id?: string
+  sourceKey?: string | null
+  name: string
+  location?: string | null
+  county?: string | null
+  address?: string | null
+  postalCode?: string | null
+  type?: string | null
+  saleType?: string | null
+  status?: $Enums.PropertyStatus
+  stage?: $Enums.PropertyStage | null
+  priceMin?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: number | null
+  bedroomsMax?: number | null
+  bathroomsMin?: number | null
+  bathroomsMax?: number | null
+  sizeSqm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sizeCategory?: string | null
+  completionYear?: number | null
+  description?: string | null
+  listedDate?: Date | string | null
+  publishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  publicationStatus?: $Enums.PublicationStatus
+  developmentId?: string | null
+  slug?: string | null
+  sizeSqmMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyCreatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyCreatebathroomOptionsInput | number[]
 }
 
 export type PropertyUpdateWithoutAgentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  sourceKey?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  location?: Prisma.StringFieldUpdateOperationsInput | string
-  county?: Prisma.StringFieldUpdateOperationsInput | string
-  address?: Prisma.StringFieldUpdateOperationsInput | string
-  postalCode?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  saleType?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  county?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  saleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPropertyStatusFieldUpdateOperationsInput | $Enums.PropertyStatus
-  stage?: Prisma.EnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage
-  priceMin?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bedroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
+  stage?: Prisma.NullableEnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage | null
+  priceMin?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bedroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3274,6 +4153,11 @@ export type PropertyUpdateWithoutAgentInput = {
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publicationStatus?: Prisma.EnumPublicationStatusFieldUpdateOperationsInput | $Enums.PublicationStatus
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeSqmMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyUpdatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyUpdatebathroomOptionsInput | number[]
   media?: Prisma.PropertyMediaUpdateManyWithoutPropertyNestedInput
   features?: Prisma.PropertyFeatureUpdateManyWithoutPropertyNestedInput
   valueHistory?: Prisma.PropertyValueHistoryUpdateManyWithoutPropertyNestedInput
@@ -3285,27 +4169,29 @@ export type PropertyUpdateWithoutAgentInput = {
   analyticsEvents?: Prisma.AnalyticsEventUpdateManyWithoutPropertyNestedInput
   ragDocuments?: Prisma.RagDocumentUpdateManyWithoutPropertyNestedInput
   aiJobs?: Prisma.AiJobUpdateManyWithoutPropertyNestedInput
+  templateLinks?: Prisma.TemplatePropertyUpdateManyWithoutPropertyNestedInput
+  development?: Prisma.DevelopmentUpdateOneWithoutPropertiesNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutAgentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  sourceKey?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  location?: Prisma.StringFieldUpdateOperationsInput | string
-  county?: Prisma.StringFieldUpdateOperationsInput | string
-  address?: Prisma.StringFieldUpdateOperationsInput | string
-  postalCode?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  saleType?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  county?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  saleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPropertyStatusFieldUpdateOperationsInput | $Enums.PropertyStatus
-  stage?: Prisma.EnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage
-  priceMin?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bedroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
+  stage?: Prisma.NullableEnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage | null
+  priceMin?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bedroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3313,6 +4199,12 @@ export type PropertyUncheckedUpdateWithoutAgentInput = {
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publicationStatus?: Prisma.EnumPublicationStatusFieldUpdateOperationsInput | $Enums.PublicationStatus
+  developmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeSqmMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyUpdatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyUpdatebathroomOptionsInput | number[]
   media?: Prisma.PropertyMediaUncheckedUpdateManyWithoutPropertyNestedInput
   features?: Prisma.PropertyFeatureUncheckedUpdateManyWithoutPropertyNestedInput
   valueHistory?: Prisma.PropertyValueHistoryUncheckedUpdateManyWithoutPropertyNestedInput
@@ -3324,27 +4216,28 @@ export type PropertyUncheckedUpdateWithoutAgentInput = {
   analyticsEvents?: Prisma.AnalyticsEventUncheckedUpdateManyWithoutPropertyNestedInput
   ragDocuments?: Prisma.RagDocumentUncheckedUpdateManyWithoutPropertyNestedInput
   aiJobs?: Prisma.AiJobUncheckedUpdateManyWithoutPropertyNestedInput
+  templateLinks?: Prisma.TemplatePropertyUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateManyWithoutAgentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  sourceKey?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  location?: Prisma.StringFieldUpdateOperationsInput | string
-  county?: Prisma.StringFieldUpdateOperationsInput | string
-  address?: Prisma.StringFieldUpdateOperationsInput | string
-  postalCode?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  saleType?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  county?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  saleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPropertyStatusFieldUpdateOperationsInput | $Enums.PropertyStatus
-  stage?: Prisma.EnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage
-  priceMin?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priceMax?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  bedroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bedroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMin?: Prisma.IntFieldUpdateOperationsInput | number
-  bathroomsMax?: Prisma.IntFieldUpdateOperationsInput | number
-  sizeSqm?: Prisma.IntFieldUpdateOperationsInput | number
+  stage?: Prisma.NullableEnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage | null
+  priceMin?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bedroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sizeCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3352,6 +4245,172 @@ export type PropertyUncheckedUpdateManyWithoutAgentInput = {
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publicationStatus?: Prisma.EnumPublicationStatusFieldUpdateOperationsInput | $Enums.PublicationStatus
+  developmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeSqmMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyUpdatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyUpdatebathroomOptionsInput | number[]
+}
+
+export type PropertyCreateManyDevelopmentInput = {
+  id?: string
+  sourceKey?: string | null
+  name: string
+  location?: string | null
+  county?: string | null
+  address?: string | null
+  postalCode?: string | null
+  type?: string | null
+  saleType?: string | null
+  status?: $Enums.PropertyStatus
+  stage?: $Enums.PropertyStage | null
+  priceMin?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: number | null
+  bedroomsMax?: number | null
+  bathroomsMin?: number | null
+  bathroomsMax?: number | null
+  sizeSqm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sizeCategory?: string | null
+  completionYear?: number | null
+  description?: string | null
+  listedDate?: Date | string | null
+  publishedAt?: Date | string | null
+  agentId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  publicationStatus?: $Enums.PublicationStatus
+  slug?: string | null
+  sizeSqmMax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyCreatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyCreatebathroomOptionsInput | number[]
+}
+
+export type PropertyUpdateWithoutDevelopmentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  county?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  saleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumPropertyStatusFieldUpdateOperationsInput | $Enums.PropertyStatus
+  stage?: Prisma.NullableEnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage | null
+  priceMin?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bedroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sizeCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  listedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publicationStatus?: Prisma.EnumPublicationStatusFieldUpdateOperationsInput | $Enums.PublicationStatus
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeSqmMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyUpdatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyUpdatebathroomOptionsInput | number[]
+  agent?: Prisma.UserUpdateOneWithoutPropertiesNestedInput
+  media?: Prisma.PropertyMediaUpdateManyWithoutPropertyNestedInput
+  features?: Prisma.PropertyFeatureUpdateManyWithoutPropertyNestedInput
+  valueHistory?: Prisma.PropertyValueHistoryUpdateManyWithoutPropertyNestedInput
+  savedBy?: Prisma.SavedPropertyUpdateManyWithoutPropertyNestedInput
+  interests?: Prisma.InterestUpdateManyWithoutPropertyNestedInput
+  campaignEvents?: Prisma.CampaignEventUpdateManyWithoutPropertyNestedInput
+  campaignLinks?: Prisma.CampaignPropertyUpdateManyWithoutPropertyNestedInput
+  newsLinks?: Prisma.NewsPropertyUpdateManyWithoutPropertyNestedInput
+  analyticsEvents?: Prisma.AnalyticsEventUpdateManyWithoutPropertyNestedInput
+  ragDocuments?: Prisma.RagDocumentUpdateManyWithoutPropertyNestedInput
+  aiJobs?: Prisma.AiJobUpdateManyWithoutPropertyNestedInput
+  templateLinks?: Prisma.TemplatePropertyUpdateManyWithoutPropertyNestedInput
+}
+
+export type PropertyUncheckedUpdateWithoutDevelopmentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  county?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  saleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumPropertyStatusFieldUpdateOperationsInput | $Enums.PropertyStatus
+  stage?: Prisma.NullableEnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage | null
+  priceMin?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bedroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sizeCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  listedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  agentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publicationStatus?: Prisma.EnumPublicationStatusFieldUpdateOperationsInput | $Enums.PublicationStatus
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeSqmMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyUpdatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyUpdatebathroomOptionsInput | number[]
+  media?: Prisma.PropertyMediaUncheckedUpdateManyWithoutPropertyNestedInput
+  features?: Prisma.PropertyFeatureUncheckedUpdateManyWithoutPropertyNestedInput
+  valueHistory?: Prisma.PropertyValueHistoryUncheckedUpdateManyWithoutPropertyNestedInput
+  savedBy?: Prisma.SavedPropertyUncheckedUpdateManyWithoutPropertyNestedInput
+  interests?: Prisma.InterestUncheckedUpdateManyWithoutPropertyNestedInput
+  campaignEvents?: Prisma.CampaignEventUncheckedUpdateManyWithoutPropertyNestedInput
+  campaignLinks?: Prisma.CampaignPropertyUncheckedUpdateManyWithoutPropertyNestedInput
+  newsLinks?: Prisma.NewsPropertyUncheckedUpdateManyWithoutPropertyNestedInput
+  analyticsEvents?: Prisma.AnalyticsEventUncheckedUpdateManyWithoutPropertyNestedInput
+  ragDocuments?: Prisma.RagDocumentUncheckedUpdateManyWithoutPropertyNestedInput
+  aiJobs?: Prisma.AiJobUncheckedUpdateManyWithoutPropertyNestedInput
+  templateLinks?: Prisma.TemplatePropertyUncheckedUpdateManyWithoutPropertyNestedInput
+}
+
+export type PropertyUncheckedUpdateManyWithoutDevelopmentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  county?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  saleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumPropertyStatusFieldUpdateOperationsInput | $Enums.PropertyStatus
+  stage?: Prisma.NullableEnumPropertyStageFieldUpdateOperationsInput | $Enums.PropertyStage | null
+  priceMin?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  priceMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bedroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomsMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sizeSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sizeCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  listedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  agentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publicationStatus?: Prisma.EnumPublicationStatusFieldUpdateOperationsInput | $Enums.PublicationStatus
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sizeSqmMax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  bedroomOptions?: Prisma.PropertyUpdatebedroomOptionsInput | number[]
+  bathroomOptions?: Prisma.PropertyUpdatebathroomOptionsInput | number[]
 }
 
 
@@ -3371,6 +4430,7 @@ export type PropertyCountOutputType = {
   analyticsEvents: number
   ragDocuments: number
   aiJobs: number
+  templateLinks: number
 }
 
 export type PropertyCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3385,6 +4445,7 @@ export type PropertyCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensio
   analyticsEvents?: boolean | PropertyCountOutputTypeCountAnalyticsEventsArgs
   ragDocuments?: boolean | PropertyCountOutputTypeCountRagDocumentsArgs
   aiJobs?: boolean | PropertyCountOutputTypeCountAiJobsArgs
+  templateLinks?: boolean | PropertyCountOutputTypeCountTemplateLinksArgs
 }
 
 /**
@@ -3474,6 +4535,13 @@ export type PropertyCountOutputTypeCountAiJobsArgs<ExtArgs extends runtime.Types
   where?: Prisma.AiJobWhereInput
 }
 
+/**
+ * PropertyCountOutputType without action
+ */
+export type PropertyCountOutputTypeCountTemplateLinksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TemplatePropertyWhereInput
+}
+
 
 export type PropertySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -3502,6 +4570,12 @@ export type PropertySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   agentId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  publicationStatus?: boolean
+  developmentId?: boolean
+  slug?: boolean
+  sizeSqmMax?: boolean
+  bedroomOptions?: boolean
+  bathroomOptions?: boolean
   agent?: boolean | Prisma.Property$agentArgs<ExtArgs>
   media?: boolean | Prisma.Property$mediaArgs<ExtArgs>
   features?: boolean | Prisma.Property$featuresArgs<ExtArgs>
@@ -3514,6 +4588,8 @@ export type PropertySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   analyticsEvents?: boolean | Prisma.Property$analyticsEventsArgs<ExtArgs>
   ragDocuments?: boolean | Prisma.Property$ragDocumentsArgs<ExtArgs>
   aiJobs?: boolean | Prisma.Property$aiJobsArgs<ExtArgs>
+  templateLinks?: boolean | Prisma.Property$templateLinksArgs<ExtArgs>
+  development?: boolean | Prisma.Property$developmentArgs<ExtArgs>
   _count?: boolean | Prisma.PropertyCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["property"]>
 
@@ -3544,7 +4620,14 @@ export type PropertySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   agentId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  publicationStatus?: boolean
+  developmentId?: boolean
+  slug?: boolean
+  sizeSqmMax?: boolean
+  bedroomOptions?: boolean
+  bathroomOptions?: boolean
   agent?: boolean | Prisma.Property$agentArgs<ExtArgs>
+  development?: boolean | Prisma.Property$developmentArgs<ExtArgs>
 }, ExtArgs["result"]["property"]>
 
 export type PropertySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -3574,7 +4657,14 @@ export type PropertySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   agentId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  publicationStatus?: boolean
+  developmentId?: boolean
+  slug?: boolean
+  sizeSqmMax?: boolean
+  bedroomOptions?: boolean
+  bathroomOptions?: boolean
   agent?: boolean | Prisma.Property$agentArgs<ExtArgs>
+  development?: boolean | Prisma.Property$developmentArgs<ExtArgs>
 }, ExtArgs["result"]["property"]>
 
 export type PropertySelectScalar = {
@@ -3604,9 +4694,15 @@ export type PropertySelectScalar = {
   agentId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  publicationStatus?: boolean
+  developmentId?: boolean
+  slug?: boolean
+  sizeSqmMax?: boolean
+  bedroomOptions?: boolean
+  bathroomOptions?: boolean
 }
 
-export type PropertyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "sourceKey" | "name" | "location" | "county" | "address" | "postalCode" | "type" | "saleType" | "status" | "stage" | "priceMin" | "priceMax" | "bedroomsMin" | "bedroomsMax" | "bathroomsMin" | "bathroomsMax" | "sizeSqm" | "sizeCategory" | "completionYear" | "description" | "listedDate" | "publishedAt" | "agentId" | "createdAt" | "updatedAt", ExtArgs["result"]["property"]>
+export type PropertyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "sourceKey" | "name" | "location" | "county" | "address" | "postalCode" | "type" | "saleType" | "status" | "stage" | "priceMin" | "priceMax" | "bedroomsMin" | "bedroomsMax" | "bathroomsMin" | "bathroomsMax" | "sizeSqm" | "sizeCategory" | "completionYear" | "description" | "listedDate" | "publishedAt" | "agentId" | "createdAt" | "updatedAt" | "publicationStatus" | "developmentId" | "slug" | "sizeSqmMax" | "bedroomOptions" | "bathroomOptions", ExtArgs["result"]["property"]>
 export type PropertyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   agent?: boolean | Prisma.Property$agentArgs<ExtArgs>
   media?: boolean | Prisma.Property$mediaArgs<ExtArgs>
@@ -3620,13 +4716,17 @@ export type PropertyInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   analyticsEvents?: boolean | Prisma.Property$analyticsEventsArgs<ExtArgs>
   ragDocuments?: boolean | Prisma.Property$ragDocumentsArgs<ExtArgs>
   aiJobs?: boolean | Prisma.Property$aiJobsArgs<ExtArgs>
+  templateLinks?: boolean | Prisma.Property$templateLinksArgs<ExtArgs>
+  development?: boolean | Prisma.Property$developmentArgs<ExtArgs>
   _count?: boolean | Prisma.PropertyCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type PropertyIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   agent?: boolean | Prisma.Property$agentArgs<ExtArgs>
+  development?: boolean | Prisma.Property$developmentArgs<ExtArgs>
 }
 export type PropertyIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   agent?: boolean | Prisma.Property$agentArgs<ExtArgs>
+  development?: boolean | Prisma.Property$developmentArgs<ExtArgs>
 }
 
 export type $PropertyPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3644,26 +4744,28 @@ export type $PropertyPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     analyticsEvents: Prisma.$AnalyticsEventPayload<ExtArgs>[]
     ragDocuments: Prisma.$RagDocumentPayload<ExtArgs>[]
     aiJobs: Prisma.$AiJobPayload<ExtArgs>[]
+    templateLinks: Prisma.$TemplatePropertyPayload<ExtArgs>[]
+    development: Prisma.$DevelopmentPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    sourceKey: string
+    sourceKey: string | null
     name: string
-    location: string
-    county: string
-    address: string
-    postalCode: string
-    type: string
-    saleType: string
+    location: string | null
+    county: string | null
+    address: string | null
+    postalCode: string | null
+    type: string | null
+    saleType: string | null
     status: $Enums.PropertyStatus
-    stage: $Enums.PropertyStage
-    priceMin: runtime.Decimal
-    priceMax: runtime.Decimal
-    bedroomsMin: number
-    bedroomsMax: number
-    bathroomsMin: number
-    bathroomsMax: number
-    sizeSqm: number
+    stage: $Enums.PropertyStage | null
+    priceMin: runtime.Decimal | null
+    priceMax: runtime.Decimal | null
+    bedroomsMin: number | null
+    bedroomsMax: number | null
+    bathroomsMin: number | null
+    bathroomsMax: number | null
+    sizeSqm: runtime.Decimal | null
     sizeCategory: string | null
     completionYear: number | null
     description: string | null
@@ -3672,6 +4774,12 @@ export type $PropertyPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     agentId: string | null
     createdAt: Date
     updatedAt: Date
+    publicationStatus: $Enums.PublicationStatus
+    developmentId: string | null
+    slug: string | null
+    sizeSqmMax: runtime.Decimal | null
+    bedroomOptions: number[]
+    bathroomOptions: number[]
   }, ExtArgs["result"]["property"]>
   composites: {}
 }
@@ -4078,6 +5186,8 @@ export interface Prisma__PropertyClient<T, Null = never, ExtArgs extends runtime
   analyticsEvents<T extends Prisma.Property$analyticsEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$analyticsEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AnalyticsEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   ragDocuments<T extends Prisma.Property$ragDocumentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$ragDocumentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RagDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   aiJobs<T extends Prisma.Property$aiJobsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$aiJobsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AiJobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  templateLinks<T extends Prisma.Property$templateLinksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$templateLinksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TemplatePropertyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  development<T extends Prisma.Property$developmentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$developmentArgs<ExtArgs>>): Prisma.Prisma__DevelopmentClient<runtime.Types.Result.GetResult<Prisma.$DevelopmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4124,7 +5234,7 @@ export interface PropertyFieldRefs {
   readonly bedroomsMax: Prisma.FieldRef<"Property", 'Int'>
   readonly bathroomsMin: Prisma.FieldRef<"Property", 'Int'>
   readonly bathroomsMax: Prisma.FieldRef<"Property", 'Int'>
-  readonly sizeSqm: Prisma.FieldRef<"Property", 'Int'>
+  readonly sizeSqm: Prisma.FieldRef<"Property", 'Decimal'>
   readonly sizeCategory: Prisma.FieldRef<"Property", 'String'>
   readonly completionYear: Prisma.FieldRef<"Property", 'Int'>
   readonly description: Prisma.FieldRef<"Property", 'String'>
@@ -4133,6 +5243,12 @@ export interface PropertyFieldRefs {
   readonly agentId: Prisma.FieldRef<"Property", 'String'>
   readonly createdAt: Prisma.FieldRef<"Property", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Property", 'DateTime'>
+  readonly publicationStatus: Prisma.FieldRef<"Property", 'PublicationStatus'>
+  readonly developmentId: Prisma.FieldRef<"Property", 'String'>
+  readonly slug: Prisma.FieldRef<"Property", 'String'>
+  readonly sizeSqmMax: Prisma.FieldRef<"Property", 'Decimal'>
+  readonly bedroomOptions: Prisma.FieldRef<"Property", 'Int[]'>
+  readonly bathroomOptions: Prisma.FieldRef<"Property", 'Int[]'>
 }
     
 
@@ -4814,6 +5930,49 @@ export type Property$aiJobsArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.AiJobScalarFieldEnum | Prisma.AiJobScalarFieldEnum[]
+}
+
+/**
+ * Property.templateLinks
+ */
+export type Property$templateLinksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TemplateProperty
+   */
+  select?: Prisma.TemplatePropertySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TemplateProperty
+   */
+  omit?: Prisma.TemplatePropertyOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TemplatePropertyInclude<ExtArgs> | null
+  where?: Prisma.TemplatePropertyWhereInput
+  orderBy?: Prisma.TemplatePropertyOrderByWithRelationInput | Prisma.TemplatePropertyOrderByWithRelationInput[]
+  cursor?: Prisma.TemplatePropertyWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TemplatePropertyScalarFieldEnum | Prisma.TemplatePropertyScalarFieldEnum[]
+}
+
+/**
+ * Property.development
+ */
+export type Property$developmentArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Development
+   */
+  select?: Prisma.DevelopmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Development
+   */
+  omit?: Prisma.DevelopmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DevelopmentInclude<ExtArgs> | null
+  where?: Prisma.DevelopmentWhereInput
 }
 
 /**

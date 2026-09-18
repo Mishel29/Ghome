@@ -20,30 +20,60 @@ export type CampaignRecipientModel = runtime.Types.Result.DefaultSelection<Prism
 
 export type AggregateCampaignRecipient = {
   _count: CampaignRecipientCountAggregateOutputType | null
+  _avg: CampaignRecipientAvgAggregateOutputType | null
+  _sum: CampaignRecipientSumAggregateOutputType | null
   _min: CampaignRecipientMinAggregateOutputType | null
   _max: CampaignRecipientMaxAggregateOutputType | null
+}
+
+export type CampaignRecipientAvgAggregateOutputType = {
+  attemptCount: number | null
+}
+
+export type CampaignRecipientSumAggregateOutputType = {
+  attemptCount: number | null
 }
 
 export type CampaignRecipientMinAggregateOutputType = {
   id: string | null
   campaignId: string | null
   subscriberId: string | null
-  status: string | null
+  status: $Enums.DeliveryStatus | null
   sentAt: Date | null
   deliveredAt: Date | null
   failedAt: Date | null
   errorMessage: string | null
+  recipientEmail: string | null
+  recipientName: string | null
+  renderedHtml: string | null
+  providerMessageId: string | null
+  trackingTokenHash: string | null
+  attemptCount: number | null
+  nextAttemptAt: Date | null
+  lockedAt: Date | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type CampaignRecipientMaxAggregateOutputType = {
   id: string | null
   campaignId: string | null
   subscriberId: string | null
-  status: string | null
+  status: $Enums.DeliveryStatus | null
   sentAt: Date | null
   deliveredAt: Date | null
   failedAt: Date | null
   errorMessage: string | null
+  recipientEmail: string | null
+  recipientName: string | null
+  renderedHtml: string | null
+  providerMessageId: string | null
+  trackingTokenHash: string | null
+  attemptCount: number | null
+  nextAttemptAt: Date | null
+  lockedAt: Date | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type CampaignRecipientCountAggregateOutputType = {
@@ -55,9 +85,27 @@ export type CampaignRecipientCountAggregateOutputType = {
   deliveredAt: number
   failedAt: number
   errorMessage: number
+  recipientEmail: number
+  recipientName: number
+  renderedHtml: number
+  providerMessageId: number
+  trackingTokenHash: number
+  attemptCount: number
+  nextAttemptAt: number
+  lockedAt: number
+  createdAt: number
+  updatedAt: number
   _all: number
 }
 
+
+export type CampaignRecipientAvgAggregateInputType = {
+  attemptCount?: true
+}
+
+export type CampaignRecipientSumAggregateInputType = {
+  attemptCount?: true
+}
 
 export type CampaignRecipientMinAggregateInputType = {
   id?: true
@@ -68,6 +116,16 @@ export type CampaignRecipientMinAggregateInputType = {
   deliveredAt?: true
   failedAt?: true
   errorMessage?: true
+  recipientEmail?: true
+  recipientName?: true
+  renderedHtml?: true
+  providerMessageId?: true
+  trackingTokenHash?: true
+  attemptCount?: true
+  nextAttemptAt?: true
+  lockedAt?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type CampaignRecipientMaxAggregateInputType = {
@@ -79,6 +137,16 @@ export type CampaignRecipientMaxAggregateInputType = {
   deliveredAt?: true
   failedAt?: true
   errorMessage?: true
+  recipientEmail?: true
+  recipientName?: true
+  renderedHtml?: true
+  providerMessageId?: true
+  trackingTokenHash?: true
+  attemptCount?: true
+  nextAttemptAt?: true
+  lockedAt?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type CampaignRecipientCountAggregateInputType = {
@@ -90,6 +158,16 @@ export type CampaignRecipientCountAggregateInputType = {
   deliveredAt?: true
   failedAt?: true
   errorMessage?: true
+  recipientEmail?: true
+  recipientName?: true
+  renderedHtml?: true
+  providerMessageId?: true
+  trackingTokenHash?: true
+  attemptCount?: true
+  nextAttemptAt?: true
+  lockedAt?: true
+  createdAt?: true
+  updatedAt?: true
   _all?: true
 }
 
@@ -131,6 +209,18 @@ export type CampaignRecipientAggregateArgs<ExtArgs extends runtime.Types.Extensi
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: CampaignRecipientAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: CampaignRecipientSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: CampaignRecipientMinAggregateInputType
@@ -161,6 +251,8 @@ export type CampaignRecipientGroupByArgs<ExtArgs extends runtime.Types.Extension
   take?: number
   skip?: number
   _count?: CampaignRecipientCountAggregateInputType | true
+  _avg?: CampaignRecipientAvgAggregateInputType
+  _sum?: CampaignRecipientSumAggregateInputType
   _min?: CampaignRecipientMinAggregateInputType
   _max?: CampaignRecipientMaxAggregateInputType
 }
@@ -168,13 +260,25 @@ export type CampaignRecipientGroupByArgs<ExtArgs extends runtime.Types.Extension
 export type CampaignRecipientGroupByOutputType = {
   id: string
   campaignId: string
-  subscriberId: string
-  status: string
+  subscriberId: string | null
+  status: $Enums.DeliveryStatus
   sentAt: Date | null
   deliveredAt: Date | null
   failedAt: Date | null
   errorMessage: string | null
+  recipientEmail: string
+  recipientName: string
+  renderedHtml: string | null
+  providerMessageId: string | null
+  trackingTokenHash: string | null
+  attemptCount: number
+  nextAttemptAt: Date | null
+  lockedAt: Date | null
+  createdAt: Date
+  updatedAt: Date
   _count: CampaignRecipientCountAggregateOutputType | null
+  _avg: CampaignRecipientAvgAggregateOutputType | null
+  _sum: CampaignRecipientSumAggregateOutputType | null
   _min: CampaignRecipientMinAggregateOutputType | null
   _max: CampaignRecipientMaxAggregateOutputType | null
 }
@@ -200,58 +304,106 @@ export type CampaignRecipientWhereInput = {
   NOT?: Prisma.CampaignRecipientWhereInput | Prisma.CampaignRecipientWhereInput[]
   id?: Prisma.StringFilter<"CampaignRecipient"> | string
   campaignId?: Prisma.StringFilter<"CampaignRecipient"> | string
-  subscriberId?: Prisma.StringFilter<"CampaignRecipient"> | string
-  status?: Prisma.StringFilter<"CampaignRecipient"> | string
+  subscriberId?: Prisma.StringNullableFilter<"CampaignRecipient"> | string | null
+  status?: Prisma.EnumDeliveryStatusFilter<"CampaignRecipient"> | $Enums.DeliveryStatus
   sentAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
   deliveredAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
   failedAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
   errorMessage?: Prisma.StringNullableFilter<"CampaignRecipient"> | string | null
+  recipientEmail?: Prisma.StringFilter<"CampaignRecipient"> | string
+  recipientName?: Prisma.StringFilter<"CampaignRecipient"> | string
+  renderedHtml?: Prisma.StringNullableFilter<"CampaignRecipient"> | string | null
+  providerMessageId?: Prisma.StringNullableFilter<"CampaignRecipient"> | string | null
+  trackingTokenHash?: Prisma.StringNullableFilter<"CampaignRecipient"> | string | null
+  attemptCount?: Prisma.IntFilter<"CampaignRecipient"> | number
+  nextAttemptAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
+  lockedAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
+  createdAt?: Prisma.DateTimeFilter<"CampaignRecipient"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"CampaignRecipient"> | Date | string
   campaign?: Prisma.XOR<Prisma.CampaignScalarRelationFilter, Prisma.CampaignWhereInput>
-  subscriber?: Prisma.XOR<Prisma.SubscriberScalarRelationFilter, Prisma.SubscriberWhereInput>
+  subscriber?: Prisma.XOR<Prisma.SubscriberNullableScalarRelationFilter, Prisma.SubscriberWhereInput> | null
+  attempts?: Prisma.DeliveryAttemptListRelationFilter
+  events?: Prisma.CampaignEventListRelationFilter
 }
 
 export type CampaignRecipientOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   campaignId?: Prisma.SortOrder
-  subscriberId?: Prisma.SortOrder
+  subscriberId?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   sentAt?: Prisma.SortOrderInput | Prisma.SortOrder
   deliveredAt?: Prisma.SortOrderInput | Prisma.SortOrder
   failedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   errorMessage?: Prisma.SortOrderInput | Prisma.SortOrder
+  recipientEmail?: Prisma.SortOrder
+  recipientName?: Prisma.SortOrder
+  renderedHtml?: Prisma.SortOrderInput | Prisma.SortOrder
+  providerMessageId?: Prisma.SortOrderInput | Prisma.SortOrder
+  trackingTokenHash?: Prisma.SortOrderInput | Prisma.SortOrder
+  attemptCount?: Prisma.SortOrder
+  nextAttemptAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  lockedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   campaign?: Prisma.CampaignOrderByWithRelationInput
   subscriber?: Prisma.SubscriberOrderByWithRelationInput
+  attempts?: Prisma.DeliveryAttemptOrderByRelationAggregateInput
+  events?: Prisma.CampaignEventOrderByRelationAggregateInput
 }
 
 export type CampaignRecipientWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  providerMessageId?: string
+  trackingTokenHash?: string
   campaignId_subscriberId?: Prisma.CampaignRecipientCampaignIdSubscriberIdCompoundUniqueInput
   AND?: Prisma.CampaignRecipientWhereInput | Prisma.CampaignRecipientWhereInput[]
   OR?: Prisma.CampaignRecipientWhereInput[]
   NOT?: Prisma.CampaignRecipientWhereInput | Prisma.CampaignRecipientWhereInput[]
   campaignId?: Prisma.StringFilter<"CampaignRecipient"> | string
-  subscriberId?: Prisma.StringFilter<"CampaignRecipient"> | string
-  status?: Prisma.StringFilter<"CampaignRecipient"> | string
+  subscriberId?: Prisma.StringNullableFilter<"CampaignRecipient"> | string | null
+  status?: Prisma.EnumDeliveryStatusFilter<"CampaignRecipient"> | $Enums.DeliveryStatus
   sentAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
   deliveredAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
   failedAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
   errorMessage?: Prisma.StringNullableFilter<"CampaignRecipient"> | string | null
+  recipientEmail?: Prisma.StringFilter<"CampaignRecipient"> | string
+  recipientName?: Prisma.StringFilter<"CampaignRecipient"> | string
+  renderedHtml?: Prisma.StringNullableFilter<"CampaignRecipient"> | string | null
+  attemptCount?: Prisma.IntFilter<"CampaignRecipient"> | number
+  nextAttemptAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
+  lockedAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
+  createdAt?: Prisma.DateTimeFilter<"CampaignRecipient"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"CampaignRecipient"> | Date | string
   campaign?: Prisma.XOR<Prisma.CampaignScalarRelationFilter, Prisma.CampaignWhereInput>
-  subscriber?: Prisma.XOR<Prisma.SubscriberScalarRelationFilter, Prisma.SubscriberWhereInput>
-}, "id" | "campaignId_subscriberId">
+  subscriber?: Prisma.XOR<Prisma.SubscriberNullableScalarRelationFilter, Prisma.SubscriberWhereInput> | null
+  attempts?: Prisma.DeliveryAttemptListRelationFilter
+  events?: Prisma.CampaignEventListRelationFilter
+}, "id" | "providerMessageId" | "trackingTokenHash" | "campaignId_subscriberId">
 
 export type CampaignRecipientOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   campaignId?: Prisma.SortOrder
-  subscriberId?: Prisma.SortOrder
+  subscriberId?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   sentAt?: Prisma.SortOrderInput | Prisma.SortOrder
   deliveredAt?: Prisma.SortOrderInput | Prisma.SortOrder
   failedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   errorMessage?: Prisma.SortOrderInput | Prisma.SortOrder
+  recipientEmail?: Prisma.SortOrder
+  recipientName?: Prisma.SortOrder
+  renderedHtml?: Prisma.SortOrderInput | Prisma.SortOrder
+  providerMessageId?: Prisma.SortOrderInput | Prisma.SortOrder
+  trackingTokenHash?: Prisma.SortOrderInput | Prisma.SortOrder
+  attemptCount?: Prisma.SortOrder
+  nextAttemptAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  lockedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   _count?: Prisma.CampaignRecipientCountOrderByAggregateInput
+  _avg?: Prisma.CampaignRecipientAvgOrderByAggregateInput
   _max?: Prisma.CampaignRecipientMaxOrderByAggregateInput
   _min?: Prisma.CampaignRecipientMinOrderByAggregateInput
+  _sum?: Prisma.CampaignRecipientSumOrderByAggregateInput
 }
 
 export type CampaignRecipientScalarWhereWithAggregatesInput = {
@@ -260,87 +412,175 @@ export type CampaignRecipientScalarWhereWithAggregatesInput = {
   NOT?: Prisma.CampaignRecipientScalarWhereWithAggregatesInput | Prisma.CampaignRecipientScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"CampaignRecipient"> | string
   campaignId?: Prisma.StringWithAggregatesFilter<"CampaignRecipient"> | string
-  subscriberId?: Prisma.StringWithAggregatesFilter<"CampaignRecipient"> | string
-  status?: Prisma.StringWithAggregatesFilter<"CampaignRecipient"> | string
+  subscriberId?: Prisma.StringNullableWithAggregatesFilter<"CampaignRecipient"> | string | null
+  status?: Prisma.EnumDeliveryStatusWithAggregatesFilter<"CampaignRecipient"> | $Enums.DeliveryStatus
   sentAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CampaignRecipient"> | Date | string | null
   deliveredAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CampaignRecipient"> | Date | string | null
   failedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CampaignRecipient"> | Date | string | null
   errorMessage?: Prisma.StringNullableWithAggregatesFilter<"CampaignRecipient"> | string | null
+  recipientEmail?: Prisma.StringWithAggregatesFilter<"CampaignRecipient"> | string
+  recipientName?: Prisma.StringWithAggregatesFilter<"CampaignRecipient"> | string
+  renderedHtml?: Prisma.StringNullableWithAggregatesFilter<"CampaignRecipient"> | string | null
+  providerMessageId?: Prisma.StringNullableWithAggregatesFilter<"CampaignRecipient"> | string | null
+  trackingTokenHash?: Prisma.StringNullableWithAggregatesFilter<"CampaignRecipient"> | string | null
+  attemptCount?: Prisma.IntWithAggregatesFilter<"CampaignRecipient"> | number
+  nextAttemptAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CampaignRecipient"> | Date | string | null
+  lockedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CampaignRecipient"> | Date | string | null
+  createdAt?: Prisma.DateTimeWithAggregatesFilter<"CampaignRecipient"> | Date | string
+  updatedAt?: Prisma.DateTimeWithAggregatesFilter<"CampaignRecipient"> | Date | string
 }
 
 export type CampaignRecipientCreateInput = {
   id?: string
-  status?: string
+  status?: $Enums.DeliveryStatus
   sentAt?: Date | string | null
   deliveredAt?: Date | string | null
   failedAt?: Date | string | null
   errorMessage?: string | null
+  recipientEmail: string
+  recipientName: string
+  renderedHtml?: string | null
+  providerMessageId?: string | null
+  trackingTokenHash?: string | null
+  attemptCount?: number
+  nextAttemptAt?: Date | string | null
+  lockedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
   campaign: Prisma.CampaignCreateNestedOneWithoutRecipientsInput
-  subscriber: Prisma.SubscriberCreateNestedOneWithoutCampaignRecipientsInput
+  subscriber?: Prisma.SubscriberCreateNestedOneWithoutCampaignRecipientsInput
+  attempts?: Prisma.DeliveryAttemptCreateNestedManyWithoutRecipientInput
+  events?: Prisma.CampaignEventCreateNestedManyWithoutRecipientInput
 }
 
 export type CampaignRecipientUncheckedCreateInput = {
   id?: string
   campaignId: string
-  subscriberId: string
-  status?: string
+  subscriberId?: string | null
+  status?: $Enums.DeliveryStatus
   sentAt?: Date | string | null
   deliveredAt?: Date | string | null
   failedAt?: Date | string | null
   errorMessage?: string | null
+  recipientEmail: string
+  recipientName: string
+  renderedHtml?: string | null
+  providerMessageId?: string | null
+  trackingTokenHash?: string | null
+  attemptCount?: number
+  nextAttemptAt?: Date | string | null
+  lockedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  attempts?: Prisma.DeliveryAttemptUncheckedCreateNestedManyWithoutRecipientInput
+  events?: Prisma.CampaignEventUncheckedCreateNestedManyWithoutRecipientInput
 }
 
 export type CampaignRecipientUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  recipientName?: Prisma.StringFieldUpdateOperationsInput | string
+  renderedHtml?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  providerMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  nextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   campaign?: Prisma.CampaignUpdateOneRequiredWithoutRecipientsNestedInput
-  subscriber?: Prisma.SubscriberUpdateOneRequiredWithoutCampaignRecipientsNestedInput
+  subscriber?: Prisma.SubscriberUpdateOneWithoutCampaignRecipientsNestedInput
+  attempts?: Prisma.DeliveryAttemptUpdateManyWithoutRecipientNestedInput
+  events?: Prisma.CampaignEventUpdateManyWithoutRecipientNestedInput
 }
 
 export type CampaignRecipientUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   campaignId?: Prisma.StringFieldUpdateOperationsInput | string
-  subscriberId?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  subscriberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  recipientName?: Prisma.StringFieldUpdateOperationsInput | string
+  renderedHtml?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  providerMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  nextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  attempts?: Prisma.DeliveryAttemptUncheckedUpdateManyWithoutRecipientNestedInput
+  events?: Prisma.CampaignEventUncheckedUpdateManyWithoutRecipientNestedInput
 }
 
 export type CampaignRecipientCreateManyInput = {
   id?: string
   campaignId: string
-  subscriberId: string
-  status?: string
+  subscriberId?: string | null
+  status?: $Enums.DeliveryStatus
   sentAt?: Date | string | null
   deliveredAt?: Date | string | null
   failedAt?: Date | string | null
   errorMessage?: string | null
+  recipientEmail: string
+  recipientName: string
+  renderedHtml?: string | null
+  providerMessageId?: string | null
+  trackingTokenHash?: string | null
+  attemptCount?: number
+  nextAttemptAt?: Date | string | null
+  lockedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type CampaignRecipientUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  recipientName?: Prisma.StringFieldUpdateOperationsInput | string
+  renderedHtml?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  providerMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  nextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type CampaignRecipientUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   campaignId?: Prisma.StringFieldUpdateOperationsInput | string
-  subscriberId?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  subscriberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  recipientName?: Prisma.StringFieldUpdateOperationsInput | string
+  renderedHtml?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  providerMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  nextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type CampaignRecipientListRelationFilter = {
@@ -367,6 +607,20 @@ export type CampaignRecipientCountOrderByAggregateInput = {
   deliveredAt?: Prisma.SortOrder
   failedAt?: Prisma.SortOrder
   errorMessage?: Prisma.SortOrder
+  recipientEmail?: Prisma.SortOrder
+  recipientName?: Prisma.SortOrder
+  renderedHtml?: Prisma.SortOrder
+  providerMessageId?: Prisma.SortOrder
+  trackingTokenHash?: Prisma.SortOrder
+  attemptCount?: Prisma.SortOrder
+  nextAttemptAt?: Prisma.SortOrder
+  lockedAt?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+}
+
+export type CampaignRecipientAvgOrderByAggregateInput = {
+  attemptCount?: Prisma.SortOrder
 }
 
 export type CampaignRecipientMaxOrderByAggregateInput = {
@@ -378,6 +632,16 @@ export type CampaignRecipientMaxOrderByAggregateInput = {
   deliveredAt?: Prisma.SortOrder
   failedAt?: Prisma.SortOrder
   errorMessage?: Prisma.SortOrder
+  recipientEmail?: Prisma.SortOrder
+  recipientName?: Prisma.SortOrder
+  renderedHtml?: Prisma.SortOrder
+  providerMessageId?: Prisma.SortOrder
+  trackingTokenHash?: Prisma.SortOrder
+  attemptCount?: Prisma.SortOrder
+  nextAttemptAt?: Prisma.SortOrder
+  lockedAt?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type CampaignRecipientMinOrderByAggregateInput = {
@@ -389,6 +653,30 @@ export type CampaignRecipientMinOrderByAggregateInput = {
   deliveredAt?: Prisma.SortOrder
   failedAt?: Prisma.SortOrder
   errorMessage?: Prisma.SortOrder
+  recipientEmail?: Prisma.SortOrder
+  recipientName?: Prisma.SortOrder
+  renderedHtml?: Prisma.SortOrder
+  providerMessageId?: Prisma.SortOrder
+  trackingTokenHash?: Prisma.SortOrder
+  attemptCount?: Prisma.SortOrder
+  nextAttemptAt?: Prisma.SortOrder
+  lockedAt?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+}
+
+export type CampaignRecipientSumOrderByAggregateInput = {
+  attemptCount?: Prisma.SortOrder
+}
+
+export type CampaignRecipientNullableScalarRelationFilter = {
+  is?: Prisma.CampaignRecipientWhereInput | null
+  isNot?: Prisma.CampaignRecipientWhereInput | null
+}
+
+export type CampaignRecipientScalarRelationFilter = {
+  is?: Prisma.CampaignRecipientWhereInput
+  isNot?: Prisma.CampaignRecipientWhereInput
 }
 
 export type CampaignRecipientCreateNestedManyWithoutSubscriberInput = {
@@ -475,24 +763,82 @@ export type CampaignRecipientUncheckedUpdateManyWithoutCampaignNestedInput = {
   deleteMany?: Prisma.CampaignRecipientScalarWhereInput | Prisma.CampaignRecipientScalarWhereInput[]
 }
 
+export type EnumDeliveryStatusFieldUpdateOperationsInput = {
+  set?: $Enums.DeliveryStatus
+}
+
+export type CampaignRecipientCreateNestedOneWithoutEventsInput = {
+  create?: Prisma.XOR<Prisma.CampaignRecipientCreateWithoutEventsInput, Prisma.CampaignRecipientUncheckedCreateWithoutEventsInput>
+  connectOrCreate?: Prisma.CampaignRecipientCreateOrConnectWithoutEventsInput
+  connect?: Prisma.CampaignRecipientWhereUniqueInput
+}
+
+export type CampaignRecipientUpdateOneWithoutEventsNestedInput = {
+  create?: Prisma.XOR<Prisma.CampaignRecipientCreateWithoutEventsInput, Prisma.CampaignRecipientUncheckedCreateWithoutEventsInput>
+  connectOrCreate?: Prisma.CampaignRecipientCreateOrConnectWithoutEventsInput
+  upsert?: Prisma.CampaignRecipientUpsertWithoutEventsInput
+  disconnect?: Prisma.CampaignRecipientWhereInput | boolean
+  delete?: Prisma.CampaignRecipientWhereInput | boolean
+  connect?: Prisma.CampaignRecipientWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CampaignRecipientUpdateToOneWithWhereWithoutEventsInput, Prisma.CampaignRecipientUpdateWithoutEventsInput>, Prisma.CampaignRecipientUncheckedUpdateWithoutEventsInput>
+}
+
+export type CampaignRecipientCreateNestedOneWithoutAttemptsInput = {
+  create?: Prisma.XOR<Prisma.CampaignRecipientCreateWithoutAttemptsInput, Prisma.CampaignRecipientUncheckedCreateWithoutAttemptsInput>
+  connectOrCreate?: Prisma.CampaignRecipientCreateOrConnectWithoutAttemptsInput
+  connect?: Prisma.CampaignRecipientWhereUniqueInput
+}
+
+export type CampaignRecipientUpdateOneRequiredWithoutAttemptsNestedInput = {
+  create?: Prisma.XOR<Prisma.CampaignRecipientCreateWithoutAttemptsInput, Prisma.CampaignRecipientUncheckedCreateWithoutAttemptsInput>
+  connectOrCreate?: Prisma.CampaignRecipientCreateOrConnectWithoutAttemptsInput
+  upsert?: Prisma.CampaignRecipientUpsertWithoutAttemptsInput
+  connect?: Prisma.CampaignRecipientWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CampaignRecipientUpdateToOneWithWhereWithoutAttemptsInput, Prisma.CampaignRecipientUpdateWithoutAttemptsInput>, Prisma.CampaignRecipientUncheckedUpdateWithoutAttemptsInput>
+}
+
 export type CampaignRecipientCreateWithoutSubscriberInput = {
   id?: string
-  status?: string
+  status?: $Enums.DeliveryStatus
   sentAt?: Date | string | null
   deliveredAt?: Date | string | null
   failedAt?: Date | string | null
   errorMessage?: string | null
+  recipientEmail: string
+  recipientName: string
+  renderedHtml?: string | null
+  providerMessageId?: string | null
+  trackingTokenHash?: string | null
+  attemptCount?: number
+  nextAttemptAt?: Date | string | null
+  lockedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
   campaign: Prisma.CampaignCreateNestedOneWithoutRecipientsInput
+  attempts?: Prisma.DeliveryAttemptCreateNestedManyWithoutRecipientInput
+  events?: Prisma.CampaignEventCreateNestedManyWithoutRecipientInput
 }
 
 export type CampaignRecipientUncheckedCreateWithoutSubscriberInput = {
   id?: string
   campaignId: string
-  status?: string
+  status?: $Enums.DeliveryStatus
   sentAt?: Date | string | null
   deliveredAt?: Date | string | null
   failedAt?: Date | string | null
   errorMessage?: string | null
+  recipientEmail: string
+  recipientName: string
+  renderedHtml?: string | null
+  providerMessageId?: string | null
+  trackingTokenHash?: string | null
+  attemptCount?: number
+  nextAttemptAt?: Date | string | null
+  lockedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  attempts?: Prisma.DeliveryAttemptUncheckedCreateNestedManyWithoutRecipientInput
+  events?: Prisma.CampaignEventUncheckedCreateNestedManyWithoutRecipientInput
 }
 
 export type CampaignRecipientCreateOrConnectWithoutSubscriberInput = {
@@ -527,32 +873,66 @@ export type CampaignRecipientScalarWhereInput = {
   NOT?: Prisma.CampaignRecipientScalarWhereInput | Prisma.CampaignRecipientScalarWhereInput[]
   id?: Prisma.StringFilter<"CampaignRecipient"> | string
   campaignId?: Prisma.StringFilter<"CampaignRecipient"> | string
-  subscriberId?: Prisma.StringFilter<"CampaignRecipient"> | string
-  status?: Prisma.StringFilter<"CampaignRecipient"> | string
+  subscriberId?: Prisma.StringNullableFilter<"CampaignRecipient"> | string | null
+  status?: Prisma.EnumDeliveryStatusFilter<"CampaignRecipient"> | $Enums.DeliveryStatus
   sentAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
   deliveredAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
   failedAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
   errorMessage?: Prisma.StringNullableFilter<"CampaignRecipient"> | string | null
+  recipientEmail?: Prisma.StringFilter<"CampaignRecipient"> | string
+  recipientName?: Prisma.StringFilter<"CampaignRecipient"> | string
+  renderedHtml?: Prisma.StringNullableFilter<"CampaignRecipient"> | string | null
+  providerMessageId?: Prisma.StringNullableFilter<"CampaignRecipient"> | string | null
+  trackingTokenHash?: Prisma.StringNullableFilter<"CampaignRecipient"> | string | null
+  attemptCount?: Prisma.IntFilter<"CampaignRecipient"> | number
+  nextAttemptAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
+  lockedAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
+  createdAt?: Prisma.DateTimeFilter<"CampaignRecipient"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"CampaignRecipient"> | Date | string
 }
 
 export type CampaignRecipientCreateWithoutCampaignInput = {
   id?: string
-  status?: string
+  status?: $Enums.DeliveryStatus
   sentAt?: Date | string | null
   deliveredAt?: Date | string | null
   failedAt?: Date | string | null
   errorMessage?: string | null
-  subscriber: Prisma.SubscriberCreateNestedOneWithoutCampaignRecipientsInput
+  recipientEmail: string
+  recipientName: string
+  renderedHtml?: string | null
+  providerMessageId?: string | null
+  trackingTokenHash?: string | null
+  attemptCount?: number
+  nextAttemptAt?: Date | string | null
+  lockedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  subscriber?: Prisma.SubscriberCreateNestedOneWithoutCampaignRecipientsInput
+  attempts?: Prisma.DeliveryAttemptCreateNestedManyWithoutRecipientInput
+  events?: Prisma.CampaignEventCreateNestedManyWithoutRecipientInput
 }
 
 export type CampaignRecipientUncheckedCreateWithoutCampaignInput = {
   id?: string
-  subscriberId: string
-  status?: string
+  subscriberId?: string | null
+  status?: $Enums.DeliveryStatus
   sentAt?: Date | string | null
   deliveredAt?: Date | string | null
   failedAt?: Date | string | null
   errorMessage?: string | null
+  recipientEmail: string
+  recipientName: string
+  renderedHtml?: string | null
+  providerMessageId?: string | null
+  trackingTokenHash?: string | null
+  attemptCount?: number
+  nextAttemptAt?: Date | string | null
+  lockedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  attempts?: Prisma.DeliveryAttemptUncheckedCreateNestedManyWithoutRecipientInput
+  events?: Prisma.CampaignEventUncheckedCreateNestedManyWithoutRecipientInput
 }
 
 export type CampaignRecipientCreateOrConnectWithoutCampaignInput = {
@@ -581,86 +961,420 @@ export type CampaignRecipientUpdateManyWithWhereWithoutCampaignInput = {
   data: Prisma.XOR<Prisma.CampaignRecipientUpdateManyMutationInput, Prisma.CampaignRecipientUncheckedUpdateManyWithoutCampaignInput>
 }
 
-export type CampaignRecipientCreateManySubscriberInput = {
+export type CampaignRecipientCreateWithoutEventsInput = {
   id?: string
-  campaignId: string
-  status?: string
+  status?: $Enums.DeliveryStatus
   sentAt?: Date | string | null
   deliveredAt?: Date | string | null
   failedAt?: Date | string | null
   errorMessage?: string | null
+  recipientEmail: string
+  recipientName: string
+  renderedHtml?: string | null
+  providerMessageId?: string | null
+  trackingTokenHash?: string | null
+  attemptCount?: number
+  nextAttemptAt?: Date | string | null
+  lockedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  campaign: Prisma.CampaignCreateNestedOneWithoutRecipientsInput
+  subscriber?: Prisma.SubscriberCreateNestedOneWithoutCampaignRecipientsInput
+  attempts?: Prisma.DeliveryAttemptCreateNestedManyWithoutRecipientInput
 }
 
-export type CampaignRecipientUpdateWithoutSubscriberInput = {
+export type CampaignRecipientUncheckedCreateWithoutEventsInput = {
+  id?: string
+  campaignId: string
+  subscriberId?: string | null
+  status?: $Enums.DeliveryStatus
+  sentAt?: Date | string | null
+  deliveredAt?: Date | string | null
+  failedAt?: Date | string | null
+  errorMessage?: string | null
+  recipientEmail: string
+  recipientName: string
+  renderedHtml?: string | null
+  providerMessageId?: string | null
+  trackingTokenHash?: string | null
+  attemptCount?: number
+  nextAttemptAt?: Date | string | null
+  lockedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  attempts?: Prisma.DeliveryAttemptUncheckedCreateNestedManyWithoutRecipientInput
+}
+
+export type CampaignRecipientCreateOrConnectWithoutEventsInput = {
+  where: Prisma.CampaignRecipientWhereUniqueInput
+  create: Prisma.XOR<Prisma.CampaignRecipientCreateWithoutEventsInput, Prisma.CampaignRecipientUncheckedCreateWithoutEventsInput>
+}
+
+export type CampaignRecipientUpsertWithoutEventsInput = {
+  update: Prisma.XOR<Prisma.CampaignRecipientUpdateWithoutEventsInput, Prisma.CampaignRecipientUncheckedUpdateWithoutEventsInput>
+  create: Prisma.XOR<Prisma.CampaignRecipientCreateWithoutEventsInput, Prisma.CampaignRecipientUncheckedCreateWithoutEventsInput>
+  where?: Prisma.CampaignRecipientWhereInput
+}
+
+export type CampaignRecipientUpdateToOneWithWhereWithoutEventsInput = {
+  where?: Prisma.CampaignRecipientWhereInput
+  data: Prisma.XOR<Prisma.CampaignRecipientUpdateWithoutEventsInput, Prisma.CampaignRecipientUncheckedUpdateWithoutEventsInput>
+}
+
+export type CampaignRecipientUpdateWithoutEventsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  recipientName?: Prisma.StringFieldUpdateOperationsInput | string
+  renderedHtml?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  providerMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  nextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   campaign?: Prisma.CampaignUpdateOneRequiredWithoutRecipientsNestedInput
+  subscriber?: Prisma.SubscriberUpdateOneWithoutCampaignRecipientsNestedInput
+  attempts?: Prisma.DeliveryAttemptUpdateManyWithoutRecipientNestedInput
+}
+
+export type CampaignRecipientUncheckedUpdateWithoutEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  campaignId?: Prisma.StringFieldUpdateOperationsInput | string
+  subscriberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
+  sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  recipientName?: Prisma.StringFieldUpdateOperationsInput | string
+  renderedHtml?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  providerMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  nextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  attempts?: Prisma.DeliveryAttemptUncheckedUpdateManyWithoutRecipientNestedInput
+}
+
+export type CampaignRecipientCreateWithoutAttemptsInput = {
+  id?: string
+  status?: $Enums.DeliveryStatus
+  sentAt?: Date | string | null
+  deliveredAt?: Date | string | null
+  failedAt?: Date | string | null
+  errorMessage?: string | null
+  recipientEmail: string
+  recipientName: string
+  renderedHtml?: string | null
+  providerMessageId?: string | null
+  trackingTokenHash?: string | null
+  attemptCount?: number
+  nextAttemptAt?: Date | string | null
+  lockedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  campaign: Prisma.CampaignCreateNestedOneWithoutRecipientsInput
+  subscriber?: Prisma.SubscriberCreateNestedOneWithoutCampaignRecipientsInput
+  events?: Prisma.CampaignEventCreateNestedManyWithoutRecipientInput
+}
+
+export type CampaignRecipientUncheckedCreateWithoutAttemptsInput = {
+  id?: string
+  campaignId: string
+  subscriberId?: string | null
+  status?: $Enums.DeliveryStatus
+  sentAt?: Date | string | null
+  deliveredAt?: Date | string | null
+  failedAt?: Date | string | null
+  errorMessage?: string | null
+  recipientEmail: string
+  recipientName: string
+  renderedHtml?: string | null
+  providerMessageId?: string | null
+  trackingTokenHash?: string | null
+  attemptCount?: number
+  nextAttemptAt?: Date | string | null
+  lockedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  events?: Prisma.CampaignEventUncheckedCreateNestedManyWithoutRecipientInput
+}
+
+export type CampaignRecipientCreateOrConnectWithoutAttemptsInput = {
+  where: Prisma.CampaignRecipientWhereUniqueInput
+  create: Prisma.XOR<Prisma.CampaignRecipientCreateWithoutAttemptsInput, Prisma.CampaignRecipientUncheckedCreateWithoutAttemptsInput>
+}
+
+export type CampaignRecipientUpsertWithoutAttemptsInput = {
+  update: Prisma.XOR<Prisma.CampaignRecipientUpdateWithoutAttemptsInput, Prisma.CampaignRecipientUncheckedUpdateWithoutAttemptsInput>
+  create: Prisma.XOR<Prisma.CampaignRecipientCreateWithoutAttemptsInput, Prisma.CampaignRecipientUncheckedCreateWithoutAttemptsInput>
+  where?: Prisma.CampaignRecipientWhereInput
+}
+
+export type CampaignRecipientUpdateToOneWithWhereWithoutAttemptsInput = {
+  where?: Prisma.CampaignRecipientWhereInput
+  data: Prisma.XOR<Prisma.CampaignRecipientUpdateWithoutAttemptsInput, Prisma.CampaignRecipientUncheckedUpdateWithoutAttemptsInput>
+}
+
+export type CampaignRecipientUpdateWithoutAttemptsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
+  sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  recipientName?: Prisma.StringFieldUpdateOperationsInput | string
+  renderedHtml?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  providerMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  nextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  campaign?: Prisma.CampaignUpdateOneRequiredWithoutRecipientsNestedInput
+  subscriber?: Prisma.SubscriberUpdateOneWithoutCampaignRecipientsNestedInput
+  events?: Prisma.CampaignEventUpdateManyWithoutRecipientNestedInput
+}
+
+export type CampaignRecipientUncheckedUpdateWithoutAttemptsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  campaignId?: Prisma.StringFieldUpdateOperationsInput | string
+  subscriberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
+  sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  recipientName?: Prisma.StringFieldUpdateOperationsInput | string
+  renderedHtml?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  providerMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  nextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  events?: Prisma.CampaignEventUncheckedUpdateManyWithoutRecipientNestedInput
+}
+
+export type CampaignRecipientCreateManySubscriberInput = {
+  id?: string
+  campaignId: string
+  status?: $Enums.DeliveryStatus
+  sentAt?: Date | string | null
+  deliveredAt?: Date | string | null
+  failedAt?: Date | string | null
+  errorMessage?: string | null
+  recipientEmail: string
+  recipientName: string
+  renderedHtml?: string | null
+  providerMessageId?: string | null
+  trackingTokenHash?: string | null
+  attemptCount?: number
+  nextAttemptAt?: Date | string | null
+  lockedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type CampaignRecipientUpdateWithoutSubscriberInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
+  sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  recipientName?: Prisma.StringFieldUpdateOperationsInput | string
+  renderedHtml?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  providerMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  nextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  campaign?: Prisma.CampaignUpdateOneRequiredWithoutRecipientsNestedInput
+  attempts?: Prisma.DeliveryAttemptUpdateManyWithoutRecipientNestedInput
+  events?: Prisma.CampaignEventUpdateManyWithoutRecipientNestedInput
 }
 
 export type CampaignRecipientUncheckedUpdateWithoutSubscriberInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   campaignId?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  recipientName?: Prisma.StringFieldUpdateOperationsInput | string
+  renderedHtml?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  providerMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  nextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  attempts?: Prisma.DeliveryAttemptUncheckedUpdateManyWithoutRecipientNestedInput
+  events?: Prisma.CampaignEventUncheckedUpdateManyWithoutRecipientNestedInput
 }
 
 export type CampaignRecipientUncheckedUpdateManyWithoutSubscriberInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   campaignId?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  recipientName?: Prisma.StringFieldUpdateOperationsInput | string
+  renderedHtml?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  providerMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  nextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type CampaignRecipientCreateManyCampaignInput = {
   id?: string
-  subscriberId: string
-  status?: string
+  subscriberId?: string | null
+  status?: $Enums.DeliveryStatus
   sentAt?: Date | string | null
   deliveredAt?: Date | string | null
   failedAt?: Date | string | null
   errorMessage?: string | null
+  recipientEmail: string
+  recipientName: string
+  renderedHtml?: string | null
+  providerMessageId?: string | null
+  trackingTokenHash?: string | null
+  attemptCount?: number
+  nextAttemptAt?: Date | string | null
+  lockedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type CampaignRecipientUpdateWithoutCampaignInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  subscriber?: Prisma.SubscriberUpdateOneRequiredWithoutCampaignRecipientsNestedInput
+  recipientEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  recipientName?: Prisma.StringFieldUpdateOperationsInput | string
+  renderedHtml?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  providerMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  nextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subscriber?: Prisma.SubscriberUpdateOneWithoutCampaignRecipientsNestedInput
+  attempts?: Prisma.DeliveryAttemptUpdateManyWithoutRecipientNestedInput
+  events?: Prisma.CampaignEventUpdateManyWithoutRecipientNestedInput
 }
 
 export type CampaignRecipientUncheckedUpdateWithoutCampaignInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  subscriberId?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  subscriberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  recipientName?: Prisma.StringFieldUpdateOperationsInput | string
+  renderedHtml?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  providerMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  nextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  attempts?: Prisma.DeliveryAttemptUncheckedUpdateManyWithoutRecipientNestedInput
+  events?: Prisma.CampaignEventUncheckedUpdateManyWithoutRecipientNestedInput
 }
 
 export type CampaignRecipientUncheckedUpdateManyWithoutCampaignInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  subscriberId?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  subscriberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  recipientName?: Prisma.StringFieldUpdateOperationsInput | string
+  renderedHtml?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  providerMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  nextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+
+/**
+ * Count Type CampaignRecipientCountOutputType
+ */
+
+export type CampaignRecipientCountOutputType = {
+  attempts: number
+  events: number
+}
+
+export type CampaignRecipientCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  attempts?: boolean | CampaignRecipientCountOutputTypeCountAttemptsArgs
+  events?: boolean | CampaignRecipientCountOutputTypeCountEventsArgs
+}
+
+/**
+ * CampaignRecipientCountOutputType without action
+ */
+export type CampaignRecipientCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CampaignRecipientCountOutputType
+   */
+  select?: Prisma.CampaignRecipientCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * CampaignRecipientCountOutputType without action
+ */
+export type CampaignRecipientCountOutputTypeCountAttemptsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DeliveryAttemptWhereInput
+}
+
+/**
+ * CampaignRecipientCountOutputType without action
+ */
+export type CampaignRecipientCountOutputTypeCountEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CampaignEventWhereInput
+}
 
 
 export type CampaignRecipientSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -672,8 +1386,21 @@ export type CampaignRecipientSelect<ExtArgs extends runtime.Types.Extensions.Int
   deliveredAt?: boolean
   failedAt?: boolean
   errorMessage?: boolean
+  recipientEmail?: boolean
+  recipientName?: boolean
+  renderedHtml?: boolean
+  providerMessageId?: boolean
+  trackingTokenHash?: boolean
+  attemptCount?: boolean
+  nextAttemptAt?: boolean
+  lockedAt?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
   campaign?: boolean | Prisma.CampaignDefaultArgs<ExtArgs>
-  subscriber?: boolean | Prisma.SubscriberDefaultArgs<ExtArgs>
+  subscriber?: boolean | Prisma.CampaignRecipient$subscriberArgs<ExtArgs>
+  attempts?: boolean | Prisma.CampaignRecipient$attemptsArgs<ExtArgs>
+  events?: boolean | Prisma.CampaignRecipient$eventsArgs<ExtArgs>
+  _count?: boolean | Prisma.CampaignRecipientCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["campaignRecipient"]>
 
 export type CampaignRecipientSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -685,8 +1412,18 @@ export type CampaignRecipientSelectCreateManyAndReturn<ExtArgs extends runtime.T
   deliveredAt?: boolean
   failedAt?: boolean
   errorMessage?: boolean
+  recipientEmail?: boolean
+  recipientName?: boolean
+  renderedHtml?: boolean
+  providerMessageId?: boolean
+  trackingTokenHash?: boolean
+  attemptCount?: boolean
+  nextAttemptAt?: boolean
+  lockedAt?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
   campaign?: boolean | Prisma.CampaignDefaultArgs<ExtArgs>
-  subscriber?: boolean | Prisma.SubscriberDefaultArgs<ExtArgs>
+  subscriber?: boolean | Prisma.CampaignRecipient$subscriberArgs<ExtArgs>
 }, ExtArgs["result"]["campaignRecipient"]>
 
 export type CampaignRecipientSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -698,8 +1435,18 @@ export type CampaignRecipientSelectUpdateManyAndReturn<ExtArgs extends runtime.T
   deliveredAt?: boolean
   failedAt?: boolean
   errorMessage?: boolean
+  recipientEmail?: boolean
+  recipientName?: boolean
+  renderedHtml?: boolean
+  providerMessageId?: boolean
+  trackingTokenHash?: boolean
+  attemptCount?: boolean
+  nextAttemptAt?: boolean
+  lockedAt?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
   campaign?: boolean | Prisma.CampaignDefaultArgs<ExtArgs>
-  subscriber?: boolean | Prisma.SubscriberDefaultArgs<ExtArgs>
+  subscriber?: boolean | Prisma.CampaignRecipient$subscriberArgs<ExtArgs>
 }, ExtArgs["result"]["campaignRecipient"]>
 
 export type CampaignRecipientSelectScalar = {
@@ -711,37 +1458,62 @@ export type CampaignRecipientSelectScalar = {
   deliveredAt?: boolean
   failedAt?: boolean
   errorMessage?: boolean
+  recipientEmail?: boolean
+  recipientName?: boolean
+  renderedHtml?: boolean
+  providerMessageId?: boolean
+  trackingTokenHash?: boolean
+  attemptCount?: boolean
+  nextAttemptAt?: boolean
+  lockedAt?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }
 
-export type CampaignRecipientOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "campaignId" | "subscriberId" | "status" | "sentAt" | "deliveredAt" | "failedAt" | "errorMessage", ExtArgs["result"]["campaignRecipient"]>
+export type CampaignRecipientOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "campaignId" | "subscriberId" | "status" | "sentAt" | "deliveredAt" | "failedAt" | "errorMessage" | "recipientEmail" | "recipientName" | "renderedHtml" | "providerMessageId" | "trackingTokenHash" | "attemptCount" | "nextAttemptAt" | "lockedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["campaignRecipient"]>
 export type CampaignRecipientInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   campaign?: boolean | Prisma.CampaignDefaultArgs<ExtArgs>
-  subscriber?: boolean | Prisma.SubscriberDefaultArgs<ExtArgs>
+  subscriber?: boolean | Prisma.CampaignRecipient$subscriberArgs<ExtArgs>
+  attempts?: boolean | Prisma.CampaignRecipient$attemptsArgs<ExtArgs>
+  events?: boolean | Prisma.CampaignRecipient$eventsArgs<ExtArgs>
+  _count?: boolean | Prisma.CampaignRecipientCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type CampaignRecipientIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   campaign?: boolean | Prisma.CampaignDefaultArgs<ExtArgs>
-  subscriber?: boolean | Prisma.SubscriberDefaultArgs<ExtArgs>
+  subscriber?: boolean | Prisma.CampaignRecipient$subscriberArgs<ExtArgs>
 }
 export type CampaignRecipientIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   campaign?: boolean | Prisma.CampaignDefaultArgs<ExtArgs>
-  subscriber?: boolean | Prisma.SubscriberDefaultArgs<ExtArgs>
+  subscriber?: boolean | Prisma.CampaignRecipient$subscriberArgs<ExtArgs>
 }
 
 export type $CampaignRecipientPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "CampaignRecipient"
   objects: {
     campaign: Prisma.$CampaignPayload<ExtArgs>
-    subscriber: Prisma.$SubscriberPayload<ExtArgs>
+    subscriber: Prisma.$SubscriberPayload<ExtArgs> | null
+    attempts: Prisma.$DeliveryAttemptPayload<ExtArgs>[]
+    events: Prisma.$CampaignEventPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     campaignId: string
-    subscriberId: string
-    status: string
+    subscriberId: string | null
+    status: $Enums.DeliveryStatus
     sentAt: Date | null
     deliveredAt: Date | null
     failedAt: Date | null
     errorMessage: string | null
+    recipientEmail: string
+    recipientName: string
+    renderedHtml: string | null
+    providerMessageId: string | null
+    trackingTokenHash: string | null
+    attemptCount: number
+    nextAttemptAt: Date | null
+    lockedAt: Date | null
+    createdAt: Date
+    updatedAt: Date
   }, ExtArgs["result"]["campaignRecipient"]>
   composites: {}
 }
@@ -1137,7 +1909,9 @@ readonly fields: CampaignRecipientFieldRefs;
 export interface Prisma__CampaignRecipientClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   campaign<T extends Prisma.CampaignDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CampaignDefaultArgs<ExtArgs>>): Prisma.Prisma__CampaignClient<runtime.Types.Result.GetResult<Prisma.$CampaignPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  subscriber<T extends Prisma.SubscriberDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SubscriberDefaultArgs<ExtArgs>>): Prisma.Prisma__SubscriberClient<runtime.Types.Result.GetResult<Prisma.$SubscriberPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  subscriber<T extends Prisma.CampaignRecipient$subscriberArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CampaignRecipient$subscriberArgs<ExtArgs>>): Prisma.Prisma__SubscriberClient<runtime.Types.Result.GetResult<Prisma.$SubscriberPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  attempts<T extends Prisma.CampaignRecipient$attemptsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CampaignRecipient$attemptsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DeliveryAttemptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  events<T extends Prisma.CampaignRecipient$eventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CampaignRecipient$eventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CampaignEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1170,11 +1944,21 @@ export interface CampaignRecipientFieldRefs {
   readonly id: Prisma.FieldRef<"CampaignRecipient", 'String'>
   readonly campaignId: Prisma.FieldRef<"CampaignRecipient", 'String'>
   readonly subscriberId: Prisma.FieldRef<"CampaignRecipient", 'String'>
-  readonly status: Prisma.FieldRef<"CampaignRecipient", 'String'>
+  readonly status: Prisma.FieldRef<"CampaignRecipient", 'DeliveryStatus'>
   readonly sentAt: Prisma.FieldRef<"CampaignRecipient", 'DateTime'>
   readonly deliveredAt: Prisma.FieldRef<"CampaignRecipient", 'DateTime'>
   readonly failedAt: Prisma.FieldRef<"CampaignRecipient", 'DateTime'>
   readonly errorMessage: Prisma.FieldRef<"CampaignRecipient", 'String'>
+  readonly recipientEmail: Prisma.FieldRef<"CampaignRecipient", 'String'>
+  readonly recipientName: Prisma.FieldRef<"CampaignRecipient", 'String'>
+  readonly renderedHtml: Prisma.FieldRef<"CampaignRecipient", 'String'>
+  readonly providerMessageId: Prisma.FieldRef<"CampaignRecipient", 'String'>
+  readonly trackingTokenHash: Prisma.FieldRef<"CampaignRecipient", 'String'>
+  readonly attemptCount: Prisma.FieldRef<"CampaignRecipient", 'Int'>
+  readonly nextAttemptAt: Prisma.FieldRef<"CampaignRecipient", 'DateTime'>
+  readonly lockedAt: Prisma.FieldRef<"CampaignRecipient", 'DateTime'>
+  readonly createdAt: Prisma.FieldRef<"CampaignRecipient", 'DateTime'>
+  readonly updatedAt: Prisma.FieldRef<"CampaignRecipient", 'DateTime'>
 }
     
 
@@ -1573,6 +2357,73 @@ export type CampaignRecipientDeleteManyArgs<ExtArgs extends runtime.Types.Extens
    * Limit how many CampaignRecipients to delete.
    */
   limit?: number
+}
+
+/**
+ * CampaignRecipient.subscriber
+ */
+export type CampaignRecipient$subscriberArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Subscriber
+   */
+  select?: Prisma.SubscriberSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Subscriber
+   */
+  omit?: Prisma.SubscriberOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SubscriberInclude<ExtArgs> | null
+  where?: Prisma.SubscriberWhereInput
+}
+
+/**
+ * CampaignRecipient.attempts
+ */
+export type CampaignRecipient$attemptsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DeliveryAttempt
+   */
+  select?: Prisma.DeliveryAttemptSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DeliveryAttempt
+   */
+  omit?: Prisma.DeliveryAttemptOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DeliveryAttemptInclude<ExtArgs> | null
+  where?: Prisma.DeliveryAttemptWhereInput
+  orderBy?: Prisma.DeliveryAttemptOrderByWithRelationInput | Prisma.DeliveryAttemptOrderByWithRelationInput[]
+  cursor?: Prisma.DeliveryAttemptWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DeliveryAttemptScalarFieldEnum | Prisma.DeliveryAttemptScalarFieldEnum[]
+}
+
+/**
+ * CampaignRecipient.events
+ */
+export type CampaignRecipient$eventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CampaignEvent
+   */
+  select?: Prisma.CampaignEventSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CampaignEvent
+   */
+  omit?: Prisma.CampaignEventOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CampaignEventInclude<ExtArgs> | null
+  where?: Prisma.CampaignEventWhereInput
+  orderBy?: Prisma.CampaignEventOrderByWithRelationInput | Prisma.CampaignEventOrderByWithRelationInput[]
+  cursor?: Prisma.CampaignEventWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CampaignEventScalarFieldEnum | Prisma.CampaignEventScalarFieldEnum[]
 }
 
 /**

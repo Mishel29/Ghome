@@ -31,6 +31,8 @@ export type CampaignEventMinAggregateOutputType = {
   propertyId: string | null
   type: $Enums.CampaignEventType | null
   occurredAt: Date | null
+  recipientId: string | null
+  deduplicationKey: string | null
 }
 
 export type CampaignEventMaxAggregateOutputType = {
@@ -40,6 +42,8 @@ export type CampaignEventMaxAggregateOutputType = {
   propertyId: string | null
   type: $Enums.CampaignEventType | null
   occurredAt: Date | null
+  recipientId: string | null
+  deduplicationKey: string | null
 }
 
 export type CampaignEventCountAggregateOutputType = {
@@ -49,6 +53,8 @@ export type CampaignEventCountAggregateOutputType = {
   propertyId: number
   type: number
   occurredAt: number
+  recipientId: number
+  deduplicationKey: number
   _all: number
 }
 
@@ -60,6 +66,8 @@ export type CampaignEventMinAggregateInputType = {
   propertyId?: true
   type?: true
   occurredAt?: true
+  recipientId?: true
+  deduplicationKey?: true
 }
 
 export type CampaignEventMaxAggregateInputType = {
@@ -69,6 +77,8 @@ export type CampaignEventMaxAggregateInputType = {
   propertyId?: true
   type?: true
   occurredAt?: true
+  recipientId?: true
+  deduplicationKey?: true
 }
 
 export type CampaignEventCountAggregateInputType = {
@@ -78,6 +88,8 @@ export type CampaignEventCountAggregateInputType = {
   propertyId?: true
   type?: true
   occurredAt?: true
+  recipientId?: true
+  deduplicationKey?: true
   _all?: true
 }
 
@@ -160,6 +172,8 @@ export type CampaignEventGroupByOutputType = {
   propertyId: string | null
   type: $Enums.CampaignEventType
   occurredAt: Date
+  recipientId: string | null
+  deduplicationKey: string | null
   _count: CampaignEventCountAggregateOutputType | null
   _min: CampaignEventMinAggregateOutputType | null
   _max: CampaignEventMaxAggregateOutputType | null
@@ -190,9 +204,12 @@ export type CampaignEventWhereInput = {
   propertyId?: Prisma.StringNullableFilter<"CampaignEvent"> | string | null
   type?: Prisma.EnumCampaignEventTypeFilter<"CampaignEvent"> | $Enums.CampaignEventType
   occurredAt?: Prisma.DateTimeFilter<"CampaignEvent"> | Date | string
+  recipientId?: Prisma.StringNullableFilter<"CampaignEvent"> | string | null
+  deduplicationKey?: Prisma.StringNullableFilter<"CampaignEvent"> | string | null
   campaign?: Prisma.XOR<Prisma.CampaignScalarRelationFilter, Prisma.CampaignWhereInput>
   subscriber?: Prisma.XOR<Prisma.SubscriberNullableScalarRelationFilter, Prisma.SubscriberWhereInput> | null
   property?: Prisma.XOR<Prisma.PropertyNullableScalarRelationFilter, Prisma.PropertyWhereInput> | null
+  recipient?: Prisma.XOR<Prisma.CampaignRecipientNullableScalarRelationFilter, Prisma.CampaignRecipientWhereInput> | null
 }
 
 export type CampaignEventOrderByWithRelationInput = {
@@ -202,13 +219,17 @@ export type CampaignEventOrderByWithRelationInput = {
   propertyId?: Prisma.SortOrderInput | Prisma.SortOrder
   type?: Prisma.SortOrder
   occurredAt?: Prisma.SortOrder
+  recipientId?: Prisma.SortOrderInput | Prisma.SortOrder
+  deduplicationKey?: Prisma.SortOrderInput | Prisma.SortOrder
   campaign?: Prisma.CampaignOrderByWithRelationInput
   subscriber?: Prisma.SubscriberOrderByWithRelationInput
   property?: Prisma.PropertyOrderByWithRelationInput
+  recipient?: Prisma.CampaignRecipientOrderByWithRelationInput
 }
 
 export type CampaignEventWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  deduplicationKey?: string
   AND?: Prisma.CampaignEventWhereInput | Prisma.CampaignEventWhereInput[]
   OR?: Prisma.CampaignEventWhereInput[]
   NOT?: Prisma.CampaignEventWhereInput | Prisma.CampaignEventWhereInput[]
@@ -217,10 +238,12 @@ export type CampaignEventWhereUniqueInput = Prisma.AtLeast<{
   propertyId?: Prisma.StringNullableFilter<"CampaignEvent"> | string | null
   type?: Prisma.EnumCampaignEventTypeFilter<"CampaignEvent"> | $Enums.CampaignEventType
   occurredAt?: Prisma.DateTimeFilter<"CampaignEvent"> | Date | string
+  recipientId?: Prisma.StringNullableFilter<"CampaignEvent"> | string | null
   campaign?: Prisma.XOR<Prisma.CampaignScalarRelationFilter, Prisma.CampaignWhereInput>
   subscriber?: Prisma.XOR<Prisma.SubscriberNullableScalarRelationFilter, Prisma.SubscriberWhereInput> | null
   property?: Prisma.XOR<Prisma.PropertyNullableScalarRelationFilter, Prisma.PropertyWhereInput> | null
-}, "id">
+  recipient?: Prisma.XOR<Prisma.CampaignRecipientNullableScalarRelationFilter, Prisma.CampaignRecipientWhereInput> | null
+}, "id" | "deduplicationKey">
 
 export type CampaignEventOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -229,6 +252,8 @@ export type CampaignEventOrderByWithAggregationInput = {
   propertyId?: Prisma.SortOrderInput | Prisma.SortOrder
   type?: Prisma.SortOrder
   occurredAt?: Prisma.SortOrder
+  recipientId?: Prisma.SortOrderInput | Prisma.SortOrder
+  deduplicationKey?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.CampaignEventCountOrderByAggregateInput
   _max?: Prisma.CampaignEventMaxOrderByAggregateInput
   _min?: Prisma.CampaignEventMinOrderByAggregateInput
@@ -244,15 +269,19 @@ export type CampaignEventScalarWhereWithAggregatesInput = {
   propertyId?: Prisma.StringNullableWithAggregatesFilter<"CampaignEvent"> | string | null
   type?: Prisma.EnumCampaignEventTypeWithAggregatesFilter<"CampaignEvent"> | $Enums.CampaignEventType
   occurredAt?: Prisma.DateTimeWithAggregatesFilter<"CampaignEvent"> | Date | string
+  recipientId?: Prisma.StringNullableWithAggregatesFilter<"CampaignEvent"> | string | null
+  deduplicationKey?: Prisma.StringNullableWithAggregatesFilter<"CampaignEvent"> | string | null
 }
 
 export type CampaignEventCreateInput = {
   id?: string
   type: $Enums.CampaignEventType
   occurredAt?: Date | string
+  deduplicationKey?: string | null
   campaign: Prisma.CampaignCreateNestedOneWithoutEventsInput
   subscriber?: Prisma.SubscriberCreateNestedOneWithoutCampaignEventsInput
   property?: Prisma.PropertyCreateNestedOneWithoutCampaignEventsInput
+  recipient?: Prisma.CampaignRecipientCreateNestedOneWithoutEventsInput
 }
 
 export type CampaignEventUncheckedCreateInput = {
@@ -262,15 +291,19 @@ export type CampaignEventUncheckedCreateInput = {
   propertyId?: string | null
   type: $Enums.CampaignEventType
   occurredAt?: Date | string
+  recipientId?: string | null
+  deduplicationKey?: string | null
 }
 
 export type CampaignEventUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumCampaignEventTypeFieldUpdateOperationsInput | $Enums.CampaignEventType
   occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deduplicationKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   campaign?: Prisma.CampaignUpdateOneRequiredWithoutEventsNestedInput
   subscriber?: Prisma.SubscriberUpdateOneWithoutCampaignEventsNestedInput
   property?: Prisma.PropertyUpdateOneWithoutCampaignEventsNestedInput
+  recipient?: Prisma.CampaignRecipientUpdateOneWithoutEventsNestedInput
 }
 
 export type CampaignEventUncheckedUpdateInput = {
@@ -280,6 +313,8 @@ export type CampaignEventUncheckedUpdateInput = {
   propertyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumCampaignEventTypeFieldUpdateOperationsInput | $Enums.CampaignEventType
   occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  recipientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deduplicationKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CampaignEventCreateManyInput = {
@@ -289,12 +324,15 @@ export type CampaignEventCreateManyInput = {
   propertyId?: string | null
   type: $Enums.CampaignEventType
   occurredAt?: Date | string
+  recipientId?: string | null
+  deduplicationKey?: string | null
 }
 
 export type CampaignEventUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumCampaignEventTypeFieldUpdateOperationsInput | $Enums.CampaignEventType
   occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deduplicationKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CampaignEventUncheckedUpdateManyInput = {
@@ -304,6 +342,8 @@ export type CampaignEventUncheckedUpdateManyInput = {
   propertyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumCampaignEventTypeFieldUpdateOperationsInput | $Enums.CampaignEventType
   occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  recipientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deduplicationKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CampaignEventListRelationFilter = {
@@ -323,6 +363,8 @@ export type CampaignEventCountOrderByAggregateInput = {
   propertyId?: Prisma.SortOrder
   type?: Prisma.SortOrder
   occurredAt?: Prisma.SortOrder
+  recipientId?: Prisma.SortOrder
+  deduplicationKey?: Prisma.SortOrder
 }
 
 export type CampaignEventMaxOrderByAggregateInput = {
@@ -332,6 +374,8 @@ export type CampaignEventMaxOrderByAggregateInput = {
   propertyId?: Prisma.SortOrder
   type?: Prisma.SortOrder
   occurredAt?: Prisma.SortOrder
+  recipientId?: Prisma.SortOrder
+  deduplicationKey?: Prisma.SortOrder
 }
 
 export type CampaignEventMinOrderByAggregateInput = {
@@ -341,6 +385,8 @@ export type CampaignEventMinOrderByAggregateInput = {
   propertyId?: Prisma.SortOrder
   type?: Prisma.SortOrder
   occurredAt?: Prisma.SortOrder
+  recipientId?: Prisma.SortOrder
+  deduplicationKey?: Prisma.SortOrder
 }
 
 export type CampaignEventCreateNestedManyWithoutPropertyInput = {
@@ -469,6 +515,48 @@ export type CampaignEventUncheckedUpdateManyWithoutCampaignNestedInput = {
   deleteMany?: Prisma.CampaignEventScalarWhereInput | Prisma.CampaignEventScalarWhereInput[]
 }
 
+export type CampaignEventCreateNestedManyWithoutRecipientInput = {
+  create?: Prisma.XOR<Prisma.CampaignEventCreateWithoutRecipientInput, Prisma.CampaignEventUncheckedCreateWithoutRecipientInput> | Prisma.CampaignEventCreateWithoutRecipientInput[] | Prisma.CampaignEventUncheckedCreateWithoutRecipientInput[]
+  connectOrCreate?: Prisma.CampaignEventCreateOrConnectWithoutRecipientInput | Prisma.CampaignEventCreateOrConnectWithoutRecipientInput[]
+  createMany?: Prisma.CampaignEventCreateManyRecipientInputEnvelope
+  connect?: Prisma.CampaignEventWhereUniqueInput | Prisma.CampaignEventWhereUniqueInput[]
+}
+
+export type CampaignEventUncheckedCreateNestedManyWithoutRecipientInput = {
+  create?: Prisma.XOR<Prisma.CampaignEventCreateWithoutRecipientInput, Prisma.CampaignEventUncheckedCreateWithoutRecipientInput> | Prisma.CampaignEventCreateWithoutRecipientInput[] | Prisma.CampaignEventUncheckedCreateWithoutRecipientInput[]
+  connectOrCreate?: Prisma.CampaignEventCreateOrConnectWithoutRecipientInput | Prisma.CampaignEventCreateOrConnectWithoutRecipientInput[]
+  createMany?: Prisma.CampaignEventCreateManyRecipientInputEnvelope
+  connect?: Prisma.CampaignEventWhereUniqueInput | Prisma.CampaignEventWhereUniqueInput[]
+}
+
+export type CampaignEventUpdateManyWithoutRecipientNestedInput = {
+  create?: Prisma.XOR<Prisma.CampaignEventCreateWithoutRecipientInput, Prisma.CampaignEventUncheckedCreateWithoutRecipientInput> | Prisma.CampaignEventCreateWithoutRecipientInput[] | Prisma.CampaignEventUncheckedCreateWithoutRecipientInput[]
+  connectOrCreate?: Prisma.CampaignEventCreateOrConnectWithoutRecipientInput | Prisma.CampaignEventCreateOrConnectWithoutRecipientInput[]
+  upsert?: Prisma.CampaignEventUpsertWithWhereUniqueWithoutRecipientInput | Prisma.CampaignEventUpsertWithWhereUniqueWithoutRecipientInput[]
+  createMany?: Prisma.CampaignEventCreateManyRecipientInputEnvelope
+  set?: Prisma.CampaignEventWhereUniqueInput | Prisma.CampaignEventWhereUniqueInput[]
+  disconnect?: Prisma.CampaignEventWhereUniqueInput | Prisma.CampaignEventWhereUniqueInput[]
+  delete?: Prisma.CampaignEventWhereUniqueInput | Prisma.CampaignEventWhereUniqueInput[]
+  connect?: Prisma.CampaignEventWhereUniqueInput | Prisma.CampaignEventWhereUniqueInput[]
+  update?: Prisma.CampaignEventUpdateWithWhereUniqueWithoutRecipientInput | Prisma.CampaignEventUpdateWithWhereUniqueWithoutRecipientInput[]
+  updateMany?: Prisma.CampaignEventUpdateManyWithWhereWithoutRecipientInput | Prisma.CampaignEventUpdateManyWithWhereWithoutRecipientInput[]
+  deleteMany?: Prisma.CampaignEventScalarWhereInput | Prisma.CampaignEventScalarWhereInput[]
+}
+
+export type CampaignEventUncheckedUpdateManyWithoutRecipientNestedInput = {
+  create?: Prisma.XOR<Prisma.CampaignEventCreateWithoutRecipientInput, Prisma.CampaignEventUncheckedCreateWithoutRecipientInput> | Prisma.CampaignEventCreateWithoutRecipientInput[] | Prisma.CampaignEventUncheckedCreateWithoutRecipientInput[]
+  connectOrCreate?: Prisma.CampaignEventCreateOrConnectWithoutRecipientInput | Prisma.CampaignEventCreateOrConnectWithoutRecipientInput[]
+  upsert?: Prisma.CampaignEventUpsertWithWhereUniqueWithoutRecipientInput | Prisma.CampaignEventUpsertWithWhereUniqueWithoutRecipientInput[]
+  createMany?: Prisma.CampaignEventCreateManyRecipientInputEnvelope
+  set?: Prisma.CampaignEventWhereUniqueInput | Prisma.CampaignEventWhereUniqueInput[]
+  disconnect?: Prisma.CampaignEventWhereUniqueInput | Prisma.CampaignEventWhereUniqueInput[]
+  delete?: Prisma.CampaignEventWhereUniqueInput | Prisma.CampaignEventWhereUniqueInput[]
+  connect?: Prisma.CampaignEventWhereUniqueInput | Prisma.CampaignEventWhereUniqueInput[]
+  update?: Prisma.CampaignEventUpdateWithWhereUniqueWithoutRecipientInput | Prisma.CampaignEventUpdateWithWhereUniqueWithoutRecipientInput[]
+  updateMany?: Prisma.CampaignEventUpdateManyWithWhereWithoutRecipientInput | Prisma.CampaignEventUpdateManyWithWhereWithoutRecipientInput[]
+  deleteMany?: Prisma.CampaignEventScalarWhereInput | Prisma.CampaignEventScalarWhereInput[]
+}
+
 export type EnumCampaignEventTypeFieldUpdateOperationsInput = {
   set?: $Enums.CampaignEventType
 }
@@ -477,8 +565,10 @@ export type CampaignEventCreateWithoutPropertyInput = {
   id?: string
   type: $Enums.CampaignEventType
   occurredAt?: Date | string
+  deduplicationKey?: string | null
   campaign: Prisma.CampaignCreateNestedOneWithoutEventsInput
   subscriber?: Prisma.SubscriberCreateNestedOneWithoutCampaignEventsInput
+  recipient?: Prisma.CampaignRecipientCreateNestedOneWithoutEventsInput
 }
 
 export type CampaignEventUncheckedCreateWithoutPropertyInput = {
@@ -487,6 +577,8 @@ export type CampaignEventUncheckedCreateWithoutPropertyInput = {
   subscriberId?: string | null
   type: $Enums.CampaignEventType
   occurredAt?: Date | string
+  recipientId?: string | null
+  deduplicationKey?: string | null
 }
 
 export type CampaignEventCreateOrConnectWithoutPropertyInput = {
@@ -525,14 +617,18 @@ export type CampaignEventScalarWhereInput = {
   propertyId?: Prisma.StringNullableFilter<"CampaignEvent"> | string | null
   type?: Prisma.EnumCampaignEventTypeFilter<"CampaignEvent"> | $Enums.CampaignEventType
   occurredAt?: Prisma.DateTimeFilter<"CampaignEvent"> | Date | string
+  recipientId?: Prisma.StringNullableFilter<"CampaignEvent"> | string | null
+  deduplicationKey?: Prisma.StringNullableFilter<"CampaignEvent"> | string | null
 }
 
 export type CampaignEventCreateWithoutSubscriberInput = {
   id?: string
   type: $Enums.CampaignEventType
   occurredAt?: Date | string
+  deduplicationKey?: string | null
   campaign: Prisma.CampaignCreateNestedOneWithoutEventsInput
   property?: Prisma.PropertyCreateNestedOneWithoutCampaignEventsInput
+  recipient?: Prisma.CampaignRecipientCreateNestedOneWithoutEventsInput
 }
 
 export type CampaignEventUncheckedCreateWithoutSubscriberInput = {
@@ -541,6 +637,8 @@ export type CampaignEventUncheckedCreateWithoutSubscriberInput = {
   propertyId?: string | null
   type: $Enums.CampaignEventType
   occurredAt?: Date | string
+  recipientId?: string | null
+  deduplicationKey?: string | null
 }
 
 export type CampaignEventCreateOrConnectWithoutSubscriberInput = {
@@ -573,8 +671,10 @@ export type CampaignEventCreateWithoutCampaignInput = {
   id?: string
   type: $Enums.CampaignEventType
   occurredAt?: Date | string
+  deduplicationKey?: string | null
   subscriber?: Prisma.SubscriberCreateNestedOneWithoutCampaignEventsInput
   property?: Prisma.PropertyCreateNestedOneWithoutCampaignEventsInput
+  recipient?: Prisma.CampaignRecipientCreateNestedOneWithoutEventsInput
 }
 
 export type CampaignEventUncheckedCreateWithoutCampaignInput = {
@@ -583,6 +683,8 @@ export type CampaignEventUncheckedCreateWithoutCampaignInput = {
   propertyId?: string | null
   type: $Enums.CampaignEventType
   occurredAt?: Date | string
+  recipientId?: string | null
+  deduplicationKey?: string | null
 }
 
 export type CampaignEventCreateOrConnectWithoutCampaignInput = {
@@ -611,20 +713,70 @@ export type CampaignEventUpdateManyWithWhereWithoutCampaignInput = {
   data: Prisma.XOR<Prisma.CampaignEventUpdateManyMutationInput, Prisma.CampaignEventUncheckedUpdateManyWithoutCampaignInput>
 }
 
+export type CampaignEventCreateWithoutRecipientInput = {
+  id?: string
+  type: $Enums.CampaignEventType
+  occurredAt?: Date | string
+  deduplicationKey?: string | null
+  campaign: Prisma.CampaignCreateNestedOneWithoutEventsInput
+  subscriber?: Prisma.SubscriberCreateNestedOneWithoutCampaignEventsInput
+  property?: Prisma.PropertyCreateNestedOneWithoutCampaignEventsInput
+}
+
+export type CampaignEventUncheckedCreateWithoutRecipientInput = {
+  id?: string
+  campaignId: string
+  subscriberId?: string | null
+  propertyId?: string | null
+  type: $Enums.CampaignEventType
+  occurredAt?: Date | string
+  deduplicationKey?: string | null
+}
+
+export type CampaignEventCreateOrConnectWithoutRecipientInput = {
+  where: Prisma.CampaignEventWhereUniqueInput
+  create: Prisma.XOR<Prisma.CampaignEventCreateWithoutRecipientInput, Prisma.CampaignEventUncheckedCreateWithoutRecipientInput>
+}
+
+export type CampaignEventCreateManyRecipientInputEnvelope = {
+  data: Prisma.CampaignEventCreateManyRecipientInput | Prisma.CampaignEventCreateManyRecipientInput[]
+  skipDuplicates?: boolean
+}
+
+export type CampaignEventUpsertWithWhereUniqueWithoutRecipientInput = {
+  where: Prisma.CampaignEventWhereUniqueInput
+  update: Prisma.XOR<Prisma.CampaignEventUpdateWithoutRecipientInput, Prisma.CampaignEventUncheckedUpdateWithoutRecipientInput>
+  create: Prisma.XOR<Prisma.CampaignEventCreateWithoutRecipientInput, Prisma.CampaignEventUncheckedCreateWithoutRecipientInput>
+}
+
+export type CampaignEventUpdateWithWhereUniqueWithoutRecipientInput = {
+  where: Prisma.CampaignEventWhereUniqueInput
+  data: Prisma.XOR<Prisma.CampaignEventUpdateWithoutRecipientInput, Prisma.CampaignEventUncheckedUpdateWithoutRecipientInput>
+}
+
+export type CampaignEventUpdateManyWithWhereWithoutRecipientInput = {
+  where: Prisma.CampaignEventScalarWhereInput
+  data: Prisma.XOR<Prisma.CampaignEventUpdateManyMutationInput, Prisma.CampaignEventUncheckedUpdateManyWithoutRecipientInput>
+}
+
 export type CampaignEventCreateManyPropertyInput = {
   id?: string
   campaignId: string
   subscriberId?: string | null
   type: $Enums.CampaignEventType
   occurredAt?: Date | string
+  recipientId?: string | null
+  deduplicationKey?: string | null
 }
 
 export type CampaignEventUpdateWithoutPropertyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumCampaignEventTypeFieldUpdateOperationsInput | $Enums.CampaignEventType
   occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deduplicationKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   campaign?: Prisma.CampaignUpdateOneRequiredWithoutEventsNestedInput
   subscriber?: Prisma.SubscriberUpdateOneWithoutCampaignEventsNestedInput
+  recipient?: Prisma.CampaignRecipientUpdateOneWithoutEventsNestedInput
 }
 
 export type CampaignEventUncheckedUpdateWithoutPropertyInput = {
@@ -633,6 +785,8 @@ export type CampaignEventUncheckedUpdateWithoutPropertyInput = {
   subscriberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumCampaignEventTypeFieldUpdateOperationsInput | $Enums.CampaignEventType
   occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  recipientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deduplicationKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CampaignEventUncheckedUpdateManyWithoutPropertyInput = {
@@ -641,6 +795,8 @@ export type CampaignEventUncheckedUpdateManyWithoutPropertyInput = {
   subscriberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumCampaignEventTypeFieldUpdateOperationsInput | $Enums.CampaignEventType
   occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  recipientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deduplicationKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CampaignEventCreateManySubscriberInput = {
@@ -649,14 +805,18 @@ export type CampaignEventCreateManySubscriberInput = {
   propertyId?: string | null
   type: $Enums.CampaignEventType
   occurredAt?: Date | string
+  recipientId?: string | null
+  deduplicationKey?: string | null
 }
 
 export type CampaignEventUpdateWithoutSubscriberInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumCampaignEventTypeFieldUpdateOperationsInput | $Enums.CampaignEventType
   occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deduplicationKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   campaign?: Prisma.CampaignUpdateOneRequiredWithoutEventsNestedInput
   property?: Prisma.PropertyUpdateOneWithoutCampaignEventsNestedInput
+  recipient?: Prisma.CampaignRecipientUpdateOneWithoutEventsNestedInput
 }
 
 export type CampaignEventUncheckedUpdateWithoutSubscriberInput = {
@@ -665,6 +825,8 @@ export type CampaignEventUncheckedUpdateWithoutSubscriberInput = {
   propertyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumCampaignEventTypeFieldUpdateOperationsInput | $Enums.CampaignEventType
   occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  recipientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deduplicationKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CampaignEventUncheckedUpdateManyWithoutSubscriberInput = {
@@ -673,6 +835,8 @@ export type CampaignEventUncheckedUpdateManyWithoutSubscriberInput = {
   propertyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumCampaignEventTypeFieldUpdateOperationsInput | $Enums.CampaignEventType
   occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  recipientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deduplicationKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CampaignEventCreateManyCampaignInput = {
@@ -681,14 +845,18 @@ export type CampaignEventCreateManyCampaignInput = {
   propertyId?: string | null
   type: $Enums.CampaignEventType
   occurredAt?: Date | string
+  recipientId?: string | null
+  deduplicationKey?: string | null
 }
 
 export type CampaignEventUpdateWithoutCampaignInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumCampaignEventTypeFieldUpdateOperationsInput | $Enums.CampaignEventType
   occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deduplicationKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subscriber?: Prisma.SubscriberUpdateOneWithoutCampaignEventsNestedInput
   property?: Prisma.PropertyUpdateOneWithoutCampaignEventsNestedInput
+  recipient?: Prisma.CampaignRecipientUpdateOneWithoutEventsNestedInput
 }
 
 export type CampaignEventUncheckedUpdateWithoutCampaignInput = {
@@ -697,6 +865,8 @@ export type CampaignEventUncheckedUpdateWithoutCampaignInput = {
   propertyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumCampaignEventTypeFieldUpdateOperationsInput | $Enums.CampaignEventType
   occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  recipientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deduplicationKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CampaignEventUncheckedUpdateManyWithoutCampaignInput = {
@@ -705,6 +875,48 @@ export type CampaignEventUncheckedUpdateManyWithoutCampaignInput = {
   propertyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumCampaignEventTypeFieldUpdateOperationsInput | $Enums.CampaignEventType
   occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  recipientId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deduplicationKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type CampaignEventCreateManyRecipientInput = {
+  id?: string
+  campaignId: string
+  subscriberId?: string | null
+  propertyId?: string | null
+  type: $Enums.CampaignEventType
+  occurredAt?: Date | string
+  deduplicationKey?: string | null
+}
+
+export type CampaignEventUpdateWithoutRecipientInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumCampaignEventTypeFieldUpdateOperationsInput | $Enums.CampaignEventType
+  occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deduplicationKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  campaign?: Prisma.CampaignUpdateOneRequiredWithoutEventsNestedInput
+  subscriber?: Prisma.SubscriberUpdateOneWithoutCampaignEventsNestedInput
+  property?: Prisma.PropertyUpdateOneWithoutCampaignEventsNestedInput
+}
+
+export type CampaignEventUncheckedUpdateWithoutRecipientInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  campaignId?: Prisma.StringFieldUpdateOperationsInput | string
+  subscriberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  propertyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumCampaignEventTypeFieldUpdateOperationsInput | $Enums.CampaignEventType
+  occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deduplicationKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type CampaignEventUncheckedUpdateManyWithoutRecipientInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  campaignId?: Prisma.StringFieldUpdateOperationsInput | string
+  subscriberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  propertyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumCampaignEventTypeFieldUpdateOperationsInput | $Enums.CampaignEventType
+  occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deduplicationKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -716,9 +928,12 @@ export type CampaignEventSelect<ExtArgs extends runtime.Types.Extensions.Interna
   propertyId?: boolean
   type?: boolean
   occurredAt?: boolean
+  recipientId?: boolean
+  deduplicationKey?: boolean
   campaign?: boolean | Prisma.CampaignDefaultArgs<ExtArgs>
   subscriber?: boolean | Prisma.CampaignEvent$subscriberArgs<ExtArgs>
   property?: boolean | Prisma.CampaignEvent$propertyArgs<ExtArgs>
+  recipient?: boolean | Prisma.CampaignEvent$recipientArgs<ExtArgs>
 }, ExtArgs["result"]["campaignEvent"]>
 
 export type CampaignEventSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -728,9 +943,12 @@ export type CampaignEventSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   propertyId?: boolean
   type?: boolean
   occurredAt?: boolean
+  recipientId?: boolean
+  deduplicationKey?: boolean
   campaign?: boolean | Prisma.CampaignDefaultArgs<ExtArgs>
   subscriber?: boolean | Prisma.CampaignEvent$subscriberArgs<ExtArgs>
   property?: boolean | Prisma.CampaignEvent$propertyArgs<ExtArgs>
+  recipient?: boolean | Prisma.CampaignEvent$recipientArgs<ExtArgs>
 }, ExtArgs["result"]["campaignEvent"]>
 
 export type CampaignEventSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -740,9 +958,12 @@ export type CampaignEventSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   propertyId?: boolean
   type?: boolean
   occurredAt?: boolean
+  recipientId?: boolean
+  deduplicationKey?: boolean
   campaign?: boolean | Prisma.CampaignDefaultArgs<ExtArgs>
   subscriber?: boolean | Prisma.CampaignEvent$subscriberArgs<ExtArgs>
   property?: boolean | Prisma.CampaignEvent$propertyArgs<ExtArgs>
+  recipient?: boolean | Prisma.CampaignEvent$recipientArgs<ExtArgs>
 }, ExtArgs["result"]["campaignEvent"]>
 
 export type CampaignEventSelectScalar = {
@@ -752,23 +973,28 @@ export type CampaignEventSelectScalar = {
   propertyId?: boolean
   type?: boolean
   occurredAt?: boolean
+  recipientId?: boolean
+  deduplicationKey?: boolean
 }
 
-export type CampaignEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "campaignId" | "subscriberId" | "propertyId" | "type" | "occurredAt", ExtArgs["result"]["campaignEvent"]>
+export type CampaignEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "campaignId" | "subscriberId" | "propertyId" | "type" | "occurredAt" | "recipientId" | "deduplicationKey", ExtArgs["result"]["campaignEvent"]>
 export type CampaignEventInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   campaign?: boolean | Prisma.CampaignDefaultArgs<ExtArgs>
   subscriber?: boolean | Prisma.CampaignEvent$subscriberArgs<ExtArgs>
   property?: boolean | Prisma.CampaignEvent$propertyArgs<ExtArgs>
+  recipient?: boolean | Prisma.CampaignEvent$recipientArgs<ExtArgs>
 }
 export type CampaignEventIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   campaign?: boolean | Prisma.CampaignDefaultArgs<ExtArgs>
   subscriber?: boolean | Prisma.CampaignEvent$subscriberArgs<ExtArgs>
   property?: boolean | Prisma.CampaignEvent$propertyArgs<ExtArgs>
+  recipient?: boolean | Prisma.CampaignEvent$recipientArgs<ExtArgs>
 }
 export type CampaignEventIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   campaign?: boolean | Prisma.CampaignDefaultArgs<ExtArgs>
   subscriber?: boolean | Prisma.CampaignEvent$subscriberArgs<ExtArgs>
   property?: boolean | Prisma.CampaignEvent$propertyArgs<ExtArgs>
+  recipient?: boolean | Prisma.CampaignEvent$recipientArgs<ExtArgs>
 }
 
 export type $CampaignEventPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -777,6 +1003,7 @@ export type $CampaignEventPayload<ExtArgs extends runtime.Types.Extensions.Inter
     campaign: Prisma.$CampaignPayload<ExtArgs>
     subscriber: Prisma.$SubscriberPayload<ExtArgs> | null
     property: Prisma.$PropertyPayload<ExtArgs> | null
+    recipient: Prisma.$CampaignRecipientPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -785,6 +1012,8 @@ export type $CampaignEventPayload<ExtArgs extends runtime.Types.Extensions.Inter
     propertyId: string | null
     type: $Enums.CampaignEventType
     occurredAt: Date
+    recipientId: string | null
+    deduplicationKey: string | null
   }, ExtArgs["result"]["campaignEvent"]>
   composites: {}
 }
@@ -1182,6 +1411,7 @@ export interface Prisma__CampaignEventClient<T, Null = never, ExtArgs extends ru
   campaign<T extends Prisma.CampaignDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CampaignDefaultArgs<ExtArgs>>): Prisma.Prisma__CampaignClient<runtime.Types.Result.GetResult<Prisma.$CampaignPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   subscriber<T extends Prisma.CampaignEvent$subscriberArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CampaignEvent$subscriberArgs<ExtArgs>>): Prisma.Prisma__SubscriberClient<runtime.Types.Result.GetResult<Prisma.$SubscriberPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   property<T extends Prisma.CampaignEvent$propertyArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CampaignEvent$propertyArgs<ExtArgs>>): Prisma.Prisma__PropertyClient<runtime.Types.Result.GetResult<Prisma.$PropertyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  recipient<T extends Prisma.CampaignEvent$recipientArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CampaignEvent$recipientArgs<ExtArgs>>): Prisma.Prisma__CampaignRecipientClient<runtime.Types.Result.GetResult<Prisma.$CampaignRecipientPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1217,6 +1447,8 @@ export interface CampaignEventFieldRefs {
   readonly propertyId: Prisma.FieldRef<"CampaignEvent", 'String'>
   readonly type: Prisma.FieldRef<"CampaignEvent", 'CampaignEventType'>
   readonly occurredAt: Prisma.FieldRef<"CampaignEvent", 'DateTime'>
+  readonly recipientId: Prisma.FieldRef<"CampaignEvent", 'String'>
+  readonly deduplicationKey: Prisma.FieldRef<"CampaignEvent", 'String'>
 }
     
 
@@ -1653,6 +1885,25 @@ export type CampaignEvent$propertyArgs<ExtArgs extends runtime.Types.Extensions.
    */
   include?: Prisma.PropertyInclude<ExtArgs> | null
   where?: Prisma.PropertyWhereInput
+}
+
+/**
+ * CampaignEvent.recipient
+ */
+export type CampaignEvent$recipientArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CampaignRecipient
+   */
+  select?: Prisma.CampaignRecipientSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CampaignRecipient
+   */
+  omit?: Prisma.CampaignRecipientOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CampaignRecipientInclude<ExtArgs> | null
+  where?: Prisma.CampaignRecipientWhereInput
 }
 
 /**

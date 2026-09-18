@@ -194,6 +194,7 @@ model PropertyValueHistory {
   isSynthetic Boolean  @default(false)
 
   @@unique([propertyId, year])
+  @@index([propertyId])
   @@index([year])
 }
 

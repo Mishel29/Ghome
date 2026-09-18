@@ -44,6 +44,8 @@ export type PropertyValueHistoryMinAggregateOutputType = {
   year: number | null
   value: runtime.Decimal | null
   growthPercent: runtime.Decimal | null
+  source: string | null
+  isSynthetic: boolean | null
 }
 
 export type PropertyValueHistoryMaxAggregateOutputType = {
@@ -52,6 +54,8 @@ export type PropertyValueHistoryMaxAggregateOutputType = {
   year: number | null
   value: runtime.Decimal | null
   growthPercent: runtime.Decimal | null
+  source: string | null
+  isSynthetic: boolean | null
 }
 
 export type PropertyValueHistoryCountAggregateOutputType = {
@@ -60,6 +64,8 @@ export type PropertyValueHistoryCountAggregateOutputType = {
   year: number
   value: number
   growthPercent: number
+  source: number
+  isSynthetic: number
   _all: number
 }
 
@@ -82,6 +88,8 @@ export type PropertyValueHistoryMinAggregateInputType = {
   year?: true
   value?: true
   growthPercent?: true
+  source?: true
+  isSynthetic?: true
 }
 
 export type PropertyValueHistoryMaxAggregateInputType = {
@@ -90,6 +98,8 @@ export type PropertyValueHistoryMaxAggregateInputType = {
   year?: true
   value?: true
   growthPercent?: true
+  source?: true
+  isSynthetic?: true
 }
 
 export type PropertyValueHistoryCountAggregateInputType = {
@@ -98,6 +108,8 @@ export type PropertyValueHistoryCountAggregateInputType = {
   year?: true
   value?: true
   growthPercent?: true
+  source?: true
+  isSynthetic?: true
   _all?: true
 }
 
@@ -193,6 +205,8 @@ export type PropertyValueHistoryGroupByOutputType = {
   year: number
   value: runtime.Decimal
   growthPercent: runtime.Decimal | null
+  source: string | null
+  isSynthetic: boolean
   _count: PropertyValueHistoryCountAggregateOutputType | null
   _avg: PropertyValueHistoryAvgAggregateOutputType | null
   _sum: PropertyValueHistorySumAggregateOutputType | null
@@ -224,6 +238,8 @@ export type PropertyValueHistoryWhereInput = {
   year?: Prisma.IntFilter<"PropertyValueHistory"> | number
   value?: Prisma.DecimalFilter<"PropertyValueHistory"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   growthPercent?: Prisma.DecimalNullableFilter<"PropertyValueHistory"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  source?: Prisma.StringNullableFilter<"PropertyValueHistory"> | string | null
+  isSynthetic?: Prisma.BoolFilter<"PropertyValueHistory"> | boolean
   property?: Prisma.XOR<Prisma.PropertyScalarRelationFilter, Prisma.PropertyWhereInput>
 }
 
@@ -233,6 +249,8 @@ export type PropertyValueHistoryOrderByWithRelationInput = {
   year?: Prisma.SortOrder
   value?: Prisma.SortOrder
   growthPercent?: Prisma.SortOrderInput | Prisma.SortOrder
+  source?: Prisma.SortOrderInput | Prisma.SortOrder
+  isSynthetic?: Prisma.SortOrder
   property?: Prisma.PropertyOrderByWithRelationInput
 }
 
@@ -246,6 +264,8 @@ export type PropertyValueHistoryWhereUniqueInput = Prisma.AtLeast<{
   year?: Prisma.IntFilter<"PropertyValueHistory"> | number
   value?: Prisma.DecimalFilter<"PropertyValueHistory"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   growthPercent?: Prisma.DecimalNullableFilter<"PropertyValueHistory"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  source?: Prisma.StringNullableFilter<"PropertyValueHistory"> | string | null
+  isSynthetic?: Prisma.BoolFilter<"PropertyValueHistory"> | boolean
   property?: Prisma.XOR<Prisma.PropertyScalarRelationFilter, Prisma.PropertyWhereInput>
 }, "id" | "propertyId_year">
 
@@ -255,6 +275,8 @@ export type PropertyValueHistoryOrderByWithAggregationInput = {
   year?: Prisma.SortOrder
   value?: Prisma.SortOrder
   growthPercent?: Prisma.SortOrderInput | Prisma.SortOrder
+  source?: Prisma.SortOrderInput | Prisma.SortOrder
+  isSynthetic?: Prisma.SortOrder
   _count?: Prisma.PropertyValueHistoryCountOrderByAggregateInput
   _avg?: Prisma.PropertyValueHistoryAvgOrderByAggregateInput
   _max?: Prisma.PropertyValueHistoryMaxOrderByAggregateInput
@@ -271,6 +293,8 @@ export type PropertyValueHistoryScalarWhereWithAggregatesInput = {
   year?: Prisma.IntWithAggregatesFilter<"PropertyValueHistory"> | number
   value?: Prisma.DecimalWithAggregatesFilter<"PropertyValueHistory"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   growthPercent?: Prisma.DecimalNullableWithAggregatesFilter<"PropertyValueHistory"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  source?: Prisma.StringNullableWithAggregatesFilter<"PropertyValueHistory"> | string | null
+  isSynthetic?: Prisma.BoolWithAggregatesFilter<"PropertyValueHistory"> | boolean
 }
 
 export type PropertyValueHistoryCreateInput = {
@@ -278,6 +302,8 @@ export type PropertyValueHistoryCreateInput = {
   year: number
   value: runtime.Decimal | runtime.DecimalJsLike | number | string
   growthPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  source?: string | null
+  isSynthetic?: boolean
   property: Prisma.PropertyCreateNestedOneWithoutValueHistoryInput
 }
 
@@ -287,6 +313,8 @@ export type PropertyValueHistoryUncheckedCreateInput = {
   year: number
   value: runtime.Decimal | runtime.DecimalJsLike | number | string
   growthPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  source?: string | null
+  isSynthetic?: boolean
 }
 
 export type PropertyValueHistoryUpdateInput = {
@@ -294,6 +322,8 @@ export type PropertyValueHistoryUpdateInput = {
   year?: Prisma.IntFieldUpdateOperationsInput | number
   value?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   growthPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isSynthetic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   property?: Prisma.PropertyUpdateOneRequiredWithoutValueHistoryNestedInput
 }
 
@@ -303,6 +333,8 @@ export type PropertyValueHistoryUncheckedUpdateInput = {
   year?: Prisma.IntFieldUpdateOperationsInput | number
   value?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   growthPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isSynthetic?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type PropertyValueHistoryCreateManyInput = {
@@ -311,6 +343,8 @@ export type PropertyValueHistoryCreateManyInput = {
   year: number
   value: runtime.Decimal | runtime.DecimalJsLike | number | string
   growthPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  source?: string | null
+  isSynthetic?: boolean
 }
 
 export type PropertyValueHistoryUpdateManyMutationInput = {
@@ -318,6 +352,8 @@ export type PropertyValueHistoryUpdateManyMutationInput = {
   year?: Prisma.IntFieldUpdateOperationsInput | number
   value?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   growthPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isSynthetic?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type PropertyValueHistoryUncheckedUpdateManyInput = {
@@ -326,6 +362,8 @@ export type PropertyValueHistoryUncheckedUpdateManyInput = {
   year?: Prisma.IntFieldUpdateOperationsInput | number
   value?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   growthPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isSynthetic?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type PropertyValueHistoryListRelationFilter = {
@@ -349,6 +387,8 @@ export type PropertyValueHistoryCountOrderByAggregateInput = {
   year?: Prisma.SortOrder
   value?: Prisma.SortOrder
   growthPercent?: Prisma.SortOrder
+  source?: Prisma.SortOrder
+  isSynthetic?: Prisma.SortOrder
 }
 
 export type PropertyValueHistoryAvgOrderByAggregateInput = {
@@ -363,6 +403,8 @@ export type PropertyValueHistoryMaxOrderByAggregateInput = {
   year?: Prisma.SortOrder
   value?: Prisma.SortOrder
   growthPercent?: Prisma.SortOrder
+  source?: Prisma.SortOrder
+  isSynthetic?: Prisma.SortOrder
 }
 
 export type PropertyValueHistoryMinOrderByAggregateInput = {
@@ -371,6 +413,8 @@ export type PropertyValueHistoryMinOrderByAggregateInput = {
   year?: Prisma.SortOrder
   value?: Prisma.SortOrder
   growthPercent?: Prisma.SortOrder
+  source?: Prisma.SortOrder
+  isSynthetic?: Prisma.SortOrder
 }
 
 export type PropertyValueHistorySumOrderByAggregateInput = {
@@ -421,8 +465,8 @@ export type PropertyValueHistoryUncheckedUpdateManyWithoutPropertyNestedInput = 
   deleteMany?: Prisma.PropertyValueHistoryScalarWhereInput | Prisma.PropertyValueHistoryScalarWhereInput[]
 }
 
-export type NullableDecimalFieldUpdateOperationsInput = {
-  set?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+export type DecimalFieldUpdateOperationsInput = {
+  set?: runtime.Decimal | runtime.DecimalJsLike | number | string
   increment?: runtime.Decimal | runtime.DecimalJsLike | number | string
   decrement?: runtime.Decimal | runtime.DecimalJsLike | number | string
   multiply?: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -434,6 +478,8 @@ export type PropertyValueHistoryCreateWithoutPropertyInput = {
   year: number
   value: runtime.Decimal | runtime.DecimalJsLike | number | string
   growthPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  source?: string | null
+  isSynthetic?: boolean
 }
 
 export type PropertyValueHistoryUncheckedCreateWithoutPropertyInput = {
@@ -441,6 +487,8 @@ export type PropertyValueHistoryUncheckedCreateWithoutPropertyInput = {
   year: number
   value: runtime.Decimal | runtime.DecimalJsLike | number | string
   growthPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  source?: string | null
+  isSynthetic?: boolean
 }
 
 export type PropertyValueHistoryCreateOrConnectWithoutPropertyInput = {
@@ -478,6 +526,8 @@ export type PropertyValueHistoryScalarWhereInput = {
   year?: Prisma.IntFilter<"PropertyValueHistory"> | number
   value?: Prisma.DecimalFilter<"PropertyValueHistory"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   growthPercent?: Prisma.DecimalNullableFilter<"PropertyValueHistory"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  source?: Prisma.StringNullableFilter<"PropertyValueHistory"> | string | null
+  isSynthetic?: Prisma.BoolFilter<"PropertyValueHistory"> | boolean
 }
 
 export type PropertyValueHistoryCreateManyPropertyInput = {
@@ -485,6 +535,8 @@ export type PropertyValueHistoryCreateManyPropertyInput = {
   year: number
   value: runtime.Decimal | runtime.DecimalJsLike | number | string
   growthPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  source?: string | null
+  isSynthetic?: boolean
 }
 
 export type PropertyValueHistoryUpdateWithoutPropertyInput = {
@@ -492,6 +544,8 @@ export type PropertyValueHistoryUpdateWithoutPropertyInput = {
   year?: Prisma.IntFieldUpdateOperationsInput | number
   value?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   growthPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isSynthetic?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type PropertyValueHistoryUncheckedUpdateWithoutPropertyInput = {
@@ -499,6 +553,8 @@ export type PropertyValueHistoryUncheckedUpdateWithoutPropertyInput = {
   year?: Prisma.IntFieldUpdateOperationsInput | number
   value?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   growthPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isSynthetic?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type PropertyValueHistoryUncheckedUpdateManyWithoutPropertyInput = {
@@ -506,6 +562,8 @@ export type PropertyValueHistoryUncheckedUpdateManyWithoutPropertyInput = {
   year?: Prisma.IntFieldUpdateOperationsInput | number
   value?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   growthPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isSynthetic?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 
@@ -516,6 +574,8 @@ export type PropertyValueHistorySelect<ExtArgs extends runtime.Types.Extensions.
   year?: boolean
   value?: boolean
   growthPercent?: boolean
+  source?: boolean
+  isSynthetic?: boolean
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["propertyValueHistory"]>
 
@@ -525,6 +585,8 @@ export type PropertyValueHistorySelectCreateManyAndReturn<ExtArgs extends runtim
   year?: boolean
   value?: boolean
   growthPercent?: boolean
+  source?: boolean
+  isSynthetic?: boolean
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["propertyValueHistory"]>
 
@@ -534,6 +596,8 @@ export type PropertyValueHistorySelectUpdateManyAndReturn<ExtArgs extends runtim
   year?: boolean
   value?: boolean
   growthPercent?: boolean
+  source?: boolean
+  isSynthetic?: boolean
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["propertyValueHistory"]>
 
@@ -543,9 +607,11 @@ export type PropertyValueHistorySelectScalar = {
   year?: boolean
   value?: boolean
   growthPercent?: boolean
+  source?: boolean
+  isSynthetic?: boolean
 }
 
-export type PropertyValueHistoryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "propertyId" | "year" | "value" | "growthPercent", ExtArgs["result"]["propertyValueHistory"]>
+export type PropertyValueHistoryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "propertyId" | "year" | "value" | "growthPercent" | "source" | "isSynthetic", ExtArgs["result"]["propertyValueHistory"]>
 export type PropertyValueHistoryInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
 }
@@ -567,6 +633,8 @@ export type $PropertyValueHistoryPayload<ExtArgs extends runtime.Types.Extension
     year: number
     value: runtime.Decimal
     growthPercent: runtime.Decimal | null
+    source: string | null
+    isSynthetic: boolean
   }, ExtArgs["result"]["propertyValueHistory"]>
   composites: {}
 }
@@ -996,6 +1064,8 @@ export interface PropertyValueHistoryFieldRefs {
   readonly year: Prisma.FieldRef<"PropertyValueHistory", 'Int'>
   readonly value: Prisma.FieldRef<"PropertyValueHistory", 'Decimal'>
   readonly growthPercent: Prisma.FieldRef<"PropertyValueHistory", 'Decimal'>
+  readonly source: Prisma.FieldRef<"PropertyValueHistory", 'String'>
+  readonly isSynthetic: Prisma.FieldRef<"PropertyValueHistory", 'Boolean'>
 }
     
 

@@ -26,34 +26,48 @@ export type AggregateCampaignProperty = {
 
 export type CampaignPropertyMinAggregateOutputType = {
   campaignId: string | null
+  id: string | null
   propertyId: string | null
+  propertyName: string | null
 }
 
 export type CampaignPropertyMaxAggregateOutputType = {
   campaignId: string | null
+  id: string | null
   propertyId: string | null
+  propertyName: string | null
 }
 
 export type CampaignPropertyCountAggregateOutputType = {
   campaignId: number
+  id: number
   propertyId: number
+  propertyName: number
+  propertySnapshot: number
   _all: number
 }
 
 
 export type CampaignPropertyMinAggregateInputType = {
   campaignId?: true
+  id?: true
   propertyId?: true
+  propertyName?: true
 }
 
 export type CampaignPropertyMaxAggregateInputType = {
   campaignId?: true
+  id?: true
   propertyId?: true
+  propertyName?: true
 }
 
 export type CampaignPropertyCountAggregateInputType = {
   campaignId?: true
+  id?: true
   propertyId?: true
+  propertyName?: true
+  propertySnapshot?: true
   _all?: true
 }
 
@@ -131,7 +145,10 @@ export type CampaignPropertyGroupByArgs<ExtArgs extends runtime.Types.Extensions
 
 export type CampaignPropertyGroupByOutputType = {
   campaignId: string
-  propertyId: string
+  id: string
+  propertyId: string | null
+  propertyName: string
+  propertySnapshot: runtime.JsonValue | null
   _count: CampaignPropertyCountAggregateOutputType | null
   _min: CampaignPropertyMinAggregateOutputType | null
   _max: CampaignPropertyMaxAggregateOutputType | null
@@ -157,32 +174,44 @@ export type CampaignPropertyWhereInput = {
   OR?: Prisma.CampaignPropertyWhereInput[]
   NOT?: Prisma.CampaignPropertyWhereInput | Prisma.CampaignPropertyWhereInput[]
   campaignId?: Prisma.StringFilter<"CampaignProperty"> | string
-  propertyId?: Prisma.StringFilter<"CampaignProperty"> | string
+  id?: Prisma.StringFilter<"CampaignProperty"> | string
+  propertyId?: Prisma.StringNullableFilter<"CampaignProperty"> | string | null
+  propertyName?: Prisma.StringFilter<"CampaignProperty"> | string
+  propertySnapshot?: Prisma.JsonNullableFilter<"CampaignProperty">
   campaign?: Prisma.XOR<Prisma.CampaignScalarRelationFilter, Prisma.CampaignWhereInput>
-  property?: Prisma.XOR<Prisma.PropertyScalarRelationFilter, Prisma.PropertyWhereInput>
+  property?: Prisma.XOR<Prisma.PropertyNullableScalarRelationFilter, Prisma.PropertyWhereInput> | null
 }
 
 export type CampaignPropertyOrderByWithRelationInput = {
   campaignId?: Prisma.SortOrder
-  propertyId?: Prisma.SortOrder
+  id?: Prisma.SortOrder
+  propertyId?: Prisma.SortOrderInput | Prisma.SortOrder
+  propertyName?: Prisma.SortOrder
+  propertySnapshot?: Prisma.SortOrderInput | Prisma.SortOrder
   campaign?: Prisma.CampaignOrderByWithRelationInput
   property?: Prisma.PropertyOrderByWithRelationInput
 }
 
 export type CampaignPropertyWhereUniqueInput = Prisma.AtLeast<{
+  id?: string
   campaignId_propertyId?: Prisma.CampaignPropertyCampaignIdPropertyIdCompoundUniqueInput
   AND?: Prisma.CampaignPropertyWhereInput | Prisma.CampaignPropertyWhereInput[]
   OR?: Prisma.CampaignPropertyWhereInput[]
   NOT?: Prisma.CampaignPropertyWhereInput | Prisma.CampaignPropertyWhereInput[]
   campaignId?: Prisma.StringFilter<"CampaignProperty"> | string
-  propertyId?: Prisma.StringFilter<"CampaignProperty"> | string
+  propertyId?: Prisma.StringNullableFilter<"CampaignProperty"> | string | null
+  propertyName?: Prisma.StringFilter<"CampaignProperty"> | string
+  propertySnapshot?: Prisma.JsonNullableFilter<"CampaignProperty">
   campaign?: Prisma.XOR<Prisma.CampaignScalarRelationFilter, Prisma.CampaignWhereInput>
-  property?: Prisma.XOR<Prisma.PropertyScalarRelationFilter, Prisma.PropertyWhereInput>
-}, "campaignId_propertyId">
+  property?: Prisma.XOR<Prisma.PropertyNullableScalarRelationFilter, Prisma.PropertyWhereInput> | null
+}, "id" | "campaignId_propertyId">
 
 export type CampaignPropertyOrderByWithAggregationInput = {
   campaignId?: Prisma.SortOrder
-  propertyId?: Prisma.SortOrder
+  id?: Prisma.SortOrder
+  propertyId?: Prisma.SortOrderInput | Prisma.SortOrder
+  propertyName?: Prisma.SortOrder
+  propertySnapshot?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.CampaignPropertyCountOrderByAggregateInput
   _max?: Prisma.CampaignPropertyMaxOrderByAggregateInput
   _min?: Prisma.CampaignPropertyMinOrderByAggregateInput
@@ -193,41 +222,64 @@ export type CampaignPropertyScalarWhereWithAggregatesInput = {
   OR?: Prisma.CampaignPropertyScalarWhereWithAggregatesInput[]
   NOT?: Prisma.CampaignPropertyScalarWhereWithAggregatesInput | Prisma.CampaignPropertyScalarWhereWithAggregatesInput[]
   campaignId?: Prisma.StringWithAggregatesFilter<"CampaignProperty"> | string
-  propertyId?: Prisma.StringWithAggregatesFilter<"CampaignProperty"> | string
+  id?: Prisma.StringWithAggregatesFilter<"CampaignProperty"> | string
+  propertyId?: Prisma.StringNullableWithAggregatesFilter<"CampaignProperty"> | string | null
+  propertyName?: Prisma.StringWithAggregatesFilter<"CampaignProperty"> | string
+  propertySnapshot?: Prisma.JsonNullableWithAggregatesFilter<"CampaignProperty">
 }
 
 export type CampaignPropertyCreateInput = {
+  id?: string
+  propertyName: string
+  propertySnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   campaign: Prisma.CampaignCreateNestedOneWithoutPropertiesInput
-  property: Prisma.PropertyCreateNestedOneWithoutCampaignLinksInput
+  property?: Prisma.PropertyCreateNestedOneWithoutCampaignLinksInput
 }
 
 export type CampaignPropertyUncheckedCreateInput = {
   campaignId: string
-  propertyId: string
+  id?: string
+  propertyId?: string | null
+  propertyName: string
+  propertySnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type CampaignPropertyUpdateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyName?: Prisma.StringFieldUpdateOperationsInput | string
+  propertySnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   campaign?: Prisma.CampaignUpdateOneRequiredWithoutPropertiesNestedInput
-  property?: Prisma.PropertyUpdateOneRequiredWithoutCampaignLinksNestedInput
+  property?: Prisma.PropertyUpdateOneWithoutCampaignLinksNestedInput
 }
 
 export type CampaignPropertyUncheckedUpdateInput = {
   campaignId?: Prisma.StringFieldUpdateOperationsInput | string
-  propertyId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  propertyName?: Prisma.StringFieldUpdateOperationsInput | string
+  propertySnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type CampaignPropertyCreateManyInput = {
   campaignId: string
-  propertyId: string
+  id?: string
+  propertyId?: string | null
+  propertyName: string
+  propertySnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type CampaignPropertyUpdateManyMutationInput = {
-
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyName?: Prisma.StringFieldUpdateOperationsInput | string
+  propertySnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type CampaignPropertyUncheckedUpdateManyInput = {
   campaignId?: Prisma.StringFieldUpdateOperationsInput | string
-  propertyId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  propertyName?: Prisma.StringFieldUpdateOperationsInput | string
+  propertySnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type CampaignPropertyListRelationFilter = {
@@ -247,17 +299,24 @@ export type CampaignPropertyCampaignIdPropertyIdCompoundUniqueInput = {
 
 export type CampaignPropertyCountOrderByAggregateInput = {
   campaignId?: Prisma.SortOrder
+  id?: Prisma.SortOrder
   propertyId?: Prisma.SortOrder
+  propertyName?: Prisma.SortOrder
+  propertySnapshot?: Prisma.SortOrder
 }
 
 export type CampaignPropertyMaxOrderByAggregateInput = {
   campaignId?: Prisma.SortOrder
+  id?: Prisma.SortOrder
   propertyId?: Prisma.SortOrder
+  propertyName?: Prisma.SortOrder
 }
 
 export type CampaignPropertyMinOrderByAggregateInput = {
   campaignId?: Prisma.SortOrder
+  id?: Prisma.SortOrder
   propertyId?: Prisma.SortOrder
+  propertyName?: Prisma.SortOrder
 }
 
 export type CampaignPropertyCreateNestedManyWithoutPropertyInput = {
@@ -345,11 +404,17 @@ export type CampaignPropertyUncheckedUpdateManyWithoutCampaignNestedInput = {
 }
 
 export type CampaignPropertyCreateWithoutPropertyInput = {
+  id?: string
+  propertyName: string
+  propertySnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   campaign: Prisma.CampaignCreateNestedOneWithoutPropertiesInput
 }
 
 export type CampaignPropertyUncheckedCreateWithoutPropertyInput = {
   campaignId: string
+  id?: string
+  propertyName: string
+  propertySnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type CampaignPropertyCreateOrConnectWithoutPropertyInput = {
@@ -383,15 +448,24 @@ export type CampaignPropertyScalarWhereInput = {
   OR?: Prisma.CampaignPropertyScalarWhereInput[]
   NOT?: Prisma.CampaignPropertyScalarWhereInput | Prisma.CampaignPropertyScalarWhereInput[]
   campaignId?: Prisma.StringFilter<"CampaignProperty"> | string
-  propertyId?: Prisma.StringFilter<"CampaignProperty"> | string
+  id?: Prisma.StringFilter<"CampaignProperty"> | string
+  propertyId?: Prisma.StringNullableFilter<"CampaignProperty"> | string | null
+  propertyName?: Prisma.StringFilter<"CampaignProperty"> | string
+  propertySnapshot?: Prisma.JsonNullableFilter<"CampaignProperty">
 }
 
 export type CampaignPropertyCreateWithoutCampaignInput = {
-  property: Prisma.PropertyCreateNestedOneWithoutCampaignLinksInput
+  id?: string
+  propertyName: string
+  propertySnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  property?: Prisma.PropertyCreateNestedOneWithoutCampaignLinksInput
 }
 
 export type CampaignPropertyUncheckedCreateWithoutCampaignInput = {
-  propertyId: string
+  id?: string
+  propertyId?: string | null
+  propertyName: string
+  propertySnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type CampaignPropertyCreateOrConnectWithoutCampaignInput = {
@@ -422,87 +496,126 @@ export type CampaignPropertyUpdateManyWithWhereWithoutCampaignInput = {
 
 export type CampaignPropertyCreateManyPropertyInput = {
   campaignId: string
+  id?: string
+  propertyName: string
+  propertySnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type CampaignPropertyUpdateWithoutPropertyInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyName?: Prisma.StringFieldUpdateOperationsInput | string
+  propertySnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   campaign?: Prisma.CampaignUpdateOneRequiredWithoutPropertiesNestedInput
 }
 
 export type CampaignPropertyUncheckedUpdateWithoutPropertyInput = {
   campaignId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyName?: Prisma.StringFieldUpdateOperationsInput | string
+  propertySnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type CampaignPropertyUncheckedUpdateManyWithoutPropertyInput = {
   campaignId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyName?: Prisma.StringFieldUpdateOperationsInput | string
+  propertySnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type CampaignPropertyCreateManyCampaignInput = {
-  propertyId: string
+  id?: string
+  propertyId?: string | null
+  propertyName: string
+  propertySnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type CampaignPropertyUpdateWithoutCampaignInput = {
-  property?: Prisma.PropertyUpdateOneRequiredWithoutCampaignLinksNestedInput
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyName?: Prisma.StringFieldUpdateOperationsInput | string
+  propertySnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  property?: Prisma.PropertyUpdateOneWithoutCampaignLinksNestedInput
 }
 
 export type CampaignPropertyUncheckedUpdateWithoutCampaignInput = {
-  propertyId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  propertyName?: Prisma.StringFieldUpdateOperationsInput | string
+  propertySnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type CampaignPropertyUncheckedUpdateManyWithoutCampaignInput = {
-  propertyId?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  propertyName?: Prisma.StringFieldUpdateOperationsInput | string
+  propertySnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 
 
 export type CampaignPropertySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   campaignId?: boolean
+  id?: boolean
   propertyId?: boolean
+  propertyName?: boolean
+  propertySnapshot?: boolean
   campaign?: boolean | Prisma.CampaignDefaultArgs<ExtArgs>
-  property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
+  property?: boolean | Prisma.CampaignProperty$propertyArgs<ExtArgs>
 }, ExtArgs["result"]["campaignProperty"]>
 
 export type CampaignPropertySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   campaignId?: boolean
+  id?: boolean
   propertyId?: boolean
+  propertyName?: boolean
+  propertySnapshot?: boolean
   campaign?: boolean | Prisma.CampaignDefaultArgs<ExtArgs>
-  property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
+  property?: boolean | Prisma.CampaignProperty$propertyArgs<ExtArgs>
 }, ExtArgs["result"]["campaignProperty"]>
 
 export type CampaignPropertySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   campaignId?: boolean
+  id?: boolean
   propertyId?: boolean
+  propertyName?: boolean
+  propertySnapshot?: boolean
   campaign?: boolean | Prisma.CampaignDefaultArgs<ExtArgs>
-  property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
+  property?: boolean | Prisma.CampaignProperty$propertyArgs<ExtArgs>
 }, ExtArgs["result"]["campaignProperty"]>
 
 export type CampaignPropertySelectScalar = {
   campaignId?: boolean
+  id?: boolean
   propertyId?: boolean
+  propertyName?: boolean
+  propertySnapshot?: boolean
 }
 
-export type CampaignPropertyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"campaignId" | "propertyId", ExtArgs["result"]["campaignProperty"]>
+export type CampaignPropertyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"campaignId" | "id" | "propertyId" | "propertyName" | "propertySnapshot", ExtArgs["result"]["campaignProperty"]>
 export type CampaignPropertyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   campaign?: boolean | Prisma.CampaignDefaultArgs<ExtArgs>
-  property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
+  property?: boolean | Prisma.CampaignProperty$propertyArgs<ExtArgs>
 }
 export type CampaignPropertyIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   campaign?: boolean | Prisma.CampaignDefaultArgs<ExtArgs>
-  property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
+  property?: boolean | Prisma.CampaignProperty$propertyArgs<ExtArgs>
 }
 export type CampaignPropertyIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   campaign?: boolean | Prisma.CampaignDefaultArgs<ExtArgs>
-  property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
+  property?: boolean | Prisma.CampaignProperty$propertyArgs<ExtArgs>
 }
 
 export type $CampaignPropertyPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "CampaignProperty"
   objects: {
     campaign: Prisma.$CampaignPayload<ExtArgs>
-    property: Prisma.$PropertyPayload<ExtArgs>
+    property: Prisma.$PropertyPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     campaignId: string
-    propertyId: string
+    id: string
+    propertyId: string | null
+    propertyName: string
+    propertySnapshot: runtime.JsonValue | null
   }, ExtArgs["result"]["campaignProperty"]>
   composites: {}
 }
@@ -898,7 +1011,7 @@ readonly fields: CampaignPropertyFieldRefs;
 export interface Prisma__CampaignPropertyClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   campaign<T extends Prisma.CampaignDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CampaignDefaultArgs<ExtArgs>>): Prisma.Prisma__CampaignClient<runtime.Types.Result.GetResult<Prisma.$CampaignPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  property<T extends Prisma.PropertyDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PropertyDefaultArgs<ExtArgs>>): Prisma.Prisma__PropertyClient<runtime.Types.Result.GetResult<Prisma.$PropertyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  property<T extends Prisma.CampaignProperty$propertyArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CampaignProperty$propertyArgs<ExtArgs>>): Prisma.Prisma__PropertyClient<runtime.Types.Result.GetResult<Prisma.$PropertyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -929,7 +1042,10 @@ export interface Prisma__CampaignPropertyClient<T, Null = never, ExtArgs extends
  */
 export interface CampaignPropertyFieldRefs {
   readonly campaignId: Prisma.FieldRef<"CampaignProperty", 'String'>
+  readonly id: Prisma.FieldRef<"CampaignProperty", 'String'>
   readonly propertyId: Prisma.FieldRef<"CampaignProperty", 'String'>
+  readonly propertyName: Prisma.FieldRef<"CampaignProperty", 'String'>
+  readonly propertySnapshot: Prisma.FieldRef<"CampaignProperty", 'Json'>
 }
     
 
@@ -1328,6 +1444,25 @@ export type CampaignPropertyDeleteManyArgs<ExtArgs extends runtime.Types.Extensi
    * Limit how many CampaignProperties to delete.
    */
   limit?: number
+}
+
+/**
+ * CampaignProperty.property
+ */
+export type CampaignProperty$propertyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Property
+   */
+  select?: Prisma.PropertySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Property
+   */
+  omit?: Prisma.PropertyOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PropertyInclude<ExtArgs> | null
+  where?: Prisma.PropertyWhereInput
 }
 
 /**

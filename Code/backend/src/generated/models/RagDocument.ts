@@ -32,6 +32,12 @@ export type RagDocumentMinAggregateOutputType = {
   sourceType: $Enums.RagSourceType | null
   createdAt: Date | null
   updatedAt: Date | null
+  newsArticleId: string | null
+  mediaId: string | null
+  sourceUrl: string | null
+  contentHash: string | null
+  indexedAt: Date | null
+  indexStatus: $Enums.IndexStatus | null
 }
 
 export type RagDocumentMaxAggregateOutputType = {
@@ -42,6 +48,12 @@ export type RagDocumentMaxAggregateOutputType = {
   sourceType: $Enums.RagSourceType | null
   createdAt: Date | null
   updatedAt: Date | null
+  newsArticleId: string | null
+  mediaId: string | null
+  sourceUrl: string | null
+  contentHash: string | null
+  indexedAt: Date | null
+  indexStatus: $Enums.IndexStatus | null
 }
 
 export type RagDocumentCountAggregateOutputType = {
@@ -52,6 +64,12 @@ export type RagDocumentCountAggregateOutputType = {
   sourceType: number
   createdAt: number
   updatedAt: number
+  newsArticleId: number
+  mediaId: number
+  sourceUrl: number
+  contentHash: number
+  indexedAt: number
+  indexStatus: number
   _all: number
 }
 
@@ -64,6 +82,12 @@ export type RagDocumentMinAggregateInputType = {
   sourceType?: true
   createdAt?: true
   updatedAt?: true
+  newsArticleId?: true
+  mediaId?: true
+  sourceUrl?: true
+  contentHash?: true
+  indexedAt?: true
+  indexStatus?: true
 }
 
 export type RagDocumentMaxAggregateInputType = {
@@ -74,6 +98,12 @@ export type RagDocumentMaxAggregateInputType = {
   sourceType?: true
   createdAt?: true
   updatedAt?: true
+  newsArticleId?: true
+  mediaId?: true
+  sourceUrl?: true
+  contentHash?: true
+  indexedAt?: true
+  indexStatus?: true
 }
 
 export type RagDocumentCountAggregateInputType = {
@@ -84,6 +114,12 @@ export type RagDocumentCountAggregateInputType = {
   sourceType?: true
   createdAt?: true
   updatedAt?: true
+  newsArticleId?: true
+  mediaId?: true
+  sourceUrl?: true
+  contentHash?: true
+  indexedAt?: true
+  indexStatus?: true
   _all?: true
 }
 
@@ -167,6 +203,12 @@ export type RagDocumentGroupByOutputType = {
   sourceType: $Enums.RagSourceType
   createdAt: Date
   updatedAt: Date
+  newsArticleId: string | null
+  mediaId: string | null
+  sourceUrl: string | null
+  contentHash: string | null
+  indexedAt: Date | null
+  indexStatus: $Enums.IndexStatus
   _count: RagDocumentCountAggregateOutputType | null
   _min: RagDocumentMinAggregateOutputType | null
   _max: RagDocumentMaxAggregateOutputType | null
@@ -198,8 +240,16 @@ export type RagDocumentWhereInput = {
   sourceType?: Prisma.EnumRagSourceTypeFilter<"RagDocument"> | $Enums.RagSourceType
   createdAt?: Prisma.DateTimeFilter<"RagDocument"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"RagDocument"> | Date | string
+  newsArticleId?: Prisma.StringNullableFilter<"RagDocument"> | string | null
+  mediaId?: Prisma.StringNullableFilter<"RagDocument"> | string | null
+  sourceUrl?: Prisma.StringNullableFilter<"RagDocument"> | string | null
+  contentHash?: Prisma.StringNullableFilter<"RagDocument"> | string | null
+  indexedAt?: Prisma.DateTimeNullableFilter<"RagDocument"> | Date | string | null
+  indexStatus?: Prisma.EnumIndexStatusFilter<"RagDocument"> | $Enums.IndexStatus
   property?: Prisma.XOR<Prisma.PropertyNullableScalarRelationFilter, Prisma.PropertyWhereInput> | null
   chunks?: Prisma.RagChunkListRelationFilter
+  newsArticle?: Prisma.XOR<Prisma.NewsArticleNullableScalarRelationFilter, Prisma.NewsArticleWhereInput> | null
+  media?: Prisma.XOR<Prisma.PropertyMediaNullableScalarRelationFilter, Prisma.PropertyMediaWhereInput> | null
 }
 
 export type RagDocumentOrderByWithRelationInput = {
@@ -210,8 +260,16 @@ export type RagDocumentOrderByWithRelationInput = {
   sourceType?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  newsArticleId?: Prisma.SortOrderInput | Prisma.SortOrder
+  mediaId?: Prisma.SortOrderInput | Prisma.SortOrder
+  sourceUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  contentHash?: Prisma.SortOrderInput | Prisma.SortOrder
+  indexedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  indexStatus?: Prisma.SortOrder
   property?: Prisma.PropertyOrderByWithRelationInput
   chunks?: Prisma.RagChunkOrderByRelationAggregateInput
+  newsArticle?: Prisma.NewsArticleOrderByWithRelationInput
+  media?: Prisma.PropertyMediaOrderByWithRelationInput
 }
 
 export type RagDocumentWhereUniqueInput = Prisma.AtLeast<{
@@ -225,8 +283,16 @@ export type RagDocumentWhereUniqueInput = Prisma.AtLeast<{
   sourceType?: Prisma.EnumRagSourceTypeFilter<"RagDocument"> | $Enums.RagSourceType
   createdAt?: Prisma.DateTimeFilter<"RagDocument"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"RagDocument"> | Date | string
+  newsArticleId?: Prisma.StringNullableFilter<"RagDocument"> | string | null
+  mediaId?: Prisma.StringNullableFilter<"RagDocument"> | string | null
+  sourceUrl?: Prisma.StringNullableFilter<"RagDocument"> | string | null
+  contentHash?: Prisma.StringNullableFilter<"RagDocument"> | string | null
+  indexedAt?: Prisma.DateTimeNullableFilter<"RagDocument"> | Date | string | null
+  indexStatus?: Prisma.EnumIndexStatusFilter<"RagDocument"> | $Enums.IndexStatus
   property?: Prisma.XOR<Prisma.PropertyNullableScalarRelationFilter, Prisma.PropertyWhereInput> | null
   chunks?: Prisma.RagChunkListRelationFilter
+  newsArticle?: Prisma.XOR<Prisma.NewsArticleNullableScalarRelationFilter, Prisma.NewsArticleWhereInput> | null
+  media?: Prisma.XOR<Prisma.PropertyMediaNullableScalarRelationFilter, Prisma.PropertyMediaWhereInput> | null
 }, "id">
 
 export type RagDocumentOrderByWithAggregationInput = {
@@ -237,6 +303,12 @@ export type RagDocumentOrderByWithAggregationInput = {
   sourceType?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  newsArticleId?: Prisma.SortOrderInput | Prisma.SortOrder
+  mediaId?: Prisma.SortOrderInput | Prisma.SortOrder
+  sourceUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  contentHash?: Prisma.SortOrderInput | Prisma.SortOrder
+  indexedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  indexStatus?: Prisma.SortOrder
   _count?: Prisma.RagDocumentCountOrderByAggregateInput
   _max?: Prisma.RagDocumentMaxOrderByAggregateInput
   _min?: Prisma.RagDocumentMinOrderByAggregateInput
@@ -253,6 +325,12 @@ export type RagDocumentScalarWhereWithAggregatesInput = {
   sourceType?: Prisma.EnumRagSourceTypeWithAggregatesFilter<"RagDocument"> | $Enums.RagSourceType
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"RagDocument"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"RagDocument"> | Date | string
+  newsArticleId?: Prisma.StringNullableWithAggregatesFilter<"RagDocument"> | string | null
+  mediaId?: Prisma.StringNullableWithAggregatesFilter<"RagDocument"> | string | null
+  sourceUrl?: Prisma.StringNullableWithAggregatesFilter<"RagDocument"> | string | null
+  contentHash?: Prisma.StringNullableWithAggregatesFilter<"RagDocument"> | string | null
+  indexedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"RagDocument"> | Date | string | null
+  indexStatus?: Prisma.EnumIndexStatusWithAggregatesFilter<"RagDocument"> | $Enums.IndexStatus
 }
 
 export type RagDocumentCreateInput = {
@@ -262,8 +340,14 @@ export type RagDocumentCreateInput = {
   sourceType: $Enums.RagSourceType
   createdAt?: Date | string
   updatedAt?: Date | string
+  sourceUrl?: string | null
+  contentHash?: string | null
+  indexedAt?: Date | string | null
+  indexStatus?: $Enums.IndexStatus
   property?: Prisma.PropertyCreateNestedOneWithoutRagDocumentsInput
   chunks?: Prisma.RagChunkCreateNestedManyWithoutDocumentInput
+  newsArticle?: Prisma.NewsArticleCreateNestedOneWithoutRagDocumentsInput
+  media?: Prisma.PropertyMediaCreateNestedOneWithoutRagDocumentsInput
 }
 
 export type RagDocumentUncheckedCreateInput = {
@@ -274,6 +358,12 @@ export type RagDocumentUncheckedCreateInput = {
   sourceType: $Enums.RagSourceType
   createdAt?: Date | string
   updatedAt?: Date | string
+  newsArticleId?: string | null
+  mediaId?: string | null
+  sourceUrl?: string | null
+  contentHash?: string | null
+  indexedAt?: Date | string | null
+  indexStatus?: $Enums.IndexStatus
   chunks?: Prisma.RagChunkUncheckedCreateNestedManyWithoutDocumentInput
 }
 
@@ -284,8 +374,14 @@ export type RagDocumentUpdateInput = {
   sourceType?: Prisma.EnumRagSourceTypeFieldUpdateOperationsInput | $Enums.RagSourceType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  indexedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  indexStatus?: Prisma.EnumIndexStatusFieldUpdateOperationsInput | $Enums.IndexStatus
   property?: Prisma.PropertyUpdateOneWithoutRagDocumentsNestedInput
   chunks?: Prisma.RagChunkUpdateManyWithoutDocumentNestedInput
+  newsArticle?: Prisma.NewsArticleUpdateOneWithoutRagDocumentsNestedInput
+  media?: Prisma.PropertyMediaUpdateOneWithoutRagDocumentsNestedInput
 }
 
 export type RagDocumentUncheckedUpdateInput = {
@@ -296,6 +392,12 @@ export type RagDocumentUncheckedUpdateInput = {
   sourceType?: Prisma.EnumRagSourceTypeFieldUpdateOperationsInput | $Enums.RagSourceType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  newsArticleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mediaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  indexedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  indexStatus?: Prisma.EnumIndexStatusFieldUpdateOperationsInput | $Enums.IndexStatus
   chunks?: Prisma.RagChunkUncheckedUpdateManyWithoutDocumentNestedInput
 }
 
@@ -307,6 +409,12 @@ export type RagDocumentCreateManyInput = {
   sourceType: $Enums.RagSourceType
   createdAt?: Date | string
   updatedAt?: Date | string
+  newsArticleId?: string | null
+  mediaId?: string | null
+  sourceUrl?: string | null
+  contentHash?: string | null
+  indexedAt?: Date | string | null
+  indexStatus?: $Enums.IndexStatus
 }
 
 export type RagDocumentUpdateManyMutationInput = {
@@ -316,6 +424,10 @@ export type RagDocumentUpdateManyMutationInput = {
   sourceType?: Prisma.EnumRagSourceTypeFieldUpdateOperationsInput | $Enums.RagSourceType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  indexedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  indexStatus?: Prisma.EnumIndexStatusFieldUpdateOperationsInput | $Enums.IndexStatus
 }
 
 export type RagDocumentUncheckedUpdateManyInput = {
@@ -326,6 +438,12 @@ export type RagDocumentUncheckedUpdateManyInput = {
   sourceType?: Prisma.EnumRagSourceTypeFieldUpdateOperationsInput | $Enums.RagSourceType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  newsArticleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mediaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  indexedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  indexStatus?: Prisma.EnumIndexStatusFieldUpdateOperationsInput | $Enums.IndexStatus
 }
 
 export type RagDocumentListRelationFilter = {
@@ -346,6 +464,12 @@ export type RagDocumentCountOrderByAggregateInput = {
   sourceType?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  newsArticleId?: Prisma.SortOrder
+  mediaId?: Prisma.SortOrder
+  sourceUrl?: Prisma.SortOrder
+  contentHash?: Prisma.SortOrder
+  indexedAt?: Prisma.SortOrder
+  indexStatus?: Prisma.SortOrder
 }
 
 export type RagDocumentMaxOrderByAggregateInput = {
@@ -356,6 +480,12 @@ export type RagDocumentMaxOrderByAggregateInput = {
   sourceType?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  newsArticleId?: Prisma.SortOrder
+  mediaId?: Prisma.SortOrder
+  sourceUrl?: Prisma.SortOrder
+  contentHash?: Prisma.SortOrder
+  indexedAt?: Prisma.SortOrder
+  indexStatus?: Prisma.SortOrder
 }
 
 export type RagDocumentMinOrderByAggregateInput = {
@@ -366,6 +496,12 @@ export type RagDocumentMinOrderByAggregateInput = {
   sourceType?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  newsArticleId?: Prisma.SortOrder
+  mediaId?: Prisma.SortOrder
+  sourceUrl?: Prisma.SortOrder
+  contentHash?: Prisma.SortOrder
+  indexedAt?: Prisma.SortOrder
+  indexStatus?: Prisma.SortOrder
 }
 
 export type RagDocumentScalarRelationFilter = {
@@ -415,8 +551,96 @@ export type RagDocumentUncheckedUpdateManyWithoutPropertyNestedInput = {
   deleteMany?: Prisma.RagDocumentScalarWhereInput | Prisma.RagDocumentScalarWhereInput[]
 }
 
+export type RagDocumentCreateNestedManyWithoutMediaInput = {
+  create?: Prisma.XOR<Prisma.RagDocumentCreateWithoutMediaInput, Prisma.RagDocumentUncheckedCreateWithoutMediaInput> | Prisma.RagDocumentCreateWithoutMediaInput[] | Prisma.RagDocumentUncheckedCreateWithoutMediaInput[]
+  connectOrCreate?: Prisma.RagDocumentCreateOrConnectWithoutMediaInput | Prisma.RagDocumentCreateOrConnectWithoutMediaInput[]
+  createMany?: Prisma.RagDocumentCreateManyMediaInputEnvelope
+  connect?: Prisma.RagDocumentWhereUniqueInput | Prisma.RagDocumentWhereUniqueInput[]
+}
+
+export type RagDocumentUncheckedCreateNestedManyWithoutMediaInput = {
+  create?: Prisma.XOR<Prisma.RagDocumentCreateWithoutMediaInput, Prisma.RagDocumentUncheckedCreateWithoutMediaInput> | Prisma.RagDocumentCreateWithoutMediaInput[] | Prisma.RagDocumentUncheckedCreateWithoutMediaInput[]
+  connectOrCreate?: Prisma.RagDocumentCreateOrConnectWithoutMediaInput | Prisma.RagDocumentCreateOrConnectWithoutMediaInput[]
+  createMany?: Prisma.RagDocumentCreateManyMediaInputEnvelope
+  connect?: Prisma.RagDocumentWhereUniqueInput | Prisma.RagDocumentWhereUniqueInput[]
+}
+
+export type RagDocumentUpdateManyWithoutMediaNestedInput = {
+  create?: Prisma.XOR<Prisma.RagDocumentCreateWithoutMediaInput, Prisma.RagDocumentUncheckedCreateWithoutMediaInput> | Prisma.RagDocumentCreateWithoutMediaInput[] | Prisma.RagDocumentUncheckedCreateWithoutMediaInput[]
+  connectOrCreate?: Prisma.RagDocumentCreateOrConnectWithoutMediaInput | Prisma.RagDocumentCreateOrConnectWithoutMediaInput[]
+  upsert?: Prisma.RagDocumentUpsertWithWhereUniqueWithoutMediaInput | Prisma.RagDocumentUpsertWithWhereUniqueWithoutMediaInput[]
+  createMany?: Prisma.RagDocumentCreateManyMediaInputEnvelope
+  set?: Prisma.RagDocumentWhereUniqueInput | Prisma.RagDocumentWhereUniqueInput[]
+  disconnect?: Prisma.RagDocumentWhereUniqueInput | Prisma.RagDocumentWhereUniqueInput[]
+  delete?: Prisma.RagDocumentWhereUniqueInput | Prisma.RagDocumentWhereUniqueInput[]
+  connect?: Prisma.RagDocumentWhereUniqueInput | Prisma.RagDocumentWhereUniqueInput[]
+  update?: Prisma.RagDocumentUpdateWithWhereUniqueWithoutMediaInput | Prisma.RagDocumentUpdateWithWhereUniqueWithoutMediaInput[]
+  updateMany?: Prisma.RagDocumentUpdateManyWithWhereWithoutMediaInput | Prisma.RagDocumentUpdateManyWithWhereWithoutMediaInput[]
+  deleteMany?: Prisma.RagDocumentScalarWhereInput | Prisma.RagDocumentScalarWhereInput[]
+}
+
+export type RagDocumentUncheckedUpdateManyWithoutMediaNestedInput = {
+  create?: Prisma.XOR<Prisma.RagDocumentCreateWithoutMediaInput, Prisma.RagDocumentUncheckedCreateWithoutMediaInput> | Prisma.RagDocumentCreateWithoutMediaInput[] | Prisma.RagDocumentUncheckedCreateWithoutMediaInput[]
+  connectOrCreate?: Prisma.RagDocumentCreateOrConnectWithoutMediaInput | Prisma.RagDocumentCreateOrConnectWithoutMediaInput[]
+  upsert?: Prisma.RagDocumentUpsertWithWhereUniqueWithoutMediaInput | Prisma.RagDocumentUpsertWithWhereUniqueWithoutMediaInput[]
+  createMany?: Prisma.RagDocumentCreateManyMediaInputEnvelope
+  set?: Prisma.RagDocumentWhereUniqueInput | Prisma.RagDocumentWhereUniqueInput[]
+  disconnect?: Prisma.RagDocumentWhereUniqueInput | Prisma.RagDocumentWhereUniqueInput[]
+  delete?: Prisma.RagDocumentWhereUniqueInput | Prisma.RagDocumentWhereUniqueInput[]
+  connect?: Prisma.RagDocumentWhereUniqueInput | Prisma.RagDocumentWhereUniqueInput[]
+  update?: Prisma.RagDocumentUpdateWithWhereUniqueWithoutMediaInput | Prisma.RagDocumentUpdateWithWhereUniqueWithoutMediaInput[]
+  updateMany?: Prisma.RagDocumentUpdateManyWithWhereWithoutMediaInput | Prisma.RagDocumentUpdateManyWithWhereWithoutMediaInput[]
+  deleteMany?: Prisma.RagDocumentScalarWhereInput | Prisma.RagDocumentScalarWhereInput[]
+}
+
+export type RagDocumentCreateNestedManyWithoutNewsArticleInput = {
+  create?: Prisma.XOR<Prisma.RagDocumentCreateWithoutNewsArticleInput, Prisma.RagDocumentUncheckedCreateWithoutNewsArticleInput> | Prisma.RagDocumentCreateWithoutNewsArticleInput[] | Prisma.RagDocumentUncheckedCreateWithoutNewsArticleInput[]
+  connectOrCreate?: Prisma.RagDocumentCreateOrConnectWithoutNewsArticleInput | Prisma.RagDocumentCreateOrConnectWithoutNewsArticleInput[]
+  createMany?: Prisma.RagDocumentCreateManyNewsArticleInputEnvelope
+  connect?: Prisma.RagDocumentWhereUniqueInput | Prisma.RagDocumentWhereUniqueInput[]
+}
+
+export type RagDocumentUncheckedCreateNestedManyWithoutNewsArticleInput = {
+  create?: Prisma.XOR<Prisma.RagDocumentCreateWithoutNewsArticleInput, Prisma.RagDocumentUncheckedCreateWithoutNewsArticleInput> | Prisma.RagDocumentCreateWithoutNewsArticleInput[] | Prisma.RagDocumentUncheckedCreateWithoutNewsArticleInput[]
+  connectOrCreate?: Prisma.RagDocumentCreateOrConnectWithoutNewsArticleInput | Prisma.RagDocumentCreateOrConnectWithoutNewsArticleInput[]
+  createMany?: Prisma.RagDocumentCreateManyNewsArticleInputEnvelope
+  connect?: Prisma.RagDocumentWhereUniqueInput | Prisma.RagDocumentWhereUniqueInput[]
+}
+
+export type RagDocumentUpdateManyWithoutNewsArticleNestedInput = {
+  create?: Prisma.XOR<Prisma.RagDocumentCreateWithoutNewsArticleInput, Prisma.RagDocumentUncheckedCreateWithoutNewsArticleInput> | Prisma.RagDocumentCreateWithoutNewsArticleInput[] | Prisma.RagDocumentUncheckedCreateWithoutNewsArticleInput[]
+  connectOrCreate?: Prisma.RagDocumentCreateOrConnectWithoutNewsArticleInput | Prisma.RagDocumentCreateOrConnectWithoutNewsArticleInput[]
+  upsert?: Prisma.RagDocumentUpsertWithWhereUniqueWithoutNewsArticleInput | Prisma.RagDocumentUpsertWithWhereUniqueWithoutNewsArticleInput[]
+  createMany?: Prisma.RagDocumentCreateManyNewsArticleInputEnvelope
+  set?: Prisma.RagDocumentWhereUniqueInput | Prisma.RagDocumentWhereUniqueInput[]
+  disconnect?: Prisma.RagDocumentWhereUniqueInput | Prisma.RagDocumentWhereUniqueInput[]
+  delete?: Prisma.RagDocumentWhereUniqueInput | Prisma.RagDocumentWhereUniqueInput[]
+  connect?: Prisma.RagDocumentWhereUniqueInput | Prisma.RagDocumentWhereUniqueInput[]
+  update?: Prisma.RagDocumentUpdateWithWhereUniqueWithoutNewsArticleInput | Prisma.RagDocumentUpdateWithWhereUniqueWithoutNewsArticleInput[]
+  updateMany?: Prisma.RagDocumentUpdateManyWithWhereWithoutNewsArticleInput | Prisma.RagDocumentUpdateManyWithWhereWithoutNewsArticleInput[]
+  deleteMany?: Prisma.RagDocumentScalarWhereInput | Prisma.RagDocumentScalarWhereInput[]
+}
+
+export type RagDocumentUncheckedUpdateManyWithoutNewsArticleNestedInput = {
+  create?: Prisma.XOR<Prisma.RagDocumentCreateWithoutNewsArticleInput, Prisma.RagDocumentUncheckedCreateWithoutNewsArticleInput> | Prisma.RagDocumentCreateWithoutNewsArticleInput[] | Prisma.RagDocumentUncheckedCreateWithoutNewsArticleInput[]
+  connectOrCreate?: Prisma.RagDocumentCreateOrConnectWithoutNewsArticleInput | Prisma.RagDocumentCreateOrConnectWithoutNewsArticleInput[]
+  upsert?: Prisma.RagDocumentUpsertWithWhereUniqueWithoutNewsArticleInput | Prisma.RagDocumentUpsertWithWhereUniqueWithoutNewsArticleInput[]
+  createMany?: Prisma.RagDocumentCreateManyNewsArticleInputEnvelope
+  set?: Prisma.RagDocumentWhereUniqueInput | Prisma.RagDocumentWhereUniqueInput[]
+  disconnect?: Prisma.RagDocumentWhereUniqueInput | Prisma.RagDocumentWhereUniqueInput[]
+  delete?: Prisma.RagDocumentWhereUniqueInput | Prisma.RagDocumentWhereUniqueInput[]
+  connect?: Prisma.RagDocumentWhereUniqueInput | Prisma.RagDocumentWhereUniqueInput[]
+  update?: Prisma.RagDocumentUpdateWithWhereUniqueWithoutNewsArticleInput | Prisma.RagDocumentUpdateWithWhereUniqueWithoutNewsArticleInput[]
+  updateMany?: Prisma.RagDocumentUpdateManyWithWhereWithoutNewsArticleInput | Prisma.RagDocumentUpdateManyWithWhereWithoutNewsArticleInput[]
+  deleteMany?: Prisma.RagDocumentScalarWhereInput | Prisma.RagDocumentScalarWhereInput[]
+}
+
 export type EnumRagSourceTypeFieldUpdateOperationsInput = {
   set?: $Enums.RagSourceType
+}
+
+export type EnumIndexStatusFieldUpdateOperationsInput = {
+  set?: $Enums.IndexStatus
 }
 
 export type RagDocumentCreateNestedOneWithoutChunksInput = {
@@ -440,7 +664,13 @@ export type RagDocumentCreateWithoutPropertyInput = {
   sourceType: $Enums.RagSourceType
   createdAt?: Date | string
   updatedAt?: Date | string
+  sourceUrl?: string | null
+  contentHash?: string | null
+  indexedAt?: Date | string | null
+  indexStatus?: $Enums.IndexStatus
   chunks?: Prisma.RagChunkCreateNestedManyWithoutDocumentInput
+  newsArticle?: Prisma.NewsArticleCreateNestedOneWithoutRagDocumentsInput
+  media?: Prisma.PropertyMediaCreateNestedOneWithoutRagDocumentsInput
 }
 
 export type RagDocumentUncheckedCreateWithoutPropertyInput = {
@@ -450,6 +680,12 @@ export type RagDocumentUncheckedCreateWithoutPropertyInput = {
   sourceType: $Enums.RagSourceType
   createdAt?: Date | string
   updatedAt?: Date | string
+  newsArticleId?: string | null
+  mediaId?: string | null
+  sourceUrl?: string | null
+  contentHash?: string | null
+  indexedAt?: Date | string | null
+  indexStatus?: $Enums.IndexStatus
   chunks?: Prisma.RagChunkUncheckedCreateNestedManyWithoutDocumentInput
 }
 
@@ -490,6 +726,128 @@ export type RagDocumentScalarWhereInput = {
   sourceType?: Prisma.EnumRagSourceTypeFilter<"RagDocument"> | $Enums.RagSourceType
   createdAt?: Prisma.DateTimeFilter<"RagDocument"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"RagDocument"> | Date | string
+  newsArticleId?: Prisma.StringNullableFilter<"RagDocument"> | string | null
+  mediaId?: Prisma.StringNullableFilter<"RagDocument"> | string | null
+  sourceUrl?: Prisma.StringNullableFilter<"RagDocument"> | string | null
+  contentHash?: Prisma.StringNullableFilter<"RagDocument"> | string | null
+  indexedAt?: Prisma.DateTimeNullableFilter<"RagDocument"> | Date | string | null
+  indexStatus?: Prisma.EnumIndexStatusFilter<"RagDocument"> | $Enums.IndexStatus
+}
+
+export type RagDocumentCreateWithoutMediaInput = {
+  id?: string
+  title: string
+  content: string
+  sourceType: $Enums.RagSourceType
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sourceUrl?: string | null
+  contentHash?: string | null
+  indexedAt?: Date | string | null
+  indexStatus?: $Enums.IndexStatus
+  property?: Prisma.PropertyCreateNestedOneWithoutRagDocumentsInput
+  chunks?: Prisma.RagChunkCreateNestedManyWithoutDocumentInput
+  newsArticle?: Prisma.NewsArticleCreateNestedOneWithoutRagDocumentsInput
+}
+
+export type RagDocumentUncheckedCreateWithoutMediaInput = {
+  id?: string
+  propertyId?: string | null
+  title: string
+  content: string
+  sourceType: $Enums.RagSourceType
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  newsArticleId?: string | null
+  sourceUrl?: string | null
+  contentHash?: string | null
+  indexedAt?: Date | string | null
+  indexStatus?: $Enums.IndexStatus
+  chunks?: Prisma.RagChunkUncheckedCreateNestedManyWithoutDocumentInput
+}
+
+export type RagDocumentCreateOrConnectWithoutMediaInput = {
+  where: Prisma.RagDocumentWhereUniqueInput
+  create: Prisma.XOR<Prisma.RagDocumentCreateWithoutMediaInput, Prisma.RagDocumentUncheckedCreateWithoutMediaInput>
+}
+
+export type RagDocumentCreateManyMediaInputEnvelope = {
+  data: Prisma.RagDocumentCreateManyMediaInput | Prisma.RagDocumentCreateManyMediaInput[]
+  skipDuplicates?: boolean
+}
+
+export type RagDocumentUpsertWithWhereUniqueWithoutMediaInput = {
+  where: Prisma.RagDocumentWhereUniqueInput
+  update: Prisma.XOR<Prisma.RagDocumentUpdateWithoutMediaInput, Prisma.RagDocumentUncheckedUpdateWithoutMediaInput>
+  create: Prisma.XOR<Prisma.RagDocumentCreateWithoutMediaInput, Prisma.RagDocumentUncheckedCreateWithoutMediaInput>
+}
+
+export type RagDocumentUpdateWithWhereUniqueWithoutMediaInput = {
+  where: Prisma.RagDocumentWhereUniqueInput
+  data: Prisma.XOR<Prisma.RagDocumentUpdateWithoutMediaInput, Prisma.RagDocumentUncheckedUpdateWithoutMediaInput>
+}
+
+export type RagDocumentUpdateManyWithWhereWithoutMediaInput = {
+  where: Prisma.RagDocumentScalarWhereInput
+  data: Prisma.XOR<Prisma.RagDocumentUpdateManyMutationInput, Prisma.RagDocumentUncheckedUpdateManyWithoutMediaInput>
+}
+
+export type RagDocumentCreateWithoutNewsArticleInput = {
+  id?: string
+  title: string
+  content: string
+  sourceType: $Enums.RagSourceType
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sourceUrl?: string | null
+  contentHash?: string | null
+  indexedAt?: Date | string | null
+  indexStatus?: $Enums.IndexStatus
+  property?: Prisma.PropertyCreateNestedOneWithoutRagDocumentsInput
+  chunks?: Prisma.RagChunkCreateNestedManyWithoutDocumentInput
+  media?: Prisma.PropertyMediaCreateNestedOneWithoutRagDocumentsInput
+}
+
+export type RagDocumentUncheckedCreateWithoutNewsArticleInput = {
+  id?: string
+  propertyId?: string | null
+  title: string
+  content: string
+  sourceType: $Enums.RagSourceType
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  mediaId?: string | null
+  sourceUrl?: string | null
+  contentHash?: string | null
+  indexedAt?: Date | string | null
+  indexStatus?: $Enums.IndexStatus
+  chunks?: Prisma.RagChunkUncheckedCreateNestedManyWithoutDocumentInput
+}
+
+export type RagDocumentCreateOrConnectWithoutNewsArticleInput = {
+  where: Prisma.RagDocumentWhereUniqueInput
+  create: Prisma.XOR<Prisma.RagDocumentCreateWithoutNewsArticleInput, Prisma.RagDocumentUncheckedCreateWithoutNewsArticleInput>
+}
+
+export type RagDocumentCreateManyNewsArticleInputEnvelope = {
+  data: Prisma.RagDocumentCreateManyNewsArticleInput | Prisma.RagDocumentCreateManyNewsArticleInput[]
+  skipDuplicates?: boolean
+}
+
+export type RagDocumentUpsertWithWhereUniqueWithoutNewsArticleInput = {
+  where: Prisma.RagDocumentWhereUniqueInput
+  update: Prisma.XOR<Prisma.RagDocumentUpdateWithoutNewsArticleInput, Prisma.RagDocumentUncheckedUpdateWithoutNewsArticleInput>
+  create: Prisma.XOR<Prisma.RagDocumentCreateWithoutNewsArticleInput, Prisma.RagDocumentUncheckedCreateWithoutNewsArticleInput>
+}
+
+export type RagDocumentUpdateWithWhereUniqueWithoutNewsArticleInput = {
+  where: Prisma.RagDocumentWhereUniqueInput
+  data: Prisma.XOR<Prisma.RagDocumentUpdateWithoutNewsArticleInput, Prisma.RagDocumentUncheckedUpdateWithoutNewsArticleInput>
+}
+
+export type RagDocumentUpdateManyWithWhereWithoutNewsArticleInput = {
+  where: Prisma.RagDocumentScalarWhereInput
+  data: Prisma.XOR<Prisma.RagDocumentUpdateManyMutationInput, Prisma.RagDocumentUncheckedUpdateManyWithoutNewsArticleInput>
 }
 
 export type RagDocumentCreateWithoutChunksInput = {
@@ -499,7 +857,13 @@ export type RagDocumentCreateWithoutChunksInput = {
   sourceType: $Enums.RagSourceType
   createdAt?: Date | string
   updatedAt?: Date | string
+  sourceUrl?: string | null
+  contentHash?: string | null
+  indexedAt?: Date | string | null
+  indexStatus?: $Enums.IndexStatus
   property?: Prisma.PropertyCreateNestedOneWithoutRagDocumentsInput
+  newsArticle?: Prisma.NewsArticleCreateNestedOneWithoutRagDocumentsInput
+  media?: Prisma.PropertyMediaCreateNestedOneWithoutRagDocumentsInput
 }
 
 export type RagDocumentUncheckedCreateWithoutChunksInput = {
@@ -510,6 +874,12 @@ export type RagDocumentUncheckedCreateWithoutChunksInput = {
   sourceType: $Enums.RagSourceType
   createdAt?: Date | string
   updatedAt?: Date | string
+  newsArticleId?: string | null
+  mediaId?: string | null
+  sourceUrl?: string | null
+  contentHash?: string | null
+  indexedAt?: Date | string | null
+  indexStatus?: $Enums.IndexStatus
 }
 
 export type RagDocumentCreateOrConnectWithoutChunksInput = {
@@ -535,7 +905,13 @@ export type RagDocumentUpdateWithoutChunksInput = {
   sourceType?: Prisma.EnumRagSourceTypeFieldUpdateOperationsInput | $Enums.RagSourceType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  indexedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  indexStatus?: Prisma.EnumIndexStatusFieldUpdateOperationsInput | $Enums.IndexStatus
   property?: Prisma.PropertyUpdateOneWithoutRagDocumentsNestedInput
+  newsArticle?: Prisma.NewsArticleUpdateOneWithoutRagDocumentsNestedInput
+  media?: Prisma.PropertyMediaUpdateOneWithoutRagDocumentsNestedInput
 }
 
 export type RagDocumentUncheckedUpdateWithoutChunksInput = {
@@ -546,6 +922,12 @@ export type RagDocumentUncheckedUpdateWithoutChunksInput = {
   sourceType?: Prisma.EnumRagSourceTypeFieldUpdateOperationsInput | $Enums.RagSourceType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  newsArticleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mediaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  indexedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  indexStatus?: Prisma.EnumIndexStatusFieldUpdateOperationsInput | $Enums.IndexStatus
 }
 
 export type RagDocumentCreateManyPropertyInput = {
@@ -555,6 +937,12 @@ export type RagDocumentCreateManyPropertyInput = {
   sourceType: $Enums.RagSourceType
   createdAt?: Date | string
   updatedAt?: Date | string
+  newsArticleId?: string | null
+  mediaId?: string | null
+  sourceUrl?: string | null
+  contentHash?: string | null
+  indexedAt?: Date | string | null
+  indexStatus?: $Enums.IndexStatus
 }
 
 export type RagDocumentUpdateWithoutPropertyInput = {
@@ -564,7 +952,13 @@ export type RagDocumentUpdateWithoutPropertyInput = {
   sourceType?: Prisma.EnumRagSourceTypeFieldUpdateOperationsInput | $Enums.RagSourceType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  indexedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  indexStatus?: Prisma.EnumIndexStatusFieldUpdateOperationsInput | $Enums.IndexStatus
   chunks?: Prisma.RagChunkUpdateManyWithoutDocumentNestedInput
+  newsArticle?: Prisma.NewsArticleUpdateOneWithoutRagDocumentsNestedInput
+  media?: Prisma.PropertyMediaUpdateOneWithoutRagDocumentsNestedInput
 }
 
 export type RagDocumentUncheckedUpdateWithoutPropertyInput = {
@@ -574,6 +968,12 @@ export type RagDocumentUncheckedUpdateWithoutPropertyInput = {
   sourceType?: Prisma.EnumRagSourceTypeFieldUpdateOperationsInput | $Enums.RagSourceType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  newsArticleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mediaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  indexedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  indexStatus?: Prisma.EnumIndexStatusFieldUpdateOperationsInput | $Enums.IndexStatus
   chunks?: Prisma.RagChunkUncheckedUpdateManyWithoutDocumentNestedInput
 }
 
@@ -584,6 +984,136 @@ export type RagDocumentUncheckedUpdateManyWithoutPropertyInput = {
   sourceType?: Prisma.EnumRagSourceTypeFieldUpdateOperationsInput | $Enums.RagSourceType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  newsArticleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mediaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  indexedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  indexStatus?: Prisma.EnumIndexStatusFieldUpdateOperationsInput | $Enums.IndexStatus
+}
+
+export type RagDocumentCreateManyMediaInput = {
+  id?: string
+  propertyId?: string | null
+  title: string
+  content: string
+  sourceType: $Enums.RagSourceType
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  newsArticleId?: string | null
+  sourceUrl?: string | null
+  contentHash?: string | null
+  indexedAt?: Date | string | null
+  indexStatus?: $Enums.IndexStatus
+}
+
+export type RagDocumentUpdateWithoutMediaInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceType?: Prisma.EnumRagSourceTypeFieldUpdateOperationsInput | $Enums.RagSourceType
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  indexedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  indexStatus?: Prisma.EnumIndexStatusFieldUpdateOperationsInput | $Enums.IndexStatus
+  property?: Prisma.PropertyUpdateOneWithoutRagDocumentsNestedInput
+  chunks?: Prisma.RagChunkUpdateManyWithoutDocumentNestedInput
+  newsArticle?: Prisma.NewsArticleUpdateOneWithoutRagDocumentsNestedInput
+}
+
+export type RagDocumentUncheckedUpdateWithoutMediaInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceType?: Prisma.EnumRagSourceTypeFieldUpdateOperationsInput | $Enums.RagSourceType
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  newsArticleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  indexedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  indexStatus?: Prisma.EnumIndexStatusFieldUpdateOperationsInput | $Enums.IndexStatus
+  chunks?: Prisma.RagChunkUncheckedUpdateManyWithoutDocumentNestedInput
+}
+
+export type RagDocumentUncheckedUpdateManyWithoutMediaInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceType?: Prisma.EnumRagSourceTypeFieldUpdateOperationsInput | $Enums.RagSourceType
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  newsArticleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  indexedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  indexStatus?: Prisma.EnumIndexStatusFieldUpdateOperationsInput | $Enums.IndexStatus
+}
+
+export type RagDocumentCreateManyNewsArticleInput = {
+  id?: string
+  propertyId?: string | null
+  title: string
+  content: string
+  sourceType: $Enums.RagSourceType
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  mediaId?: string | null
+  sourceUrl?: string | null
+  contentHash?: string | null
+  indexedAt?: Date | string | null
+  indexStatus?: $Enums.IndexStatus
+}
+
+export type RagDocumentUpdateWithoutNewsArticleInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceType?: Prisma.EnumRagSourceTypeFieldUpdateOperationsInput | $Enums.RagSourceType
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  indexedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  indexStatus?: Prisma.EnumIndexStatusFieldUpdateOperationsInput | $Enums.IndexStatus
+  property?: Prisma.PropertyUpdateOneWithoutRagDocumentsNestedInput
+  chunks?: Prisma.RagChunkUpdateManyWithoutDocumentNestedInput
+  media?: Prisma.PropertyMediaUpdateOneWithoutRagDocumentsNestedInput
+}
+
+export type RagDocumentUncheckedUpdateWithoutNewsArticleInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceType?: Prisma.EnumRagSourceTypeFieldUpdateOperationsInput | $Enums.RagSourceType
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  mediaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  indexedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  indexStatus?: Prisma.EnumIndexStatusFieldUpdateOperationsInput | $Enums.IndexStatus
+  chunks?: Prisma.RagChunkUncheckedUpdateManyWithoutDocumentNestedInput
+}
+
+export type RagDocumentUncheckedUpdateManyWithoutNewsArticleInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceType?: Prisma.EnumRagSourceTypeFieldUpdateOperationsInput | $Enums.RagSourceType
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  mediaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contentHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  indexedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  indexStatus?: Prisma.EnumIndexStatusFieldUpdateOperationsInput | $Enums.IndexStatus
 }
 
 
@@ -625,8 +1155,16 @@ export type RagDocumentSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   sourceType?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  newsArticleId?: boolean
+  mediaId?: boolean
+  sourceUrl?: boolean
+  contentHash?: boolean
+  indexedAt?: boolean
+  indexStatus?: boolean
   property?: boolean | Prisma.RagDocument$propertyArgs<ExtArgs>
   chunks?: boolean | Prisma.RagDocument$chunksArgs<ExtArgs>
+  newsArticle?: boolean | Prisma.RagDocument$newsArticleArgs<ExtArgs>
+  media?: boolean | Prisma.RagDocument$mediaArgs<ExtArgs>
   _count?: boolean | Prisma.RagDocumentCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["ragDocument"]>
 
@@ -638,7 +1176,15 @@ export type RagDocumentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   sourceType?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  newsArticleId?: boolean
+  mediaId?: boolean
+  sourceUrl?: boolean
+  contentHash?: boolean
+  indexedAt?: boolean
+  indexStatus?: boolean
   property?: boolean | Prisma.RagDocument$propertyArgs<ExtArgs>
+  newsArticle?: boolean | Prisma.RagDocument$newsArticleArgs<ExtArgs>
+  media?: boolean | Prisma.RagDocument$mediaArgs<ExtArgs>
 }, ExtArgs["result"]["ragDocument"]>
 
 export type RagDocumentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -649,7 +1195,15 @@ export type RagDocumentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   sourceType?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  newsArticleId?: boolean
+  mediaId?: boolean
+  sourceUrl?: boolean
+  contentHash?: boolean
+  indexedAt?: boolean
+  indexStatus?: boolean
   property?: boolean | Prisma.RagDocument$propertyArgs<ExtArgs>
+  newsArticle?: boolean | Prisma.RagDocument$newsArticleArgs<ExtArgs>
+  media?: boolean | Prisma.RagDocument$mediaArgs<ExtArgs>
 }, ExtArgs["result"]["ragDocument"]>
 
 export type RagDocumentSelectScalar = {
@@ -660,19 +1214,31 @@ export type RagDocumentSelectScalar = {
   sourceType?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  newsArticleId?: boolean
+  mediaId?: boolean
+  sourceUrl?: boolean
+  contentHash?: boolean
+  indexedAt?: boolean
+  indexStatus?: boolean
 }
 
-export type RagDocumentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "propertyId" | "title" | "content" | "sourceType" | "createdAt" | "updatedAt", ExtArgs["result"]["ragDocument"]>
+export type RagDocumentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "propertyId" | "title" | "content" | "sourceType" | "createdAt" | "updatedAt" | "newsArticleId" | "mediaId" | "sourceUrl" | "contentHash" | "indexedAt" | "indexStatus", ExtArgs["result"]["ragDocument"]>
 export type RagDocumentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   property?: boolean | Prisma.RagDocument$propertyArgs<ExtArgs>
   chunks?: boolean | Prisma.RagDocument$chunksArgs<ExtArgs>
+  newsArticle?: boolean | Prisma.RagDocument$newsArticleArgs<ExtArgs>
+  media?: boolean | Prisma.RagDocument$mediaArgs<ExtArgs>
   _count?: boolean | Prisma.RagDocumentCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type RagDocumentIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   property?: boolean | Prisma.RagDocument$propertyArgs<ExtArgs>
+  newsArticle?: boolean | Prisma.RagDocument$newsArticleArgs<ExtArgs>
+  media?: boolean | Prisma.RagDocument$mediaArgs<ExtArgs>
 }
 export type RagDocumentIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   property?: boolean | Prisma.RagDocument$propertyArgs<ExtArgs>
+  newsArticle?: boolean | Prisma.RagDocument$newsArticleArgs<ExtArgs>
+  media?: boolean | Prisma.RagDocument$mediaArgs<ExtArgs>
 }
 
 export type $RagDocumentPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -680,6 +1246,8 @@ export type $RagDocumentPayload<ExtArgs extends runtime.Types.Extensions.Interna
   objects: {
     property: Prisma.$PropertyPayload<ExtArgs> | null
     chunks: Prisma.$RagChunkPayload<ExtArgs>[]
+    newsArticle: Prisma.$NewsArticlePayload<ExtArgs> | null
+    media: Prisma.$PropertyMediaPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -689,6 +1257,12 @@ export type $RagDocumentPayload<ExtArgs extends runtime.Types.Extensions.Interna
     sourceType: $Enums.RagSourceType
     createdAt: Date
     updatedAt: Date
+    newsArticleId: string | null
+    mediaId: string | null
+    sourceUrl: string | null
+    contentHash: string | null
+    indexedAt: Date | null
+    indexStatus: $Enums.IndexStatus
   }, ExtArgs["result"]["ragDocument"]>
   composites: {}
 }
@@ -1085,6 +1659,8 @@ export interface Prisma__RagDocumentClient<T, Null = never, ExtArgs extends runt
   readonly [Symbol.toStringTag]: "PrismaPromise"
   property<T extends Prisma.RagDocument$propertyArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.RagDocument$propertyArgs<ExtArgs>>): Prisma.Prisma__PropertyClient<runtime.Types.Result.GetResult<Prisma.$PropertyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   chunks<T extends Prisma.RagDocument$chunksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.RagDocument$chunksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RagChunkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  newsArticle<T extends Prisma.RagDocument$newsArticleArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.RagDocument$newsArticleArgs<ExtArgs>>): Prisma.Prisma__NewsArticleClient<runtime.Types.Result.GetResult<Prisma.$NewsArticlePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  media<T extends Prisma.RagDocument$mediaArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.RagDocument$mediaArgs<ExtArgs>>): Prisma.Prisma__PropertyMediaClient<runtime.Types.Result.GetResult<Prisma.$PropertyMediaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1121,6 +1697,12 @@ export interface RagDocumentFieldRefs {
   readonly sourceType: Prisma.FieldRef<"RagDocument", 'RagSourceType'>
   readonly createdAt: Prisma.FieldRef<"RagDocument", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"RagDocument", 'DateTime'>
+  readonly newsArticleId: Prisma.FieldRef<"RagDocument", 'String'>
+  readonly mediaId: Prisma.FieldRef<"RagDocument", 'String'>
+  readonly sourceUrl: Prisma.FieldRef<"RagDocument", 'String'>
+  readonly contentHash: Prisma.FieldRef<"RagDocument", 'String'>
+  readonly indexedAt: Prisma.FieldRef<"RagDocument", 'DateTime'>
+  readonly indexStatus: Prisma.FieldRef<"RagDocument", 'IndexStatus'>
 }
     
 
@@ -1562,6 +2144,44 @@ export type RagDocument$chunksArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.RagChunkScalarFieldEnum | Prisma.RagChunkScalarFieldEnum[]
+}
+
+/**
+ * RagDocument.newsArticle
+ */
+export type RagDocument$newsArticleArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the NewsArticle
+   */
+  select?: Prisma.NewsArticleSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the NewsArticle
+   */
+  omit?: Prisma.NewsArticleOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.NewsArticleInclude<ExtArgs> | null
+  where?: Prisma.NewsArticleWhereInput
+}
+
+/**
+ * RagDocument.media
+ */
+export type RagDocument$mediaArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PropertyMedia
+   */
+  select?: Prisma.PropertyMediaSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PropertyMedia
+   */
+  omit?: Prisma.PropertyMediaOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PropertyMediaInclude<ExtArgs> | null
+  where?: Prisma.PropertyMediaWhereInput
 }
 
 /**

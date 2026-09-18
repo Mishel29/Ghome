@@ -36,6 +36,11 @@ export interface PropertyValueHistory {
   source: string | null;
 }
 
+export interface PropertyHistoricalPrice {
+  year: number;
+  price: number;
+}
+
 export interface Property {
   id: string;
   sourceKey: string | null;
@@ -70,6 +75,7 @@ export interface Property {
   media: Array<PropertyMedia>;
   features: Array<Feature>;
   valueHistory: Array<PropertyValueHistory>;
+  historicalPrices: Array<PropertyHistoricalPrice>;
   listedDate: string | null;
   createdAt: string;
   updatedAt: string;
@@ -83,6 +89,9 @@ export interface Property {
 export interface PropertyFilterInput {
   search?: string | null;
   county?: string | null;
+  postalCode?: string | null;
+  type?: string | null;
+  saleType?: string | null;
   status?: PropertyStatus | null;
   stage?: PropertyStage | null;
   minPrice?: number | null;
@@ -91,6 +100,7 @@ export interface PropertyFilterInput {
   maxBedrooms?: number | null;
   minBathrooms?: number | null;
   maxBathrooms?: number | null;
+  completionYear?: number | null;
   location?: string | null;
   listedFrom?: string | null;
   listedTo?: string | null;
@@ -284,6 +294,7 @@ export interface NewsInput {
 
 export interface HouseTypeInput {
   name: string;
+  agentName?: string | null;
   sourceKey?: string | null;
   agentId?: string | null;
   sizeCategory?: string | null;
@@ -311,6 +322,7 @@ export interface HouseTypeInput {
   bathroomOptions?: Array<number> | null;
   description?: string | null;
   listedDate?: string | null;
+  historicalPrices?: Array<PropertyHistoricalPrice> | null;
   images?: Array<PageMediaInput> | null;
 }
 

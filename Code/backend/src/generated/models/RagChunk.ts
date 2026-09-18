@@ -20,14 +20,29 @@ export type RagChunkModel = runtime.Types.Result.DefaultSelection<Prisma.$RagChu
 
 export type AggregateRagChunk = {
   _count: RagChunkCountAggregateOutputType | null
+  _avg: RagChunkAvgAggregateOutputType | null
+  _sum: RagChunkSumAggregateOutputType | null
   _min: RagChunkMinAggregateOutputType | null
   _max: RagChunkMaxAggregateOutputType | null
+}
+
+export type RagChunkAvgAggregateOutputType = {
+  ordinal: number | null
+  embedding: number | null
+}
+
+export type RagChunkSumAggregateOutputType = {
+  ordinal: number | null
+  embedding: number[]
 }
 
 export type RagChunkMinAggregateOutputType = {
   id: string | null
   documentId: string | null
   content: string | null
+  ordinal: number | null
+  embeddingModel: string | null
+  externalVectorId: string | null
   createdAt: Date | null
 }
 
@@ -35,6 +50,9 @@ export type RagChunkMaxAggregateOutputType = {
   id: string | null
   documentId: string | null
   content: string | null
+  ordinal: number | null
+  embeddingModel: string | null
+  externalVectorId: string | null
   createdAt: Date | null
 }
 
@@ -42,15 +60,32 @@ export type RagChunkCountAggregateOutputType = {
   id: number
   documentId: number
   content: number
+  ordinal: number
+  embedding: number
+  embeddingModel: number
+  externalVectorId: number
   createdAt: number
   _all: number
 }
 
 
+export type RagChunkAvgAggregateInputType = {
+  ordinal?: true
+  embedding?: true
+}
+
+export type RagChunkSumAggregateInputType = {
+  ordinal?: true
+  embedding?: true
+}
+
 export type RagChunkMinAggregateInputType = {
   id?: true
   documentId?: true
   content?: true
+  ordinal?: true
+  embeddingModel?: true
+  externalVectorId?: true
   createdAt?: true
 }
 
@@ -58,6 +93,9 @@ export type RagChunkMaxAggregateInputType = {
   id?: true
   documentId?: true
   content?: true
+  ordinal?: true
+  embeddingModel?: true
+  externalVectorId?: true
   createdAt?: true
 }
 
@@ -65,6 +103,10 @@ export type RagChunkCountAggregateInputType = {
   id?: true
   documentId?: true
   content?: true
+  ordinal?: true
+  embedding?: true
+  embeddingModel?: true
+  externalVectorId?: true
   createdAt?: true
   _all?: true
 }
@@ -107,6 +149,18 @@ export type RagChunkAggregateArgs<ExtArgs extends runtime.Types.Extensions.Inter
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: RagChunkAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: RagChunkSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: RagChunkMinAggregateInputType
@@ -137,6 +191,8 @@ export type RagChunkGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   _count?: RagChunkCountAggregateInputType | true
+  _avg?: RagChunkAvgAggregateInputType
+  _sum?: RagChunkSumAggregateInputType
   _min?: RagChunkMinAggregateInputType
   _max?: RagChunkMaxAggregateInputType
 }
@@ -145,8 +201,14 @@ export type RagChunkGroupByOutputType = {
   id: string
   documentId: string
   content: string
+  ordinal: number
+  embedding: number[]
+  embeddingModel: string | null
+  externalVectorId: string | null
   createdAt: Date
   _count: RagChunkCountAggregateOutputType | null
+  _avg: RagChunkAvgAggregateOutputType | null
+  _sum: RagChunkSumAggregateOutputType | null
   _min: RagChunkMinAggregateOutputType | null
   _max: RagChunkMaxAggregateOutputType | null
 }
@@ -173,6 +235,10 @@ export type RagChunkWhereInput = {
   id?: Prisma.StringFilter<"RagChunk"> | string
   documentId?: Prisma.StringFilter<"RagChunk"> | string
   content?: Prisma.StringFilter<"RagChunk"> | string
+  ordinal?: Prisma.IntFilter<"RagChunk"> | number
+  embedding?: Prisma.FloatNullableListFilter<"RagChunk">
+  embeddingModel?: Prisma.StringNullableFilter<"RagChunk"> | string | null
+  externalVectorId?: Prisma.StringNullableFilter<"RagChunk"> | string | null
   createdAt?: Prisma.DateTimeFilter<"RagChunk"> | Date | string
   document?: Prisma.XOR<Prisma.RagDocumentScalarRelationFilter, Prisma.RagDocumentWhereInput>
 }
@@ -181,29 +247,44 @@ export type RagChunkOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   documentId?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  ordinal?: Prisma.SortOrder
+  embedding?: Prisma.SortOrder
+  embeddingModel?: Prisma.SortOrderInput | Prisma.SortOrder
+  externalVectorId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   document?: Prisma.RagDocumentOrderByWithRelationInput
 }
 
 export type RagChunkWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  externalVectorId?: string
+  documentId_ordinal?: Prisma.RagChunkDocumentIdOrdinalCompoundUniqueInput
   AND?: Prisma.RagChunkWhereInput | Prisma.RagChunkWhereInput[]
   OR?: Prisma.RagChunkWhereInput[]
   NOT?: Prisma.RagChunkWhereInput | Prisma.RagChunkWhereInput[]
   documentId?: Prisma.StringFilter<"RagChunk"> | string
   content?: Prisma.StringFilter<"RagChunk"> | string
+  ordinal?: Prisma.IntFilter<"RagChunk"> | number
+  embedding?: Prisma.FloatNullableListFilter<"RagChunk">
+  embeddingModel?: Prisma.StringNullableFilter<"RagChunk"> | string | null
   createdAt?: Prisma.DateTimeFilter<"RagChunk"> | Date | string
   document?: Prisma.XOR<Prisma.RagDocumentScalarRelationFilter, Prisma.RagDocumentWhereInput>
-}, "id">
+}, "id" | "externalVectorId" | "documentId_ordinal">
 
 export type RagChunkOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   documentId?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  ordinal?: Prisma.SortOrder
+  embedding?: Prisma.SortOrder
+  embeddingModel?: Prisma.SortOrderInput | Prisma.SortOrder
+  externalVectorId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.RagChunkCountOrderByAggregateInput
+  _avg?: Prisma.RagChunkAvgOrderByAggregateInput
   _max?: Prisma.RagChunkMaxOrderByAggregateInput
   _min?: Prisma.RagChunkMinOrderByAggregateInput
+  _sum?: Prisma.RagChunkSumOrderByAggregateInput
 }
 
 export type RagChunkScalarWhereWithAggregatesInput = {
@@ -213,12 +294,20 @@ export type RagChunkScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"RagChunk"> | string
   documentId?: Prisma.StringWithAggregatesFilter<"RagChunk"> | string
   content?: Prisma.StringWithAggregatesFilter<"RagChunk"> | string
+  ordinal?: Prisma.IntWithAggregatesFilter<"RagChunk"> | number
+  embedding?: Prisma.FloatNullableListFilter<"RagChunk">
+  embeddingModel?: Prisma.StringNullableWithAggregatesFilter<"RagChunk"> | string | null
+  externalVectorId?: Prisma.StringNullableWithAggregatesFilter<"RagChunk"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"RagChunk"> | Date | string
 }
 
 export type RagChunkCreateInput = {
   id?: string
   content: string
+  ordinal?: number
+  embedding?: Prisma.RagChunkCreateembeddingInput | number[]
+  embeddingModel?: string | null
+  externalVectorId?: string | null
   createdAt?: Date | string
   document: Prisma.RagDocumentCreateNestedOneWithoutChunksInput
 }
@@ -227,12 +316,20 @@ export type RagChunkUncheckedCreateInput = {
   id?: string
   documentId: string
   content: string
+  ordinal?: number
+  embedding?: Prisma.RagChunkCreateembeddingInput | number[]
+  embeddingModel?: string | null
+  externalVectorId?: string | null
   createdAt?: Date | string
 }
 
 export type RagChunkUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  ordinal?: Prisma.IntFieldUpdateOperationsInput | number
+  embedding?: Prisma.RagChunkUpdateembeddingInput | number[]
+  embeddingModel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalVectorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   document?: Prisma.RagDocumentUpdateOneRequiredWithoutChunksNestedInput
 }
@@ -241,6 +338,10 @@ export type RagChunkUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   documentId?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  ordinal?: Prisma.IntFieldUpdateOperationsInput | number
+  embedding?: Prisma.RagChunkUpdateembeddingInput | number[]
+  embeddingModel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalVectorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -248,12 +349,20 @@ export type RagChunkCreateManyInput = {
   id?: string
   documentId: string
   content: string
+  ordinal?: number
+  embedding?: Prisma.RagChunkCreateembeddingInput | number[]
+  embeddingModel?: string | null
+  externalVectorId?: string | null
   createdAt?: Date | string
 }
 
 export type RagChunkUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  ordinal?: Prisma.IntFieldUpdateOperationsInput | number
+  embedding?: Prisma.RagChunkUpdateembeddingInput | number[]
+  embeddingModel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalVectorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -261,6 +370,10 @@ export type RagChunkUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   documentId?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  ordinal?: Prisma.IntFieldUpdateOperationsInput | number
+  embedding?: Prisma.RagChunkUpdateembeddingInput | number[]
+  embeddingModel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalVectorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -274,17 +387,42 @@ export type RagChunkOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type FloatNullableListFilter<$PrismaModel = never> = {
+  equals?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel> | null
+  has?: number | Prisma.FloatFieldRefInput<$PrismaModel> | null
+  hasEvery?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>
+  hasSome?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>
+  isEmpty?: boolean
+}
+
+export type RagChunkDocumentIdOrdinalCompoundUniqueInput = {
+  documentId: string
+  ordinal: number
+}
+
 export type RagChunkCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   documentId?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  ordinal?: Prisma.SortOrder
+  embedding?: Prisma.SortOrder
+  embeddingModel?: Prisma.SortOrder
+  externalVectorId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+}
+
+export type RagChunkAvgOrderByAggregateInput = {
+  ordinal?: Prisma.SortOrder
+  embedding?: Prisma.SortOrder
 }
 
 export type RagChunkMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   documentId?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  ordinal?: Prisma.SortOrder
+  embeddingModel?: Prisma.SortOrder
+  externalVectorId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -292,7 +430,15 @@ export type RagChunkMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   documentId?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  ordinal?: Prisma.SortOrder
+  embeddingModel?: Prisma.SortOrder
+  externalVectorId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+}
+
+export type RagChunkSumOrderByAggregateInput = {
+  ordinal?: Prisma.SortOrder
+  embedding?: Prisma.SortOrder
 }
 
 export type RagChunkCreateNestedManyWithoutDocumentInput = {
@@ -337,15 +483,32 @@ export type RagChunkUncheckedUpdateManyWithoutDocumentNestedInput = {
   deleteMany?: Prisma.RagChunkScalarWhereInput | Prisma.RagChunkScalarWhereInput[]
 }
 
+export type RagChunkCreateembeddingInput = {
+  set: number[]
+}
+
+export type RagChunkUpdateembeddingInput = {
+  set?: number[]
+  push?: number | number[]
+}
+
 export type RagChunkCreateWithoutDocumentInput = {
   id?: string
   content: string
+  ordinal?: number
+  embedding?: Prisma.RagChunkCreateembeddingInput | number[]
+  embeddingModel?: string | null
+  externalVectorId?: string | null
   createdAt?: Date | string
 }
 
 export type RagChunkUncheckedCreateWithoutDocumentInput = {
   id?: string
   content: string
+  ordinal?: number
+  embedding?: Prisma.RagChunkCreateembeddingInput | number[]
+  embeddingModel?: string | null
+  externalVectorId?: string | null
   createdAt?: Date | string
 }
 
@@ -382,30 +545,50 @@ export type RagChunkScalarWhereInput = {
   id?: Prisma.StringFilter<"RagChunk"> | string
   documentId?: Prisma.StringFilter<"RagChunk"> | string
   content?: Prisma.StringFilter<"RagChunk"> | string
+  ordinal?: Prisma.IntFilter<"RagChunk"> | number
+  embedding?: Prisma.FloatNullableListFilter<"RagChunk">
+  embeddingModel?: Prisma.StringNullableFilter<"RagChunk"> | string | null
+  externalVectorId?: Prisma.StringNullableFilter<"RagChunk"> | string | null
   createdAt?: Prisma.DateTimeFilter<"RagChunk"> | Date | string
 }
 
 export type RagChunkCreateManyDocumentInput = {
   id?: string
   content: string
+  ordinal?: number
+  embedding?: Prisma.RagChunkCreateembeddingInput | number[]
+  embeddingModel?: string | null
+  externalVectorId?: string | null
   createdAt?: Date | string
 }
 
 export type RagChunkUpdateWithoutDocumentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  ordinal?: Prisma.IntFieldUpdateOperationsInput | number
+  embedding?: Prisma.RagChunkUpdateembeddingInput | number[]
+  embeddingModel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalVectorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type RagChunkUncheckedUpdateWithoutDocumentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  ordinal?: Prisma.IntFieldUpdateOperationsInput | number
+  embedding?: Prisma.RagChunkUpdateembeddingInput | number[]
+  embeddingModel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalVectorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type RagChunkUncheckedUpdateManyWithoutDocumentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  ordinal?: Prisma.IntFieldUpdateOperationsInput | number
+  embedding?: Prisma.RagChunkUpdateembeddingInput | number[]
+  embeddingModel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalVectorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -415,6 +598,10 @@ export type RagChunkSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   id?: boolean
   documentId?: boolean
   content?: boolean
+  ordinal?: boolean
+  embedding?: boolean
+  embeddingModel?: boolean
+  externalVectorId?: boolean
   createdAt?: boolean
   document?: boolean | Prisma.RagDocumentDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["ragChunk"]>
@@ -423,6 +610,10 @@ export type RagChunkSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   id?: boolean
   documentId?: boolean
   content?: boolean
+  ordinal?: boolean
+  embedding?: boolean
+  embeddingModel?: boolean
+  externalVectorId?: boolean
   createdAt?: boolean
   document?: boolean | Prisma.RagDocumentDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["ragChunk"]>
@@ -431,6 +622,10 @@ export type RagChunkSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   id?: boolean
   documentId?: boolean
   content?: boolean
+  ordinal?: boolean
+  embedding?: boolean
+  embeddingModel?: boolean
+  externalVectorId?: boolean
   createdAt?: boolean
   document?: boolean | Prisma.RagDocumentDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["ragChunk"]>
@@ -439,10 +634,14 @@ export type RagChunkSelectScalar = {
   id?: boolean
   documentId?: boolean
   content?: boolean
+  ordinal?: boolean
+  embedding?: boolean
+  embeddingModel?: boolean
+  externalVectorId?: boolean
   createdAt?: boolean
 }
 
-export type RagChunkOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "documentId" | "content" | "createdAt", ExtArgs["result"]["ragChunk"]>
+export type RagChunkOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "documentId" | "content" | "ordinal" | "embedding" | "embeddingModel" | "externalVectorId" | "createdAt", ExtArgs["result"]["ragChunk"]>
 export type RagChunkInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   document?: boolean | Prisma.RagDocumentDefaultArgs<ExtArgs>
 }
@@ -462,10 +661,10 @@ export type $RagChunkPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     id: string
     documentId: string
     content: string
-    /**
-     * * We will add the pgvector embedding column
-     *    * after the relational schema is working.
-     */
+    ordinal: number
+    embedding: number[]
+    embeddingModel: string | null
+    externalVectorId: string | null
     createdAt: Date
   }, ExtArgs["result"]["ragChunk"]>
   composites: {}
@@ -894,6 +1093,10 @@ export interface RagChunkFieldRefs {
   readonly id: Prisma.FieldRef<"RagChunk", 'String'>
   readonly documentId: Prisma.FieldRef<"RagChunk", 'String'>
   readonly content: Prisma.FieldRef<"RagChunk", 'String'>
+  readonly ordinal: Prisma.FieldRef<"RagChunk", 'Int'>
+  readonly embedding: Prisma.FieldRef<"RagChunk", 'Float[]'>
+  readonly embeddingModel: Prisma.FieldRef<"RagChunk", 'String'>
+  readonly externalVectorId: Prisma.FieldRef<"RagChunk", 'String'>
   readonly createdAt: Prisma.FieldRef<"RagChunk", 'DateTime'>
 }
     

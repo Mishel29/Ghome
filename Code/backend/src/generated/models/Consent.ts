@@ -28,20 +28,24 @@ export type ConsentMinAggregateOutputType = {
   id: string | null
   userId: string | null
   interestId: string | null
-  type: string | null
+  type: $Enums.ConsentPurpose | null
   granted: boolean | null
   version: string | null
   createdAt: Date | null
+  subscriberId: string | null
+  source: string | null
 }
 
 export type ConsentMaxAggregateOutputType = {
   id: string | null
   userId: string | null
   interestId: string | null
-  type: string | null
+  type: $Enums.ConsentPurpose | null
   granted: boolean | null
   version: string | null
   createdAt: Date | null
+  subscriberId: string | null
+  source: string | null
 }
 
 export type ConsentCountAggregateOutputType = {
@@ -52,6 +56,8 @@ export type ConsentCountAggregateOutputType = {
   granted: number
   version: number
   createdAt: number
+  subscriberId: number
+  source: number
   _all: number
 }
 
@@ -64,6 +70,8 @@ export type ConsentMinAggregateInputType = {
   granted?: true
   version?: true
   createdAt?: true
+  subscriberId?: true
+  source?: true
 }
 
 export type ConsentMaxAggregateInputType = {
@@ -74,6 +82,8 @@ export type ConsentMaxAggregateInputType = {
   granted?: true
   version?: true
   createdAt?: true
+  subscriberId?: true
+  source?: true
 }
 
 export type ConsentCountAggregateInputType = {
@@ -84,6 +94,8 @@ export type ConsentCountAggregateInputType = {
   granted?: true
   version?: true
   createdAt?: true
+  subscriberId?: true
+  source?: true
   _all?: true
 }
 
@@ -163,10 +175,12 @@ export type ConsentGroupByOutputType = {
   id: string
   userId: string | null
   interestId: string | null
-  type: string
+  type: $Enums.ConsentPurpose
   granted: boolean
   version: string | null
   createdAt: Date
+  subscriberId: string | null
+  source: string | null
   _count: ConsentCountAggregateOutputType | null
   _min: ConsentMinAggregateOutputType | null
   _max: ConsentMaxAggregateOutputType | null
@@ -194,12 +208,15 @@ export type ConsentWhereInput = {
   id?: Prisma.StringFilter<"Consent"> | string
   userId?: Prisma.StringNullableFilter<"Consent"> | string | null
   interestId?: Prisma.StringNullableFilter<"Consent"> | string | null
-  type?: Prisma.StringFilter<"Consent"> | string
+  type?: Prisma.EnumConsentPurposeFilter<"Consent"> | $Enums.ConsentPurpose
   granted?: Prisma.BoolFilter<"Consent"> | boolean
   version?: Prisma.StringNullableFilter<"Consent"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Consent"> | Date | string
+  subscriberId?: Prisma.StringNullableFilter<"Consent"> | string | null
+  source?: Prisma.StringNullableFilter<"Consent"> | string | null
   user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   interest?: Prisma.XOR<Prisma.InterestNullableScalarRelationFilter, Prisma.InterestWhereInput> | null
+  subscriber?: Prisma.XOR<Prisma.SubscriberNullableScalarRelationFilter, Prisma.SubscriberWhereInput> | null
 }
 
 export type ConsentOrderByWithRelationInput = {
@@ -210,8 +227,11 @@ export type ConsentOrderByWithRelationInput = {
   granted?: Prisma.SortOrder
   version?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  subscriberId?: Prisma.SortOrderInput | Prisma.SortOrder
+  source?: Prisma.SortOrderInput | Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
   interest?: Prisma.InterestOrderByWithRelationInput
+  subscriber?: Prisma.SubscriberOrderByWithRelationInput
 }
 
 export type ConsentWhereUniqueInput = Prisma.AtLeast<{
@@ -221,12 +241,15 @@ export type ConsentWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.ConsentWhereInput | Prisma.ConsentWhereInput[]
   userId?: Prisma.StringNullableFilter<"Consent"> | string | null
   interestId?: Prisma.StringNullableFilter<"Consent"> | string | null
-  type?: Prisma.StringFilter<"Consent"> | string
+  type?: Prisma.EnumConsentPurposeFilter<"Consent"> | $Enums.ConsentPurpose
   granted?: Prisma.BoolFilter<"Consent"> | boolean
   version?: Prisma.StringNullableFilter<"Consent"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Consent"> | Date | string
+  subscriberId?: Prisma.StringNullableFilter<"Consent"> | string | null
+  source?: Prisma.StringNullableFilter<"Consent"> | string | null
   user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   interest?: Prisma.XOR<Prisma.InterestNullableScalarRelationFilter, Prisma.InterestWhereInput> | null
+  subscriber?: Prisma.XOR<Prisma.SubscriberNullableScalarRelationFilter, Prisma.SubscriberWhereInput> | null
 }, "id">
 
 export type ConsentOrderByWithAggregationInput = {
@@ -237,6 +260,8 @@ export type ConsentOrderByWithAggregationInput = {
   granted?: Prisma.SortOrder
   version?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  subscriberId?: Prisma.SortOrderInput | Prisma.SortOrder
+  source?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.ConsentCountOrderByAggregateInput
   _max?: Prisma.ConsentMaxOrderByAggregateInput
   _min?: Prisma.ConsentMinOrderByAggregateInput
@@ -249,78 +274,93 @@ export type ConsentScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Consent"> | string
   userId?: Prisma.StringNullableWithAggregatesFilter<"Consent"> | string | null
   interestId?: Prisma.StringNullableWithAggregatesFilter<"Consent"> | string | null
-  type?: Prisma.StringWithAggregatesFilter<"Consent"> | string
+  type?: Prisma.EnumConsentPurposeWithAggregatesFilter<"Consent"> | $Enums.ConsentPurpose
   granted?: Prisma.BoolWithAggregatesFilter<"Consent"> | boolean
   version?: Prisma.StringNullableWithAggregatesFilter<"Consent"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Consent"> | Date | string
+  subscriberId?: Prisma.StringNullableWithAggregatesFilter<"Consent"> | string | null
+  source?: Prisma.StringNullableWithAggregatesFilter<"Consent"> | string | null
 }
 
 export type ConsentCreateInput = {
   id?: string
-  type: string
+  type: $Enums.ConsentPurpose
   granted: boolean
   version?: string | null
   createdAt?: Date | string
+  source?: string | null
   user?: Prisma.UserCreateNestedOneWithoutConsentsInput
   interest?: Prisma.InterestCreateNestedOneWithoutConsentsInput
+  subscriber?: Prisma.SubscriberCreateNestedOneWithoutConsentsInput
 }
 
 export type ConsentUncheckedCreateInput = {
   id?: string
   userId?: string | null
   interestId?: string | null
-  type: string
+  type: $Enums.ConsentPurpose
   granted: boolean
   version?: string | null
   createdAt?: Date | string
+  subscriberId?: string | null
+  source?: string | null
 }
 
 export type ConsentUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumConsentPurposeFieldUpdateOperationsInput | $Enums.ConsentPurpose
   granted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   version?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   user?: Prisma.UserUpdateOneWithoutConsentsNestedInput
   interest?: Prisma.InterestUpdateOneWithoutConsentsNestedInput
+  subscriber?: Prisma.SubscriberUpdateOneWithoutConsentsNestedInput
 }
 
 export type ConsentUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   interestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  type?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumConsentPurposeFieldUpdateOperationsInput | $Enums.ConsentPurpose
   granted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   version?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subscriberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ConsentCreateManyInput = {
   id?: string
   userId?: string | null
   interestId?: string | null
-  type: string
+  type: $Enums.ConsentPurpose
   granted: boolean
   version?: string | null
   createdAt?: Date | string
+  subscriberId?: string | null
+  source?: string | null
 }
 
 export type ConsentUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumConsentPurposeFieldUpdateOperationsInput | $Enums.ConsentPurpose
   granted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   version?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ConsentUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   interestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  type?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumConsentPurposeFieldUpdateOperationsInput | $Enums.ConsentPurpose
   granted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   version?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subscriberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ConsentListRelationFilter = {
@@ -341,6 +381,8 @@ export type ConsentCountOrderByAggregateInput = {
   granted?: Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  subscriberId?: Prisma.SortOrder
+  source?: Prisma.SortOrder
 }
 
 export type ConsentMaxOrderByAggregateInput = {
@@ -351,6 +393,8 @@ export type ConsentMaxOrderByAggregateInput = {
   granted?: Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  subscriberId?: Prisma.SortOrder
+  source?: Prisma.SortOrder
 }
 
 export type ConsentMinOrderByAggregateInput = {
@@ -361,6 +405,8 @@ export type ConsentMinOrderByAggregateInput = {
   granted?: Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  subscriberId?: Prisma.SortOrder
+  source?: Prisma.SortOrder
 }
 
 export type ConsentCreateNestedManyWithoutUserInput = {
@@ -447,22 +493,72 @@ export type ConsentUncheckedUpdateManyWithoutInterestNestedInput = {
   deleteMany?: Prisma.ConsentScalarWhereInput | Prisma.ConsentScalarWhereInput[]
 }
 
+export type EnumConsentPurposeFieldUpdateOperationsInput = {
+  set?: $Enums.ConsentPurpose
+}
+
+export type ConsentCreateNestedManyWithoutSubscriberInput = {
+  create?: Prisma.XOR<Prisma.ConsentCreateWithoutSubscriberInput, Prisma.ConsentUncheckedCreateWithoutSubscriberInput> | Prisma.ConsentCreateWithoutSubscriberInput[] | Prisma.ConsentUncheckedCreateWithoutSubscriberInput[]
+  connectOrCreate?: Prisma.ConsentCreateOrConnectWithoutSubscriberInput | Prisma.ConsentCreateOrConnectWithoutSubscriberInput[]
+  createMany?: Prisma.ConsentCreateManySubscriberInputEnvelope
+  connect?: Prisma.ConsentWhereUniqueInput | Prisma.ConsentWhereUniqueInput[]
+}
+
+export type ConsentUncheckedCreateNestedManyWithoutSubscriberInput = {
+  create?: Prisma.XOR<Prisma.ConsentCreateWithoutSubscriberInput, Prisma.ConsentUncheckedCreateWithoutSubscriberInput> | Prisma.ConsentCreateWithoutSubscriberInput[] | Prisma.ConsentUncheckedCreateWithoutSubscriberInput[]
+  connectOrCreate?: Prisma.ConsentCreateOrConnectWithoutSubscriberInput | Prisma.ConsentCreateOrConnectWithoutSubscriberInput[]
+  createMany?: Prisma.ConsentCreateManySubscriberInputEnvelope
+  connect?: Prisma.ConsentWhereUniqueInput | Prisma.ConsentWhereUniqueInput[]
+}
+
+export type ConsentUpdateManyWithoutSubscriberNestedInput = {
+  create?: Prisma.XOR<Prisma.ConsentCreateWithoutSubscriberInput, Prisma.ConsentUncheckedCreateWithoutSubscriberInput> | Prisma.ConsentCreateWithoutSubscriberInput[] | Prisma.ConsentUncheckedCreateWithoutSubscriberInput[]
+  connectOrCreate?: Prisma.ConsentCreateOrConnectWithoutSubscriberInput | Prisma.ConsentCreateOrConnectWithoutSubscriberInput[]
+  upsert?: Prisma.ConsentUpsertWithWhereUniqueWithoutSubscriberInput | Prisma.ConsentUpsertWithWhereUniqueWithoutSubscriberInput[]
+  createMany?: Prisma.ConsentCreateManySubscriberInputEnvelope
+  set?: Prisma.ConsentWhereUniqueInput | Prisma.ConsentWhereUniqueInput[]
+  disconnect?: Prisma.ConsentWhereUniqueInput | Prisma.ConsentWhereUniqueInput[]
+  delete?: Prisma.ConsentWhereUniqueInput | Prisma.ConsentWhereUniqueInput[]
+  connect?: Prisma.ConsentWhereUniqueInput | Prisma.ConsentWhereUniqueInput[]
+  update?: Prisma.ConsentUpdateWithWhereUniqueWithoutSubscriberInput | Prisma.ConsentUpdateWithWhereUniqueWithoutSubscriberInput[]
+  updateMany?: Prisma.ConsentUpdateManyWithWhereWithoutSubscriberInput | Prisma.ConsentUpdateManyWithWhereWithoutSubscriberInput[]
+  deleteMany?: Prisma.ConsentScalarWhereInput | Prisma.ConsentScalarWhereInput[]
+}
+
+export type ConsentUncheckedUpdateManyWithoutSubscriberNestedInput = {
+  create?: Prisma.XOR<Prisma.ConsentCreateWithoutSubscriberInput, Prisma.ConsentUncheckedCreateWithoutSubscriberInput> | Prisma.ConsentCreateWithoutSubscriberInput[] | Prisma.ConsentUncheckedCreateWithoutSubscriberInput[]
+  connectOrCreate?: Prisma.ConsentCreateOrConnectWithoutSubscriberInput | Prisma.ConsentCreateOrConnectWithoutSubscriberInput[]
+  upsert?: Prisma.ConsentUpsertWithWhereUniqueWithoutSubscriberInput | Prisma.ConsentUpsertWithWhereUniqueWithoutSubscriberInput[]
+  createMany?: Prisma.ConsentCreateManySubscriberInputEnvelope
+  set?: Prisma.ConsentWhereUniqueInput | Prisma.ConsentWhereUniqueInput[]
+  disconnect?: Prisma.ConsentWhereUniqueInput | Prisma.ConsentWhereUniqueInput[]
+  delete?: Prisma.ConsentWhereUniqueInput | Prisma.ConsentWhereUniqueInput[]
+  connect?: Prisma.ConsentWhereUniqueInput | Prisma.ConsentWhereUniqueInput[]
+  update?: Prisma.ConsentUpdateWithWhereUniqueWithoutSubscriberInput | Prisma.ConsentUpdateWithWhereUniqueWithoutSubscriberInput[]
+  updateMany?: Prisma.ConsentUpdateManyWithWhereWithoutSubscriberInput | Prisma.ConsentUpdateManyWithWhereWithoutSubscriberInput[]
+  deleteMany?: Prisma.ConsentScalarWhereInput | Prisma.ConsentScalarWhereInput[]
+}
+
 export type ConsentCreateWithoutUserInput = {
   id?: string
-  type: string
+  type: $Enums.ConsentPurpose
   granted: boolean
   version?: string | null
   createdAt?: Date | string
+  source?: string | null
   interest?: Prisma.InterestCreateNestedOneWithoutConsentsInput
+  subscriber?: Prisma.SubscriberCreateNestedOneWithoutConsentsInput
 }
 
 export type ConsentUncheckedCreateWithoutUserInput = {
   id?: string
   interestId?: string | null
-  type: string
+  type: $Enums.ConsentPurpose
   granted: boolean
   version?: string | null
   createdAt?: Date | string
+  subscriberId?: string | null
+  source?: string | null
 }
 
 export type ConsentCreateOrConnectWithoutUserInput = {
@@ -498,28 +594,34 @@ export type ConsentScalarWhereInput = {
   id?: Prisma.StringFilter<"Consent"> | string
   userId?: Prisma.StringNullableFilter<"Consent"> | string | null
   interestId?: Prisma.StringNullableFilter<"Consent"> | string | null
-  type?: Prisma.StringFilter<"Consent"> | string
+  type?: Prisma.EnumConsentPurposeFilter<"Consent"> | $Enums.ConsentPurpose
   granted?: Prisma.BoolFilter<"Consent"> | boolean
   version?: Prisma.StringNullableFilter<"Consent"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Consent"> | Date | string
+  subscriberId?: Prisma.StringNullableFilter<"Consent"> | string | null
+  source?: Prisma.StringNullableFilter<"Consent"> | string | null
 }
 
 export type ConsentCreateWithoutInterestInput = {
   id?: string
-  type: string
+  type: $Enums.ConsentPurpose
   granted: boolean
   version?: string | null
   createdAt?: Date | string
+  source?: string | null
   user?: Prisma.UserCreateNestedOneWithoutConsentsInput
+  subscriber?: Prisma.SubscriberCreateNestedOneWithoutConsentsInput
 }
 
 export type ConsentUncheckedCreateWithoutInterestInput = {
   id?: string
   userId?: string | null
-  type: string
+  type: $Enums.ConsentPurpose
   granted: boolean
   version?: string | null
   createdAt?: Date | string
+  subscriberId?: string | null
+  source?: string | null
 }
 
 export type ConsentCreateOrConnectWithoutInterestInput = {
@@ -548,76 +650,184 @@ export type ConsentUpdateManyWithWhereWithoutInterestInput = {
   data: Prisma.XOR<Prisma.ConsentUpdateManyMutationInput, Prisma.ConsentUncheckedUpdateManyWithoutInterestInput>
 }
 
-export type ConsentCreateManyUserInput = {
+export type ConsentCreateWithoutSubscriberInput = {
   id?: string
-  interestId?: string | null
-  type: string
+  type: $Enums.ConsentPurpose
   granted: boolean
   version?: string | null
   createdAt?: Date | string
+  source?: string | null
+  user?: Prisma.UserCreateNestedOneWithoutConsentsInput
+  interest?: Prisma.InterestCreateNestedOneWithoutConsentsInput
+}
+
+export type ConsentUncheckedCreateWithoutSubscriberInput = {
+  id?: string
+  userId?: string | null
+  interestId?: string | null
+  type: $Enums.ConsentPurpose
+  granted: boolean
+  version?: string | null
+  createdAt?: Date | string
+  source?: string | null
+}
+
+export type ConsentCreateOrConnectWithoutSubscriberInput = {
+  where: Prisma.ConsentWhereUniqueInput
+  create: Prisma.XOR<Prisma.ConsentCreateWithoutSubscriberInput, Prisma.ConsentUncheckedCreateWithoutSubscriberInput>
+}
+
+export type ConsentCreateManySubscriberInputEnvelope = {
+  data: Prisma.ConsentCreateManySubscriberInput | Prisma.ConsentCreateManySubscriberInput[]
+  skipDuplicates?: boolean
+}
+
+export type ConsentUpsertWithWhereUniqueWithoutSubscriberInput = {
+  where: Prisma.ConsentWhereUniqueInput
+  update: Prisma.XOR<Prisma.ConsentUpdateWithoutSubscriberInput, Prisma.ConsentUncheckedUpdateWithoutSubscriberInput>
+  create: Prisma.XOR<Prisma.ConsentCreateWithoutSubscriberInput, Prisma.ConsentUncheckedCreateWithoutSubscriberInput>
+}
+
+export type ConsentUpdateWithWhereUniqueWithoutSubscriberInput = {
+  where: Prisma.ConsentWhereUniqueInput
+  data: Prisma.XOR<Prisma.ConsentUpdateWithoutSubscriberInput, Prisma.ConsentUncheckedUpdateWithoutSubscriberInput>
+}
+
+export type ConsentUpdateManyWithWhereWithoutSubscriberInput = {
+  where: Prisma.ConsentScalarWhereInput
+  data: Prisma.XOR<Prisma.ConsentUpdateManyMutationInput, Prisma.ConsentUncheckedUpdateManyWithoutSubscriberInput>
+}
+
+export type ConsentCreateManyUserInput = {
+  id?: string
+  interestId?: string | null
+  type: $Enums.ConsentPurpose
+  granted: boolean
+  version?: string | null
+  createdAt?: Date | string
+  subscriberId?: string | null
+  source?: string | null
 }
 
 export type ConsentUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumConsentPurposeFieldUpdateOperationsInput | $Enums.ConsentPurpose
   granted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   version?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   interest?: Prisma.InterestUpdateOneWithoutConsentsNestedInput
+  subscriber?: Prisma.SubscriberUpdateOneWithoutConsentsNestedInput
 }
 
 export type ConsentUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   interestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  type?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumConsentPurposeFieldUpdateOperationsInput | $Enums.ConsentPurpose
   granted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   version?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subscriberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ConsentUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   interestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  type?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumConsentPurposeFieldUpdateOperationsInput | $Enums.ConsentPurpose
   granted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   version?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subscriberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ConsentCreateManyInterestInput = {
   id?: string
   userId?: string | null
-  type: string
+  type: $Enums.ConsentPurpose
   granted: boolean
   version?: string | null
   createdAt?: Date | string
+  subscriberId?: string | null
+  source?: string | null
 }
 
 export type ConsentUpdateWithoutInterestInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumConsentPurposeFieldUpdateOperationsInput | $Enums.ConsentPurpose
   granted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   version?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   user?: Prisma.UserUpdateOneWithoutConsentsNestedInput
+  subscriber?: Prisma.SubscriberUpdateOneWithoutConsentsNestedInput
 }
 
 export type ConsentUncheckedUpdateWithoutInterestInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  type?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumConsentPurposeFieldUpdateOperationsInput | $Enums.ConsentPurpose
   granted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   version?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subscriberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ConsentUncheckedUpdateManyWithoutInterestInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  type?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumConsentPurposeFieldUpdateOperationsInput | $Enums.ConsentPurpose
   granted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   version?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subscriberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type ConsentCreateManySubscriberInput = {
+  id?: string
+  userId?: string | null
+  interestId?: string | null
+  type: $Enums.ConsentPurpose
+  granted: boolean
+  version?: string | null
+  createdAt?: Date | string
+  source?: string | null
+}
+
+export type ConsentUpdateWithoutSubscriberInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumConsentPurposeFieldUpdateOperationsInput | $Enums.ConsentPurpose
+  granted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  version?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  user?: Prisma.UserUpdateOneWithoutConsentsNestedInput
+  interest?: Prisma.InterestUpdateOneWithoutConsentsNestedInput
+}
+
+export type ConsentUncheckedUpdateWithoutSubscriberInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  interestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumConsentPurposeFieldUpdateOperationsInput | $Enums.ConsentPurpose
+  granted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  version?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type ConsentUncheckedUpdateManyWithoutSubscriberInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  interestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumConsentPurposeFieldUpdateOperationsInput | $Enums.ConsentPurpose
+  granted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  version?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -630,8 +840,11 @@ export type ConsentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   granted?: boolean
   version?: boolean
   createdAt?: boolean
+  subscriberId?: boolean
+  source?: boolean
   user?: boolean | Prisma.Consent$userArgs<ExtArgs>
   interest?: boolean | Prisma.Consent$interestArgs<ExtArgs>
+  subscriber?: boolean | Prisma.Consent$subscriberArgs<ExtArgs>
 }, ExtArgs["result"]["consent"]>
 
 export type ConsentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -642,8 +855,11 @@ export type ConsentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   granted?: boolean
   version?: boolean
   createdAt?: boolean
+  subscriberId?: boolean
+  source?: boolean
   user?: boolean | Prisma.Consent$userArgs<ExtArgs>
   interest?: boolean | Prisma.Consent$interestArgs<ExtArgs>
+  subscriber?: boolean | Prisma.Consent$subscriberArgs<ExtArgs>
 }, ExtArgs["result"]["consent"]>
 
 export type ConsentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -654,8 +870,11 @@ export type ConsentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   granted?: boolean
   version?: boolean
   createdAt?: boolean
+  subscriberId?: boolean
+  source?: boolean
   user?: boolean | Prisma.Consent$userArgs<ExtArgs>
   interest?: boolean | Prisma.Consent$interestArgs<ExtArgs>
+  subscriber?: boolean | Prisma.Consent$subscriberArgs<ExtArgs>
 }, ExtArgs["result"]["consent"]>
 
 export type ConsentSelectScalar = {
@@ -666,20 +885,25 @@ export type ConsentSelectScalar = {
   granted?: boolean
   version?: boolean
   createdAt?: boolean
+  subscriberId?: boolean
+  source?: boolean
 }
 
-export type ConsentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "interestId" | "type" | "granted" | "version" | "createdAt", ExtArgs["result"]["consent"]>
+export type ConsentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "interestId" | "type" | "granted" | "version" | "createdAt" | "subscriberId" | "source", ExtArgs["result"]["consent"]>
 export type ConsentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.Consent$userArgs<ExtArgs>
   interest?: boolean | Prisma.Consent$interestArgs<ExtArgs>
+  subscriber?: boolean | Prisma.Consent$subscriberArgs<ExtArgs>
 }
 export type ConsentIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.Consent$userArgs<ExtArgs>
   interest?: boolean | Prisma.Consent$interestArgs<ExtArgs>
+  subscriber?: boolean | Prisma.Consent$subscriberArgs<ExtArgs>
 }
 export type ConsentIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.Consent$userArgs<ExtArgs>
   interest?: boolean | Prisma.Consent$interestArgs<ExtArgs>
+  subscriber?: boolean | Prisma.Consent$subscriberArgs<ExtArgs>
 }
 
 export type $ConsentPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -687,15 +911,18 @@ export type $ConsentPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   objects: {
     user: Prisma.$UserPayload<ExtArgs> | null
     interest: Prisma.$InterestPayload<ExtArgs> | null
+    subscriber: Prisma.$SubscriberPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     userId: string | null
     interestId: string | null
-    type: string
+    type: $Enums.ConsentPurpose
     granted: boolean
     version: string | null
     createdAt: Date
+    subscriberId: string | null
+    source: string | null
   }, ExtArgs["result"]["consent"]>
   composites: {}
 }
@@ -1092,6 +1319,7 @@ export interface Prisma__ConsentClient<T, Null = never, ExtArgs extends runtime.
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.Consent$userArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Consent$userArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   interest<T extends Prisma.Consent$interestArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Consent$interestArgs<ExtArgs>>): Prisma.Prisma__InterestClient<runtime.Types.Result.GetResult<Prisma.$InterestPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  subscriber<T extends Prisma.Consent$subscriberArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Consent$subscriberArgs<ExtArgs>>): Prisma.Prisma__SubscriberClient<runtime.Types.Result.GetResult<Prisma.$SubscriberPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1124,10 +1352,12 @@ export interface ConsentFieldRefs {
   readonly id: Prisma.FieldRef<"Consent", 'String'>
   readonly userId: Prisma.FieldRef<"Consent", 'String'>
   readonly interestId: Prisma.FieldRef<"Consent", 'String'>
-  readonly type: Prisma.FieldRef<"Consent", 'String'>
+  readonly type: Prisma.FieldRef<"Consent", 'ConsentPurpose'>
   readonly granted: Prisma.FieldRef<"Consent", 'Boolean'>
   readonly version: Prisma.FieldRef<"Consent", 'String'>
   readonly createdAt: Prisma.FieldRef<"Consent", 'DateTime'>
+  readonly subscriberId: Prisma.FieldRef<"Consent", 'String'>
+  readonly source: Prisma.FieldRef<"Consent", 'String'>
 }
     
 
@@ -1564,6 +1794,25 @@ export type Consent$interestArgs<ExtArgs extends runtime.Types.Extensions.Intern
    */
   include?: Prisma.InterestInclude<ExtArgs> | null
   where?: Prisma.InterestWhereInput
+}
+
+/**
+ * Consent.subscriber
+ */
+export type Consent$subscriberArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Subscriber
+   */
+  select?: Prisma.SubscriberSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Subscriber
+   */
+  omit?: Prisma.SubscriberOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SubscriberInclude<ExtArgs> | null
+  where?: Prisma.SubscriberWhereInput
 }
 
 /**

@@ -3,9 +3,11 @@ export interface Property {
   name: string;
   location: string;
   county: string;
+  postalCode?: string;
   address: string;
   status: "on-sale" | "coming-soon" | "sold-out" | "offline" | "draft";
   type: string;
+  saleType?: string;
   price: { min: number; max: number };
   beds: number[];
   baths: number[];
@@ -17,6 +19,7 @@ export interface Property {
   description: string;
   features: string[];
   stage: "Planning" | "Under Construction" | "Ready to Move" | "Not specified";
+  completionYear?: number | null;
   listedDate: string;
   sqft: { min: number; max: number };
   agent: string;

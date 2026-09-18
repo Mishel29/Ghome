@@ -20,8 +20,18 @@ export type CampaignModel = runtime.Types.Result.DefaultSelection<Prisma.$Campai
 
 export type AggregateCampaign = {
   _count: CampaignCountAggregateOutputType | null
+  _avg: CampaignAvgAggregateOutputType | null
+  _sum: CampaignSumAggregateOutputType | null
   _min: CampaignMinAggregateOutputType | null
   _max: CampaignMaxAggregateOutputType | null
+}
+
+export type CampaignAvgAggregateOutputType = {
+  recipientCount: number | null
+}
+
+export type CampaignSumAggregateOutputType = {
+  recipientCount: number | null
 }
 
 export type CampaignMinAggregateOutputType = {
@@ -33,6 +43,13 @@ export type CampaignMinAggregateOutputType = {
   sentAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
+  newsArticleId: string | null
+  templateId: string | null
+  bodyText: string | null
+  renderedHtml: string | null
+  recipientCount: number | null
+  startedAt: Date | null
+  completedAt: Date | null
 }
 
 export type CampaignMaxAggregateOutputType = {
@@ -44,6 +61,13 @@ export type CampaignMaxAggregateOutputType = {
   sentAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
+  newsArticleId: string | null
+  templateId: string | null
+  bodyText: string | null
+  renderedHtml: string | null
+  recipientCount: number | null
+  startedAt: Date | null
+  completedAt: Date | null
 }
 
 export type CampaignCountAggregateOutputType = {
@@ -55,9 +79,24 @@ export type CampaignCountAggregateOutputType = {
   sentAt: number
   createdAt: number
   updatedAt: number
+  newsArticleId: number
+  templateId: number
+  bodyText: number
+  renderedHtml: number
+  recipientCount: number
+  startedAt: number
+  completedAt: number
   _all: number
 }
 
+
+export type CampaignAvgAggregateInputType = {
+  recipientCount?: true
+}
+
+export type CampaignSumAggregateInputType = {
+  recipientCount?: true
+}
 
 export type CampaignMinAggregateInputType = {
   id?: true
@@ -68,6 +107,13 @@ export type CampaignMinAggregateInputType = {
   sentAt?: true
   createdAt?: true
   updatedAt?: true
+  newsArticleId?: true
+  templateId?: true
+  bodyText?: true
+  renderedHtml?: true
+  recipientCount?: true
+  startedAt?: true
+  completedAt?: true
 }
 
 export type CampaignMaxAggregateInputType = {
@@ -79,6 +125,13 @@ export type CampaignMaxAggregateInputType = {
   sentAt?: true
   createdAt?: true
   updatedAt?: true
+  newsArticleId?: true
+  templateId?: true
+  bodyText?: true
+  renderedHtml?: true
+  recipientCount?: true
+  startedAt?: true
+  completedAt?: true
 }
 
 export type CampaignCountAggregateInputType = {
@@ -90,6 +143,13 @@ export type CampaignCountAggregateInputType = {
   sentAt?: true
   createdAt?: true
   updatedAt?: true
+  newsArticleId?: true
+  templateId?: true
+  bodyText?: true
+  renderedHtml?: true
+  recipientCount?: true
+  startedAt?: true
+  completedAt?: true
   _all?: true
 }
 
@@ -131,6 +191,18 @@ export type CampaignAggregateArgs<ExtArgs extends runtime.Types.Extensions.Inter
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: CampaignAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: CampaignSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: CampaignMinAggregateInputType
@@ -161,6 +233,8 @@ export type CampaignGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   _count?: CampaignCountAggregateInputType | true
+  _avg?: CampaignAvgAggregateInputType
+  _sum?: CampaignSumAggregateInputType
   _min?: CampaignMinAggregateInputType
   _max?: CampaignMaxAggregateInputType
 }
@@ -174,7 +248,16 @@ export type CampaignGroupByOutputType = {
   sentAt: Date | null
   createdAt: Date
   updatedAt: Date
+  newsArticleId: string | null
+  templateId: string | null
+  bodyText: string | null
+  renderedHtml: string | null
+  recipientCount: number
+  startedAt: Date | null
+  completedAt: Date | null
   _count: CampaignCountAggregateOutputType | null
+  _avg: CampaignAvgAggregateOutputType | null
+  _sum: CampaignSumAggregateOutputType | null
   _min: CampaignMinAggregateOutputType | null
   _max: CampaignMaxAggregateOutputType | null
 }
@@ -206,11 +289,20 @@ export type CampaignWhereInput = {
   sentAt?: Prisma.DateTimeNullableFilter<"Campaign"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Campaign"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Campaign"> | Date | string
+  newsArticleId?: Prisma.StringNullableFilter<"Campaign"> | string | null
+  templateId?: Prisma.StringNullableFilter<"Campaign"> | string | null
+  bodyText?: Prisma.StringNullableFilter<"Campaign"> | string | null
+  renderedHtml?: Prisma.StringNullableFilter<"Campaign"> | string | null
+  recipientCount?: Prisma.IntFilter<"Campaign"> | number
+  startedAt?: Prisma.DateTimeNullableFilter<"Campaign"> | Date | string | null
+  completedAt?: Prisma.DateTimeNullableFilter<"Campaign"> | Date | string | null
   createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   properties?: Prisma.CampaignPropertyListRelationFilter
   recipients?: Prisma.CampaignRecipientListRelationFilter
   events?: Prisma.CampaignEventListRelationFilter
   analyticsEvents?: Prisma.AnalyticsEventListRelationFilter
+  newsArticle?: Prisma.XOR<Prisma.NewsArticleNullableScalarRelationFilter, Prisma.NewsArticleWhereInput> | null
+  template?: Prisma.XOR<Prisma.CampaignTemplateNullableScalarRelationFilter, Prisma.CampaignTemplateWhereInput> | null
 }
 
 export type CampaignOrderByWithRelationInput = {
@@ -222,11 +314,20 @@ export type CampaignOrderByWithRelationInput = {
   sentAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  newsArticleId?: Prisma.SortOrderInput | Prisma.SortOrder
+  templateId?: Prisma.SortOrderInput | Prisma.SortOrder
+  bodyText?: Prisma.SortOrderInput | Prisma.SortOrder
+  renderedHtml?: Prisma.SortOrderInput | Prisma.SortOrder
+  recipientCount?: Prisma.SortOrder
+  startedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdBy?: Prisma.UserOrderByWithRelationInput
   properties?: Prisma.CampaignPropertyOrderByRelationAggregateInput
   recipients?: Prisma.CampaignRecipientOrderByRelationAggregateInput
   events?: Prisma.CampaignEventOrderByRelationAggregateInput
   analyticsEvents?: Prisma.AnalyticsEventOrderByRelationAggregateInput
+  newsArticle?: Prisma.NewsArticleOrderByWithRelationInput
+  template?: Prisma.CampaignTemplateOrderByWithRelationInput
 }
 
 export type CampaignWhereUniqueInput = Prisma.AtLeast<{
@@ -241,11 +342,20 @@ export type CampaignWhereUniqueInput = Prisma.AtLeast<{
   sentAt?: Prisma.DateTimeNullableFilter<"Campaign"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Campaign"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Campaign"> | Date | string
+  newsArticleId?: Prisma.StringNullableFilter<"Campaign"> | string | null
+  templateId?: Prisma.StringNullableFilter<"Campaign"> | string | null
+  bodyText?: Prisma.StringNullableFilter<"Campaign"> | string | null
+  renderedHtml?: Prisma.StringNullableFilter<"Campaign"> | string | null
+  recipientCount?: Prisma.IntFilter<"Campaign"> | number
+  startedAt?: Prisma.DateTimeNullableFilter<"Campaign"> | Date | string | null
+  completedAt?: Prisma.DateTimeNullableFilter<"Campaign"> | Date | string | null
   createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   properties?: Prisma.CampaignPropertyListRelationFilter
   recipients?: Prisma.CampaignRecipientListRelationFilter
   events?: Prisma.CampaignEventListRelationFilter
   analyticsEvents?: Prisma.AnalyticsEventListRelationFilter
+  newsArticle?: Prisma.XOR<Prisma.NewsArticleNullableScalarRelationFilter, Prisma.NewsArticleWhereInput> | null
+  template?: Prisma.XOR<Prisma.CampaignTemplateNullableScalarRelationFilter, Prisma.CampaignTemplateWhereInput> | null
 }, "id">
 
 export type CampaignOrderByWithAggregationInput = {
@@ -257,9 +367,18 @@ export type CampaignOrderByWithAggregationInput = {
   sentAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  newsArticleId?: Prisma.SortOrderInput | Prisma.SortOrder
+  templateId?: Prisma.SortOrderInput | Prisma.SortOrder
+  bodyText?: Prisma.SortOrderInput | Prisma.SortOrder
+  renderedHtml?: Prisma.SortOrderInput | Prisma.SortOrder
+  recipientCount?: Prisma.SortOrder
+  startedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.CampaignCountOrderByAggregateInput
+  _avg?: Prisma.CampaignAvgOrderByAggregateInput
   _max?: Prisma.CampaignMaxOrderByAggregateInput
   _min?: Prisma.CampaignMinOrderByAggregateInput
+  _sum?: Prisma.CampaignSumOrderByAggregateInput
 }
 
 export type CampaignScalarWhereWithAggregatesInput = {
@@ -274,6 +393,13 @@ export type CampaignScalarWhereWithAggregatesInput = {
   sentAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Campaign"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Campaign"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Campaign"> | Date | string
+  newsArticleId?: Prisma.StringNullableWithAggregatesFilter<"Campaign"> | string | null
+  templateId?: Prisma.StringNullableWithAggregatesFilter<"Campaign"> | string | null
+  bodyText?: Prisma.StringNullableWithAggregatesFilter<"Campaign"> | string | null
+  renderedHtml?: Prisma.StringNullableWithAggregatesFilter<"Campaign"> | string | null
+  recipientCount?: Prisma.IntWithAggregatesFilter<"Campaign"> | number
+  startedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Campaign"> | Date | string | null
+  completedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Campaign"> | Date | string | null
 }
 
 export type CampaignCreateInput = {
@@ -284,11 +410,18 @@ export type CampaignCreateInput = {
   sentAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  bodyText?: string | null
+  renderedHtml?: string | null
+  recipientCount?: number
+  startedAt?: Date | string | null
+  completedAt?: Date | string | null
   createdBy?: Prisma.UserCreateNestedOneWithoutCampaignsInput
   properties?: Prisma.CampaignPropertyCreateNestedManyWithoutCampaignInput
   recipients?: Prisma.CampaignRecipientCreateNestedManyWithoutCampaignInput
   events?: Prisma.CampaignEventCreateNestedManyWithoutCampaignInput
   analyticsEvents?: Prisma.AnalyticsEventCreateNestedManyWithoutCampaignInput
+  newsArticle?: Prisma.NewsArticleCreateNestedOneWithoutCampaignsInput
+  template?: Prisma.CampaignTemplateCreateNestedOneWithoutCampaignsInput
 }
 
 export type CampaignUncheckedCreateInput = {
@@ -300,6 +433,13 @@ export type CampaignUncheckedCreateInput = {
   sentAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  newsArticleId?: string | null
+  templateId?: string | null
+  bodyText?: string | null
+  renderedHtml?: string | null
+  recipientCount?: number
+  startedAt?: Date | string | null
+  completedAt?: Date | string | null
   properties?: Prisma.CampaignPropertyUncheckedCreateNestedManyWithoutCampaignInput
   recipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutCampaignInput
   events?: Prisma.CampaignEventUncheckedCreateNestedManyWithoutCampaignInput
@@ -314,11 +454,18 @@ export type CampaignUpdateInput = {
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bodyText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  renderedHtml?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientCount?: Prisma.IntFieldUpdateOperationsInput | number
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdBy?: Prisma.UserUpdateOneWithoutCampaignsNestedInput
   properties?: Prisma.CampaignPropertyUpdateManyWithoutCampaignNestedInput
   recipients?: Prisma.CampaignRecipientUpdateManyWithoutCampaignNestedInput
   events?: Prisma.CampaignEventUpdateManyWithoutCampaignNestedInput
   analyticsEvents?: Prisma.AnalyticsEventUpdateManyWithoutCampaignNestedInput
+  newsArticle?: Prisma.NewsArticleUpdateOneWithoutCampaignsNestedInput
+  template?: Prisma.CampaignTemplateUpdateOneWithoutCampaignsNestedInput
 }
 
 export type CampaignUncheckedUpdateInput = {
@@ -330,6 +477,13 @@ export type CampaignUncheckedUpdateInput = {
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  newsArticleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  templateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bodyText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  renderedHtml?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientCount?: Prisma.IntFieldUpdateOperationsInput | number
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   properties?: Prisma.CampaignPropertyUncheckedUpdateManyWithoutCampaignNestedInput
   recipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutCampaignNestedInput
   events?: Prisma.CampaignEventUncheckedUpdateManyWithoutCampaignNestedInput
@@ -345,6 +499,13 @@ export type CampaignCreateManyInput = {
   sentAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  newsArticleId?: string | null
+  templateId?: string | null
+  bodyText?: string | null
+  renderedHtml?: string | null
+  recipientCount?: number
+  startedAt?: Date | string | null
+  completedAt?: Date | string | null
 }
 
 export type CampaignUpdateManyMutationInput = {
@@ -355,6 +516,11 @@ export type CampaignUpdateManyMutationInput = {
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bodyText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  renderedHtml?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientCount?: Prisma.IntFieldUpdateOperationsInput | number
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type CampaignUncheckedUpdateManyInput = {
@@ -366,6 +532,13 @@ export type CampaignUncheckedUpdateManyInput = {
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  newsArticleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  templateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bodyText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  renderedHtml?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientCount?: Prisma.IntFieldUpdateOperationsInput | number
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type CampaignListRelationFilter = {
@@ -387,6 +560,17 @@ export type CampaignCountOrderByAggregateInput = {
   sentAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  newsArticleId?: Prisma.SortOrder
+  templateId?: Prisma.SortOrder
+  bodyText?: Prisma.SortOrder
+  renderedHtml?: Prisma.SortOrder
+  recipientCount?: Prisma.SortOrder
+  startedAt?: Prisma.SortOrder
+  completedAt?: Prisma.SortOrder
+}
+
+export type CampaignAvgOrderByAggregateInput = {
+  recipientCount?: Prisma.SortOrder
 }
 
 export type CampaignMaxOrderByAggregateInput = {
@@ -398,6 +582,13 @@ export type CampaignMaxOrderByAggregateInput = {
   sentAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  newsArticleId?: Prisma.SortOrder
+  templateId?: Prisma.SortOrder
+  bodyText?: Prisma.SortOrder
+  renderedHtml?: Prisma.SortOrder
+  recipientCount?: Prisma.SortOrder
+  startedAt?: Prisma.SortOrder
+  completedAt?: Prisma.SortOrder
 }
 
 export type CampaignMinOrderByAggregateInput = {
@@ -409,6 +600,17 @@ export type CampaignMinOrderByAggregateInput = {
   sentAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  newsArticleId?: Prisma.SortOrder
+  templateId?: Prisma.SortOrder
+  bodyText?: Prisma.SortOrder
+  renderedHtml?: Prisma.SortOrder
+  recipientCount?: Prisma.SortOrder
+  startedAt?: Prisma.SortOrder
+  completedAt?: Prisma.SortOrder
+}
+
+export type CampaignSumOrderByAggregateInput = {
+  recipientCount?: Prisma.SortOrder
 }
 
 export type CampaignScalarRelationFilter = {
@@ -509,6 +711,90 @@ export type CampaignUpdateOneRequiredWithoutEventsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.CampaignUpdateToOneWithWhereWithoutEventsInput, Prisma.CampaignUpdateWithoutEventsInput>, Prisma.CampaignUncheckedUpdateWithoutEventsInput>
 }
 
+export type CampaignCreateNestedManyWithoutTemplateInput = {
+  create?: Prisma.XOR<Prisma.CampaignCreateWithoutTemplateInput, Prisma.CampaignUncheckedCreateWithoutTemplateInput> | Prisma.CampaignCreateWithoutTemplateInput[] | Prisma.CampaignUncheckedCreateWithoutTemplateInput[]
+  connectOrCreate?: Prisma.CampaignCreateOrConnectWithoutTemplateInput | Prisma.CampaignCreateOrConnectWithoutTemplateInput[]
+  createMany?: Prisma.CampaignCreateManyTemplateInputEnvelope
+  connect?: Prisma.CampaignWhereUniqueInput | Prisma.CampaignWhereUniqueInput[]
+}
+
+export type CampaignUncheckedCreateNestedManyWithoutTemplateInput = {
+  create?: Prisma.XOR<Prisma.CampaignCreateWithoutTemplateInput, Prisma.CampaignUncheckedCreateWithoutTemplateInput> | Prisma.CampaignCreateWithoutTemplateInput[] | Prisma.CampaignUncheckedCreateWithoutTemplateInput[]
+  connectOrCreate?: Prisma.CampaignCreateOrConnectWithoutTemplateInput | Prisma.CampaignCreateOrConnectWithoutTemplateInput[]
+  createMany?: Prisma.CampaignCreateManyTemplateInputEnvelope
+  connect?: Prisma.CampaignWhereUniqueInput | Prisma.CampaignWhereUniqueInput[]
+}
+
+export type CampaignUpdateManyWithoutTemplateNestedInput = {
+  create?: Prisma.XOR<Prisma.CampaignCreateWithoutTemplateInput, Prisma.CampaignUncheckedCreateWithoutTemplateInput> | Prisma.CampaignCreateWithoutTemplateInput[] | Prisma.CampaignUncheckedCreateWithoutTemplateInput[]
+  connectOrCreate?: Prisma.CampaignCreateOrConnectWithoutTemplateInput | Prisma.CampaignCreateOrConnectWithoutTemplateInput[]
+  upsert?: Prisma.CampaignUpsertWithWhereUniqueWithoutTemplateInput | Prisma.CampaignUpsertWithWhereUniqueWithoutTemplateInput[]
+  createMany?: Prisma.CampaignCreateManyTemplateInputEnvelope
+  set?: Prisma.CampaignWhereUniqueInput | Prisma.CampaignWhereUniqueInput[]
+  disconnect?: Prisma.CampaignWhereUniqueInput | Prisma.CampaignWhereUniqueInput[]
+  delete?: Prisma.CampaignWhereUniqueInput | Prisma.CampaignWhereUniqueInput[]
+  connect?: Prisma.CampaignWhereUniqueInput | Prisma.CampaignWhereUniqueInput[]
+  update?: Prisma.CampaignUpdateWithWhereUniqueWithoutTemplateInput | Prisma.CampaignUpdateWithWhereUniqueWithoutTemplateInput[]
+  updateMany?: Prisma.CampaignUpdateManyWithWhereWithoutTemplateInput | Prisma.CampaignUpdateManyWithWhereWithoutTemplateInput[]
+  deleteMany?: Prisma.CampaignScalarWhereInput | Prisma.CampaignScalarWhereInput[]
+}
+
+export type CampaignUncheckedUpdateManyWithoutTemplateNestedInput = {
+  create?: Prisma.XOR<Prisma.CampaignCreateWithoutTemplateInput, Prisma.CampaignUncheckedCreateWithoutTemplateInput> | Prisma.CampaignCreateWithoutTemplateInput[] | Prisma.CampaignUncheckedCreateWithoutTemplateInput[]
+  connectOrCreate?: Prisma.CampaignCreateOrConnectWithoutTemplateInput | Prisma.CampaignCreateOrConnectWithoutTemplateInput[]
+  upsert?: Prisma.CampaignUpsertWithWhereUniqueWithoutTemplateInput | Prisma.CampaignUpsertWithWhereUniqueWithoutTemplateInput[]
+  createMany?: Prisma.CampaignCreateManyTemplateInputEnvelope
+  set?: Prisma.CampaignWhereUniqueInput | Prisma.CampaignWhereUniqueInput[]
+  disconnect?: Prisma.CampaignWhereUniqueInput | Prisma.CampaignWhereUniqueInput[]
+  delete?: Prisma.CampaignWhereUniqueInput | Prisma.CampaignWhereUniqueInput[]
+  connect?: Prisma.CampaignWhereUniqueInput | Prisma.CampaignWhereUniqueInput[]
+  update?: Prisma.CampaignUpdateWithWhereUniqueWithoutTemplateInput | Prisma.CampaignUpdateWithWhereUniqueWithoutTemplateInput[]
+  updateMany?: Prisma.CampaignUpdateManyWithWhereWithoutTemplateInput | Prisma.CampaignUpdateManyWithWhereWithoutTemplateInput[]
+  deleteMany?: Prisma.CampaignScalarWhereInput | Prisma.CampaignScalarWhereInput[]
+}
+
+export type CampaignCreateNestedManyWithoutNewsArticleInput = {
+  create?: Prisma.XOR<Prisma.CampaignCreateWithoutNewsArticleInput, Prisma.CampaignUncheckedCreateWithoutNewsArticleInput> | Prisma.CampaignCreateWithoutNewsArticleInput[] | Prisma.CampaignUncheckedCreateWithoutNewsArticleInput[]
+  connectOrCreate?: Prisma.CampaignCreateOrConnectWithoutNewsArticleInput | Prisma.CampaignCreateOrConnectWithoutNewsArticleInput[]
+  createMany?: Prisma.CampaignCreateManyNewsArticleInputEnvelope
+  connect?: Prisma.CampaignWhereUniqueInput | Prisma.CampaignWhereUniqueInput[]
+}
+
+export type CampaignUncheckedCreateNestedManyWithoutNewsArticleInput = {
+  create?: Prisma.XOR<Prisma.CampaignCreateWithoutNewsArticleInput, Prisma.CampaignUncheckedCreateWithoutNewsArticleInput> | Prisma.CampaignCreateWithoutNewsArticleInput[] | Prisma.CampaignUncheckedCreateWithoutNewsArticleInput[]
+  connectOrCreate?: Prisma.CampaignCreateOrConnectWithoutNewsArticleInput | Prisma.CampaignCreateOrConnectWithoutNewsArticleInput[]
+  createMany?: Prisma.CampaignCreateManyNewsArticleInputEnvelope
+  connect?: Prisma.CampaignWhereUniqueInput | Prisma.CampaignWhereUniqueInput[]
+}
+
+export type CampaignUpdateManyWithoutNewsArticleNestedInput = {
+  create?: Prisma.XOR<Prisma.CampaignCreateWithoutNewsArticleInput, Prisma.CampaignUncheckedCreateWithoutNewsArticleInput> | Prisma.CampaignCreateWithoutNewsArticleInput[] | Prisma.CampaignUncheckedCreateWithoutNewsArticleInput[]
+  connectOrCreate?: Prisma.CampaignCreateOrConnectWithoutNewsArticleInput | Prisma.CampaignCreateOrConnectWithoutNewsArticleInput[]
+  upsert?: Prisma.CampaignUpsertWithWhereUniqueWithoutNewsArticleInput | Prisma.CampaignUpsertWithWhereUniqueWithoutNewsArticleInput[]
+  createMany?: Prisma.CampaignCreateManyNewsArticleInputEnvelope
+  set?: Prisma.CampaignWhereUniqueInput | Prisma.CampaignWhereUniqueInput[]
+  disconnect?: Prisma.CampaignWhereUniqueInput | Prisma.CampaignWhereUniqueInput[]
+  delete?: Prisma.CampaignWhereUniqueInput | Prisma.CampaignWhereUniqueInput[]
+  connect?: Prisma.CampaignWhereUniqueInput | Prisma.CampaignWhereUniqueInput[]
+  update?: Prisma.CampaignUpdateWithWhereUniqueWithoutNewsArticleInput | Prisma.CampaignUpdateWithWhereUniqueWithoutNewsArticleInput[]
+  updateMany?: Prisma.CampaignUpdateManyWithWhereWithoutNewsArticleInput | Prisma.CampaignUpdateManyWithWhereWithoutNewsArticleInput[]
+  deleteMany?: Prisma.CampaignScalarWhereInput | Prisma.CampaignScalarWhereInput[]
+}
+
+export type CampaignUncheckedUpdateManyWithoutNewsArticleNestedInput = {
+  create?: Prisma.XOR<Prisma.CampaignCreateWithoutNewsArticleInput, Prisma.CampaignUncheckedCreateWithoutNewsArticleInput> | Prisma.CampaignCreateWithoutNewsArticleInput[] | Prisma.CampaignUncheckedCreateWithoutNewsArticleInput[]
+  connectOrCreate?: Prisma.CampaignCreateOrConnectWithoutNewsArticleInput | Prisma.CampaignCreateOrConnectWithoutNewsArticleInput[]
+  upsert?: Prisma.CampaignUpsertWithWhereUniqueWithoutNewsArticleInput | Prisma.CampaignUpsertWithWhereUniqueWithoutNewsArticleInput[]
+  createMany?: Prisma.CampaignCreateManyNewsArticleInputEnvelope
+  set?: Prisma.CampaignWhereUniqueInput | Prisma.CampaignWhereUniqueInput[]
+  disconnect?: Prisma.CampaignWhereUniqueInput | Prisma.CampaignWhereUniqueInput[]
+  delete?: Prisma.CampaignWhereUniqueInput | Prisma.CampaignWhereUniqueInput[]
+  connect?: Prisma.CampaignWhereUniqueInput | Prisma.CampaignWhereUniqueInput[]
+  update?: Prisma.CampaignUpdateWithWhereUniqueWithoutNewsArticleInput | Prisma.CampaignUpdateWithWhereUniqueWithoutNewsArticleInput[]
+  updateMany?: Prisma.CampaignUpdateManyWithWhereWithoutNewsArticleInput | Prisma.CampaignUpdateManyWithWhereWithoutNewsArticleInput[]
+  deleteMany?: Prisma.CampaignScalarWhereInput | Prisma.CampaignScalarWhereInput[]
+}
+
 export type CampaignCreateNestedOneWithoutAnalyticsEventsInput = {
   create?: Prisma.XOR<Prisma.CampaignCreateWithoutAnalyticsEventsInput, Prisma.CampaignUncheckedCreateWithoutAnalyticsEventsInput>
   connectOrCreate?: Prisma.CampaignCreateOrConnectWithoutAnalyticsEventsInput
@@ -533,10 +819,17 @@ export type CampaignCreateWithoutCreatedByInput = {
   sentAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  bodyText?: string | null
+  renderedHtml?: string | null
+  recipientCount?: number
+  startedAt?: Date | string | null
+  completedAt?: Date | string | null
   properties?: Prisma.CampaignPropertyCreateNestedManyWithoutCampaignInput
   recipients?: Prisma.CampaignRecipientCreateNestedManyWithoutCampaignInput
   events?: Prisma.CampaignEventCreateNestedManyWithoutCampaignInput
   analyticsEvents?: Prisma.AnalyticsEventCreateNestedManyWithoutCampaignInput
+  newsArticle?: Prisma.NewsArticleCreateNestedOneWithoutCampaignsInput
+  template?: Prisma.CampaignTemplateCreateNestedOneWithoutCampaignsInput
 }
 
 export type CampaignUncheckedCreateWithoutCreatedByInput = {
@@ -547,6 +840,13 @@ export type CampaignUncheckedCreateWithoutCreatedByInput = {
   sentAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  newsArticleId?: string | null
+  templateId?: string | null
+  bodyText?: string | null
+  renderedHtml?: string | null
+  recipientCount?: number
+  startedAt?: Date | string | null
+  completedAt?: Date | string | null
   properties?: Prisma.CampaignPropertyUncheckedCreateNestedManyWithoutCampaignInput
   recipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutCampaignInput
   events?: Prisma.CampaignEventUncheckedCreateNestedManyWithoutCampaignInput
@@ -591,6 +891,13 @@ export type CampaignScalarWhereInput = {
   sentAt?: Prisma.DateTimeNullableFilter<"Campaign"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Campaign"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Campaign"> | Date | string
+  newsArticleId?: Prisma.StringNullableFilter<"Campaign"> | string | null
+  templateId?: Prisma.StringNullableFilter<"Campaign"> | string | null
+  bodyText?: Prisma.StringNullableFilter<"Campaign"> | string | null
+  renderedHtml?: Prisma.StringNullableFilter<"Campaign"> | string | null
+  recipientCount?: Prisma.IntFilter<"Campaign"> | number
+  startedAt?: Prisma.DateTimeNullableFilter<"Campaign"> | Date | string | null
+  completedAt?: Prisma.DateTimeNullableFilter<"Campaign"> | Date | string | null
 }
 
 export type CampaignCreateWithoutPropertiesInput = {
@@ -601,10 +908,17 @@ export type CampaignCreateWithoutPropertiesInput = {
   sentAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  bodyText?: string | null
+  renderedHtml?: string | null
+  recipientCount?: number
+  startedAt?: Date | string | null
+  completedAt?: Date | string | null
   createdBy?: Prisma.UserCreateNestedOneWithoutCampaignsInput
   recipients?: Prisma.CampaignRecipientCreateNestedManyWithoutCampaignInput
   events?: Prisma.CampaignEventCreateNestedManyWithoutCampaignInput
   analyticsEvents?: Prisma.AnalyticsEventCreateNestedManyWithoutCampaignInput
+  newsArticle?: Prisma.NewsArticleCreateNestedOneWithoutCampaignsInput
+  template?: Prisma.CampaignTemplateCreateNestedOneWithoutCampaignsInput
 }
 
 export type CampaignUncheckedCreateWithoutPropertiesInput = {
@@ -616,6 +930,13 @@ export type CampaignUncheckedCreateWithoutPropertiesInput = {
   sentAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  newsArticleId?: string | null
+  templateId?: string | null
+  bodyText?: string | null
+  renderedHtml?: string | null
+  recipientCount?: number
+  startedAt?: Date | string | null
+  completedAt?: Date | string | null
   recipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutCampaignInput
   events?: Prisma.CampaignEventUncheckedCreateNestedManyWithoutCampaignInput
   analyticsEvents?: Prisma.AnalyticsEventUncheckedCreateNestedManyWithoutCampaignInput
@@ -645,10 +966,17 @@ export type CampaignUpdateWithoutPropertiesInput = {
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bodyText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  renderedHtml?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientCount?: Prisma.IntFieldUpdateOperationsInput | number
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdBy?: Prisma.UserUpdateOneWithoutCampaignsNestedInput
   recipients?: Prisma.CampaignRecipientUpdateManyWithoutCampaignNestedInput
   events?: Prisma.CampaignEventUpdateManyWithoutCampaignNestedInput
   analyticsEvents?: Prisma.AnalyticsEventUpdateManyWithoutCampaignNestedInput
+  newsArticle?: Prisma.NewsArticleUpdateOneWithoutCampaignsNestedInput
+  template?: Prisma.CampaignTemplateUpdateOneWithoutCampaignsNestedInput
 }
 
 export type CampaignUncheckedUpdateWithoutPropertiesInput = {
@@ -660,6 +988,13 @@ export type CampaignUncheckedUpdateWithoutPropertiesInput = {
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  newsArticleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  templateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bodyText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  renderedHtml?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientCount?: Prisma.IntFieldUpdateOperationsInput | number
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   recipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutCampaignNestedInput
   events?: Prisma.CampaignEventUncheckedUpdateManyWithoutCampaignNestedInput
   analyticsEvents?: Prisma.AnalyticsEventUncheckedUpdateManyWithoutCampaignNestedInput
@@ -673,10 +1008,17 @@ export type CampaignCreateWithoutRecipientsInput = {
   sentAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  bodyText?: string | null
+  renderedHtml?: string | null
+  recipientCount?: number
+  startedAt?: Date | string | null
+  completedAt?: Date | string | null
   createdBy?: Prisma.UserCreateNestedOneWithoutCampaignsInput
   properties?: Prisma.CampaignPropertyCreateNestedManyWithoutCampaignInput
   events?: Prisma.CampaignEventCreateNestedManyWithoutCampaignInput
   analyticsEvents?: Prisma.AnalyticsEventCreateNestedManyWithoutCampaignInput
+  newsArticle?: Prisma.NewsArticleCreateNestedOneWithoutCampaignsInput
+  template?: Prisma.CampaignTemplateCreateNestedOneWithoutCampaignsInput
 }
 
 export type CampaignUncheckedCreateWithoutRecipientsInput = {
@@ -688,6 +1030,13 @@ export type CampaignUncheckedCreateWithoutRecipientsInput = {
   sentAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  newsArticleId?: string | null
+  templateId?: string | null
+  bodyText?: string | null
+  renderedHtml?: string | null
+  recipientCount?: number
+  startedAt?: Date | string | null
+  completedAt?: Date | string | null
   properties?: Prisma.CampaignPropertyUncheckedCreateNestedManyWithoutCampaignInput
   events?: Prisma.CampaignEventUncheckedCreateNestedManyWithoutCampaignInput
   analyticsEvents?: Prisma.AnalyticsEventUncheckedCreateNestedManyWithoutCampaignInput
@@ -717,10 +1066,17 @@ export type CampaignUpdateWithoutRecipientsInput = {
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bodyText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  renderedHtml?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientCount?: Prisma.IntFieldUpdateOperationsInput | number
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdBy?: Prisma.UserUpdateOneWithoutCampaignsNestedInput
   properties?: Prisma.CampaignPropertyUpdateManyWithoutCampaignNestedInput
   events?: Prisma.CampaignEventUpdateManyWithoutCampaignNestedInput
   analyticsEvents?: Prisma.AnalyticsEventUpdateManyWithoutCampaignNestedInput
+  newsArticle?: Prisma.NewsArticleUpdateOneWithoutCampaignsNestedInput
+  template?: Prisma.CampaignTemplateUpdateOneWithoutCampaignsNestedInput
 }
 
 export type CampaignUncheckedUpdateWithoutRecipientsInput = {
@@ -732,6 +1088,13 @@ export type CampaignUncheckedUpdateWithoutRecipientsInput = {
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  newsArticleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  templateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bodyText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  renderedHtml?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientCount?: Prisma.IntFieldUpdateOperationsInput | number
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   properties?: Prisma.CampaignPropertyUncheckedUpdateManyWithoutCampaignNestedInput
   events?: Prisma.CampaignEventUncheckedUpdateManyWithoutCampaignNestedInput
   analyticsEvents?: Prisma.AnalyticsEventUncheckedUpdateManyWithoutCampaignNestedInput
@@ -745,10 +1108,17 @@ export type CampaignCreateWithoutEventsInput = {
   sentAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  bodyText?: string | null
+  renderedHtml?: string | null
+  recipientCount?: number
+  startedAt?: Date | string | null
+  completedAt?: Date | string | null
   createdBy?: Prisma.UserCreateNestedOneWithoutCampaignsInput
   properties?: Prisma.CampaignPropertyCreateNestedManyWithoutCampaignInput
   recipients?: Prisma.CampaignRecipientCreateNestedManyWithoutCampaignInput
   analyticsEvents?: Prisma.AnalyticsEventCreateNestedManyWithoutCampaignInput
+  newsArticle?: Prisma.NewsArticleCreateNestedOneWithoutCampaignsInput
+  template?: Prisma.CampaignTemplateCreateNestedOneWithoutCampaignsInput
 }
 
 export type CampaignUncheckedCreateWithoutEventsInput = {
@@ -760,6 +1130,13 @@ export type CampaignUncheckedCreateWithoutEventsInput = {
   sentAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  newsArticleId?: string | null
+  templateId?: string | null
+  bodyText?: string | null
+  renderedHtml?: string | null
+  recipientCount?: number
+  startedAt?: Date | string | null
+  completedAt?: Date | string | null
   properties?: Prisma.CampaignPropertyUncheckedCreateNestedManyWithoutCampaignInput
   recipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutCampaignInput
   analyticsEvents?: Prisma.AnalyticsEventUncheckedCreateNestedManyWithoutCampaignInput
@@ -789,10 +1166,17 @@ export type CampaignUpdateWithoutEventsInput = {
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bodyText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  renderedHtml?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientCount?: Prisma.IntFieldUpdateOperationsInput | number
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdBy?: Prisma.UserUpdateOneWithoutCampaignsNestedInput
   properties?: Prisma.CampaignPropertyUpdateManyWithoutCampaignNestedInput
   recipients?: Prisma.CampaignRecipientUpdateManyWithoutCampaignNestedInput
   analyticsEvents?: Prisma.AnalyticsEventUpdateManyWithoutCampaignNestedInput
+  newsArticle?: Prisma.NewsArticleUpdateOneWithoutCampaignsNestedInput
+  template?: Prisma.CampaignTemplateUpdateOneWithoutCampaignsNestedInput
 }
 
 export type CampaignUncheckedUpdateWithoutEventsInput = {
@@ -804,9 +1188,152 @@ export type CampaignUncheckedUpdateWithoutEventsInput = {
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  newsArticleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  templateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bodyText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  renderedHtml?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientCount?: Prisma.IntFieldUpdateOperationsInput | number
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   properties?: Prisma.CampaignPropertyUncheckedUpdateManyWithoutCampaignNestedInput
   recipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutCampaignNestedInput
   analyticsEvents?: Prisma.AnalyticsEventUncheckedUpdateManyWithoutCampaignNestedInput
+}
+
+export type CampaignCreateWithoutTemplateInput = {
+  id?: string
+  subject: string
+  status?: $Enums.CampaignStatus
+  templateHtml?: string | null
+  sentAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  bodyText?: string | null
+  renderedHtml?: string | null
+  recipientCount?: number
+  startedAt?: Date | string | null
+  completedAt?: Date | string | null
+  createdBy?: Prisma.UserCreateNestedOneWithoutCampaignsInput
+  properties?: Prisma.CampaignPropertyCreateNestedManyWithoutCampaignInput
+  recipients?: Prisma.CampaignRecipientCreateNestedManyWithoutCampaignInput
+  events?: Prisma.CampaignEventCreateNestedManyWithoutCampaignInput
+  analyticsEvents?: Prisma.AnalyticsEventCreateNestedManyWithoutCampaignInput
+  newsArticle?: Prisma.NewsArticleCreateNestedOneWithoutCampaignsInput
+}
+
+export type CampaignUncheckedCreateWithoutTemplateInput = {
+  id?: string
+  subject: string
+  status?: $Enums.CampaignStatus
+  templateHtml?: string | null
+  createdById?: string | null
+  sentAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  newsArticleId?: string | null
+  bodyText?: string | null
+  renderedHtml?: string | null
+  recipientCount?: number
+  startedAt?: Date | string | null
+  completedAt?: Date | string | null
+  properties?: Prisma.CampaignPropertyUncheckedCreateNestedManyWithoutCampaignInput
+  recipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutCampaignInput
+  events?: Prisma.CampaignEventUncheckedCreateNestedManyWithoutCampaignInput
+  analyticsEvents?: Prisma.AnalyticsEventUncheckedCreateNestedManyWithoutCampaignInput
+}
+
+export type CampaignCreateOrConnectWithoutTemplateInput = {
+  where: Prisma.CampaignWhereUniqueInput
+  create: Prisma.XOR<Prisma.CampaignCreateWithoutTemplateInput, Prisma.CampaignUncheckedCreateWithoutTemplateInput>
+}
+
+export type CampaignCreateManyTemplateInputEnvelope = {
+  data: Prisma.CampaignCreateManyTemplateInput | Prisma.CampaignCreateManyTemplateInput[]
+  skipDuplicates?: boolean
+}
+
+export type CampaignUpsertWithWhereUniqueWithoutTemplateInput = {
+  where: Prisma.CampaignWhereUniqueInput
+  update: Prisma.XOR<Prisma.CampaignUpdateWithoutTemplateInput, Prisma.CampaignUncheckedUpdateWithoutTemplateInput>
+  create: Prisma.XOR<Prisma.CampaignCreateWithoutTemplateInput, Prisma.CampaignUncheckedCreateWithoutTemplateInput>
+}
+
+export type CampaignUpdateWithWhereUniqueWithoutTemplateInput = {
+  where: Prisma.CampaignWhereUniqueInput
+  data: Prisma.XOR<Prisma.CampaignUpdateWithoutTemplateInput, Prisma.CampaignUncheckedUpdateWithoutTemplateInput>
+}
+
+export type CampaignUpdateManyWithWhereWithoutTemplateInput = {
+  where: Prisma.CampaignScalarWhereInput
+  data: Prisma.XOR<Prisma.CampaignUpdateManyMutationInput, Prisma.CampaignUncheckedUpdateManyWithoutTemplateInput>
+}
+
+export type CampaignCreateWithoutNewsArticleInput = {
+  id?: string
+  subject: string
+  status?: $Enums.CampaignStatus
+  templateHtml?: string | null
+  sentAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  bodyText?: string | null
+  renderedHtml?: string | null
+  recipientCount?: number
+  startedAt?: Date | string | null
+  completedAt?: Date | string | null
+  createdBy?: Prisma.UserCreateNestedOneWithoutCampaignsInput
+  properties?: Prisma.CampaignPropertyCreateNestedManyWithoutCampaignInput
+  recipients?: Prisma.CampaignRecipientCreateNestedManyWithoutCampaignInput
+  events?: Prisma.CampaignEventCreateNestedManyWithoutCampaignInput
+  analyticsEvents?: Prisma.AnalyticsEventCreateNestedManyWithoutCampaignInput
+  template?: Prisma.CampaignTemplateCreateNestedOneWithoutCampaignsInput
+}
+
+export type CampaignUncheckedCreateWithoutNewsArticleInput = {
+  id?: string
+  subject: string
+  status?: $Enums.CampaignStatus
+  templateHtml?: string | null
+  createdById?: string | null
+  sentAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  templateId?: string | null
+  bodyText?: string | null
+  renderedHtml?: string | null
+  recipientCount?: number
+  startedAt?: Date | string | null
+  completedAt?: Date | string | null
+  properties?: Prisma.CampaignPropertyUncheckedCreateNestedManyWithoutCampaignInput
+  recipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutCampaignInput
+  events?: Prisma.CampaignEventUncheckedCreateNestedManyWithoutCampaignInput
+  analyticsEvents?: Prisma.AnalyticsEventUncheckedCreateNestedManyWithoutCampaignInput
+}
+
+export type CampaignCreateOrConnectWithoutNewsArticleInput = {
+  where: Prisma.CampaignWhereUniqueInput
+  create: Prisma.XOR<Prisma.CampaignCreateWithoutNewsArticleInput, Prisma.CampaignUncheckedCreateWithoutNewsArticleInput>
+}
+
+export type CampaignCreateManyNewsArticleInputEnvelope = {
+  data: Prisma.CampaignCreateManyNewsArticleInput | Prisma.CampaignCreateManyNewsArticleInput[]
+  skipDuplicates?: boolean
+}
+
+export type CampaignUpsertWithWhereUniqueWithoutNewsArticleInput = {
+  where: Prisma.CampaignWhereUniqueInput
+  update: Prisma.XOR<Prisma.CampaignUpdateWithoutNewsArticleInput, Prisma.CampaignUncheckedUpdateWithoutNewsArticleInput>
+  create: Prisma.XOR<Prisma.CampaignCreateWithoutNewsArticleInput, Prisma.CampaignUncheckedCreateWithoutNewsArticleInput>
+}
+
+export type CampaignUpdateWithWhereUniqueWithoutNewsArticleInput = {
+  where: Prisma.CampaignWhereUniqueInput
+  data: Prisma.XOR<Prisma.CampaignUpdateWithoutNewsArticleInput, Prisma.CampaignUncheckedUpdateWithoutNewsArticleInput>
+}
+
+export type CampaignUpdateManyWithWhereWithoutNewsArticleInput = {
+  where: Prisma.CampaignScalarWhereInput
+  data: Prisma.XOR<Prisma.CampaignUpdateManyMutationInput, Prisma.CampaignUncheckedUpdateManyWithoutNewsArticleInput>
 }
 
 export type CampaignCreateWithoutAnalyticsEventsInput = {
@@ -817,10 +1344,17 @@ export type CampaignCreateWithoutAnalyticsEventsInput = {
   sentAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  bodyText?: string | null
+  renderedHtml?: string | null
+  recipientCount?: number
+  startedAt?: Date | string | null
+  completedAt?: Date | string | null
   createdBy?: Prisma.UserCreateNestedOneWithoutCampaignsInput
   properties?: Prisma.CampaignPropertyCreateNestedManyWithoutCampaignInput
   recipients?: Prisma.CampaignRecipientCreateNestedManyWithoutCampaignInput
   events?: Prisma.CampaignEventCreateNestedManyWithoutCampaignInput
+  newsArticle?: Prisma.NewsArticleCreateNestedOneWithoutCampaignsInput
+  template?: Prisma.CampaignTemplateCreateNestedOneWithoutCampaignsInput
 }
 
 export type CampaignUncheckedCreateWithoutAnalyticsEventsInput = {
@@ -832,6 +1366,13 @@ export type CampaignUncheckedCreateWithoutAnalyticsEventsInput = {
   sentAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  newsArticleId?: string | null
+  templateId?: string | null
+  bodyText?: string | null
+  renderedHtml?: string | null
+  recipientCount?: number
+  startedAt?: Date | string | null
+  completedAt?: Date | string | null
   properties?: Prisma.CampaignPropertyUncheckedCreateNestedManyWithoutCampaignInput
   recipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutCampaignInput
   events?: Prisma.CampaignEventUncheckedCreateNestedManyWithoutCampaignInput
@@ -861,10 +1402,17 @@ export type CampaignUpdateWithoutAnalyticsEventsInput = {
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bodyText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  renderedHtml?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientCount?: Prisma.IntFieldUpdateOperationsInput | number
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdBy?: Prisma.UserUpdateOneWithoutCampaignsNestedInput
   properties?: Prisma.CampaignPropertyUpdateManyWithoutCampaignNestedInput
   recipients?: Prisma.CampaignRecipientUpdateManyWithoutCampaignNestedInput
   events?: Prisma.CampaignEventUpdateManyWithoutCampaignNestedInput
+  newsArticle?: Prisma.NewsArticleUpdateOneWithoutCampaignsNestedInput
+  template?: Prisma.CampaignTemplateUpdateOneWithoutCampaignsNestedInput
 }
 
 export type CampaignUncheckedUpdateWithoutAnalyticsEventsInput = {
@@ -876,6 +1424,13 @@ export type CampaignUncheckedUpdateWithoutAnalyticsEventsInput = {
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  newsArticleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  templateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bodyText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  renderedHtml?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientCount?: Prisma.IntFieldUpdateOperationsInput | number
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   properties?: Prisma.CampaignPropertyUncheckedUpdateManyWithoutCampaignNestedInput
   recipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutCampaignNestedInput
   events?: Prisma.CampaignEventUncheckedUpdateManyWithoutCampaignNestedInput
@@ -889,6 +1444,13 @@ export type CampaignCreateManyCreatedByInput = {
   sentAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  newsArticleId?: string | null
+  templateId?: string | null
+  bodyText?: string | null
+  renderedHtml?: string | null
+  recipientCount?: number
+  startedAt?: Date | string | null
+  completedAt?: Date | string | null
 }
 
 export type CampaignUpdateWithoutCreatedByInput = {
@@ -899,10 +1461,17 @@ export type CampaignUpdateWithoutCreatedByInput = {
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bodyText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  renderedHtml?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientCount?: Prisma.IntFieldUpdateOperationsInput | number
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   properties?: Prisma.CampaignPropertyUpdateManyWithoutCampaignNestedInput
   recipients?: Prisma.CampaignRecipientUpdateManyWithoutCampaignNestedInput
   events?: Prisma.CampaignEventUpdateManyWithoutCampaignNestedInput
   analyticsEvents?: Prisma.AnalyticsEventUpdateManyWithoutCampaignNestedInput
+  newsArticle?: Prisma.NewsArticleUpdateOneWithoutCampaignsNestedInput
+  template?: Prisma.CampaignTemplateUpdateOneWithoutCampaignsNestedInput
 }
 
 export type CampaignUncheckedUpdateWithoutCreatedByInput = {
@@ -913,6 +1482,13 @@ export type CampaignUncheckedUpdateWithoutCreatedByInput = {
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  newsArticleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  templateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bodyText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  renderedHtml?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientCount?: Prisma.IntFieldUpdateOperationsInput | number
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   properties?: Prisma.CampaignPropertyUncheckedUpdateManyWithoutCampaignNestedInput
   recipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutCampaignNestedInput
   events?: Prisma.CampaignEventUncheckedUpdateManyWithoutCampaignNestedInput
@@ -927,6 +1503,165 @@ export type CampaignUncheckedUpdateManyWithoutCreatedByInput = {
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  newsArticleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  templateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bodyText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  renderedHtml?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientCount?: Prisma.IntFieldUpdateOperationsInput | number
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+}
+
+export type CampaignCreateManyTemplateInput = {
+  id?: string
+  subject: string
+  status?: $Enums.CampaignStatus
+  templateHtml?: string | null
+  createdById?: string | null
+  sentAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  newsArticleId?: string | null
+  bodyText?: string | null
+  renderedHtml?: string | null
+  recipientCount?: number
+  startedAt?: Date | string | null
+  completedAt?: Date | string | null
+}
+
+export type CampaignUpdateWithoutTemplateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  subject?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumCampaignStatusFieldUpdateOperationsInput | $Enums.CampaignStatus
+  templateHtml?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bodyText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  renderedHtml?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientCount?: Prisma.IntFieldUpdateOperationsInput | number
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdBy?: Prisma.UserUpdateOneWithoutCampaignsNestedInput
+  properties?: Prisma.CampaignPropertyUpdateManyWithoutCampaignNestedInput
+  recipients?: Prisma.CampaignRecipientUpdateManyWithoutCampaignNestedInput
+  events?: Prisma.CampaignEventUpdateManyWithoutCampaignNestedInput
+  analyticsEvents?: Prisma.AnalyticsEventUpdateManyWithoutCampaignNestedInput
+  newsArticle?: Prisma.NewsArticleUpdateOneWithoutCampaignsNestedInput
+}
+
+export type CampaignUncheckedUpdateWithoutTemplateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  subject?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumCampaignStatusFieldUpdateOperationsInput | $Enums.CampaignStatus
+  templateHtml?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  newsArticleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bodyText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  renderedHtml?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientCount?: Prisma.IntFieldUpdateOperationsInput | number
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  properties?: Prisma.CampaignPropertyUncheckedUpdateManyWithoutCampaignNestedInput
+  recipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutCampaignNestedInput
+  events?: Prisma.CampaignEventUncheckedUpdateManyWithoutCampaignNestedInput
+  analyticsEvents?: Prisma.AnalyticsEventUncheckedUpdateManyWithoutCampaignNestedInput
+}
+
+export type CampaignUncheckedUpdateManyWithoutTemplateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  subject?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumCampaignStatusFieldUpdateOperationsInput | $Enums.CampaignStatus
+  templateHtml?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  newsArticleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bodyText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  renderedHtml?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientCount?: Prisma.IntFieldUpdateOperationsInput | number
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+}
+
+export type CampaignCreateManyNewsArticleInput = {
+  id?: string
+  subject: string
+  status?: $Enums.CampaignStatus
+  templateHtml?: string | null
+  createdById?: string | null
+  sentAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  templateId?: string | null
+  bodyText?: string | null
+  renderedHtml?: string | null
+  recipientCount?: number
+  startedAt?: Date | string | null
+  completedAt?: Date | string | null
+}
+
+export type CampaignUpdateWithoutNewsArticleInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  subject?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumCampaignStatusFieldUpdateOperationsInput | $Enums.CampaignStatus
+  templateHtml?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bodyText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  renderedHtml?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientCount?: Prisma.IntFieldUpdateOperationsInput | number
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdBy?: Prisma.UserUpdateOneWithoutCampaignsNestedInput
+  properties?: Prisma.CampaignPropertyUpdateManyWithoutCampaignNestedInput
+  recipients?: Prisma.CampaignRecipientUpdateManyWithoutCampaignNestedInput
+  events?: Prisma.CampaignEventUpdateManyWithoutCampaignNestedInput
+  analyticsEvents?: Prisma.AnalyticsEventUpdateManyWithoutCampaignNestedInput
+  template?: Prisma.CampaignTemplateUpdateOneWithoutCampaignsNestedInput
+}
+
+export type CampaignUncheckedUpdateWithoutNewsArticleInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  subject?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumCampaignStatusFieldUpdateOperationsInput | $Enums.CampaignStatus
+  templateHtml?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  templateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bodyText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  renderedHtml?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientCount?: Prisma.IntFieldUpdateOperationsInput | number
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  properties?: Prisma.CampaignPropertyUncheckedUpdateManyWithoutCampaignNestedInput
+  recipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutCampaignNestedInput
+  events?: Prisma.CampaignEventUncheckedUpdateManyWithoutCampaignNestedInput
+  analyticsEvents?: Prisma.AnalyticsEventUncheckedUpdateManyWithoutCampaignNestedInput
+}
+
+export type CampaignUncheckedUpdateManyWithoutNewsArticleInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  subject?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumCampaignStatusFieldUpdateOperationsInput | $Enums.CampaignStatus
+  templateHtml?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  templateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bodyText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  renderedHtml?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientCount?: Prisma.IntFieldUpdateOperationsInput | number
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 
@@ -996,11 +1731,20 @@ export type CampaignSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   sentAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  newsArticleId?: boolean
+  templateId?: boolean
+  bodyText?: boolean
+  renderedHtml?: boolean
+  recipientCount?: boolean
+  startedAt?: boolean
+  completedAt?: boolean
   createdBy?: boolean | Prisma.Campaign$createdByArgs<ExtArgs>
   properties?: boolean | Prisma.Campaign$propertiesArgs<ExtArgs>
   recipients?: boolean | Prisma.Campaign$recipientsArgs<ExtArgs>
   events?: boolean | Prisma.Campaign$eventsArgs<ExtArgs>
   analyticsEvents?: boolean | Prisma.Campaign$analyticsEventsArgs<ExtArgs>
+  newsArticle?: boolean | Prisma.Campaign$newsArticleArgs<ExtArgs>
+  template?: boolean | Prisma.Campaign$templateArgs<ExtArgs>
   _count?: boolean | Prisma.CampaignCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["campaign"]>
 
@@ -1013,7 +1757,16 @@ export type CampaignSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   sentAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  newsArticleId?: boolean
+  templateId?: boolean
+  bodyText?: boolean
+  renderedHtml?: boolean
+  recipientCount?: boolean
+  startedAt?: boolean
+  completedAt?: boolean
   createdBy?: boolean | Prisma.Campaign$createdByArgs<ExtArgs>
+  newsArticle?: boolean | Prisma.Campaign$newsArticleArgs<ExtArgs>
+  template?: boolean | Prisma.Campaign$templateArgs<ExtArgs>
 }, ExtArgs["result"]["campaign"]>
 
 export type CampaignSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1025,7 +1778,16 @@ export type CampaignSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   sentAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  newsArticleId?: boolean
+  templateId?: boolean
+  bodyText?: boolean
+  renderedHtml?: boolean
+  recipientCount?: boolean
+  startedAt?: boolean
+  completedAt?: boolean
   createdBy?: boolean | Prisma.Campaign$createdByArgs<ExtArgs>
+  newsArticle?: boolean | Prisma.Campaign$newsArticleArgs<ExtArgs>
+  template?: boolean | Prisma.Campaign$templateArgs<ExtArgs>
 }, ExtArgs["result"]["campaign"]>
 
 export type CampaignSelectScalar = {
@@ -1037,22 +1799,35 @@ export type CampaignSelectScalar = {
   sentAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  newsArticleId?: boolean
+  templateId?: boolean
+  bodyText?: boolean
+  renderedHtml?: boolean
+  recipientCount?: boolean
+  startedAt?: boolean
+  completedAt?: boolean
 }
 
-export type CampaignOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "subject" | "status" | "templateHtml" | "createdById" | "sentAt" | "createdAt" | "updatedAt", ExtArgs["result"]["campaign"]>
+export type CampaignOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "subject" | "status" | "templateHtml" | "createdById" | "sentAt" | "createdAt" | "updatedAt" | "newsArticleId" | "templateId" | "bodyText" | "renderedHtml" | "recipientCount" | "startedAt" | "completedAt", ExtArgs["result"]["campaign"]>
 export type CampaignInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   createdBy?: boolean | Prisma.Campaign$createdByArgs<ExtArgs>
   properties?: boolean | Prisma.Campaign$propertiesArgs<ExtArgs>
   recipients?: boolean | Prisma.Campaign$recipientsArgs<ExtArgs>
   events?: boolean | Prisma.Campaign$eventsArgs<ExtArgs>
   analyticsEvents?: boolean | Prisma.Campaign$analyticsEventsArgs<ExtArgs>
+  newsArticle?: boolean | Prisma.Campaign$newsArticleArgs<ExtArgs>
+  template?: boolean | Prisma.Campaign$templateArgs<ExtArgs>
   _count?: boolean | Prisma.CampaignCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type CampaignIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   createdBy?: boolean | Prisma.Campaign$createdByArgs<ExtArgs>
+  newsArticle?: boolean | Prisma.Campaign$newsArticleArgs<ExtArgs>
+  template?: boolean | Prisma.Campaign$templateArgs<ExtArgs>
 }
 export type CampaignIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   createdBy?: boolean | Prisma.Campaign$createdByArgs<ExtArgs>
+  newsArticle?: boolean | Prisma.Campaign$newsArticleArgs<ExtArgs>
+  template?: boolean | Prisma.Campaign$templateArgs<ExtArgs>
 }
 
 export type $CampaignPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1063,6 +1838,8 @@ export type $CampaignPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     recipients: Prisma.$CampaignRecipientPayload<ExtArgs>[]
     events: Prisma.$CampaignEventPayload<ExtArgs>[]
     analyticsEvents: Prisma.$AnalyticsEventPayload<ExtArgs>[]
+    newsArticle: Prisma.$NewsArticlePayload<ExtArgs> | null
+    template: Prisma.$CampaignTemplatePayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1073,6 +1850,13 @@ export type $CampaignPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     sentAt: Date | null
     createdAt: Date
     updatedAt: Date
+    newsArticleId: string | null
+    templateId: string | null
+    bodyText: string | null
+    renderedHtml: string | null
+    recipientCount: number
+    startedAt: Date | null
+    completedAt: Date | null
   }, ExtArgs["result"]["campaign"]>
   composites: {}
 }
@@ -1472,6 +2256,8 @@ export interface Prisma__CampaignClient<T, Null = never, ExtArgs extends runtime
   recipients<T extends Prisma.Campaign$recipientsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Campaign$recipientsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CampaignRecipientPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   events<T extends Prisma.Campaign$eventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Campaign$eventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CampaignEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   analyticsEvents<T extends Prisma.Campaign$analyticsEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Campaign$analyticsEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AnalyticsEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  newsArticle<T extends Prisma.Campaign$newsArticleArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Campaign$newsArticleArgs<ExtArgs>>): Prisma.Prisma__NewsArticleClient<runtime.Types.Result.GetResult<Prisma.$NewsArticlePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  template<T extends Prisma.Campaign$templateArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Campaign$templateArgs<ExtArgs>>): Prisma.Prisma__CampaignTemplateClient<runtime.Types.Result.GetResult<Prisma.$CampaignTemplatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1509,6 +2295,13 @@ export interface CampaignFieldRefs {
   readonly sentAt: Prisma.FieldRef<"Campaign", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Campaign", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Campaign", 'DateTime'>
+  readonly newsArticleId: Prisma.FieldRef<"Campaign", 'String'>
+  readonly templateId: Prisma.FieldRef<"Campaign", 'String'>
+  readonly bodyText: Prisma.FieldRef<"Campaign", 'String'>
+  readonly renderedHtml: Prisma.FieldRef<"Campaign", 'String'>
+  readonly recipientCount: Prisma.FieldRef<"Campaign", 'Int'>
+  readonly startedAt: Prisma.FieldRef<"Campaign", 'DateTime'>
+  readonly completedAt: Prisma.FieldRef<"Campaign", 'DateTime'>
 }
     
 
@@ -2022,6 +2815,44 @@ export type Campaign$analyticsEventsArgs<ExtArgs extends runtime.Types.Extension
   take?: number
   skip?: number
   distinct?: Prisma.AnalyticsEventScalarFieldEnum | Prisma.AnalyticsEventScalarFieldEnum[]
+}
+
+/**
+ * Campaign.newsArticle
+ */
+export type Campaign$newsArticleArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the NewsArticle
+   */
+  select?: Prisma.NewsArticleSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the NewsArticle
+   */
+  omit?: Prisma.NewsArticleOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.NewsArticleInclude<ExtArgs> | null
+  where?: Prisma.NewsArticleWhereInput
+}
+
+/**
+ * Campaign.template
+ */
+export type Campaign$templateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CampaignTemplate
+   */
+  select?: Prisma.CampaignTemplateSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CampaignTemplate
+   */
+  omit?: Prisma.CampaignTemplateOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CampaignTemplateInclude<ExtArgs> | null
+  where?: Prisma.CampaignTemplateWhereInput
 }
 
 /**

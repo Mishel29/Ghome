@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "node dist/server.js",
     "build": "tsc",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "test": "tsx --test src/import/historicalPrices.test.ts src/import/propertyCsvSchema.test.ts"
   },
   "keywords": [],
   "author": "",

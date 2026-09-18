@@ -5,6 +5,7 @@ import type { ImportError, PropertyImport as ImportSession, PropertyUpload } fro
 
 const terminal = new Set(["COMPLETED", "PARTIALLY_COMPLETED", "FAILED", "CANCELLED"]);
 const button = "px-4 py-2 border border-navy text-sm disabled:opacity-40 disabled:cursor-not-allowed";
+const propertyCsvColumns = ["Name", "Address", "Postal Code", "County", "Price", "Sold times", "Property Type", "Status", "Stage", "Agent", "Description", "Property Size Category", "Property Size", "Beds", "Baths", "Completion Year", "Years", "Historical Prices"];
 export default function PropertyImport({ subscribers = false }: { subscribers?: boolean }) {
   const [params, setParams] = useSearchParams();
   const sessionId = params.get("session"); const uploadId = params.get("upload");
@@ -34,10 +35,10 @@ export default function PropertyImport({ subscribers = false }: { subscribers?: 
     {busy && <p role="status">{busy}…</p>}
     {!sessionId && <>
       {!uploadId && <section className="bg-white border border-[#ddd5c5] p-6 space-y-4">
-        <h2 className="font-semibold text-lg">1. Choose and upload</h2><p className="text-sm text-stone">UTF-8 CSV or one-sheet Excel (.xlsx), up to 10 MB and 100,000 rows. Selecting a file does not upload or import it.</p>
-        <label className="block text-sm">CSV / Excel file<input className="block mt-2" type="file" accept=".csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" disabled={!!busy} onChange={(e) => { setFile(e.target.files?.[0] ?? null); setError(""); }} /></label>
+        <h2 className="font-semibold text-lg">1. Choose and upload</h2><p className="text-sm text-stone">Upload a UTF-8 CSV using the Sample.csv property format, up to 10 MB and 100,000 rows. Selecting a file does not upload or import it.</p>
+        <label className="block text-sm">Property CSV<input className="block mt-2" type="file" accept=".csv,text/csv" disabled={!!busy} onChange={(e) => { setFile(e.target.files?.[0] ?? null); setError(""); }} /></label>
         {file && <p>{file.name} · {(file.size / 1024).toFixed(1)} KB</p>}
-        <button className={button + " bg-navy text-white"} disabled={!file || !!busy} onClick={() => void act("Uploading", async () => { if (!file || !/\.(csv|xlsx)$/i.test(file.name) || file.size === 0 || file.size > 10*1024*1024) throw new Error("Choose a non-empty .csv or .xlsx file no larger than 10 MB"); const u = await uploadCsv(file, subscribers); setUpload(u); setParams({upload:u.id}); })}>Upload File</button>
+        <button className={button + " bg-navy text-white"} disabled={!file || !!busy} onClick={() => void act("Uploading", async () => { if (!file || !/\.csv$/i.test(file.name) || file.size === 0 || file.size > 10*1024*1024) throw new Error("Choose a non-empty .csv file no larger than 10 MB"); const u = await uploadCsv(file, subscribers); setUpload(u); setParams({upload:u.id}); })}>Upload File</button>
       </section>}
       {uploadId && !upload && <p>Loading upload…</p>}
       {upload && upload.id === uploadId && <section className="bg-white border border-[#ddd5c5] p-6 space-y-4">
@@ -54,7 +55,7 @@ export default function PropertyImport({ subscribers = false }: { subscribers?: 
         {["UPLOADED","READY","INVALID"].includes(upload.status) && <button disabled={!!busy} className={button} onClick={() => void act("Cancelling upload", async () => { await cancelCsv(upload.id); setUpload(null); setFile(null); setParams({}); })}>Cancel upload</button>}
         {upload.status === "CANCELLED" && <button className={button} onClick={() => { setUpload(null); setParams({}); }}>Choose another CSV</button>}
       </section>}
-      {subscribers ? <p className="bg-white p-5 text-sm">Required columns: name,email,consent. Optional: phone. consent must be exactly true. Existing email addresses are rejected, including unsubscribed contacts.</p> : <details className="bg-white p-5 text-sm"><summary className="cursor-pointer font-semibold">CSV format</summary><p className="mt-3">Use exact property field names. name is required for a draft. Common columns: name,type,location,county,address,priceMin,priceMax,bedroomsMin,bathroomsMin,sizeSqm,status,stage,publicationStatus,sourceKey,slug,images,features. Prices and areas use plain numbers, dates use ISO format, and enum values use uppercase names.</p><p className="mt-2">Array fields use JSON inside CSV-quoted cells: images contains objects with url and optional altText; features contains strings; bedroomOptions and bathroomOptions contain integers. Published records require the same complete details as manual publishing. See the backend import guide for all columns and limits.</p></details>}
+      {subscribers ? <p className="bg-white p-5 text-sm">Required columns: name,email,consent. Optional: phone. consent must be exactly true. Existing email addresses are rejected, including unsubscribed contacts.</p> : <details className="bg-white p-5 text-sm"><summary className="cursor-pointer font-semibold">Required property CSV columns</summary><p className="mt-3 break-words">{propertyCsvColumns.join(", ")}</p><p className="mt-2">Years and Historical Prices must be quoted JSON arrays with matching, ascending entries. Each year is paired with the price at the same index. The first year must match Completion Year, and the latest historical price may differ from Price by at most 0.05 for rounding.</p></details>}
     </>}
     {sessionId && !current && <p>Loading import progress…</p>}
     {current && <section className="bg-white border border-[#ddd5c5] p-6 space-y-5">
