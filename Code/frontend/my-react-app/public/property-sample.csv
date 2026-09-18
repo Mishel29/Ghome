@@ -1,0 +1,2 @@
+Name,Address,Postal Code,County,Price,Sold times,Property Type,Status,Stage,Agent,Description,Property Size Category,Property Size,Beds,Baths,Completion Year,Years,Historical Prices
+Sample House,1 Sample Street,D01 ABC,Dublin,350000,0,HOUSE,AVAILABLE,READY_TO_MOVE,Sample Agent,Example property for import,MEDIUM,1200,3,2,2024,"[2024]","[350000]"

@@ -8,6 +8,7 @@ import { createHash, randomBytes, scryptSync, timingSafeEqual } from "node:crypt
 import XLSX from "xlsx";
 import { validateHistoricalPrices } from "./import/historicalPrices.js";
 import { validatePropertyCsvHeaders } from "./import/propertyCsvSchema.js";
+import { calculateSubscriberStats } from "./subscriberStats.js";
 
 const app = express();
 
@@ -104,7 +105,7 @@ const schema = buildSchema(`
 
   input SubscriberFilter {
     search: String
-    status: SubscriberStatus
+    status: String
     offset: Int
     limit: Int
   }
@@ -140,6 +141,31 @@ const schema = buildSchema(`
     totalCount: Int!
     activeCount: Int!
     unsubscribedCount: Int!
+  }
+
+  type FileDownload {
+    filename: String!
+    mimeType: String!
+    contentBase64: String!
+  }
+
+  type SubscriberDay {
+    date: String!
+    activeRegistrations: Int!
+    registrations: Int!
+    unsubscribes: Int!
+  }
+
+  type SubscriberStats {
+    totalActiveRegistrations: Int!
+    totalSubscribers: Int!
+    averageActiveRegistrationsPerDay: Float!
+    averageSubscribersPerDay: Float!
+    totalUnsubscribes: Int!
+    totalUnsubscribers: Int!
+    averageUnsubscribesPerDay: Float!
+    averageUnsubscribersPerDay: Float!
+    days: [SubscriberDay!]!
   }
 
   type InterestProperty {
@@ -352,6 +378,15 @@ type PropertyConnection {
     emptyColumns: [Int!]!
   }
 
+  type SubscriberCsvValidation {
+    valid: Boolean!
+    totalRows: Int!
+    validRows: Int!
+    invalidRows: Int!
+    totalErrors: Int!
+    errors: [ImportError!]!
+  }
+
   type CsvValidation {
     valid: Boolean!
     totalRows: Int!
@@ -411,7 +446,10 @@ type PropertyConnection {
     login(email: String!, password: String!): AuthPayload!
     logout: Boolean!
     uploadPropertyCsv(filename: String!, contentBase64: String!): PropertyUpload!
+      uploadSubscriberFile(filename: String!, contentBase64: String!): PropertyUpload!
     validatePropertyCsv(uploadId: ID!): PropertyUpload!
+      validateSubscriberCsv(uploadId: ID!): PropertyUpload!
+      startSubscriberImport(uploadId: ID!): PropertyImport!
     cancelPropertyUpload(uploadId: ID!): Boolean!
     startPropertyImport(uploadId: ID!): PropertyImport!
     saveProperty(id: ID, input: HouseTypeInput!): Property!
@@ -444,6 +482,7 @@ type Query {
   propertyImportUpload(id: ID!): PropertyUpload!
   propertyImportStatus(id: ID!, jobOffset: Int, errorOffset: Int): PropertyImport!
   propertyImportHistory: [PropertyImport!]!
+  subscriberImportHistory: [PropertyImport!]!
   me: User!
   savedProperties: [Property!]!
   interestsPage(input: InterestFilter): InterestConnection!
@@ -451,6 +490,8 @@ type Query {
   interestGroups(input: InterestFilter): [InterestGroup!]!
   agents: [User!]!
   subscribersPage(input: SubscriberFilter): SubscriberConnection!
+  exportSubscribers(status: SubscriberStatus!): FileDownload!
+  subscriberStats(from: String, to: String): SubscriberStats!
 }
 `);
 
@@ -514,6 +555,7 @@ function validateUploadedPropertyCsv(contentBase64: string) {
     if (rowErrors.length) errors.push(...rowErrors);
     else validRows++;
   }
+
   const allErrors = [
     ...(!schema.valid ? [{ rowNumber: 0, field: "CSV", value: null, message: "CSV headers do not match the required property schema.", errorType: "HEADER" }] : []),
     ...errors,
@@ -529,6 +571,28 @@ function validateUploadedPropertyCsv(contentBase64: string) {
     errors: allErrors.slice(0, 100),
     rows,
   };
+}
+
+function validateUploadedSubscriberCsv(contentBase64: string) {
+  const workbook = XLSX.read(Buffer.from(contentBase64, "base64"), { type: "buffer" });
+  const sheet = workbook.Sheets[workbook.SheetNames[0] ?? ""];
+  if (!sheet) throw new Error("CSV does not contain a worksheet");
+  const headers = XLSX.utils.sheet_to_json<unknown[]>(sheet, { header: 1, blankrows: false })[0]?.map(String) ?? [];
+  const expected = ["Name", "Email", "Phone"];
+  const schema = { valid: headers.length === expected.length && expected.every((header, index) => headers[index] === header), expectedColumns: expected, receivedColumns: headers };
+  const rows = XLSX.utils.sheet_to_json<Record<string, unknown>>(sheet, { defval: null });
+  const errors: Array<{ rowNumber: number; field: string; value: string | null; message: string; errorType: string }> = [];
+  let validRows = 0;
+  for (const [index, row] of rows.entries()) {
+    const email = String(row.Email ?? "").trim();
+    const name = String(row.Name ?? "").trim();
+    const rowErrors = [
+      ...(!name ? [{ rowNumber: index + 2, field: "Name", value: null, message: "Name is required.", errorType: "FIELD" }] : []),
+      ...(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) ? [{ rowNumber: index + 2, field: "Email", value: email || null, message: "Email must be valid.", errorType: "FIELD" }] : []),
+    ];
+    if (rowErrors.length) errors.push(...rowErrors); else validRows++;
+  }
+  return { valid: schema.valid && errors.length === 0, totalRows: rows.length, validRows: schema.valid ? validRows : 0, invalidRows: schema.valid ? rows.length - validRows : rows.length, totalErrors: errors.length, errors, rows };
 }
 
 function importStatus(job: { id: string; filename: string; status: string; createdAt: Date; startedAt: Date | null; completedAt: Date | null; totalRows: number; totalJobs: number; completedJobs: number; failedJobs: number; successfulRows: number; failedRows: number; errorSummary: string | null; createdBy: { name: string } | null; errors: unknown }) {
@@ -872,8 +936,11 @@ const root = {
       ...(input?.pendingOnly ? { followUpSent: false } : {}),
     };
     const rows = await prisma.interest.findMany({ where, select: { createdAt: true, followUps: { select: { sentAt: true, sendRequestedAt: true } } }, orderBy: { createdAt: "asc" } });
-    const start = input?.from ? new Date(`${input.from}T00:00:00.000Z`) : rows[0] ? new Date(rows[0].createdAt.toISOString().slice(0, 10) + "T00:00:00.000Z") : new Date();
-    const end = input?.to ? new Date(`${input.to}T00:00:00.000Z`) : new Date(start);
+    const activityDates = rows.flatMap((row) => [row.createdAt, ...row.followUps.map((followUp) => followUp.sentAt ?? followUp.sendRequestedAt).filter((date): date is Date => Boolean(date))]);
+    const firstActivity = activityDates[0];
+    const lastActivity = activityDates.reduce((latest, date) => date > latest ? date : latest, firstActivity ?? new Date());
+    const start = input?.from ? new Date(`${input.from}T00:00:00.000Z`) : new Date((firstActivity ?? new Date()).toISOString().slice(0, 10) + "T00:00:00.000Z");
+    const end = input?.to ? new Date(`${input.to}T00:00:00.000Z`) : new Date(lastActivity.toISOString().slice(0, 10) + "T00:00:00.000Z");
     const interestCounts = new Map<string, number>();
     const followUpCounts = new Map<string, number>();
     for (const row of rows) {
@@ -897,10 +964,10 @@ const root = {
     await requireAdmin(context);
     return prisma.user.findMany({ where: { role: "AGENT" }, orderBy: { name: "asc" } });
   },
-  subscribersPage: async ({ input }: { input?: { search?: string; status?: "PENDING" | "ACTIVE" | "UNSUBSCRIBED"; offset?: number; limit?: number } }, context: { token?: string }) => {
+  subscribersPage: async ({ input }: { input?: { search?: string; status?: string; offset?: number; limit?: number } }, context: { token?: string }) => {
     await requireAdmin(context);
     const where = {
-      ...(input?.status ? { status: input.status } : {}),
+      ...(input?.status && input.status !== "ALL" ? { status: input.status as "PENDING" | "ACTIVE" | "UNSUBSCRIBED" } : {}),
       ...(input?.search ? { OR: [{ name: { contains: input.search, mode: "insensitive" as const } }, { email: { contains: input.search, mode: "insensitive" as const } }] } : {}),
     };
     const [nodes, totalCount, activeCount, unsubscribedCount] = await Promise.all([
@@ -910,6 +977,21 @@ const root = {
       prisma.subscriber.count({ where: { ...where, status: "UNSUBSCRIBED" } }),
     ]);
     return { nodes: nodes.map((subscriber) => ({ ...subscriber, consentGrantedAt: subscriber.consentGrantedAt?.toISOString() ?? null, subscribedAt: subscriber.subscribedAt?.toISOString() ?? null, unsubscribedAt: subscriber.unsubscribedAt?.toISOString() ?? null })), totalCount, activeCount, unsubscribedCount };
+  },
+  exportSubscribers: async ({ status }: { status: "PENDING" | "ACTIVE" | "UNSUBSCRIBED" }, context: { token?: string }) => {
+    await requireAdmin(context);
+    const subscribers = await prisma.subscriber.findMany({ where: { status }, orderBy: { createdAt: "asc" } });
+    const escape = (value: unknown) => `"${String(value ?? "").replace(/"/g, '""')}"`;
+    const csv = [
+      ["Name", "Email", "Phone", "Status", "Subscribed At", "Unsubscribed At"].join(","),
+      ...subscribers.map((subscriber) => [subscriber.name, subscriber.email, subscriber.phone, subscriber.status, subscriber.subscribedAt?.toISOString(), subscriber.unsubscribedAt?.toISOString()].map(escape).join(",")),
+    ].join("\r\n");
+    return { filename: `subscribers-${status.toLowerCase()}.csv`, mimeType: "text/csv;charset=utf-8", contentBase64: Buffer.from(csv, "utf8").toString("base64") };
+  },
+  subscriberStats: async ({ from, to }: { from?: string; to?: string }, context: { token?: string }) => {
+    await requireAdmin(context);
+    const rows = await prisma.subscriber.findMany({ select: { subscribedAt: true, unsubscribedAt: true } });
+    return calculateSubscriberStats(rows, from, to);
   },
   interestGroups: async ({ input }: { input?: { propertyId?: string; pendingOnly?: boolean; offset?: number } }, context: { token?: string }) => {
     await requireAdmin(context);
@@ -934,12 +1016,27 @@ const root = {
     });
     return uploadResult(upload);
   },
+  uploadSubscriberFile: async ({ filename, contentBase64 }: { filename: string; contentBase64: string }, context: { token?: string }) => {
+    const admin = await requireAdmin(context);
+    if (!/\.csv$/i.test(filename)) throw new Error("Only CSV subscriber files are supported");
+    const upload = await prisma.propertyImportUpload.create({ data: { filename, type: "SUBSCRIBER_IMPORT", byteSize: Buffer.byteLength(contentBase64, "base64"), content: contentBase64, createdById: admin.id, expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000) } });
+    return uploadResult(upload);
+  },
   validatePropertyCsv: async ({ uploadId }: { uploadId: string }, context: { token?: string }) => {
     await requireAdmin(context);
     const upload = await prisma.propertyImportUpload.findUniqueOrThrow({ where: { id: uploadId } });
     if (!upload.content) throw new Error("Uploaded CSV content is unavailable");
     const result = validateUploadedPropertyCsv(upload.content);
     const validation = { valid: result.valid, totalRows: result.totalRows, validRows: result.validRows, invalidRows: result.invalidRows, totalErrors: result.totalErrors, errorsTruncated: result.errorsTruncated, schema: result.schema, errors: result.errors };
+    const updated = await prisma.propertyImportUpload.update({ where: { id: uploadId }, data: { status: result.valid ? "READY" : "INVALID", validation, validatedRows: result.rows as unknown as import("./generated/client.js").Prisma.InputJsonValue } });
+    return uploadResult(updated);
+  },
+  validateSubscriberCsv: async ({ uploadId }: { uploadId: string }, context: { token?: string }) => {
+    await requireAdmin(context);
+    const upload = await prisma.propertyImportUpload.findUniqueOrThrow({ where: { id: uploadId } });
+    if (!upload.content) throw new Error("Uploaded subscriber CSV content is unavailable");
+    const result = validateUploadedSubscriberCsv(upload.content);
+    const validation = { valid: result.valid, totalRows: result.totalRows, validRows: result.validRows, invalidRows: result.invalidRows, totalErrors: result.totalErrors, errorsTruncated: false, schema: { valid: result.valid, expectedColumns: ["Name", "Email", "Phone"], requiredColumns: ["Name", "Email"], receivedColumns: ["Name", "Email", "Phone"], missingColumns: [], unknownColumns: [], duplicateColumns: [], emptyColumns: [] }, errors: result.errors };
     const updated = await prisma.propertyImportUpload.update({ where: { id: uploadId }, data: { status: result.valid ? "READY" : "INVALID", validation, validatedRows: result.rows as unknown as import("./generated/client.js").Prisma.InputJsonValue } });
     return uploadResult(updated);
   },
@@ -953,6 +1050,28 @@ const root = {
     const upload = await prisma.propertyImportUpload.findUniqueOrThrow({ where: { id: uploadId } });
     if (upload.status !== "READY") throw new Error("Upload must pass validation before import");
     return importPropertiesFromUpload(uploadId, admin.id);
+  },
+  startSubscriberImport: async ({ uploadId }: { uploadId: string }, context: { token?: string }) => {
+    const admin = await requireAdmin(context);
+    const upload = await prisma.propertyImportUpload.findUniqueOrThrow({ where: { id: uploadId } });
+    if (upload.status !== "READY") throw new Error("Subscriber upload must pass validation before import");
+    const rows = Array.isArray(upload.validatedRows) ? upload.validatedRows as Array<Record<string, unknown>> : [];
+    const job = await prisma.importJob.create({ data: { type: "SUBSCRIBER_IMPORT", status: "PROCESSING", filename: upload.filename, totalRows: rows.length, totalJobs: 1, startedAt: new Date(), createdById: admin.id, uploadId } });
+    let successfulRows = 0;
+    const errors: Array<Record<string, unknown>> = [];
+    for (const [index, row] of rows.entries()) {
+      try {
+        const now = new Date();
+        const email = String(row.Email).trim().toLowerCase();
+        const subscriber = await prisma.subscriber.upsert({ where: { email }, create: { name: String(row.Name).trim(), email, phone: String(row.Phone ?? "").trim() || null, status: "ACTIVE", subscribedAt: now, consentGrantedAt: now, consentVersion: "marketing-v1" }, update: { name: String(row.Name).trim(), phone: String(row.Phone ?? "").trim() || null, status: "ACTIVE", subscribedAt: now, unsubscribedAt: null, consentGrantedAt: now, consentVersion: "marketing-v1" } });
+        await prisma.consent.create({ data: { subscriberId: subscriber.id, type: "MARKETING", granted: true, version: "marketing-v1", source: "subscriber-import" } });
+        successfulRows++;
+      } catch (error) { errors.push({ rowNumber: index + 2, field: "row", value: null, message: error instanceof Error ? error.message : "Import failed", errorType: "IMPORT" }); }
+    }
+    await prisma.importJob.update({ where: { id: job.id }, data: { status: errors.length ? successfulRows ? "PARTIALLY_COMPLETED" : "FAILED" : "COMPLETED", successfulRows, failedRows: errors.length, completedJobs: 1, completedAt: new Date(), errors: errors as unknown as import("./generated/client.js").Prisma.InputJsonValue } });
+    await prisma.propertyImportUpload.update({ where: { id: uploadId }, data: { status: "CONSUMED" } });
+    const completed = await prisma.importJob.findUniqueOrThrow({ where: { id: job.id }, include: { createdBy: true } });
+    return importStatus(completed);
   },
   adminDashboard: async (_args: unknown, context: { token?: string }) => {
     await requireAdmin(context);
@@ -987,6 +1106,11 @@ const root = {
   propertyImportHistory: async (_args: unknown, context: { token?: string }) => {
     await requireAdmin(context);
     const jobs = await prisma.importJob.findMany({ where: { type: "PROPERTY_IMPORT" }, orderBy: { createdAt: "desc" }, take: 20, include: { createdBy: true } });
+    return jobs.map(importStatus);
+  },
+  subscriberImportHistory: async (_args: unknown, context: { token?: string }) => {
+    await requireAdmin(context);
+    const jobs = await prisma.importJob.findMany({ where: { type: "SUBSCRIBER_IMPORT" }, orderBy: { createdAt: "desc" }, take: 20, include: { createdBy: true } });
     return jobs.map(importStatus);
   },
   properties: async ({

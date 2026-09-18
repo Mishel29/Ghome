@@ -536,6 +536,14 @@ export interface SubscriberConnection {
   unsubscribedCount: number;
 }
 
+export interface SubscriberStats {
+  totalSubscribers: number;
+  totalUnsubscribers: number;
+  averageSubscribersPerDay: number;
+  averageUnsubscribersPerDay: number;
+  days: Array<{ date: string; registrations: number; activeRegistrations: number; unsubscribes: number }>;
+}
+
 export interface CampaignConnection {
   nodes: Array<Campaign>;
   totalCount: number;
