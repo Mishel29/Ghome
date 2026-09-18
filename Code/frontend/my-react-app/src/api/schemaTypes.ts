@@ -484,6 +484,7 @@ export interface InterestFilter {
   from?: string | null;
   to?: string | null;
   propertyId?: string | null;
+  propertyName?: string | null;
   location?: string | null;
   agentId?: string | null;
   pendingOnly?: boolean | null;
@@ -644,6 +645,14 @@ export interface InterestConnection {
   nodes: Array<Interest>;
   totalCount: number;
   pendingCount: number;
+}
+
+export interface InterestStats {
+  total: number;
+  averagePerDay: number;
+  totalFollowUps: number;
+  averageFollowUpsPerDay: number;
+  days: Array<{ date: string; interests: number; followUps: number }>;
 }
 
 export interface InterestGroup {

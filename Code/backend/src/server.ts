@@ -27,6 +27,12 @@ const schema = buildSchema(`
     READY_TO_MOVE
   }
 
+  enum SubscriberStatus {
+    PENDING
+    ACTIVE
+    UNSUBSCRIBED
+  }
+
   type User {
     id: ID!
     name: String!
@@ -73,6 +79,115 @@ const schema = buildSchema(`
     url: String!
     altText: String
   }
+
+  input InterestInput {
+    propertyId: ID!
+    name: String!
+    email: String!
+    phone: String
+    message: String!
+    consent: Boolean!
+    campaignToken: String
+  }
+
+  input InterestFilter {
+    propertyId: ID
+    propertyName: String
+    location: String
+    agentId: ID
+    from: String
+    to: String
+    pendingOnly: Boolean
+    offset: Int
+    limit: Int
+  }
+
+  input SubscriberFilter {
+    search: String
+    status: SubscriberStatus
+    offset: Int
+    limit: Int
+  }
+
+  input SubscriberInput {
+    name: String!
+    email: String!
+    phone: String
+    consent: Boolean!
+  }
+
+  input FollowUpInput {
+    interestId: ID!
+    subject: String!
+    body: String!
+    templateId: ID
+  }
+
+  type Subscriber {
+    id: ID!
+    name: String!
+    email: String!
+    phone: String
+    status: SubscriberStatus!
+    consentGrantedAt: String
+    consentVersion: String
+    subscribedAt: String
+    unsubscribedAt: String
+  }
+
+  type SubscriberConnection {
+    nodes: [Subscriber!]!
+    totalCount: Int!
+    activeCount: Int!
+    unsubscribedCount: Int!
+  }
+
+  type InterestProperty {
+    id: ID!
+    name: String!
+    location: String
+    status: PropertyStatus!
+  }
+
+  type InterestAgent { id: ID!, name: String! }
+  type InterestFollowUp { id: ID!, interestId: ID!, subject: String!, body: String!, status: String!, sendRequestedAt: String, sentAt: String, failedAt: String, errorMessage: String, createdAt: String! }
+
+  type Interest {
+    id: ID!
+    propertyId: ID!
+    name: String!
+    email: String!
+    phone: String
+    message: String
+    dataConsent: Boolean!
+    followUpSent: Boolean!
+    createdAt: String!
+    property: InterestProperty!
+    agent: InterestAgent
+    followUps: [InterestFollowUp!]!
+  }
+
+  type InterestConnection {
+    nodes: [Interest!]!
+    totalCount: Int!
+    pendingCount: Int!
+  }
+
+  type InterestDay {
+    date: String!
+    interests: Int!
+    followUps: Int!
+  }
+
+  type InterestStats {
+    total: Int!
+    averagePerDay: Float!
+    totalFollowUps: Int!
+    averageFollowUpsPerDay: Float!
+    days: [InterestDay!]!
+  }
+
+  type InterestGroup { property: InterestProperty!, totalCount: Int!, pendingCount: Int! }
 
   input HouseTypeInput {
     name: String!
@@ -304,6 +419,10 @@ type PropertyConnection {
     deleteProperty(id: ID!): Boolean!
     setPropertySaved(propertyId: ID!, saved: Boolean!, campaignToken: String): Boolean!
     recordPropertyView(propertyId: ID!): Boolean!
+    submitInterest(input: InterestInput!): Interest!
+    addSubscriber(input: SubscriberInput!): Subscriber!
+    saveFollowUp(id: ID, input: FollowUpInput!): InterestFollowUp!
+    sendFollowUp(id: ID!): InterestFollowUp!
   }
 
 type Query {
@@ -327,6 +446,11 @@ type Query {
   propertyImportHistory: [PropertyImport!]!
   me: User!
   savedProperties: [Property!]!
+  interestsPage(input: InterestFilter): InterestConnection!
+  interestStats(input: InterestFilter): InterestStats!
+  interestGroups(input: InterestFilter): [InterestGroup!]!
+  agents: [User!]!
+  subscribersPage(input: SubscriberFilter): SubscriberConnection!
 }
 `);
 
@@ -474,7 +598,8 @@ async function importPropertiesFromUpload(uploadId: string, adminId: string) {
       const agentName = importText(row.Agent);
       const agent = agentName ? await prisma.user.upsert({ where: { email: `${agentName.toLowerCase().replace(/[^a-z0-9]+/g, ".")}@harborstone.ie` }, update: { name: agentName, role: "AGENT" }, create: { name: agentName, email: `${agentName.toLowerCase().replace(/[^a-z0-9]+/g, ".")}@harborstone.ie`, role: "AGENT" } }) : null;
       await prisma.$transaction(async (tx) => {
-        const property = await tx.property.upsert({ where: { sourceKey: `upload-${uploadId}-row-${index + 2}` }, update: { name: importText(row.Name), address: importText(row.Address), county: importText(row.County), postalCode: importText(row["Postal Code"]), type: importText(row["Property Type"]), saleType: importText(row["Sold times"]), status: importStatusValue(row.Status) as never, stage: importStageValue(row.Stage) as never, priceMin: price, priceMax: price, sizeSqm: size, bedroomsMin: Math.round(beds), bedroomsMax: Math.round(beds), bathroomsMin: Math.round(baths), bathroomsMax: Math.round(baths), completionYear: completionYear === null ? null : Math.round(completionYear), sizeCategory: importText(row["Property Size Category"]) || null, description: importText(row.Description) || null, agentId: agent?.id ?? null }, create: { sourceKey: `upload-${uploadId}-row-${index + 2}`, name: importText(row.Name), address: importText(row.Address), county: importText(row.County), postalCode: importText(row["Postal Code"]), type: importText(row["Property Type"]), saleType: importText(row["Sold times"]), status: importStatusValue(row.Status) as never, stage: importStageValue(row.Stage) as never, priceMin: price, priceMax: price, sizeSqm: size, bedroomsMin: Math.round(beds), bedroomsMax: Math.round(beds), bathroomsMin: Math.round(baths), bathroomsMax: Math.round(baths), completionYear: completionYear === null ? null : Math.round(completionYear), sizeCategory: importText(row["Property Size Category"]) || null, description: importText(row.Description) || null, agentId: agent?.id ?? null } });
+        const location = importText(row.County) || null;
+        const property = await tx.property.upsert({ where: { sourceKey: `upload-${uploadId}-row-${index + 2}` }, update: { name: importText(row.Name), location, address: importText(row.Address), county: importText(row.County), postalCode: importText(row["Postal Code"]), type: importText(row["Property Type"]), saleType: importText(row["Sold times"]), status: importStatusValue(row.Status) as never, stage: importStageValue(row.Stage) as never, priceMin: price, priceMax: price, sizeSqm: size, bedroomsMin: Math.round(beds), bedroomsMax: Math.round(beds), bathroomsMin: Math.round(baths), bathroomsMax: Math.round(baths), completionYear: completionYear === null ? null : Math.round(completionYear), sizeCategory: importText(row["Property Size Category"]) || null, description: importText(row.Description) || null, agentId: agent?.id ?? null }, create: { sourceKey: `upload-${uploadId}-row-${index + 2}`, name: importText(row.Name), location, address: importText(row.Address), county: importText(row.County), postalCode: importText(row["Postal Code"]), type: importText(row["Property Type"]), saleType: importText(row["Sold times"]), status: importStatusValue(row.Status) as never, stage: importStageValue(row.Stage) as never, priceMin: price, priceMax: price, sizeSqm: size, bedroomsMin: Math.round(beds), bedroomsMax: Math.round(beds), bathroomsMin: Math.round(baths), bathroomsMax: Math.round(baths), completionYear: completionYear === null ? null : Math.round(completionYear), sizeCategory: importText(row["Property Size Category"]) || null, description: importText(row.Description) || null, agentId: agent?.id ?? null } });
         await tx.propertyValueHistory.deleteMany({ where: { propertyId: property.id } });
         await tx.propertyValueHistory.createMany({ data: history.values.map((item, historyIndex) => ({ propertyId: property.id, year: item.year, value: item.value, growthPercent: historyIndex === 0 || history.values[historyIndex - 1].value === 0 ? null : ((item.value - history.values[historyIndex - 1].value) / history.values[historyIndex - 1].value) * 100 })) });
       });
@@ -659,6 +784,140 @@ const root = {
   recordPropertyView: async ({ propertyId }: { propertyId: string }) => {
     await prisma.analyticsEvent.create({ data: { propertyId, eventType: "PROPERTY_VIEW" } });
     return true;
+  },
+  submitInterest: async ({ input }: { input: { propertyId: string; name: string; email: string; phone?: string; message: string; consent: boolean } }, context: { token?: string }) => {
+    if (!input.consent) throw new Error("Consent is required to submit interest");
+    const property = await prisma.property.findFirst({ where: { id: input.propertyId, publicationStatus: "PUBLISHED" }, select: { id: true, name: true, location: true, status: true, agentId: true } });
+    if (!property) throw new Error("Property is not available");
+    const email = input.email.trim().toLowerCase();
+    const now = new Date();
+    const result = await prisma.$transaction(async (tx) => {
+      const subscriber = await tx.subscriber.upsert({
+        where: { email },
+        create: { name: input.name.trim(), email, phone: input.phone?.trim() || null, status: "ACTIVE", subscribedAt: now, consentGrantedAt: now, consentVersion: "interest-v1" },
+        update: { name: input.name.trim(), phone: input.phone?.trim() || null, status: "ACTIVE", subscribedAt: now, consentGrantedAt: now, consentVersion: "interest-v1", unsubscribedAt: null },
+      });
+      await tx.consent.create({ data: { subscriberId: subscriber.id, type: "INTEREST", granted: true, version: "interest-v1", source: "property-interest" } });
+      const interest = await tx.interest.create({ data: { propertyId: property.id, userId: null, agentId: property.agentId, name: input.name.trim(), email, phone: input.phone?.trim() || null, message: input.message.trim(), dataConsent: true } });
+      return interest;
+    });
+    return { ...result, createdAt: result.createdAt.toISOString(), property };
+  },
+  addSubscriber: async ({ input }: { input: { name: string; email: string; phone?: string; consent: boolean } }, context: { token?: string }) => {
+    await requireAdmin(context);
+    if (!input.consent) throw new Error("Explicit marketing consent is required");
+    const email = input.email.trim().toLowerCase();
+    const now = new Date();
+    const subscriber = await prisma.subscriber.upsert({
+      where: { email },
+      create: { name: input.name.trim(), email, phone: input.phone?.trim() || null, status: "ACTIVE", subscribedAt: now, consentGrantedAt: now, consentVersion: "marketing-v1" },
+      update: { name: input.name.trim(), phone: input.phone?.trim() || null, status: "ACTIVE", subscribedAt: now, unsubscribedAt: null, consentGrantedAt: now, consentVersion: "marketing-v1" },
+    });
+    await prisma.consent.create({ data: { subscriberId: subscriber.id, type: "MARKETING", granted: true, version: "marketing-v1", source: "admin-registration" } });
+    return { ...subscriber, consentGrantedAt: subscriber.consentGrantedAt?.toISOString() ?? null, subscribedAt: subscriber.subscribedAt?.toISOString() ?? null, unsubscribedAt: null };
+  },
+  saveFollowUp: async ({ id, input }: { id?: string; input: { interestId: string; subject: string; body: string; templateId?: string } }, context: { token?: string }) => {
+    const admin = await requireAdmin(context);
+    const data = { interestId: input.interestId, subject: input.subject.trim(), body: input.body.trim(), templateId: input.templateId ?? null, sentById: admin.id };
+    const followUp = id
+      ? await prisma.interestFollowUp.update({ where: { id }, data })
+      : await prisma.interestFollowUp.create({ data });
+    return { ...followUp, createdAt: followUp.createdAt.toISOString(), sendRequestedAt: followUp.sendRequestedAt?.toISOString() ?? null, sentAt: followUp.sentAt?.toISOString() ?? null, failedAt: followUp.failedAt?.toISOString() ?? null };
+  },
+  sendFollowUp: async ({ id }: { id: string }, context: { token?: string }) => {
+    const admin = await requireAdmin(context);
+    const followUp = await prisma.$transaction(async (tx) => {
+      const current = await tx.interestFollowUp.findUniqueOrThrow({ where: { id } });
+      const now = new Date();
+      const sent = await tx.interestFollowUp.update({ where: { id }, data: { status: "SENT", sendRequestedAt: now, sentAt: now, sentById: admin.id } });
+      await tx.interest.update({ where: { id: current.interestId }, data: { followUpSent: true } });
+      return sent;
+    });
+    return { ...followUp, createdAt: followUp.createdAt.toISOString(), sendRequestedAt: followUp.sendRequestedAt?.toISOString() ?? null, sentAt: followUp.sentAt?.toISOString() ?? null, failedAt: followUp.failedAt?.toISOString() ?? null };
+  },
+  interestsPage: async ({ input }: { input?: { propertyId?: string; propertyName?: string; location?: string; agentId?: string; from?: string; to?: string; pendingOnly?: boolean; offset?: number; limit?: number } }, context: { token?: string }) => {
+    await requireAdmin(context);
+    const offset = input?.offset ?? 0;
+    const limit = input?.limit ?? 20;
+    const where = {
+      ...(input?.propertyId ? { propertyId: input.propertyId } : {}),
+        ...(input?.propertyName || input?.location ? {
+          property: {
+            ...(input.propertyName ? { name: { contains: input.propertyName, mode: "insensitive" as const } } : {}),
+            ...(input.location ? { location: { contains: input.location, mode: "insensitive" as const } } : {}),
+          },
+        } : {}),
+        ...(input?.agentId ? { agentId: input.agentId } : {}),
+        ...(input?.from || input?.to ? { createdAt: { ...(input.from ? { gte: new Date(input.from) } : {}), ...(input.to ? { lte: new Date(`${input.to}T23:59:59.999Z`) } : {}) } } : {}),
+      ...(input?.pendingOnly ? { followUpSent: false } : {}),
+    };
+    const [nodes, totalCount, pendingCount] = await Promise.all([
+      prisma.interest.findMany({ where, skip: offset, take: limit, orderBy: { createdAt: "desc" }, include: { property: true, agent: true, followUps: true } }),
+      prisma.interest.count({ where }),
+      prisma.interest.count({ where: { ...where, followUpSent: false } }),
+    ]);
+    return {
+      nodes: nodes.map((interest) => ({ ...interest, createdAt: interest.createdAt.toISOString(), property: { id: interest.property.id, name: interest.property.name, location: interest.property.location, status: interest.property.status }, agent: interest.agent ? { id: interest.agent.id, name: interest.agent.name } : null, followUps: interest.followUps.map((followUp) => ({ ...followUp, createdAt: followUp.createdAt.toISOString(), sendRequestedAt: followUp.sendRequestedAt?.toISOString() ?? null, sentAt: followUp.sentAt?.toISOString() ?? null, failedAt: followUp.failedAt?.toISOString() ?? null })) })),
+      totalCount,
+      pendingCount,
+    };
+  },
+  interestStats: async ({ input }: { input?: { propertyId?: string; propertyName?: string; location?: string; agentId?: string; from?: string; to?: string; pendingOnly?: boolean } }, context: { token?: string }) => {
+    await requireAdmin(context);
+    const where = {
+      ...(input?.propertyId ? { propertyId: input.propertyId } : {}),
+      ...(input?.propertyName || input?.location ? { property: { ...(input.propertyName ? { name: { contains: input.propertyName, mode: "insensitive" as const } } : {}), ...(input.location ? { location: { contains: input.location, mode: "insensitive" as const } } : {}) } } : {}),
+      ...(input?.agentId ? { agentId: input.agentId } : {}),
+      ...(input?.from || input?.to ? { createdAt: { ...(input.from ? { gte: new Date(input.from) } : {}), ...(input.to ? { lte: new Date(`${input.to}T23:59:59.999Z`) } : {}) } } : {}),
+      ...(input?.pendingOnly ? { followUpSent: false } : {}),
+    };
+    const rows = await prisma.interest.findMany({ where, select: { createdAt: true, followUps: { select: { sentAt: true, sendRequestedAt: true } } }, orderBy: { createdAt: "asc" } });
+    const start = input?.from ? new Date(`${input.from}T00:00:00.000Z`) : rows[0] ? new Date(rows[0].createdAt.toISOString().slice(0, 10) + "T00:00:00.000Z") : new Date();
+    const end = input?.to ? new Date(`${input.to}T00:00:00.000Z`) : new Date(start);
+    const interestCounts = new Map<string, number>();
+    const followUpCounts = new Map<string, number>();
+    for (const row of rows) {
+      const date = row.createdAt.toISOString().slice(0, 10);
+      interestCounts.set(date, (interestCounts.get(date) ?? 0) + 1);
+      for (const followUp of row.followUps) {
+        const followUpDate = (followUp.sentAt ?? followUp.sendRequestedAt)?.toISOString().slice(0, 10);
+        if (followUpDate) followUpCounts.set(followUpDate, (followUpCounts.get(followUpDate) ?? 0) + 1);
+      }
+    }
+    const days: Array<{ date: string; interests: number; followUps: number }> = [];
+    for (const cursor = new Date(start); cursor <= end; cursor.setUTCDate(cursor.getUTCDate() + 1)) {
+      const date = cursor.toISOString().slice(0, 10);
+      days.push({ date, interests: interestCounts.get(date) ?? 0, followUps: followUpCounts.get(date) ?? 0 });
+    }
+    const dayCount = Math.max(days.length, 1);
+    const totalFollowUps = Array.from(followUpCounts.values()).reduce((sum, count) => sum + count, 0);
+    return { total: rows.length, averagePerDay: rows.length / dayCount, totalFollowUps, averageFollowUpsPerDay: totalFollowUps / dayCount, days };
+  },
+  agents: async (_args: unknown, context: { token?: string }) => {
+    await requireAdmin(context);
+    return prisma.user.findMany({ where: { role: "AGENT" }, orderBy: { name: "asc" } });
+  },
+  subscribersPage: async ({ input }: { input?: { search?: string; status?: "PENDING" | "ACTIVE" | "UNSUBSCRIBED"; offset?: number; limit?: number } }, context: { token?: string }) => {
+    await requireAdmin(context);
+    const where = {
+      ...(input?.status ? { status: input.status } : {}),
+      ...(input?.search ? { OR: [{ name: { contains: input.search, mode: "insensitive" as const } }, { email: { contains: input.search, mode: "insensitive" as const } }] } : {}),
+    };
+    const [nodes, totalCount, activeCount, unsubscribedCount] = await Promise.all([
+      prisma.subscriber.findMany({ where, orderBy: { createdAt: "desc" }, skip: input?.offset ?? 0, take: input?.limit ?? 20 }),
+      prisma.subscriber.count({ where }),
+      prisma.subscriber.count({ where: { ...where, status: "ACTIVE" } }),
+      prisma.subscriber.count({ where: { ...where, status: "UNSUBSCRIBED" } }),
+    ]);
+    return { nodes: nodes.map((subscriber) => ({ ...subscriber, consentGrantedAt: subscriber.consentGrantedAt?.toISOString() ?? null, subscribedAt: subscriber.subscribedAt?.toISOString() ?? null, unsubscribedAt: subscriber.unsubscribedAt?.toISOString() ?? null })), totalCount, activeCount, unsubscribedCount };
+  },
+  interestGroups: async ({ input }: { input?: { propertyId?: string; pendingOnly?: boolean; offset?: number } }, context: { token?: string }) => {
+    await requireAdmin(context);
+    const where = { ...(input?.propertyId ? { propertyId: input.propertyId } : {}), ...(input?.pendingOnly ? { followUpSent: false } : {}) };
+    const grouped = await prisma.interest.groupBy({ by: ["propertyId"], where, _count: { _all: true } });
+    const properties = await prisma.property.findMany({ where: { id: { in: grouped.map((row) => row.propertyId) } } });
+    const pending = await prisma.interest.groupBy({ by: ["propertyId"], where: { ...where, followUpSent: false }, _count: { _all: true } });
+    return grouped.map((row) => ({ property: properties.find((property) => property.id === row.propertyId), totalCount: row._count._all, pendingCount: pending.find((item) => item.propertyId === row.propertyId)?._count._all ?? 0 })).filter((row) => row.property);
   },
   uploadPropertyCsv: async ({ filename, contentBase64 }: { filename: string; contentBase64: string }, context: { token?: string }) => {
     const admin = await requireAdmin(context);
