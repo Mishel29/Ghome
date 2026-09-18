@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { createHandler } from "graphql-http/lib/use/express";
-import { buildSchema } from "graphql";
+import { buildSchema, GraphQLError } from "graphql";
 import { prisma } from "./lib/prisma.js";
 import "dotenv/config";
 import { createHash, randomBytes, scryptSync, timingSafeEqual } from "node:crypto";
@@ -11,10 +11,26 @@ import { PROPERTY_CSV_COLUMNS, validatePropertyCsvHeaders } from "./import/prope
 import { calculateSubscriberStats } from "./subscriberStats.js";
 import sanitizeHtml from "sanitize-html";
 import nodemailer from "nodemailer";
+import helmet from "helmet";
+import { rateLimit } from "express-rate-limit";
 
 const app = express();
 
-app.use(cors());
+const allowedOrigins = new Set([process.env.PUBLIC_APP_URL].filter((origin): origin is string => Boolean(origin)));
+
+app.disable("x-powered-by");
+app.use(helmet({ contentSecurityPolicy: false, crossOriginResourcePolicy: { policy: "cross-origin" } }));
+app.use(cors({
+  origin: (origin, callback) => callback(null, !origin || allowedOrigins.size === 0 || allowedOrigins.has(origin)),
+  methods: ["GET", "POST", "OPTIONS"],
+  allowedHeaders: ["Authorization", "Content-Type"],
+}));
+app.use((req, res, next) => {
+  const contentLength = Number(req.headers["content-length"] ?? 0);
+  if (Number.isFinite(contentLength) && contentLength > 12 * 1024 * 1024) return res.status(413).json({ error: "Request body is too large" });
+  next();
+});
+app.use("/graphql", rateLimit({ windowMs: 15 * 60 * 1000, limit: 300, standardHeaders: "draft-8", legacyHeaders: false }));
 const schema = buildSchema(`
   enum PropertyStatus {
     DRAFT
@@ -960,6 +976,14 @@ function unsubscribeUrl(token: string, campaignToken?: string) {
   return `${process.env.PUBLIC_BACKEND_URL ?? "http://localhost:4000"}/unsubscribe?token=${encodeURIComponent(token)}${campaignQuery}`;
 }
 
+function followUpEmailContent(body: string, interest: { name: string; property: { name: string }; agent: { name: string } | null }) {
+  const text = body
+    .replace(/\{\{name\}\}/g, interest.name)
+    .replace(/\{\{property\}\}/g, interest.property.name)
+    .replace(/\{\{agent\}\}/g, interest.agent?.name ?? process.env.MAIL_FROM_NAME ?? "Harborstone Homes");
+  return { text, html: `<div>${sanitizeHtml(text, { allowedTags: [], allowedAttributes: {} }).replace(/\n/g, "<br />")}</div>` };
+}
+
 function campaignClickUrl(token: string, destination: string, propertyId?: string) {
   const query = new URLSearchParams({ token, ...(propertyId ? { propertyId } : { destination }) });
   return `${process.env.PUBLIC_BACKEND_URL ?? "http://localhost:4000"}/campaign-click?${query.toString()}`;
@@ -1376,14 +1400,25 @@ const root = {
   },
   sendFollowUp: async ({ id }: { id: string }, context: { token?: string }) => {
     const admin = await requireAdmin(context);
-    const followUp = await prisma.$transaction(async (tx) => {
-      const current = await tx.interestFollowUp.findUniqueOrThrow({ where: { id } });
-      const now = new Date();
-      const sent = await tx.interestFollowUp.update({ where: { id }, data: { status: "SENT", sendRequestedAt: now, sentAt: now, sentById: admin.id } });
-      await tx.interest.update({ where: { id: current.interestId }, data: { followUpSent: true } });
-      return sent;
-    });
-    return { ...followUp, createdAt: followUp.createdAt.toISOString(), sendRequestedAt: followUp.sendRequestedAt?.toISOString() ?? null, sentAt: followUp.sentAt?.toISOString() ?? null, failedAt: followUp.failedAt?.toISOString() ?? null };
+    const current = await prisma.interestFollowUp.findUniqueOrThrow({ where: { id }, include: { interest: { include: { property: true, agent: true } } } });
+    if (current.status !== "PENDING") throw new Error("Only unsent follow-up drafts can be sent");
+    const now = new Date();
+    const followUp = await prisma.interestFollowUp.update({ where: { id }, data: { status: "SENDING", sendRequestedAt: now, sentById: admin.id, attemptCount: { increment: 1 }, errorMessage: null, failedAt: null } });
+    try {
+      if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASSWORD) throw new Error("Email service is not configured");
+      const content = followUpEmailContent(current.body, current.interest);
+      const info = await mailTransport.sendMail({ from: `${process.env.MAIL_FROM_NAME ?? "Harborstone Homes"} <${process.env.MAIL_FROM_EMAIL ?? process.env.SMTP_USER}>`, to: current.interest.email, subject: current.subject, html: content.html });
+      const sent = await prisma.$transaction(async (tx) => {
+        const saved = await tx.interestFollowUp.update({ where: { id }, data: { status: "SENT", sentAt: new Date(), providerMessageId: info.messageId } });
+        await tx.interest.update({ where: { id: current.interestId }, data: { followUpSent: true } });
+        return saved;
+      });
+      return { ...sent, createdAt: sent.createdAt.toISOString(), sendRequestedAt: sent.sendRequestedAt?.toISOString() ?? null, sentAt: sent.sentAt?.toISOString() ?? null, failedAt: sent.failedAt?.toISOString() ?? null };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Email delivery failed";
+      const failed = await prisma.interestFollowUp.update({ where: { id }, data: { status: "FAILED", failedAt: new Date(), errorMessage: message } });
+      return { ...failed, createdAt: failed.createdAt.toISOString(), sendRequestedAt: failed.sendRequestedAt?.toISOString() ?? null, sentAt: failed.sentAt?.toISOString() ?? null, failedAt: failed.failedAt?.toISOString() ?? null };
+    }
   },
   interestsPage: async ({ input }: { input?: { propertyId?: string; propertyName?: string; location?: string; agentId?: string; from?: string; to?: string; pendingOnly?: boolean; offset?: number; limit?: number } }, context: { token?: string }) => {
     await requireAdmin(context);
@@ -1973,11 +2008,25 @@ app.all(
   createHandler({
     schema,
     rootValue: root,
+    formatError: (error) => /Invalid `prisma\.|PrismaClient|Database error/.test(error.message) ? new GraphQLError("Internal server error") : error,
     context: (request) => ({
       token: request.raw.headers.authorization?.replace(/^Bearer /i, ""),
     }),
   })
 );
+
+app.get("/healthz", (_req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+
+app.get("/readyz", async (_req, res) => {
+  try {
+    await prisma.property.findFirst({ select: { id: true } });
+    res.status(200).json({ status: "ready" });
+  } catch {
+    res.status(503).json({ status: "not ready" });
+  }
+});
 
 app.get("/", async (_req, res) => {
   try {
@@ -1995,13 +2044,6 @@ app.get("/", async (_req, res) => {
       message: "Database connection failed",
     });
   }
-});
-
-const PORT = 4000;
-
-app.listen(PORT, () => {
-  console.log(`Backend running on http://localhost:${PORT}`);
-  console.log(`GraphQL endpoint: http://localhost:${PORT}/graphql`);
 });
 
 app.get("/unsubscribe", async (req, res) => {
@@ -2043,3 +2085,28 @@ app.get("/campaign-click", async (req, res) => {
   await prisma.campaignEvent.create({ data: { campaignId: recipient.campaignId, subscriberId: recipient.subscriberId, recipientId: recipient.id, propertyId: propertyId || null, type: "CLICKED" } });
   res.redirect(302, target);
 });
+
+const PORT = Number(process.env.PORT ?? 4000);
+const server = app.listen(PORT, () => {
+  console.log(`Backend running on http://localhost:${PORT}`);
+  console.log(`GraphQL endpoint: http://localhost:${PORT}/graphql`);
+});
+
+let shuttingDown = false;
+async function shutdown(signal: string) {
+  if (shuttingDown) return;
+  shuttingDown = true;
+  console.log(`${signal} received, closing backend`);
+  const forceExit = setTimeout(() => process.exit(1), 10_000);
+  forceExit.unref();
+  server.close(async () => {
+    try {
+      await prisma.$disconnect();
+      process.exit(0);
+    } catch {
+      process.exit(1);
+    }
+  });
+}
+process.once("SIGTERM", () => void shutdown("SIGTERM"));
+process.once("SIGINT", () => void shutdown("SIGINT"));
