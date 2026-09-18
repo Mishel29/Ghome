@@ -7,6 +7,7 @@
     "dev": "node dist/server.js",
     "build": "tsc",
     "start": "node dist/server.js",
+    "admin:bootstrap": "node dist/scripts/adminBootstrap.js",
     "test": "tsx --test src/import/historicalPrices.test.ts src/import/propertyCsvSchema.test.ts src/subscriberStats.test.ts",
     "test:integration": "tsx --test src/integration/graphql.integration.test.ts"
   },
