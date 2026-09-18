@@ -9,6 +9,7 @@ import XLSX from "xlsx";
 import { validateHistoricalPrices } from "./import/historicalPrices.js";
 import { validatePropertyCsvHeaders } from "./import/propertyCsvSchema.js";
 import { calculateSubscriberStats } from "./subscriberStats.js";
+import sanitizeHtml from "sanitize-html";
 
 const app = express();
 
@@ -37,6 +38,11 @@ const schema = buildSchema(`
   enum PublicationStatus {
     DRAFT
     PUBLISHED
+  }
+
+  enum TemplatePurpose {
+    CAMPAIGN
+    INTEREST_FOLLOW_UP
   }
 
   type User {
@@ -393,6 +399,32 @@ type PropertyConnection {
     user: User!
   }
 
+  type CampaignTemplate {
+    id: ID!
+    name: String!
+    subject: String
+    htmlContent: String!
+    purpose: TemplatePurpose!
+    propertyIds: [ID!]!
+    createdAt: String!
+    updatedAt: String!
+  }
+
+  type TemplateConnection {
+    nodes: [CampaignTemplate!]!
+    totalCount: Int!
+  }
+
+  type HtmlResult { html: String! }
+
+  input TemplateInput {
+    name: String!
+    subject: String
+    htmlContent: String!
+    purpose: TemplatePurpose
+    propertyIds: [ID!]
+  }
+
   type AdminDashboard {
     properties: Int!
     publishedProperties: Int!
@@ -503,6 +535,7 @@ type PropertyConnection {
     login(email: String!, password: String!): AuthPayload!
     logout: Boolean!
     createUser(input: CreateUserInput!): User!
+    saveTemplate(id: ID, input: TemplateInput!): CampaignTemplate!
     saveNews(id: ID, input: NewsInput!): NewsArticle!
     publishNews(id: ID!): NewsArticle!
     deleteNews(id: ID!): Boolean!
@@ -557,6 +590,8 @@ type Query {
   exportSubscribers(status: SubscriberStatus!): FileDownload!
   subscriberStats(from: String, to: String): SubscriberStats!
   usersPage(input: AdminListInput): UserConnection!
+  templatesPage(input: AdminListInput): TemplateConnection!
+  templatePreview(id: ID!): HtmlResult!
   newsPage(input: AdminListInput): NewsConnection!
   publicNewsPage(input: AdminListInput): NewsConnection!
   newsArticle(id: ID!): NewsArticle
@@ -816,6 +851,41 @@ function serializeNewsWithCounts(article: Parameters<typeof serializeNews>[0], c
   return { ...serializeNews(article), ...counts };
 }
 
+function serializeTemplate(template: { id: string; name: string; subject: string | null; htmlContent: string; purpose: string; createdAt: Date; updatedAt: Date; properties: Array<{ propertyId: string }> }) {
+  return {
+    id: template.id,
+    name: template.name,
+    subject: template.subject,
+    htmlContent: template.htmlContent,
+    purpose: template.purpose,
+    propertyIds: template.properties.map((property) => property.propertyId),
+    createdAt: template.createdAt.toISOString(),
+    updatedAt: template.updatedAt.toISOString(),
+  };
+}
+
+function renderTemplatePreview(template: { htmlContent: string; properties: Array<{ property: { name: string; location: string | null; priceMin: unknown; priceMax: unknown; type: string | null; bedroomsMin: number | null; sizeSqm: unknown; media: Array<{ url: string; isPrimary: boolean; type: string }> } }> }) {
+  const propertyCells = template.properties.map(({ property }) => {
+        const image = property.media.find((media) => media.isPrimary && media.type === "IMAGE") ?? property.media.find((media) => media.type === "IMAGE");
+        const priceMin = property.priceMin == null ? null : Number(property.priceMin);
+        const priceMax = property.priceMax == null ? null : Number(property.priceMax);
+        const price = priceMin == null ? "Price on request" : priceMax != null && priceMax !== priceMin ? `€${priceMin.toLocaleString("en-IE")}–€${priceMax.toLocaleString("en-IE")}` : `€${priceMin.toLocaleString("en-IE")}`;
+        return `<td width="50%" valign="top" style="width:50%;padding:8px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #ddd5c5;background:#fff"><tr><td>${image ? `<img src="${image.url}" alt="${property.name}" width="100%" style="display:block;width:100%;height:150px;object-fit:cover" />` : `<div style="height:150px;background:#e9e4d8"></div>`}</td></tr><tr><td style="padding:14px"><h3 style="margin:0 0 6px;color:#1b2a4a;font-size:17px;line-height:1.25">${property.name}</h3><p style="margin:0 0 8px;color:#6b7280;font-size:12px">${property.location ?? "Location unavailable"}</p><p style="margin:0 0 8px;color:#e8761b;font-weight:700;font-size:16px">${price}</p><p style="margin:0;color:#6b7280;font-size:12px">${[property.type, property.bedroomsMin != null ? `${property.bedroomsMin} bedrooms` : null, property.sizeSqm != null ? `${Number(property.sizeSqm).toLocaleString("en-IE")} m²` : null].filter(Boolean).join(" · ")}</p></td></tr></table></td>`;
+      });
+  const propertyRows = [];
+  for (let index = 0; index < propertyCells.length; index += 2) {
+    propertyRows.push(`<tr>${propertyCells[index]}${propertyCells[index + 1] ?? '<td width="50%" style="width:50%;padding:8px"></td>'}</tr>`);
+  }
+  const propertyCards = propertyCells.length
+    ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tbody>${propertyRows.join("")}</tbody></table>`
+    : "<p>No properties selected for this template.</p>";
+  const rendered = template.htmlContent.replace(/\{\{name\}\}/g, "Sample recipient").replace(/\{\{properties\}\}/g, propertyCards);
+  return sanitizeHtml(rendered, {
+    allowedTags: sanitizeHtml.defaults.allowedTags,
+    allowedAttributes: sanitizeHtml.defaults.allowedAttributes,
+  });
+}
+
 const root = {
   login: async ({ email, password }: { email: string; password: string }) => {
     const user = await prisma.user.findUnique({ where: { email: email.trim().toLowerCase() } });
@@ -863,6 +933,27 @@ const root = {
       },
     });
     return { id: user.id, name: user.name, email: user.email, role: user.role, createdAt: user.createdAt.toISOString() };
+  },
+  saveTemplate: async ({ id, input }: { id?: string; input: { name: string; subject?: string; htmlContent: string; purpose?: "CAMPAIGN" | "INTEREST_FOLLOW_UP"; propertyIds?: string[] } }, context: { token?: string }) => {
+    const admin = await requireAdmin(context);
+    const name = input.name.trim();
+    const htmlContent = input.htmlContent.trim();
+    if (!name) throw new Error("Template name is required");
+    if (!htmlContent) throw new Error("Template HTML is required");
+    const propertyIds = [...new Set(input.propertyIds ?? [])];
+    if (propertyIds.length) {
+      const publishedProperties = await prisma.property.findMany({ where: { id: { in: propertyIds }, publicationStatus: "PUBLISHED" }, select: { id: true } });
+      if (publishedProperties.length !== propertyIds.length) throw new Error("Templates can only be linked to published properties");
+    }
+    const template = await prisma.$transaction(async (tx) => {
+      const saved = id
+        ? await tx.campaignTemplate.update({ where: { id }, data: { name, subject: input.subject?.trim() || null, htmlContent, purpose: input.purpose ?? "CAMPAIGN" } })
+        : await tx.campaignTemplate.create({ data: { name, subject: input.subject?.trim() || null, htmlContent, purpose: input.purpose ?? "CAMPAIGN", createdById: admin.id } });
+      await tx.templateProperty.deleteMany({ where: { templateId: saved.id } });
+      if (propertyIds.length) await tx.templateProperty.createMany({ data: propertyIds.map((propertyId) => ({ templateId: saved.id, propertyId })) });
+      return tx.campaignTemplate.findUniqueOrThrow({ where: { id: saved.id }, include: { properties: true } });
+    });
+    return serializeTemplate(template);
   },
   saveNews: async ({ id, input }: { id?: string; input: { externalUrl?: string; title: string; summary?: string; content?: string; imageUrl?: string; activeFrom?: string | null; activeUntil?: string | null; propertyIds?: string[] } }, context: { token?: string }) => {
     const admin = await requireAdmin(context);
@@ -1204,6 +1295,21 @@ const root = {
       prisma.user.count({ where }),
     ]);
     return { nodes: nodes.map((user) => ({ id: user.id, name: user.name, email: user.email, role: user.role, createdAt: user.createdAt.toISOString() })), totalCount };
+  },
+  templatesPage: async ({ input }: { input?: { search?: string; offset?: number; limit?: number } }, context: { token?: string }) => {
+    await requireAdmin(context);
+    const search = input?.search?.trim();
+    const where = search ? { OR: [{ name: { contains: search, mode: "insensitive" as const } }, { subject: { contains: search, mode: "insensitive" as const } }] } : undefined;
+    const [nodes, totalCount] = await Promise.all([
+      prisma.campaignTemplate.findMany({ where, orderBy: { updatedAt: "desc" }, skip: Math.max(input?.offset ?? 0, 0), take: Math.min(Math.max(input?.limit ?? 20, 1), 100), include: { properties: true } }),
+      prisma.campaignTemplate.count({ where }),
+    ]);
+    return { nodes: nodes.map(serializeTemplate), totalCount };
+  },
+  templatePreview: async ({ id }: { id: string }, context: { token?: string }) => {
+    await requireAdmin(context);
+    const template = await prisma.campaignTemplate.findUniqueOrThrow({ where: { id }, include: { properties: { include: { property: { include: { media: true } } } } } });
+    return { html: renderTemplatePreview(template) };
   },
   newsPage: async ({ input }: { input?: { search?: string; offset?: number; limit?: number } }, context: { token?: string }) => {
     await requireAdmin(context);
