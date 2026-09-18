@@ -30,12 +30,6 @@ interface AppCtx {
   toggleCompare: (id: string) => void;
   properties: Property[];
   setProperties: (p: Property[]) => void;
-
-
-
-
-
-
   news: NewsArticle[];
   setNews: (n: NewsArticle[]) => void;
   showLogin: boolean;
@@ -43,21 +37,37 @@ interface AppCtx {
 }
 
 const Ctx = createContext<AppCtx>(null!);
+const SAVED_PROPERTIES_KEY = "harborstone-saved-properties";
+
+function readLocalSavedIds(): string[] {
+  try {
+    const value = JSON.parse(localStorage.getItem(SAVED_PROPERTIES_KEY) ?? "[]");
+    return Array.isArray(value) && value.every((id): id is string => typeof id === "string") ? value : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeLocalSavedIds(ids: string[]) {
+  localStorage.setItem(SAVED_PROPERTIES_KEY, JSON.stringify(ids));
+}
 
 export function AppProvider({ children }: { children: ReactNode }) {
   const [view, setView] = useState<View>("home");
   const [params, setParams] = useState<Record<string, string>>({});
   const [user, setUser] = useState<AppUser | null>(null);
-  const [savedIds, setSavedIds] = useState<string[]>([]);
+  const [savedIds, setSavedIds] = useState<string[]>(readLocalSavedIds);
   const [compareIds, setCompareIds] = useState<string[]>([]);
   const [properties, setProperties] = useState<Property[]>([]);
-
-
-
   const [news, setNews] = useState<NewsArticle[]>([]);
   const [showLogin, setShowLogin] = useState(false);
+  const [authLoading, setAuthLoading] = useState(true);
 
-  useEffect(() => { const expired = () => { setUser(null); setSavedIds([]); setShowLogin(true); }; window.addEventListener("auth-expired", expired); return () => window.removeEventListener("auth-expired", expired); }, []);
+  useEffect(() => {
+    const expired = () => { setUser(null); setSavedIds(readLocalSavedIds()); setShowLogin(true); };
+    window.addEventListener("auth-expired", expired);
+    return () => window.removeEventListener("auth-expired", expired);
+  }, []);
 
   const nav = (v: View, p?: Record<string, string>) => {
     setView(v);
@@ -65,11 +75,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
     window.scrollTo(0, 0);
   };
 
-  const [authLoading, setAuthLoading] = useState(true);
   const refreshProperties = useCallback(async () => {
     const page = await propertyPage(false, {}, 0, 100);
     setProperties(page.nodes.map(viewProperty));
   }, []);
+
   useEffect(() => {
     let active = true;
     const restore = async () => {
@@ -78,50 +88,81 @@ export function AppProvider({ children }: { children: ReactNode }) {
           const { me } = await graphqlRequest<{ me: { id: string; name: string; email: string; role: string } }>("{me{id name email role}}");
           if (active) setUser({ ...me, role: me.role === "ADMIN" ? "admin" : "user" });
         }
-      } catch { setAuthToken(null); } finally { if (active) setAuthLoading(false); }
+      } catch { setAuthToken(null); }
+      finally { if (active) setAuthLoading(false); }
     };
     void restore();
     void propertyPage(false, {}, 0, 100).then((page) => { if (active) setProperties(page.nodes.map(viewProperty)); }).catch(() => {});
     return () => { active = false; };
   }, [refreshProperties]);
+
   const login = async (email: string, password: string) => {
     const { login: result } = await graphqlRequest<{ login: { token: string; user: { id: string; name: string; email: string; role: string } } }>(
       "mutation($email:String!,$password:String!){login(email:$email,password:$password){token user{id name email role}}}", { email, password });
-    const account: AppUser = { ...result.user, role: result.user.role === "ADMIN" ? "admin" : "user" }; setAuthToken(result.token); setUser(account); return account;
+    const account: AppUser = { ...result.user, role: result.user.role === "ADMIN" ? "admin" : "user" };
+    setAuthToken(result.token);
+    setUser(account);
+    return account;
   };
+
   const logout = () => {
     void graphqlRequest("mutation{logout}").catch(() => {});
-    setAuthToken(null); setUser(null); setSavedIds([]);
+    setAuthToken(null);
+    setUser(null);
+    setSavedIds(readLocalSavedIds());
   };
 
   useEffect(() => {
-    if (!user) return; let active = true;
-    graphqlRequest<{savedProperties:ApiProperty[]}>(`{savedProperties{${PROPERTY_FIELDS}}}`).then(({savedProperties}) => { if(active) { setSavedIds(savedProperties.map((p)=>p.id)); setProperties((current)=>[...new Map([...current,...savedProperties.map(viewProperty)].map((p)=>[p.id,p])).values()]); } }).catch(()=>{});
+    if (!user) return;
+    let active = true;
+    graphqlRequest<{savedProperties: ApiProperty[]}>(`{savedProperties{${PROPERTY_FIELDS}}}`).then(({ savedProperties }) => {
+      if (active) {
+        setSavedIds(savedProperties.map((p) => p.id));
+        setProperties((current) => [...new Map([...current, ...savedProperties.map(viewProperty)].map((p) => [p.id, p])).values()]);
+      }
+    }).catch(() => {});
     return () => { active = false; };
   }, [user]);
+
   useEffect(() => {
     let active = true;
-    graphqlRequest<{publicNewsPage:NewsConnection}>('{publicNewsPage(input:{limit:20}){totalCount nodes{id title summary content imageUrl publishedAt activeFrom publicationStatus properties{id name}}}}').then(({publicNewsPage})=>{if(active)setNews(publicNewsPage.nodes.map((n)=>({id:n.id,title:n.title,summary:n.summary??"",content:n.content??"",image:n.imageUrl??"",publishDate:n.publishedAt??"",activeDate:n.activeFrom??"",published:true,relatedProperties:n.properties.map((p)=>p.id)})));}).catch(()=>{});
-    return () => { active=false; };
+    graphqlRequest<{publicNewsPage: NewsConnection}>('{publicNewsPage(input:{limit:20}){totalCount nodes{id title summary content imageUrl publishedAt activeFrom publicationStatus properties{id name}}}}').then(({ publicNewsPage }) => {
+      if (active) setNews(publicNewsPage.nodes.map((n) => ({ id:n.id, title:n.title, summary:n.summary ?? "", content:n.content ?? "", image:n.imageUrl ?? "", publishDate:n.publishedAt ?? "", activeDate:n.activeFrom ?? "", published:true, relatedProperties:n.properties.map((p) => p.id) })));
+    }).catch(() => {});
+    return () => { active = false; };
   }, []);
-  const cacheProperty = async (id:string) => { const p=await propertyById(id); if(p)setProperties((old)=>[...old.filter((x)=>x.id!==id),viewProperty(p)]); };
-  const toggleSave = (id:string) => {
-    if(!user){setShowLogin(true);return;}
-    const saved=!savedIds.includes(id);const campaignToken=new URLSearchParams(window.location.search).get("campaignToken")??undefined;
-    void graphqlRequest('mutation($id:ID!,$saved:Boolean!,$campaignToken:String){setPropertySaved(propertyId:$id,saved:$saved,campaignToken:$campaignToken)}',{id,saved,campaignToken}).then(async()=>{setSavedIds((old)=>saved?[...new Set([...old,id])]:old.filter((x)=>x!==id));await cacheProperty(id);}).catch((e)=>window.alert(e.message));
+
+  const cacheProperty = async (id: string) => {
+    const property = await propertyById(id);
+    if (property) setProperties((old) => [...old.filter((p) => p.id !== id), viewProperty(property)]);
   };
-  const toggleCompare = (id:string) => {
-    setCompareIds((old)=>comparisonSelection(old,id));
-    void cacheProperty(id).catch(()=>{});
+
+  const toggleSave = (id: string) => {
+    const saved = !savedIds.includes(id);
+    if (!user) {
+      const next = saved ? [...new Set([...savedIds, id])] : savedIds.filter((savedId) => savedId !== id);
+      setSavedIds(next);
+      writeLocalSavedIds(next);
+      void cacheProperty(id).catch(() => {});
+      return;
+    }
+    const campaignToken = new URLSearchParams(window.location.search).get("campaignToken") ?? undefined;
+    void graphqlRequest('mutation($id:ID!,$saved:Boolean!,$campaignToken:String){setPropertySaved(propertyId:$id,saved:$saved,campaignToken:$campaignToken)}', { id, saved, campaignToken }).then(async () => {
+      setSavedIds((old) => saved ? [...new Set([...old, id])] : old.filter((x) => x !== id));
+      await cacheProperty(id);
+    }).catch((error) => window.alert(error.message));
   };
-  return (
-    <Ctx.Provider value={{ authLoading, refreshProperties, view, nav, params, user, login, logout, savedIds, toggleSave, compareIds, toggleCompare, properties, setProperties, news, setNews, showLogin, setShowLogin }}>
-      {children}
-    </Ctx.Provider>
-  );
+
+  const toggleCompare = (id: string) => {
+    setCompareIds((old) => comparisonSelection(old, id));
+    void cacheProperty(id).catch(() => {});
+  };
+
+  return <Ctx.Provider value={{ authLoading, refreshProperties, view, nav, params, user, login, logout, savedIds, toggleSave, compareIds, toggleCompare, properties, setProperties, news, setNews, showLogin, setShowLogin }}>
+    {children}
+  </Ctx.Provider>;
 }
 
 // The context hook is intentionally exported beside its provider.
 // eslint-disable-next-line react-refresh/only-export-components
 export const useApp = () => useContext(Ctx);
-

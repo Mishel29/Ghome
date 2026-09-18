@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useApp } from "../context";
 import { fmt, type Property } from "../data";
 import { useNavigate, useParams } from "react-router-dom";
+import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 export default function PropertyDetail() {
   const { id } = useParams(); const [property, setProperty] = useState<Property | null>(null); const [error, setError] = useState(""); const [loaded, setLoaded] = useState("");
@@ -19,6 +20,11 @@ function PropertyContent({ p }: { p: Property }) {
 
 
   const isSaved = savedIds.includes(p.id);
+  const history = p.valueGrowth;
+  const firstHistory = history[0];
+  const latestHistory = history[history.length - 1];
+  const priceChange = firstHistory && latestHistory ? latestHistory.value - firstHistory.value : null;
+  const priceChangePercent = firstHistory && firstHistory.value > 0 && priceChange !== null ? (priceChange / firstHistory.value) * 100 : null;
   const [photoIdx, setPhotoIdx] = useState(0);
   const [showForm, setShowForm] = useState(false);
   const [formSent, setFormSent] = useState(false);
@@ -96,7 +102,7 @@ function PropertyContent({ p }: { p: Property }) {
         </button>
       </section>
 
-      {p.videoUrl && <section id="home-tour" className="max-w-6xl mx-auto p-6"><h2 className="text-xl mb-4">Home tour</h2><video controls preload="metadata" src={p.videoUrl} className="w-full max-h-[600px]" aria-label="Property home tour" /></section>}
+      {p.videoUrl && <section id="home-tour" className="max-w-6xl mx-auto p-6"><h2 className="text-xl mb-4">Home tour</h2><PropertyVideo url={p.videoUrl}/></section>}
       {/* Quick actions bar */}
       <section className="bg-navy">
         <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 divide-x divide-white/10">
@@ -133,13 +139,14 @@ function PropertyContent({ p }: { p: Property }) {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
               { label: "Type", value: p.type },
+              { label: "Sale type", value: p.saleType || "Not specified" },
+              { label: "Postal code", value: p.postalCode || "Not specified" },
               { label: "Stage", value: p.stage },
               { label: "Price from", value: fmt(p.price.min) },
               { label: "Size from", value: `${p.sqft.min} sq ft` },
               { label: "Bedrooms", value: p.beds.join(", ") + " bed" },
               { label: "Bathrooms", value: p.baths.join(", ") + " bath" },
-              { label: "Listed", value: new Date(p.listedDate).toLocaleDateString("en-IE") },
-              { label: "Agent", value: p.agent },
+              { label: "Completed", value: p.completionYear ? String(p.completionYear) : "Not specified" },
             ].map(({ label, value }) => (
               <div key={label} className="bg-cream-dark p-4">
                 <div className="text-[10px] text-stone uppercase tracking-wider mb-1">{label}</div>
@@ -148,18 +155,31 @@ function PropertyContent({ p }: { p: Property }) {
             ))}
           </div>
 
-          {/* Features */}
-          <div>
-            <h3 className="font-display text-navy font-semibold text-lg mb-3">Development Features</h3>
-            <div className="grid grid-cols-2 gap-2">
-              {p.features.map((f) => (
-                <div key={f} className="flex items-center gap-2 text-sm text-navy">
-                  <span className="w-1.5 h-1.5 bg-amber rounded-full shrink-0"/>
-                  {f}
-                </div>
-              ))}
-            </div>
-          </div>
+          {history.length > 0 && firstHistory && latestHistory && priceChange !== null && (
+            <section className="space-y-4">
+              <div>
+                <h3 className="font-display text-burgundy text-2xl font-bold">Price history</h3>
+                <p className="text-sm text-stone mt-1">Recorded property values from {firstHistory.year} to {latestHistory.year}.</p>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div className="bg-cream-dark p-4"><div className="text-[10px] text-stone uppercase tracking-wider">Starting value</div><div className="font-semibold text-navy mt-1">{fmt(firstHistory.value)}</div></div>
+                <div className="bg-cream-dark p-4"><div className="text-[10px] text-stone uppercase tracking-wider">Latest value</div><div className="font-semibold text-navy mt-1">{fmt(latestHistory.value)}</div></div>
+                <div className="bg-cream-dark p-4"><div className="text-[10px] text-stone uppercase tracking-wider">Total change</div><div className={`font-semibold mt-1 ${priceChange >= 0 ? "text-sage" : "text-burgundy"}`}>{priceChange >= 0 ? "+" : "-"}{fmt(Math.abs(priceChange))}</div></div>
+                <div className="bg-cream-dark p-4"><div className="text-[10px] text-stone uppercase tracking-wider">Change percentage</div><div className={`font-semibold mt-1 ${priceChange >= 0 ? "text-sage" : "text-burgundy"}`}>{priceChangePercent !== null ? `${priceChangePercent >= 0 ? "+" : ""}${priceChangePercent.toFixed(1)}%` : "Unavailable"}</div></div>
+              </div>
+              <div className="bg-cream-dark p-4 h-72">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={history} margin={{ top: 10, right: 15, left: 0, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#ddd5c5" />
+                    <XAxis dataKey="year" tick={{ fontSize: 11, fill: "#8A8070" }} />
+                    <YAxis tickFormatter={(value) => `€${Math.round(value / 1000)}k`} tick={{ fontSize: 11, fill: "#8A8070" }} width={55} />
+                    <Tooltip formatter={(value) => fmt(Number(value))} />
+                    <Line type="monotone" dataKey="value" name="Property value" stroke="#E8761B" strokeWidth={3} dot={{ r: 3, fill: "#E8761B" }} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </section>
+          )}
         </div>
 
         {/* Right: Contact / interest form */}
@@ -183,18 +203,6 @@ function PropertyContent({ p }: { p: Property }) {
             </button>
           </div>
 
-          <div className="bg-cream-dark p-5">
-            <div className="text-xs font-semibold text-stone uppercase tracking-wider mb-3">Your Agent</div>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-navy rounded-full flex items-center justify-center text-white font-bold text-sm">
-                {p.agent.split(" ").map((n) => n[0]).join("")}
-              </div>
-              <div>
-                <div className="font-semibold text-navy text-sm">{p.agent}</div>
-                <div className="text-xs text-stone">Sales Consultant</div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -265,6 +273,12 @@ function PropertyContent({ p }: { p: Property }) {
       )}
     </div>
   );
+}
+
+function PropertyVideo({ url }: { url: string }) {
+  const videoId = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{11})/)?.[1];
+  if (videoId) return <iframe className="w-full aspect-video" src={`https://www.youtube-nocookie.com/embed/${videoId}`} title="Property home tour" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />;
+  return <video controls preload="metadata" src={url} className="w-full max-h-[600px]" aria-label="Property home tour" />;
 }
 
 

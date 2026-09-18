@@ -2,9 +2,11 @@ import "dotenv/config";
 import XLSX from "xlsx";
 import { prisma } from "../lib/prisma.js";
 import fs from "node:fs";
+import { historicalValidationMessage, validateHistoricalPrices } from "./historicalPrices.js";
+import { validatePropertyCsvHeaders } from "./propertyCsvSchema.js";
 
 const FILE_PATH =
-  "/Users/misheltheckanath/Desktop/Ghome/Notes/Dataset/data_with_history.xlsx";
+  process.env.PROPERTY_IMPORT_PATH ?? "../../Notes/Dataset/Sample.csv";
 
 const BATCH_SIZE = 500;
 const IMPORT_LIMIT = 1000;
@@ -87,44 +89,6 @@ function normalizeStage(value: string) {
   }
 }
 
-function parseHistoricalValues(
-  yearsValue: unknown,
-  pricesValue: unknown
-): Array<{ year: number; value: number }> {
-  if (!yearsValue || !pricesValue) {
-    return [];
-  }
-
-  try {
-    const years = JSON.parse(String(yearsValue));
-    const prices = JSON.parse(String(pricesValue));
-
-    if (!Array.isArray(years) || !Array.isArray(prices)) {
-      return [];
-    }
-
-    const result: Array<{ year: number; value: number }> = [];
-
-    const count = Math.min(years.length, prices.length);
-
-    for (let i = 0; i < count; i++) {
-      const year = Number(years[i]);
-      const value = Number(prices[i]);
-
-      if (Number.isInteger(year) && Number.isFinite(value)) {
-        result.push({
-          year,
-          value,
-        });
-      }
-    }
-
-    return result;
-  } catch {
-    return [];
-  }
-}
-
 function calculateGrowth(
   current: number,
   previous: number | undefined
@@ -148,6 +112,15 @@ async function main() {
   }
 
   const worksheet = workbook.Sheets[firstSheetName];
+
+  const headerRows = XLSX.utils.sheet_to_json<unknown[]>(worksheet, {
+    header: 1,
+    blankrows: false,
+  });
+  const headerResult = validatePropertyCsvHeaders(headerRows[0] ?? []);
+  if (!headerResult.valid) {
+    throw new Error(`Invalid property CSV headers: ${JSON.stringify(headerResult)}`);
+  }
 
   const allRows = XLSX.utils.sheet_to_json<DatasetRow>(worksheet, {
   defval: null,
@@ -291,98 +264,106 @@ async function main() {
        * Therefore min/max are initially identical.
        */
 
-      const historicalValues = parseHistoricalValues(
+      const historicalResult = validateHistoricalPrices(
         row.Years,
-        row["Historical Prices"]
+        row["Historical Prices"],
+        completionYear !== null ? Math.round(completionYear) : null,
+        price,
       );
 
-      const property = await prisma.property.upsert({
-        where: {
-          sourceKey,
-        },
-        update: {
-          name,
-          location: county,
-          county,
-          address,
-          postalCode,
+      if (historicalResult.issues.length > 0) {
+        skipped++;
+        console.warn(
+          `Skipping row ${rowNumber}: ${historicalValidationMessage(historicalResult)}`,
+        );
+        continue;
+      }
 
-          type: propertyType,
-          saleType: cleanString(row["Sold times"]),
+      const historicalValues = historicalResult.values;
 
-          status,
-          stage,
+      await prisma.$transaction(async (tx) => {
+        const property = await tx.property.upsert({
+          where: {
+            sourceKey,
+          },
+          update: {
+            publicationStatus: "DRAFT",
+            name,
+            location: county,
+            county,
+            address,
+            postalCode,
 
-          priceMin: price,
-          priceMax: price,
+            type: propertyType,
+            saleType: cleanString(row["Sold times"]),
 
-          bedroomsMin: Math.round(beds),
-          bedroomsMax: Math.round(beds),
+            status,
+            stage,
 
-          bathroomsMin: Math.round(baths),
-          bathroomsMax: Math.round(baths),
+            priceMin: price,
+            priceMax: price,
 
-          sizeSqm: Math.round(propertySize),
-          sizeCategory: cleanString(row["Property Size Category"]) || null,
+            bedroomsMin: Math.round(beds),
+            bedroomsMax: Math.round(beds),
 
-          completionYear:
-            completionYear !== null
-              ? Math.round(completionYear)
-              : null,
+            bathroomsMin: Math.round(baths),
+            bathroomsMax: Math.round(baths),
 
-          description:
-            cleanString(row.Description) || null,
+            sizeSqm: propertySize,
+            sizeCategory: cleanString(row["Property Size Category"]) || null,
 
-          agentId,
-        },
+            completionYear:
+              completionYear !== null
+                ? Math.round(completionYear)
+                : null,
 
-        create: {
-          sourceKey,
+            description:
+              cleanString(row.Description) || null,
 
-          name,
-          location: county,
-          county,
-          address,
-          postalCode,
+            agentId,
+          },
 
-          type: propertyType,
-          saleType: cleanString(row["Sold times"]),
+          create: {
+            sourceKey,
+            publicationStatus: "DRAFT",
 
-          status,
-          stage,
+            name,
+            location: county,
+            county,
+            address,
+            postalCode,
 
-          priceMin: price,
-          priceMax: price,
+            type: propertyType,
+            saleType: cleanString(row["Sold times"]),
 
-          bedroomsMin: Math.round(beds),
-          bedroomsMax: Math.round(beds),
+            status,
+            stage,
 
-          bathroomsMin: Math.round(baths),
-          bathroomsMax: Math.round(baths),
+            priceMin: price,
+            priceMax: price,
 
-          sizeSqm: Math.round(propertySize),
-          sizeCategory: cleanString(row["Property Size Category"]) || null,
+            bedroomsMin: Math.round(beds),
+            bedroomsMax: Math.round(beds),
 
-          completionYear:
-            completionYear !== null
-              ? Math.round(completionYear)
-              : null,
+            bathroomsMin: Math.round(baths),
+            bathroomsMax: Math.round(baths),
 
-          description:
-            cleanString(row.Description) || null,
+            sizeSqm: propertySize,
+            sizeCategory: cleanString(row["Property Size Category"]) || null,
 
-          agentId,
-        },
-      });
+            completionYear:
+              completionYear !== null
+                ? Math.round(completionYear)
+                : null,
 
-      /*
-       * -------------------------------------------------------
-       * Historical property values
-       * -------------------------------------------------------
-       */
+            description:
+              cleanString(row.Description) || null,
 
-      if (historicalValues.length > 0) {
-        await prisma.propertyValueHistory.deleteMany({
+            agentId,
+          },
+        });
+
+        await tx.propertyValueHistory.deleteMany({
           where: {
             propertyId: property.id,
           },
@@ -392,7 +373,7 @@ async function main() {
           const current = historicalValues[i];
           const previous = historicalValues[i - 1]?.value;
 
-          await prisma.propertyValueHistory.create({
+          await tx.propertyValueHistory.create({
             data: {
               propertyId: property.id,
               year: current.year,
@@ -403,10 +384,9 @@ async function main() {
               ),
             },
           });
-
           historyImported++;
         }
-      }
+      });
 
       imported++;
     }

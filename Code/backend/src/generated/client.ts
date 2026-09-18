@@ -115,6 +115,11 @@ export type CampaignEvent = Prisma.CampaignEventModel
  */
 export type CampaignTemplate = Prisma.CampaignTemplateModel
 /**
+ * Model TemplateProperty
+ * 
+ */
+export type TemplateProperty = Prisma.TemplatePropertyModel
+/**
  * Model NewsArticle
  * 
  */
@@ -154,3 +159,58 @@ export type ImportJob = Prisma.ImportJobModel
  * 
  */
 export type AuditLog = Prisma.AuditLogModel
+/**
+ * Model Development
+ * 
+ */
+export type Development = Prisma.DevelopmentModel
+/**
+ * Model PageContent
+ * 
+ */
+export type PageContent = Prisma.PageContentModel
+/**
+ * Model PageMedia
+ * 
+ */
+export type PageMedia = Prisma.PageMediaModel
+/**
+ * Model Session
+ * 
+ */
+export type Session = Prisma.SessionModel
+/**
+ * Model InterestFollowUp
+ * 
+ */
+export type InterestFollowUp = Prisma.InterestFollowUpModel
+/**
+ * Model DeliveryAttempt
+ * 
+ */
+export type DeliveryAttempt = Prisma.DeliveryAttemptModel
+/**
+ * Model AiJobAttempt
+ * 
+ */
+export type AiJobAttempt = Prisma.AiJobAttemptModel
+/**
+ * Model UnsubscribeToken
+ * 
+ */
+export type UnsubscribeToken = Prisma.UnsubscribeTokenModel
+/**
+ * Model PropertyImportUpload
+ * 
+ */
+export type PropertyImportUpload = Prisma.PropertyImportUploadModel
+/**
+ * Model ImportChunk
+ * 
+ */
+export type ImportChunk = Prisma.ImportChunkModel
+/**
+ * Model ImportRowError
+ * 
+ */
+export type ImportRowError = Prisma.ImportRowErrorModel

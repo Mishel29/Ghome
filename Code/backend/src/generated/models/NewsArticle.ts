@@ -30,11 +30,14 @@ export type NewsArticleMinAggregateOutputType = {
   summary: string | null
   content: string | null
   imageUrl: string | null
-  published: boolean | null
-  publishDate: Date | null
+  publicationStatus: $Enums.PublicationStatus | null
+  publishedAt: Date | null
   createdById: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  externalUrl: string | null
+  activeFrom: Date | null
+  activeUntil: Date | null
 }
 
 export type NewsArticleMaxAggregateOutputType = {
@@ -43,11 +46,14 @@ export type NewsArticleMaxAggregateOutputType = {
   summary: string | null
   content: string | null
   imageUrl: string | null
-  published: boolean | null
-  publishDate: Date | null
+  publicationStatus: $Enums.PublicationStatus | null
+  publishedAt: Date | null
   createdById: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  externalUrl: string | null
+  activeFrom: Date | null
+  activeUntil: Date | null
 }
 
 export type NewsArticleCountAggregateOutputType = {
@@ -56,11 +62,14 @@ export type NewsArticleCountAggregateOutputType = {
   summary: number
   content: number
   imageUrl: number
-  published: number
-  publishDate: number
+  publicationStatus: number
+  publishedAt: number
   createdById: number
   createdAt: number
   updatedAt: number
+  externalUrl: number
+  activeFrom: number
+  activeUntil: number
   _all: number
 }
 
@@ -71,11 +80,14 @@ export type NewsArticleMinAggregateInputType = {
   summary?: true
   content?: true
   imageUrl?: true
-  published?: true
-  publishDate?: true
+  publicationStatus?: true
+  publishedAt?: true
   createdById?: true
   createdAt?: true
   updatedAt?: true
+  externalUrl?: true
+  activeFrom?: true
+  activeUntil?: true
 }
 
 export type NewsArticleMaxAggregateInputType = {
@@ -84,11 +96,14 @@ export type NewsArticleMaxAggregateInputType = {
   summary?: true
   content?: true
   imageUrl?: true
-  published?: true
-  publishDate?: true
+  publicationStatus?: true
+  publishedAt?: true
   createdById?: true
   createdAt?: true
   updatedAt?: true
+  externalUrl?: true
+  activeFrom?: true
+  activeUntil?: true
 }
 
 export type NewsArticleCountAggregateInputType = {
@@ -97,11 +112,14 @@ export type NewsArticleCountAggregateInputType = {
   summary?: true
   content?: true
   imageUrl?: true
-  published?: true
-  publishDate?: true
+  publicationStatus?: true
+  publishedAt?: true
   createdById?: true
   createdAt?: true
   updatedAt?: true
+  externalUrl?: true
+  activeFrom?: true
+  activeUntil?: true
   _all?: true
 }
 
@@ -183,11 +201,14 @@ export type NewsArticleGroupByOutputType = {
   summary: string | null
   content: string | null
   imageUrl: string | null
-  published: boolean
-  publishDate: Date | null
+  publicationStatus: $Enums.PublicationStatus
+  publishedAt: Date | null
   createdById: string | null
   createdAt: Date
   updatedAt: Date
+  externalUrl: string | null
+  activeFrom: Date | null
+  activeUntil: Date | null
   _count: NewsArticleCountAggregateOutputType | null
   _min: NewsArticleMinAggregateOutputType | null
   _max: NewsArticleMaxAggregateOutputType | null
@@ -217,13 +238,18 @@ export type NewsArticleWhereInput = {
   summary?: Prisma.StringNullableFilter<"NewsArticle"> | string | null
   content?: Prisma.StringNullableFilter<"NewsArticle"> | string | null
   imageUrl?: Prisma.StringNullableFilter<"NewsArticle"> | string | null
-  published?: Prisma.BoolFilter<"NewsArticle"> | boolean
-  publishDate?: Prisma.DateTimeNullableFilter<"NewsArticle"> | Date | string | null
+  publicationStatus?: Prisma.EnumPublicationStatusFilter<"NewsArticle"> | $Enums.PublicationStatus
+  publishedAt?: Prisma.DateTimeNullableFilter<"NewsArticle"> | Date | string | null
   createdById?: Prisma.StringNullableFilter<"NewsArticle"> | string | null
   createdAt?: Prisma.DateTimeFilter<"NewsArticle"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"NewsArticle"> | Date | string
+  externalUrl?: Prisma.StringNullableFilter<"NewsArticle"> | string | null
+  activeFrom?: Prisma.DateTimeNullableFilter<"NewsArticle"> | Date | string | null
+  activeUntil?: Prisma.DateTimeNullableFilter<"NewsArticle"> | Date | string | null
   createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   properties?: Prisma.NewsPropertyListRelationFilter
+  campaigns?: Prisma.CampaignListRelationFilter
+  ragDocuments?: Prisma.RagDocumentListRelationFilter
 }
 
 export type NewsArticleOrderByWithRelationInput = {
@@ -232,13 +258,18 @@ export type NewsArticleOrderByWithRelationInput = {
   summary?: Prisma.SortOrderInput | Prisma.SortOrder
   content?: Prisma.SortOrderInput | Prisma.SortOrder
   imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
-  published?: Prisma.SortOrder
-  publishDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  publicationStatus?: Prisma.SortOrder
+  publishedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  externalUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  activeFrom?: Prisma.SortOrderInput | Prisma.SortOrder
+  activeUntil?: Prisma.SortOrderInput | Prisma.SortOrder
   createdBy?: Prisma.UserOrderByWithRelationInput
   properties?: Prisma.NewsPropertyOrderByRelationAggregateInput
+  campaigns?: Prisma.CampaignOrderByRelationAggregateInput
+  ragDocuments?: Prisma.RagDocumentOrderByRelationAggregateInput
 }
 
 export type NewsArticleWhereUniqueInput = Prisma.AtLeast<{
@@ -250,13 +281,18 @@ export type NewsArticleWhereUniqueInput = Prisma.AtLeast<{
   summary?: Prisma.StringNullableFilter<"NewsArticle"> | string | null
   content?: Prisma.StringNullableFilter<"NewsArticle"> | string | null
   imageUrl?: Prisma.StringNullableFilter<"NewsArticle"> | string | null
-  published?: Prisma.BoolFilter<"NewsArticle"> | boolean
-  publishDate?: Prisma.DateTimeNullableFilter<"NewsArticle"> | Date | string | null
+  publicationStatus?: Prisma.EnumPublicationStatusFilter<"NewsArticle"> | $Enums.PublicationStatus
+  publishedAt?: Prisma.DateTimeNullableFilter<"NewsArticle"> | Date | string | null
   createdById?: Prisma.StringNullableFilter<"NewsArticle"> | string | null
   createdAt?: Prisma.DateTimeFilter<"NewsArticle"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"NewsArticle"> | Date | string
+  externalUrl?: Prisma.StringNullableFilter<"NewsArticle"> | string | null
+  activeFrom?: Prisma.DateTimeNullableFilter<"NewsArticle"> | Date | string | null
+  activeUntil?: Prisma.DateTimeNullableFilter<"NewsArticle"> | Date | string | null
   createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   properties?: Prisma.NewsPropertyListRelationFilter
+  campaigns?: Prisma.CampaignListRelationFilter
+  ragDocuments?: Prisma.RagDocumentListRelationFilter
 }, "id">
 
 export type NewsArticleOrderByWithAggregationInput = {
@@ -265,11 +301,14 @@ export type NewsArticleOrderByWithAggregationInput = {
   summary?: Prisma.SortOrderInput | Prisma.SortOrder
   content?: Prisma.SortOrderInput | Prisma.SortOrder
   imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
-  published?: Prisma.SortOrder
-  publishDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  publicationStatus?: Prisma.SortOrder
+  publishedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  externalUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  activeFrom?: Prisma.SortOrderInput | Prisma.SortOrder
+  activeUntil?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.NewsArticleCountOrderByAggregateInput
   _max?: Prisma.NewsArticleMaxOrderByAggregateInput
   _min?: Prisma.NewsArticleMinOrderByAggregateInput
@@ -284,11 +323,14 @@ export type NewsArticleScalarWhereWithAggregatesInput = {
   summary?: Prisma.StringNullableWithAggregatesFilter<"NewsArticle"> | string | null
   content?: Prisma.StringNullableWithAggregatesFilter<"NewsArticle"> | string | null
   imageUrl?: Prisma.StringNullableWithAggregatesFilter<"NewsArticle"> | string | null
-  published?: Prisma.BoolWithAggregatesFilter<"NewsArticle"> | boolean
-  publishDate?: Prisma.DateTimeNullableWithAggregatesFilter<"NewsArticle"> | Date | string | null
+  publicationStatus?: Prisma.EnumPublicationStatusWithAggregatesFilter<"NewsArticle"> | $Enums.PublicationStatus
+  publishedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"NewsArticle"> | Date | string | null
   createdById?: Prisma.StringNullableWithAggregatesFilter<"NewsArticle"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"NewsArticle"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"NewsArticle"> | Date | string
+  externalUrl?: Prisma.StringNullableWithAggregatesFilter<"NewsArticle"> | string | null
+  activeFrom?: Prisma.DateTimeNullableWithAggregatesFilter<"NewsArticle"> | Date | string | null
+  activeUntil?: Prisma.DateTimeNullableWithAggregatesFilter<"NewsArticle"> | Date | string | null
 }
 
 export type NewsArticleCreateInput = {
@@ -297,12 +339,17 @@ export type NewsArticleCreateInput = {
   summary?: string | null
   content?: string | null
   imageUrl?: string | null
-  published?: boolean
-  publishDate?: Date | string | null
+  publicationStatus?: $Enums.PublicationStatus
+  publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  externalUrl?: string | null
+  activeFrom?: Date | string | null
+  activeUntil?: Date | string | null
   createdBy?: Prisma.UserCreateNestedOneWithoutNewsArticlesInput
   properties?: Prisma.NewsPropertyCreateNestedManyWithoutNewsArticleInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutNewsArticleInput
+  ragDocuments?: Prisma.RagDocumentCreateNestedManyWithoutNewsArticleInput
 }
 
 export type NewsArticleUncheckedCreateInput = {
@@ -311,12 +358,17 @@ export type NewsArticleUncheckedCreateInput = {
   summary?: string | null
   content?: string | null
   imageUrl?: string | null
-  published?: boolean
-  publishDate?: Date | string | null
+  publicationStatus?: $Enums.PublicationStatus
+  publishedAt?: Date | string | null
   createdById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  externalUrl?: string | null
+  activeFrom?: Date | string | null
+  activeUntil?: Date | string | null
   properties?: Prisma.NewsPropertyUncheckedCreateNestedManyWithoutNewsArticleInput
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutNewsArticleInput
+  ragDocuments?: Prisma.RagDocumentUncheckedCreateNestedManyWithoutNewsArticleInput
 }
 
 export type NewsArticleUpdateInput = {
@@ -325,12 +377,17 @@ export type NewsArticleUpdateInput = {
   summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  published?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  publishDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  publicationStatus?: Prisma.EnumPublicationStatusFieldUpdateOperationsInput | $Enums.PublicationStatus
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  externalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activeFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activeUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdBy?: Prisma.UserUpdateOneWithoutNewsArticlesNestedInput
   properties?: Prisma.NewsPropertyUpdateManyWithoutNewsArticleNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutNewsArticleNestedInput
+  ragDocuments?: Prisma.RagDocumentUpdateManyWithoutNewsArticleNestedInput
 }
 
 export type NewsArticleUncheckedUpdateInput = {
@@ -339,12 +396,17 @@ export type NewsArticleUncheckedUpdateInput = {
   summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  published?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  publishDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  publicationStatus?: Prisma.EnumPublicationStatusFieldUpdateOperationsInput | $Enums.PublicationStatus
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  externalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activeFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activeUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   properties?: Prisma.NewsPropertyUncheckedUpdateManyWithoutNewsArticleNestedInput
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutNewsArticleNestedInput
+  ragDocuments?: Prisma.RagDocumentUncheckedUpdateManyWithoutNewsArticleNestedInput
 }
 
 export type NewsArticleCreateManyInput = {
@@ -353,11 +415,14 @@ export type NewsArticleCreateManyInput = {
   summary?: string | null
   content?: string | null
   imageUrl?: string | null
-  published?: boolean
-  publishDate?: Date | string | null
+  publicationStatus?: $Enums.PublicationStatus
+  publishedAt?: Date | string | null
   createdById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  externalUrl?: string | null
+  activeFrom?: Date | string | null
+  activeUntil?: Date | string | null
 }
 
 export type NewsArticleUpdateManyMutationInput = {
@@ -366,10 +431,13 @@ export type NewsArticleUpdateManyMutationInput = {
   summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  published?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  publishDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  publicationStatus?: Prisma.EnumPublicationStatusFieldUpdateOperationsInput | $Enums.PublicationStatus
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  externalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activeFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activeUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type NewsArticleUncheckedUpdateManyInput = {
@@ -378,11 +446,14 @@ export type NewsArticleUncheckedUpdateManyInput = {
   summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  published?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  publishDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  publicationStatus?: Prisma.EnumPublicationStatusFieldUpdateOperationsInput | $Enums.PublicationStatus
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  externalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activeFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activeUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type NewsArticleListRelationFilter = {
@@ -395,17 +466,25 @@ export type NewsArticleOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type NewsArticleNullableScalarRelationFilter = {
+  is?: Prisma.NewsArticleWhereInput | null
+  isNot?: Prisma.NewsArticleWhereInput | null
+}
+
 export type NewsArticleCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   summary?: Prisma.SortOrder
   content?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
-  published?: Prisma.SortOrder
-  publishDate?: Prisma.SortOrder
+  publicationStatus?: Prisma.SortOrder
+  publishedAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  externalUrl?: Prisma.SortOrder
+  activeFrom?: Prisma.SortOrder
+  activeUntil?: Prisma.SortOrder
 }
 
 export type NewsArticleMaxOrderByAggregateInput = {
@@ -414,11 +493,14 @@ export type NewsArticleMaxOrderByAggregateInput = {
   summary?: Prisma.SortOrder
   content?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
-  published?: Prisma.SortOrder
-  publishDate?: Prisma.SortOrder
+  publicationStatus?: Prisma.SortOrder
+  publishedAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  externalUrl?: Prisma.SortOrder
+  activeFrom?: Prisma.SortOrder
+  activeUntil?: Prisma.SortOrder
 }
 
 export type NewsArticleMinOrderByAggregateInput = {
@@ -427,11 +509,14 @@ export type NewsArticleMinOrderByAggregateInput = {
   summary?: Prisma.SortOrder
   content?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
-  published?: Prisma.SortOrder
-  publishDate?: Prisma.SortOrder
+  publicationStatus?: Prisma.SortOrder
+  publishedAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  externalUrl?: Prisma.SortOrder
+  activeFrom?: Prisma.SortOrder
+  activeUntil?: Prisma.SortOrder
 }
 
 export type NewsArticleScalarRelationFilter = {
@@ -481,6 +566,22 @@ export type NewsArticleUncheckedUpdateManyWithoutCreatedByNestedInput = {
   deleteMany?: Prisma.NewsArticleScalarWhereInput | Prisma.NewsArticleScalarWhereInput[]
 }
 
+export type NewsArticleCreateNestedOneWithoutCampaignsInput = {
+  create?: Prisma.XOR<Prisma.NewsArticleCreateWithoutCampaignsInput, Prisma.NewsArticleUncheckedCreateWithoutCampaignsInput>
+  connectOrCreate?: Prisma.NewsArticleCreateOrConnectWithoutCampaignsInput
+  connect?: Prisma.NewsArticleWhereUniqueInput
+}
+
+export type NewsArticleUpdateOneWithoutCampaignsNestedInput = {
+  create?: Prisma.XOR<Prisma.NewsArticleCreateWithoutCampaignsInput, Prisma.NewsArticleUncheckedCreateWithoutCampaignsInput>
+  connectOrCreate?: Prisma.NewsArticleCreateOrConnectWithoutCampaignsInput
+  upsert?: Prisma.NewsArticleUpsertWithoutCampaignsInput
+  disconnect?: Prisma.NewsArticleWhereInput | boolean
+  delete?: Prisma.NewsArticleWhereInput | boolean
+  connect?: Prisma.NewsArticleWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.NewsArticleUpdateToOneWithWhereWithoutCampaignsInput, Prisma.NewsArticleUpdateWithoutCampaignsInput>, Prisma.NewsArticleUncheckedUpdateWithoutCampaignsInput>
+}
+
 export type NewsArticleCreateNestedOneWithoutPropertiesInput = {
   create?: Prisma.XOR<Prisma.NewsArticleCreateWithoutPropertiesInput, Prisma.NewsArticleUncheckedCreateWithoutPropertiesInput>
   connectOrCreate?: Prisma.NewsArticleCreateOrConnectWithoutPropertiesInput
@@ -495,17 +596,38 @@ export type NewsArticleUpdateOneRequiredWithoutPropertiesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.NewsArticleUpdateToOneWithWhereWithoutPropertiesInput, Prisma.NewsArticleUpdateWithoutPropertiesInput>, Prisma.NewsArticleUncheckedUpdateWithoutPropertiesInput>
 }
 
+export type NewsArticleCreateNestedOneWithoutRagDocumentsInput = {
+  create?: Prisma.XOR<Prisma.NewsArticleCreateWithoutRagDocumentsInput, Prisma.NewsArticleUncheckedCreateWithoutRagDocumentsInput>
+  connectOrCreate?: Prisma.NewsArticleCreateOrConnectWithoutRagDocumentsInput
+  connect?: Prisma.NewsArticleWhereUniqueInput
+}
+
+export type NewsArticleUpdateOneWithoutRagDocumentsNestedInput = {
+  create?: Prisma.XOR<Prisma.NewsArticleCreateWithoutRagDocumentsInput, Prisma.NewsArticleUncheckedCreateWithoutRagDocumentsInput>
+  connectOrCreate?: Prisma.NewsArticleCreateOrConnectWithoutRagDocumentsInput
+  upsert?: Prisma.NewsArticleUpsertWithoutRagDocumentsInput
+  disconnect?: Prisma.NewsArticleWhereInput | boolean
+  delete?: Prisma.NewsArticleWhereInput | boolean
+  connect?: Prisma.NewsArticleWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.NewsArticleUpdateToOneWithWhereWithoutRagDocumentsInput, Prisma.NewsArticleUpdateWithoutRagDocumentsInput>, Prisma.NewsArticleUncheckedUpdateWithoutRagDocumentsInput>
+}
+
 export type NewsArticleCreateWithoutCreatedByInput = {
   id?: string
   title: string
   summary?: string | null
   content?: string | null
   imageUrl?: string | null
-  published?: boolean
-  publishDate?: Date | string | null
+  publicationStatus?: $Enums.PublicationStatus
+  publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  externalUrl?: string | null
+  activeFrom?: Date | string | null
+  activeUntil?: Date | string | null
   properties?: Prisma.NewsPropertyCreateNestedManyWithoutNewsArticleInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutNewsArticleInput
+  ragDocuments?: Prisma.RagDocumentCreateNestedManyWithoutNewsArticleInput
 }
 
 export type NewsArticleUncheckedCreateWithoutCreatedByInput = {
@@ -514,11 +636,16 @@ export type NewsArticleUncheckedCreateWithoutCreatedByInput = {
   summary?: string | null
   content?: string | null
   imageUrl?: string | null
-  published?: boolean
-  publishDate?: Date | string | null
+  publicationStatus?: $Enums.PublicationStatus
+  publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  externalUrl?: string | null
+  activeFrom?: Date | string | null
+  activeUntil?: Date | string | null
   properties?: Prisma.NewsPropertyUncheckedCreateNestedManyWithoutNewsArticleInput
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutNewsArticleInput
+  ragDocuments?: Prisma.RagDocumentUncheckedCreateNestedManyWithoutNewsArticleInput
 }
 
 export type NewsArticleCreateOrConnectWithoutCreatedByInput = {
@@ -556,11 +683,102 @@ export type NewsArticleScalarWhereInput = {
   summary?: Prisma.StringNullableFilter<"NewsArticle"> | string | null
   content?: Prisma.StringNullableFilter<"NewsArticle"> | string | null
   imageUrl?: Prisma.StringNullableFilter<"NewsArticle"> | string | null
-  published?: Prisma.BoolFilter<"NewsArticle"> | boolean
-  publishDate?: Prisma.DateTimeNullableFilter<"NewsArticle"> | Date | string | null
+  publicationStatus?: Prisma.EnumPublicationStatusFilter<"NewsArticle"> | $Enums.PublicationStatus
+  publishedAt?: Prisma.DateTimeNullableFilter<"NewsArticle"> | Date | string | null
   createdById?: Prisma.StringNullableFilter<"NewsArticle"> | string | null
   createdAt?: Prisma.DateTimeFilter<"NewsArticle"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"NewsArticle"> | Date | string
+  externalUrl?: Prisma.StringNullableFilter<"NewsArticle"> | string | null
+  activeFrom?: Prisma.DateTimeNullableFilter<"NewsArticle"> | Date | string | null
+  activeUntil?: Prisma.DateTimeNullableFilter<"NewsArticle"> | Date | string | null
+}
+
+export type NewsArticleCreateWithoutCampaignsInput = {
+  id?: string
+  title: string
+  summary?: string | null
+  content?: string | null
+  imageUrl?: string | null
+  publicationStatus?: $Enums.PublicationStatus
+  publishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  externalUrl?: string | null
+  activeFrom?: Date | string | null
+  activeUntil?: Date | string | null
+  createdBy?: Prisma.UserCreateNestedOneWithoutNewsArticlesInput
+  properties?: Prisma.NewsPropertyCreateNestedManyWithoutNewsArticleInput
+  ragDocuments?: Prisma.RagDocumentCreateNestedManyWithoutNewsArticleInput
+}
+
+export type NewsArticleUncheckedCreateWithoutCampaignsInput = {
+  id?: string
+  title: string
+  summary?: string | null
+  content?: string | null
+  imageUrl?: string | null
+  publicationStatus?: $Enums.PublicationStatus
+  publishedAt?: Date | string | null
+  createdById?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  externalUrl?: string | null
+  activeFrom?: Date | string | null
+  activeUntil?: Date | string | null
+  properties?: Prisma.NewsPropertyUncheckedCreateNestedManyWithoutNewsArticleInput
+  ragDocuments?: Prisma.RagDocumentUncheckedCreateNestedManyWithoutNewsArticleInput
+}
+
+export type NewsArticleCreateOrConnectWithoutCampaignsInput = {
+  where: Prisma.NewsArticleWhereUniqueInput
+  create: Prisma.XOR<Prisma.NewsArticleCreateWithoutCampaignsInput, Prisma.NewsArticleUncheckedCreateWithoutCampaignsInput>
+}
+
+export type NewsArticleUpsertWithoutCampaignsInput = {
+  update: Prisma.XOR<Prisma.NewsArticleUpdateWithoutCampaignsInput, Prisma.NewsArticleUncheckedUpdateWithoutCampaignsInput>
+  create: Prisma.XOR<Prisma.NewsArticleCreateWithoutCampaignsInput, Prisma.NewsArticleUncheckedCreateWithoutCampaignsInput>
+  where?: Prisma.NewsArticleWhereInput
+}
+
+export type NewsArticleUpdateToOneWithWhereWithoutCampaignsInput = {
+  where?: Prisma.NewsArticleWhereInput
+  data: Prisma.XOR<Prisma.NewsArticleUpdateWithoutCampaignsInput, Prisma.NewsArticleUncheckedUpdateWithoutCampaignsInput>
+}
+
+export type NewsArticleUpdateWithoutCampaignsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicationStatus?: Prisma.EnumPublicationStatusFieldUpdateOperationsInput | $Enums.PublicationStatus
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  externalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activeFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activeUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdBy?: Prisma.UserUpdateOneWithoutNewsArticlesNestedInput
+  properties?: Prisma.NewsPropertyUpdateManyWithoutNewsArticleNestedInput
+  ragDocuments?: Prisma.RagDocumentUpdateManyWithoutNewsArticleNestedInput
+}
+
+export type NewsArticleUncheckedUpdateWithoutCampaignsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicationStatus?: Prisma.EnumPublicationStatusFieldUpdateOperationsInput | $Enums.PublicationStatus
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  externalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activeFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activeUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  properties?: Prisma.NewsPropertyUncheckedUpdateManyWithoutNewsArticleNestedInput
+  ragDocuments?: Prisma.RagDocumentUncheckedUpdateManyWithoutNewsArticleNestedInput
 }
 
 export type NewsArticleCreateWithoutPropertiesInput = {
@@ -569,11 +787,16 @@ export type NewsArticleCreateWithoutPropertiesInput = {
   summary?: string | null
   content?: string | null
   imageUrl?: string | null
-  published?: boolean
-  publishDate?: Date | string | null
+  publicationStatus?: $Enums.PublicationStatus
+  publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  externalUrl?: string | null
+  activeFrom?: Date | string | null
+  activeUntil?: Date | string | null
   createdBy?: Prisma.UserCreateNestedOneWithoutNewsArticlesInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutNewsArticleInput
+  ragDocuments?: Prisma.RagDocumentCreateNestedManyWithoutNewsArticleInput
 }
 
 export type NewsArticleUncheckedCreateWithoutPropertiesInput = {
@@ -582,11 +805,16 @@ export type NewsArticleUncheckedCreateWithoutPropertiesInput = {
   summary?: string | null
   content?: string | null
   imageUrl?: string | null
-  published?: boolean
-  publishDate?: Date | string | null
+  publicationStatus?: $Enums.PublicationStatus
+  publishedAt?: Date | string | null
   createdById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  externalUrl?: string | null
+  activeFrom?: Date | string | null
+  activeUntil?: Date | string | null
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutNewsArticleInput
+  ragDocuments?: Prisma.RagDocumentUncheckedCreateNestedManyWithoutNewsArticleInput
 }
 
 export type NewsArticleCreateOrConnectWithoutPropertiesInput = {
@@ -611,11 +839,16 @@ export type NewsArticleUpdateWithoutPropertiesInput = {
   summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  published?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  publishDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  publicationStatus?: Prisma.EnumPublicationStatusFieldUpdateOperationsInput | $Enums.PublicationStatus
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  externalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activeFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activeUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdBy?: Prisma.UserUpdateOneWithoutNewsArticlesNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutNewsArticleNestedInput
+  ragDocuments?: Prisma.RagDocumentUpdateManyWithoutNewsArticleNestedInput
 }
 
 export type NewsArticleUncheckedUpdateWithoutPropertiesInput = {
@@ -624,11 +857,104 @@ export type NewsArticleUncheckedUpdateWithoutPropertiesInput = {
   summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  published?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  publishDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  publicationStatus?: Prisma.EnumPublicationStatusFieldUpdateOperationsInput | $Enums.PublicationStatus
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  externalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activeFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activeUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutNewsArticleNestedInput
+  ragDocuments?: Prisma.RagDocumentUncheckedUpdateManyWithoutNewsArticleNestedInput
+}
+
+export type NewsArticleCreateWithoutRagDocumentsInput = {
+  id?: string
+  title: string
+  summary?: string | null
+  content?: string | null
+  imageUrl?: string | null
+  publicationStatus?: $Enums.PublicationStatus
+  publishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  externalUrl?: string | null
+  activeFrom?: Date | string | null
+  activeUntil?: Date | string | null
+  createdBy?: Prisma.UserCreateNestedOneWithoutNewsArticlesInput
+  properties?: Prisma.NewsPropertyCreateNestedManyWithoutNewsArticleInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutNewsArticleInput
+}
+
+export type NewsArticleUncheckedCreateWithoutRagDocumentsInput = {
+  id?: string
+  title: string
+  summary?: string | null
+  content?: string | null
+  imageUrl?: string | null
+  publicationStatus?: $Enums.PublicationStatus
+  publishedAt?: Date | string | null
+  createdById?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  externalUrl?: string | null
+  activeFrom?: Date | string | null
+  activeUntil?: Date | string | null
+  properties?: Prisma.NewsPropertyUncheckedCreateNestedManyWithoutNewsArticleInput
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutNewsArticleInput
+}
+
+export type NewsArticleCreateOrConnectWithoutRagDocumentsInput = {
+  where: Prisma.NewsArticleWhereUniqueInput
+  create: Prisma.XOR<Prisma.NewsArticleCreateWithoutRagDocumentsInput, Prisma.NewsArticleUncheckedCreateWithoutRagDocumentsInput>
+}
+
+export type NewsArticleUpsertWithoutRagDocumentsInput = {
+  update: Prisma.XOR<Prisma.NewsArticleUpdateWithoutRagDocumentsInput, Prisma.NewsArticleUncheckedUpdateWithoutRagDocumentsInput>
+  create: Prisma.XOR<Prisma.NewsArticleCreateWithoutRagDocumentsInput, Prisma.NewsArticleUncheckedCreateWithoutRagDocumentsInput>
+  where?: Prisma.NewsArticleWhereInput
+}
+
+export type NewsArticleUpdateToOneWithWhereWithoutRagDocumentsInput = {
+  where?: Prisma.NewsArticleWhereInput
+  data: Prisma.XOR<Prisma.NewsArticleUpdateWithoutRagDocumentsInput, Prisma.NewsArticleUncheckedUpdateWithoutRagDocumentsInput>
+}
+
+export type NewsArticleUpdateWithoutRagDocumentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicationStatus?: Prisma.EnumPublicationStatusFieldUpdateOperationsInput | $Enums.PublicationStatus
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  externalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activeFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activeUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdBy?: Prisma.UserUpdateOneWithoutNewsArticlesNestedInput
+  properties?: Prisma.NewsPropertyUpdateManyWithoutNewsArticleNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutNewsArticleNestedInput
+}
+
+export type NewsArticleUncheckedUpdateWithoutRagDocumentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicationStatus?: Prisma.EnumPublicationStatusFieldUpdateOperationsInput | $Enums.PublicationStatus
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  externalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activeFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activeUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  properties?: Prisma.NewsPropertyUncheckedUpdateManyWithoutNewsArticleNestedInput
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutNewsArticleNestedInput
 }
 
 export type NewsArticleCreateManyCreatedByInput = {
@@ -637,10 +963,13 @@ export type NewsArticleCreateManyCreatedByInput = {
   summary?: string | null
   content?: string | null
   imageUrl?: string | null
-  published?: boolean
-  publishDate?: Date | string | null
+  publicationStatus?: $Enums.PublicationStatus
+  publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  externalUrl?: string | null
+  activeFrom?: Date | string | null
+  activeUntil?: Date | string | null
 }
 
 export type NewsArticleUpdateWithoutCreatedByInput = {
@@ -649,11 +978,16 @@ export type NewsArticleUpdateWithoutCreatedByInput = {
   summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  published?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  publishDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  publicationStatus?: Prisma.EnumPublicationStatusFieldUpdateOperationsInput | $Enums.PublicationStatus
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  externalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activeFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activeUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   properties?: Prisma.NewsPropertyUpdateManyWithoutNewsArticleNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutNewsArticleNestedInput
+  ragDocuments?: Prisma.RagDocumentUpdateManyWithoutNewsArticleNestedInput
 }
 
 export type NewsArticleUncheckedUpdateWithoutCreatedByInput = {
@@ -662,11 +996,16 @@ export type NewsArticleUncheckedUpdateWithoutCreatedByInput = {
   summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  published?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  publishDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  publicationStatus?: Prisma.EnumPublicationStatusFieldUpdateOperationsInput | $Enums.PublicationStatus
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  externalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activeFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activeUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   properties?: Prisma.NewsPropertyUncheckedUpdateManyWithoutNewsArticleNestedInput
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutNewsArticleNestedInput
+  ragDocuments?: Prisma.RagDocumentUncheckedUpdateManyWithoutNewsArticleNestedInput
 }
 
 export type NewsArticleUncheckedUpdateManyWithoutCreatedByInput = {
@@ -675,10 +1014,13 @@ export type NewsArticleUncheckedUpdateManyWithoutCreatedByInput = {
   summary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  published?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  publishDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  publicationStatus?: Prisma.EnumPublicationStatusFieldUpdateOperationsInput | $Enums.PublicationStatus
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  externalUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activeFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activeUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 
@@ -688,10 +1030,14 @@ export type NewsArticleUncheckedUpdateManyWithoutCreatedByInput = {
 
 export type NewsArticleCountOutputType = {
   properties: number
+  campaigns: number
+  ragDocuments: number
 }
 
 export type NewsArticleCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   properties?: boolean | NewsArticleCountOutputTypeCountPropertiesArgs
+  campaigns?: boolean | NewsArticleCountOutputTypeCountCampaignsArgs
+  ragDocuments?: boolean | NewsArticleCountOutputTypeCountRagDocumentsArgs
 }
 
 /**
@@ -711,6 +1057,20 @@ export type NewsArticleCountOutputTypeCountPropertiesArgs<ExtArgs extends runtim
   where?: Prisma.NewsPropertyWhereInput
 }
 
+/**
+ * NewsArticleCountOutputType without action
+ */
+export type NewsArticleCountOutputTypeCountCampaignsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CampaignWhereInput
+}
+
+/**
+ * NewsArticleCountOutputType without action
+ */
+export type NewsArticleCountOutputTypeCountRagDocumentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RagDocumentWhereInput
+}
+
 
 export type NewsArticleSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -718,13 +1078,18 @@ export type NewsArticleSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   summary?: boolean
   content?: boolean
   imageUrl?: boolean
-  published?: boolean
-  publishDate?: boolean
+  publicationStatus?: boolean
+  publishedAt?: boolean
   createdById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  externalUrl?: boolean
+  activeFrom?: boolean
+  activeUntil?: boolean
   createdBy?: boolean | Prisma.NewsArticle$createdByArgs<ExtArgs>
   properties?: boolean | Prisma.NewsArticle$propertiesArgs<ExtArgs>
+  campaigns?: boolean | Prisma.NewsArticle$campaignsArgs<ExtArgs>
+  ragDocuments?: boolean | Prisma.NewsArticle$ragDocumentsArgs<ExtArgs>
   _count?: boolean | Prisma.NewsArticleCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["newsArticle"]>
 
@@ -734,11 +1099,14 @@ export type NewsArticleSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   summary?: boolean
   content?: boolean
   imageUrl?: boolean
-  published?: boolean
-  publishDate?: boolean
+  publicationStatus?: boolean
+  publishedAt?: boolean
   createdById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  externalUrl?: boolean
+  activeFrom?: boolean
+  activeUntil?: boolean
   createdBy?: boolean | Prisma.NewsArticle$createdByArgs<ExtArgs>
 }, ExtArgs["result"]["newsArticle"]>
 
@@ -748,11 +1116,14 @@ export type NewsArticleSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   summary?: boolean
   content?: boolean
   imageUrl?: boolean
-  published?: boolean
-  publishDate?: boolean
+  publicationStatus?: boolean
+  publishedAt?: boolean
   createdById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  externalUrl?: boolean
+  activeFrom?: boolean
+  activeUntil?: boolean
   createdBy?: boolean | Prisma.NewsArticle$createdByArgs<ExtArgs>
 }, ExtArgs["result"]["newsArticle"]>
 
@@ -762,17 +1133,22 @@ export type NewsArticleSelectScalar = {
   summary?: boolean
   content?: boolean
   imageUrl?: boolean
-  published?: boolean
-  publishDate?: boolean
+  publicationStatus?: boolean
+  publishedAt?: boolean
   createdById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  externalUrl?: boolean
+  activeFrom?: boolean
+  activeUntil?: boolean
 }
 
-export type NewsArticleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "summary" | "content" | "imageUrl" | "published" | "publishDate" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["newsArticle"]>
+export type NewsArticleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "summary" | "content" | "imageUrl" | "publicationStatus" | "publishedAt" | "createdById" | "createdAt" | "updatedAt" | "externalUrl" | "activeFrom" | "activeUntil", ExtArgs["result"]["newsArticle"]>
 export type NewsArticleInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   createdBy?: boolean | Prisma.NewsArticle$createdByArgs<ExtArgs>
   properties?: boolean | Prisma.NewsArticle$propertiesArgs<ExtArgs>
+  campaigns?: boolean | Prisma.NewsArticle$campaignsArgs<ExtArgs>
+  ragDocuments?: boolean | Prisma.NewsArticle$ragDocumentsArgs<ExtArgs>
   _count?: boolean | Prisma.NewsArticleCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type NewsArticleIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -787,6 +1163,8 @@ export type $NewsArticlePayload<ExtArgs extends runtime.Types.Extensions.Interna
   objects: {
     createdBy: Prisma.$UserPayload<ExtArgs> | null
     properties: Prisma.$NewsPropertyPayload<ExtArgs>[]
+    campaigns: Prisma.$CampaignPayload<ExtArgs>[]
+    ragDocuments: Prisma.$RagDocumentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -794,11 +1172,14 @@ export type $NewsArticlePayload<ExtArgs extends runtime.Types.Extensions.Interna
     summary: string | null
     content: string | null
     imageUrl: string | null
-    published: boolean
-    publishDate: Date | null
+    publicationStatus: $Enums.PublicationStatus
+    publishedAt: Date | null
     createdById: string | null
     createdAt: Date
     updatedAt: Date
+    externalUrl: string | null
+    activeFrom: Date | null
+    activeUntil: Date | null
   }, ExtArgs["result"]["newsArticle"]>
   composites: {}
 }
@@ -1195,6 +1576,8 @@ export interface Prisma__NewsArticleClient<T, Null = never, ExtArgs extends runt
   readonly [Symbol.toStringTag]: "PrismaPromise"
   createdBy<T extends Prisma.NewsArticle$createdByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.NewsArticle$createdByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   properties<T extends Prisma.NewsArticle$propertiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.NewsArticle$propertiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NewsPropertyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  campaigns<T extends Prisma.NewsArticle$campaignsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.NewsArticle$campaignsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CampaignPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  ragDocuments<T extends Prisma.NewsArticle$ragDocumentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.NewsArticle$ragDocumentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RagDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1229,11 +1612,14 @@ export interface NewsArticleFieldRefs {
   readonly summary: Prisma.FieldRef<"NewsArticle", 'String'>
   readonly content: Prisma.FieldRef<"NewsArticle", 'String'>
   readonly imageUrl: Prisma.FieldRef<"NewsArticle", 'String'>
-  readonly published: Prisma.FieldRef<"NewsArticle", 'Boolean'>
-  readonly publishDate: Prisma.FieldRef<"NewsArticle", 'DateTime'>
+  readonly publicationStatus: Prisma.FieldRef<"NewsArticle", 'PublicationStatus'>
+  readonly publishedAt: Prisma.FieldRef<"NewsArticle", 'DateTime'>
   readonly createdById: Prisma.FieldRef<"NewsArticle", 'String'>
   readonly createdAt: Prisma.FieldRef<"NewsArticle", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"NewsArticle", 'DateTime'>
+  readonly externalUrl: Prisma.FieldRef<"NewsArticle", 'String'>
+  readonly activeFrom: Prisma.FieldRef<"NewsArticle", 'DateTime'>
+  readonly activeUntil: Prisma.FieldRef<"NewsArticle", 'DateTime'>
 }
     
 
@@ -1675,6 +2061,54 @@ export type NewsArticle$propertiesArgs<ExtArgs extends runtime.Types.Extensions.
   take?: number
   skip?: number
   distinct?: Prisma.NewsPropertyScalarFieldEnum | Prisma.NewsPropertyScalarFieldEnum[]
+}
+
+/**
+ * NewsArticle.campaigns
+ */
+export type NewsArticle$campaignsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Campaign
+   */
+  select?: Prisma.CampaignSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Campaign
+   */
+  omit?: Prisma.CampaignOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CampaignInclude<ExtArgs> | null
+  where?: Prisma.CampaignWhereInput
+  orderBy?: Prisma.CampaignOrderByWithRelationInput | Prisma.CampaignOrderByWithRelationInput[]
+  cursor?: Prisma.CampaignWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CampaignScalarFieldEnum | Prisma.CampaignScalarFieldEnum[]
+}
+
+/**
+ * NewsArticle.ragDocuments
+ */
+export type NewsArticle$ragDocumentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the RagDocument
+   */
+  select?: Prisma.RagDocumentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the RagDocument
+   */
+  omit?: Prisma.RagDocumentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RagDocumentInclude<ExtArgs> | null
+  where?: Prisma.RagDocumentWhereInput
+  orderBy?: Prisma.RagDocumentOrderByWithRelationInput | Prisma.RagDocumentOrderByWithRelationInput[]
+  cursor?: Prisma.RagDocumentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.RagDocumentScalarFieldEnum | Prisma.RagDocumentScalarFieldEnum[]
 }
 
 /**

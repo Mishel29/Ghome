@@ -42,8 +42,15 @@ export type AiJobMinAggregateOutputType = {
   prompt: string | null
   error: string | null
   attempts: number | null
+  queuedAt: Date | null
+  providerTaskId: string | null
+  createdById: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  reviewStatus: $Enums.ReviewStatus | null
+  reviewedById: string | null
+  reviewedAt: Date | null
+  reviewNotes: string | null
 }
 
 export type AiJobMaxAggregateOutputType = {
@@ -54,8 +61,15 @@ export type AiJobMaxAggregateOutputType = {
   prompt: string | null
   error: string | null
   attempts: number | null
+  queuedAt: Date | null
+  providerTaskId: string | null
+  createdById: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  reviewStatus: $Enums.ReviewStatus | null
+  reviewedById: string | null
+  reviewedAt: Date | null
+  reviewNotes: string | null
 }
 
 export type AiJobCountAggregateOutputType = {
@@ -67,8 +81,15 @@ export type AiJobCountAggregateOutputType = {
   result: number
   error: number
   attempts: number
+  queuedAt: number
+  providerTaskId: number
+  createdById: number
   createdAt: number
   updatedAt: number
+  reviewStatus: number
+  reviewedById: number
+  reviewedAt: number
+  reviewNotes: number
   _all: number
 }
 
@@ -89,8 +110,15 @@ export type AiJobMinAggregateInputType = {
   prompt?: true
   error?: true
   attempts?: true
+  queuedAt?: true
+  providerTaskId?: true
+  createdById?: true
   createdAt?: true
   updatedAt?: true
+  reviewStatus?: true
+  reviewedById?: true
+  reviewedAt?: true
+  reviewNotes?: true
 }
 
 export type AiJobMaxAggregateInputType = {
@@ -101,8 +129,15 @@ export type AiJobMaxAggregateInputType = {
   prompt?: true
   error?: true
   attempts?: true
+  queuedAt?: true
+  providerTaskId?: true
+  createdById?: true
   createdAt?: true
   updatedAt?: true
+  reviewStatus?: true
+  reviewedById?: true
+  reviewedAt?: true
+  reviewNotes?: true
 }
 
 export type AiJobCountAggregateInputType = {
@@ -114,8 +149,15 @@ export type AiJobCountAggregateInputType = {
   result?: true
   error?: true
   attempts?: true
+  queuedAt?: true
+  providerTaskId?: true
+  createdById?: true
   createdAt?: true
   updatedAt?: true
+  reviewStatus?: true
+  reviewedById?: true
+  reviewedAt?: true
+  reviewNotes?: true
   _all?: true
 }
 
@@ -214,8 +256,15 @@ export type AiJobGroupByOutputType = {
   result: runtime.JsonValue | null
   error: string | null
   attempts: number
+  queuedAt: Date | null
+  providerTaskId: string | null
+  createdById: string | null
   createdAt: Date
   updatedAt: Date
+  reviewStatus: $Enums.ReviewStatus
+  reviewedById: string | null
+  reviewedAt: Date | null
+  reviewNotes: string | null
   _count: AiJobCountAggregateOutputType | null
   _avg: AiJobAvgAggregateOutputType | null
   _sum: AiJobSumAggregateOutputType | null
@@ -250,9 +299,20 @@ export type AiJobWhereInput = {
   result?: Prisma.JsonNullableFilter<"AiJob">
   error?: Prisma.StringNullableFilter<"AiJob"> | string | null
   attempts?: Prisma.IntFilter<"AiJob"> | number
+  queuedAt?: Prisma.DateTimeNullableFilter<"AiJob"> | Date | string | null
+  providerTaskId?: Prisma.StringNullableFilter<"AiJob"> | string | null
+  createdById?: Prisma.StringNullableFilter<"AiJob"> | string | null
   createdAt?: Prisma.DateTimeFilter<"AiJob"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"AiJob"> | Date | string
+  reviewStatus?: Prisma.EnumReviewStatusFilter<"AiJob"> | $Enums.ReviewStatus
+  reviewedById?: Prisma.StringNullableFilter<"AiJob"> | string | null
+  reviewedAt?: Prisma.DateTimeNullableFilter<"AiJob"> | Date | string | null
+  reviewNotes?: Prisma.StringNullableFilter<"AiJob"> | string | null
+  createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   property?: Prisma.XOR<Prisma.PropertyNullableScalarRelationFilter, Prisma.PropertyWhereInput> | null
+  reviewedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  media?: Prisma.PropertyMediaListRelationFilter
+  history?: Prisma.AiJobAttemptListRelationFilter
 }
 
 export type AiJobOrderByWithRelationInput = {
@@ -264,9 +324,20 @@ export type AiJobOrderByWithRelationInput = {
   result?: Prisma.SortOrderInput | Prisma.SortOrder
   error?: Prisma.SortOrderInput | Prisma.SortOrder
   attempts?: Prisma.SortOrder
+  queuedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  providerTaskId?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  reviewStatus?: Prisma.SortOrder
+  reviewedById?: Prisma.SortOrderInput | Prisma.SortOrder
+  reviewedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  reviewNotes?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdBy?: Prisma.UserOrderByWithRelationInput
   property?: Prisma.PropertyOrderByWithRelationInput
+  reviewedBy?: Prisma.UserOrderByWithRelationInput
+  media?: Prisma.PropertyMediaOrderByRelationAggregateInput
+  history?: Prisma.AiJobAttemptOrderByRelationAggregateInput
 }
 
 export type AiJobWhereUniqueInput = Prisma.AtLeast<{
@@ -281,9 +352,20 @@ export type AiJobWhereUniqueInput = Prisma.AtLeast<{
   result?: Prisma.JsonNullableFilter<"AiJob">
   error?: Prisma.StringNullableFilter<"AiJob"> | string | null
   attempts?: Prisma.IntFilter<"AiJob"> | number
+  queuedAt?: Prisma.DateTimeNullableFilter<"AiJob"> | Date | string | null
+  providerTaskId?: Prisma.StringNullableFilter<"AiJob"> | string | null
+  createdById?: Prisma.StringNullableFilter<"AiJob"> | string | null
   createdAt?: Prisma.DateTimeFilter<"AiJob"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"AiJob"> | Date | string
+  reviewStatus?: Prisma.EnumReviewStatusFilter<"AiJob"> | $Enums.ReviewStatus
+  reviewedById?: Prisma.StringNullableFilter<"AiJob"> | string | null
+  reviewedAt?: Prisma.DateTimeNullableFilter<"AiJob"> | Date | string | null
+  reviewNotes?: Prisma.StringNullableFilter<"AiJob"> | string | null
+  createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   property?: Prisma.XOR<Prisma.PropertyNullableScalarRelationFilter, Prisma.PropertyWhereInput> | null
+  reviewedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  media?: Prisma.PropertyMediaListRelationFilter
+  history?: Prisma.AiJobAttemptListRelationFilter
 }, "id">
 
 export type AiJobOrderByWithAggregationInput = {
@@ -295,8 +377,15 @@ export type AiJobOrderByWithAggregationInput = {
   result?: Prisma.SortOrderInput | Prisma.SortOrder
   error?: Prisma.SortOrderInput | Prisma.SortOrder
   attempts?: Prisma.SortOrder
+  queuedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  providerTaskId?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  reviewStatus?: Prisma.SortOrder
+  reviewedById?: Prisma.SortOrderInput | Prisma.SortOrder
+  reviewedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  reviewNotes?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.AiJobCountOrderByAggregateInput
   _avg?: Prisma.AiJobAvgOrderByAggregateInput
   _max?: Prisma.AiJobMaxOrderByAggregateInput
@@ -316,8 +405,15 @@ export type AiJobScalarWhereWithAggregatesInput = {
   result?: Prisma.JsonNullableWithAggregatesFilter<"AiJob">
   error?: Prisma.StringNullableWithAggregatesFilter<"AiJob"> | string | null
   attempts?: Prisma.IntWithAggregatesFilter<"AiJob"> | number
+  queuedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"AiJob"> | Date | string | null
+  providerTaskId?: Prisma.StringNullableWithAggregatesFilter<"AiJob"> | string | null
+  createdById?: Prisma.StringNullableWithAggregatesFilter<"AiJob"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"AiJob"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"AiJob"> | Date | string
+  reviewStatus?: Prisma.EnumReviewStatusWithAggregatesFilter<"AiJob"> | $Enums.ReviewStatus
+  reviewedById?: Prisma.StringNullableWithAggregatesFilter<"AiJob"> | string | null
+  reviewedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"AiJob"> | Date | string | null
+  reviewNotes?: Prisma.StringNullableWithAggregatesFilter<"AiJob"> | string | null
 }
 
 export type AiJobCreateInput = {
@@ -328,9 +424,18 @@ export type AiJobCreateInput = {
   result?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   error?: string | null
   attempts?: number
+  queuedAt?: Date | string | null
+  providerTaskId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  reviewStatus?: $Enums.ReviewStatus
+  reviewedAt?: Date | string | null
+  reviewNotes?: string | null
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedAiJobsInput
   property?: Prisma.PropertyCreateNestedOneWithoutAiJobsInput
+  reviewedBy?: Prisma.UserCreateNestedOneWithoutReviewedJobsInput
+  media?: Prisma.PropertyMediaCreateNestedManyWithoutAiJobInput
+  history?: Prisma.AiJobAttemptCreateNestedManyWithoutJobInput
 }
 
 export type AiJobUncheckedCreateInput = {
@@ -342,8 +447,17 @@ export type AiJobUncheckedCreateInput = {
   result?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   error?: string | null
   attempts?: number
+  queuedAt?: Date | string | null
+  providerTaskId?: string | null
+  createdById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  reviewStatus?: $Enums.ReviewStatus
+  reviewedById?: string | null
+  reviewedAt?: Date | string | null
+  reviewNotes?: string | null
+  media?: Prisma.PropertyMediaUncheckedCreateNestedManyWithoutAiJobInput
+  history?: Prisma.AiJobAttemptUncheckedCreateNestedManyWithoutJobInput
 }
 
 export type AiJobUpdateInput = {
@@ -354,9 +468,18 @@ export type AiJobUpdateInput = {
   result?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attempts?: Prisma.IntFieldUpdateOperationsInput | number
+  queuedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  providerTaskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reviewStatus?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedAiJobsNestedInput
   property?: Prisma.PropertyUpdateOneWithoutAiJobsNestedInput
+  reviewedBy?: Prisma.UserUpdateOneWithoutReviewedJobsNestedInput
+  media?: Prisma.PropertyMediaUpdateManyWithoutAiJobNestedInput
+  history?: Prisma.AiJobAttemptUpdateManyWithoutJobNestedInput
 }
 
 export type AiJobUncheckedUpdateInput = {
@@ -368,8 +491,17 @@ export type AiJobUncheckedUpdateInput = {
   result?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attempts?: Prisma.IntFieldUpdateOperationsInput | number
+  queuedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  providerTaskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reviewStatus?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+  reviewedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  media?: Prisma.PropertyMediaUncheckedUpdateManyWithoutAiJobNestedInput
+  history?: Prisma.AiJobAttemptUncheckedUpdateManyWithoutJobNestedInput
 }
 
 export type AiJobCreateManyInput = {
@@ -381,8 +513,15 @@ export type AiJobCreateManyInput = {
   result?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   error?: string | null
   attempts?: number
+  queuedAt?: Date | string | null
+  providerTaskId?: string | null
+  createdById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  reviewStatus?: $Enums.ReviewStatus
+  reviewedById?: string | null
+  reviewedAt?: Date | string | null
+  reviewNotes?: string | null
 }
 
 export type AiJobUpdateManyMutationInput = {
@@ -393,8 +532,13 @@ export type AiJobUpdateManyMutationInput = {
   result?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attempts?: Prisma.IntFieldUpdateOperationsInput | number
+  queuedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  providerTaskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reviewStatus?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type AiJobUncheckedUpdateManyInput = {
@@ -406,8 +550,15 @@ export type AiJobUncheckedUpdateManyInput = {
   result?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attempts?: Prisma.IntFieldUpdateOperationsInput | number
+  queuedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  providerTaskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reviewStatus?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+  reviewedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type AiJobListRelationFilter = {
@@ -420,6 +571,11 @@ export type AiJobOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type AiJobNullableScalarRelationFilter = {
+  is?: Prisma.AiJobWhereInput | null
+  isNot?: Prisma.AiJobWhereInput | null
+}
+
 export type AiJobCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   propertyId?: Prisma.SortOrder
@@ -429,8 +585,15 @@ export type AiJobCountOrderByAggregateInput = {
   result?: Prisma.SortOrder
   error?: Prisma.SortOrder
   attempts?: Prisma.SortOrder
+  queuedAt?: Prisma.SortOrder
+  providerTaskId?: Prisma.SortOrder
+  createdById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  reviewStatus?: Prisma.SortOrder
+  reviewedById?: Prisma.SortOrder
+  reviewedAt?: Prisma.SortOrder
+  reviewNotes?: Prisma.SortOrder
 }
 
 export type AiJobAvgOrderByAggregateInput = {
@@ -445,8 +608,15 @@ export type AiJobMaxOrderByAggregateInput = {
   prompt?: Prisma.SortOrder
   error?: Prisma.SortOrder
   attempts?: Prisma.SortOrder
+  queuedAt?: Prisma.SortOrder
+  providerTaskId?: Prisma.SortOrder
+  createdById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  reviewStatus?: Prisma.SortOrder
+  reviewedById?: Prisma.SortOrder
+  reviewedAt?: Prisma.SortOrder
+  reviewNotes?: Prisma.SortOrder
 }
 
 export type AiJobMinOrderByAggregateInput = {
@@ -457,12 +627,108 @@ export type AiJobMinOrderByAggregateInput = {
   prompt?: Prisma.SortOrder
   error?: Prisma.SortOrder
   attempts?: Prisma.SortOrder
+  queuedAt?: Prisma.SortOrder
+  providerTaskId?: Prisma.SortOrder
+  createdById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  reviewStatus?: Prisma.SortOrder
+  reviewedById?: Prisma.SortOrder
+  reviewedAt?: Prisma.SortOrder
+  reviewNotes?: Prisma.SortOrder
 }
 
 export type AiJobSumOrderByAggregateInput = {
   attempts?: Prisma.SortOrder
+}
+
+export type AiJobScalarRelationFilter = {
+  is?: Prisma.AiJobWhereInput
+  isNot?: Prisma.AiJobWhereInput
+}
+
+export type AiJobCreateNestedManyWithoutReviewedByInput = {
+  create?: Prisma.XOR<Prisma.AiJobCreateWithoutReviewedByInput, Prisma.AiJobUncheckedCreateWithoutReviewedByInput> | Prisma.AiJobCreateWithoutReviewedByInput[] | Prisma.AiJobUncheckedCreateWithoutReviewedByInput[]
+  connectOrCreate?: Prisma.AiJobCreateOrConnectWithoutReviewedByInput | Prisma.AiJobCreateOrConnectWithoutReviewedByInput[]
+  createMany?: Prisma.AiJobCreateManyReviewedByInputEnvelope
+  connect?: Prisma.AiJobWhereUniqueInput | Prisma.AiJobWhereUniqueInput[]
+}
+
+export type AiJobCreateNestedManyWithoutCreatedByInput = {
+  create?: Prisma.XOR<Prisma.AiJobCreateWithoutCreatedByInput, Prisma.AiJobUncheckedCreateWithoutCreatedByInput> | Prisma.AiJobCreateWithoutCreatedByInput[] | Prisma.AiJobUncheckedCreateWithoutCreatedByInput[]
+  connectOrCreate?: Prisma.AiJobCreateOrConnectWithoutCreatedByInput | Prisma.AiJobCreateOrConnectWithoutCreatedByInput[]
+  createMany?: Prisma.AiJobCreateManyCreatedByInputEnvelope
+  connect?: Prisma.AiJobWhereUniqueInput | Prisma.AiJobWhereUniqueInput[]
+}
+
+export type AiJobUncheckedCreateNestedManyWithoutReviewedByInput = {
+  create?: Prisma.XOR<Prisma.AiJobCreateWithoutReviewedByInput, Prisma.AiJobUncheckedCreateWithoutReviewedByInput> | Prisma.AiJobCreateWithoutReviewedByInput[] | Prisma.AiJobUncheckedCreateWithoutReviewedByInput[]
+  connectOrCreate?: Prisma.AiJobCreateOrConnectWithoutReviewedByInput | Prisma.AiJobCreateOrConnectWithoutReviewedByInput[]
+  createMany?: Prisma.AiJobCreateManyReviewedByInputEnvelope
+  connect?: Prisma.AiJobWhereUniqueInput | Prisma.AiJobWhereUniqueInput[]
+}
+
+export type AiJobUncheckedCreateNestedManyWithoutCreatedByInput = {
+  create?: Prisma.XOR<Prisma.AiJobCreateWithoutCreatedByInput, Prisma.AiJobUncheckedCreateWithoutCreatedByInput> | Prisma.AiJobCreateWithoutCreatedByInput[] | Prisma.AiJobUncheckedCreateWithoutCreatedByInput[]
+  connectOrCreate?: Prisma.AiJobCreateOrConnectWithoutCreatedByInput | Prisma.AiJobCreateOrConnectWithoutCreatedByInput[]
+  createMany?: Prisma.AiJobCreateManyCreatedByInputEnvelope
+  connect?: Prisma.AiJobWhereUniqueInput | Prisma.AiJobWhereUniqueInput[]
+}
+
+export type AiJobUpdateManyWithoutReviewedByNestedInput = {
+  create?: Prisma.XOR<Prisma.AiJobCreateWithoutReviewedByInput, Prisma.AiJobUncheckedCreateWithoutReviewedByInput> | Prisma.AiJobCreateWithoutReviewedByInput[] | Prisma.AiJobUncheckedCreateWithoutReviewedByInput[]
+  connectOrCreate?: Prisma.AiJobCreateOrConnectWithoutReviewedByInput | Prisma.AiJobCreateOrConnectWithoutReviewedByInput[]
+  upsert?: Prisma.AiJobUpsertWithWhereUniqueWithoutReviewedByInput | Prisma.AiJobUpsertWithWhereUniqueWithoutReviewedByInput[]
+  createMany?: Prisma.AiJobCreateManyReviewedByInputEnvelope
+  set?: Prisma.AiJobWhereUniqueInput | Prisma.AiJobWhereUniqueInput[]
+  disconnect?: Prisma.AiJobWhereUniqueInput | Prisma.AiJobWhereUniqueInput[]
+  delete?: Prisma.AiJobWhereUniqueInput | Prisma.AiJobWhereUniqueInput[]
+  connect?: Prisma.AiJobWhereUniqueInput | Prisma.AiJobWhereUniqueInput[]
+  update?: Prisma.AiJobUpdateWithWhereUniqueWithoutReviewedByInput | Prisma.AiJobUpdateWithWhereUniqueWithoutReviewedByInput[]
+  updateMany?: Prisma.AiJobUpdateManyWithWhereWithoutReviewedByInput | Prisma.AiJobUpdateManyWithWhereWithoutReviewedByInput[]
+  deleteMany?: Prisma.AiJobScalarWhereInput | Prisma.AiJobScalarWhereInput[]
+}
+
+export type AiJobUpdateManyWithoutCreatedByNestedInput = {
+  create?: Prisma.XOR<Prisma.AiJobCreateWithoutCreatedByInput, Prisma.AiJobUncheckedCreateWithoutCreatedByInput> | Prisma.AiJobCreateWithoutCreatedByInput[] | Prisma.AiJobUncheckedCreateWithoutCreatedByInput[]
+  connectOrCreate?: Prisma.AiJobCreateOrConnectWithoutCreatedByInput | Prisma.AiJobCreateOrConnectWithoutCreatedByInput[]
+  upsert?: Prisma.AiJobUpsertWithWhereUniqueWithoutCreatedByInput | Prisma.AiJobUpsertWithWhereUniqueWithoutCreatedByInput[]
+  createMany?: Prisma.AiJobCreateManyCreatedByInputEnvelope
+  set?: Prisma.AiJobWhereUniqueInput | Prisma.AiJobWhereUniqueInput[]
+  disconnect?: Prisma.AiJobWhereUniqueInput | Prisma.AiJobWhereUniqueInput[]
+  delete?: Prisma.AiJobWhereUniqueInput | Prisma.AiJobWhereUniqueInput[]
+  connect?: Prisma.AiJobWhereUniqueInput | Prisma.AiJobWhereUniqueInput[]
+  update?: Prisma.AiJobUpdateWithWhereUniqueWithoutCreatedByInput | Prisma.AiJobUpdateWithWhereUniqueWithoutCreatedByInput[]
+  updateMany?: Prisma.AiJobUpdateManyWithWhereWithoutCreatedByInput | Prisma.AiJobUpdateManyWithWhereWithoutCreatedByInput[]
+  deleteMany?: Prisma.AiJobScalarWhereInput | Prisma.AiJobScalarWhereInput[]
+}
+
+export type AiJobUncheckedUpdateManyWithoutReviewedByNestedInput = {
+  create?: Prisma.XOR<Prisma.AiJobCreateWithoutReviewedByInput, Prisma.AiJobUncheckedCreateWithoutReviewedByInput> | Prisma.AiJobCreateWithoutReviewedByInput[] | Prisma.AiJobUncheckedCreateWithoutReviewedByInput[]
+  connectOrCreate?: Prisma.AiJobCreateOrConnectWithoutReviewedByInput | Prisma.AiJobCreateOrConnectWithoutReviewedByInput[]
+  upsert?: Prisma.AiJobUpsertWithWhereUniqueWithoutReviewedByInput | Prisma.AiJobUpsertWithWhereUniqueWithoutReviewedByInput[]
+  createMany?: Prisma.AiJobCreateManyReviewedByInputEnvelope
+  set?: Prisma.AiJobWhereUniqueInput | Prisma.AiJobWhereUniqueInput[]
+  disconnect?: Prisma.AiJobWhereUniqueInput | Prisma.AiJobWhereUniqueInput[]
+  delete?: Prisma.AiJobWhereUniqueInput | Prisma.AiJobWhereUniqueInput[]
+  connect?: Prisma.AiJobWhereUniqueInput | Prisma.AiJobWhereUniqueInput[]
+  update?: Prisma.AiJobUpdateWithWhereUniqueWithoutReviewedByInput | Prisma.AiJobUpdateWithWhereUniqueWithoutReviewedByInput[]
+  updateMany?: Prisma.AiJobUpdateManyWithWhereWithoutReviewedByInput | Prisma.AiJobUpdateManyWithWhereWithoutReviewedByInput[]
+  deleteMany?: Prisma.AiJobScalarWhereInput | Prisma.AiJobScalarWhereInput[]
+}
+
+export type AiJobUncheckedUpdateManyWithoutCreatedByNestedInput = {
+  create?: Prisma.XOR<Prisma.AiJobCreateWithoutCreatedByInput, Prisma.AiJobUncheckedCreateWithoutCreatedByInput> | Prisma.AiJobCreateWithoutCreatedByInput[] | Prisma.AiJobUncheckedCreateWithoutCreatedByInput[]
+  connectOrCreate?: Prisma.AiJobCreateOrConnectWithoutCreatedByInput | Prisma.AiJobCreateOrConnectWithoutCreatedByInput[]
+  upsert?: Prisma.AiJobUpsertWithWhereUniqueWithoutCreatedByInput | Prisma.AiJobUpsertWithWhereUniqueWithoutCreatedByInput[]
+  createMany?: Prisma.AiJobCreateManyCreatedByInputEnvelope
+  set?: Prisma.AiJobWhereUniqueInput | Prisma.AiJobWhereUniqueInput[]
+  disconnect?: Prisma.AiJobWhereUniqueInput | Prisma.AiJobWhereUniqueInput[]
+  delete?: Prisma.AiJobWhereUniqueInput | Prisma.AiJobWhereUniqueInput[]
+  connect?: Prisma.AiJobWhereUniqueInput | Prisma.AiJobWhereUniqueInput[]
+  update?: Prisma.AiJobUpdateWithWhereUniqueWithoutCreatedByInput | Prisma.AiJobUpdateWithWhereUniqueWithoutCreatedByInput[]
+  updateMany?: Prisma.AiJobUpdateManyWithWhereWithoutCreatedByInput | Prisma.AiJobUpdateManyWithWhereWithoutCreatedByInput[]
+  deleteMany?: Prisma.AiJobScalarWhereInput | Prisma.AiJobScalarWhereInput[]
 }
 
 export type AiJobCreateNestedManyWithoutPropertyInput = {
@@ -507,12 +773,205 @@ export type AiJobUncheckedUpdateManyWithoutPropertyNestedInput = {
   deleteMany?: Prisma.AiJobScalarWhereInput | Prisma.AiJobScalarWhereInput[]
 }
 
+export type AiJobCreateNestedOneWithoutMediaInput = {
+  create?: Prisma.XOR<Prisma.AiJobCreateWithoutMediaInput, Prisma.AiJobUncheckedCreateWithoutMediaInput>
+  connectOrCreate?: Prisma.AiJobCreateOrConnectWithoutMediaInput
+  connect?: Prisma.AiJobWhereUniqueInput
+}
+
+export type AiJobUpdateOneWithoutMediaNestedInput = {
+  create?: Prisma.XOR<Prisma.AiJobCreateWithoutMediaInput, Prisma.AiJobUncheckedCreateWithoutMediaInput>
+  connectOrCreate?: Prisma.AiJobCreateOrConnectWithoutMediaInput
+  upsert?: Prisma.AiJobUpsertWithoutMediaInput
+  disconnect?: Prisma.AiJobWhereInput | boolean
+  delete?: Prisma.AiJobWhereInput | boolean
+  connect?: Prisma.AiJobWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.AiJobUpdateToOneWithWhereWithoutMediaInput, Prisma.AiJobUpdateWithoutMediaInput>, Prisma.AiJobUncheckedUpdateWithoutMediaInput>
+}
+
 export type EnumAiJobTypeFieldUpdateOperationsInput = {
   set?: $Enums.AiJobType
 }
 
 export type EnumAiJobStatusFieldUpdateOperationsInput = {
   set?: $Enums.AiJobStatus
+}
+
+export type EnumReviewStatusFieldUpdateOperationsInput = {
+  set?: $Enums.ReviewStatus
+}
+
+export type AiJobCreateNestedOneWithoutHistoryInput = {
+  create?: Prisma.XOR<Prisma.AiJobCreateWithoutHistoryInput, Prisma.AiJobUncheckedCreateWithoutHistoryInput>
+  connectOrCreate?: Prisma.AiJobCreateOrConnectWithoutHistoryInput
+  connect?: Prisma.AiJobWhereUniqueInput
+}
+
+export type AiJobUpdateOneRequiredWithoutHistoryNestedInput = {
+  create?: Prisma.XOR<Prisma.AiJobCreateWithoutHistoryInput, Prisma.AiJobUncheckedCreateWithoutHistoryInput>
+  connectOrCreate?: Prisma.AiJobCreateOrConnectWithoutHistoryInput
+  upsert?: Prisma.AiJobUpsertWithoutHistoryInput
+  connect?: Prisma.AiJobWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.AiJobUpdateToOneWithWhereWithoutHistoryInput, Prisma.AiJobUpdateWithoutHistoryInput>, Prisma.AiJobUncheckedUpdateWithoutHistoryInput>
+}
+
+export type AiJobCreateWithoutReviewedByInput = {
+  id?: string
+  type: $Enums.AiJobType
+  status?: $Enums.AiJobStatus
+  prompt?: string | null
+  result?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  error?: string | null
+  attempts?: number
+  queuedAt?: Date | string | null
+  providerTaskId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  reviewStatus?: $Enums.ReviewStatus
+  reviewedAt?: Date | string | null
+  reviewNotes?: string | null
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedAiJobsInput
+  property?: Prisma.PropertyCreateNestedOneWithoutAiJobsInput
+  media?: Prisma.PropertyMediaCreateNestedManyWithoutAiJobInput
+  history?: Prisma.AiJobAttemptCreateNestedManyWithoutJobInput
+}
+
+export type AiJobUncheckedCreateWithoutReviewedByInput = {
+  id?: string
+  propertyId?: string | null
+  type: $Enums.AiJobType
+  status?: $Enums.AiJobStatus
+  prompt?: string | null
+  result?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  error?: string | null
+  attempts?: number
+  queuedAt?: Date | string | null
+  providerTaskId?: string | null
+  createdById?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  reviewStatus?: $Enums.ReviewStatus
+  reviewedAt?: Date | string | null
+  reviewNotes?: string | null
+  media?: Prisma.PropertyMediaUncheckedCreateNestedManyWithoutAiJobInput
+  history?: Prisma.AiJobAttemptUncheckedCreateNestedManyWithoutJobInput
+}
+
+export type AiJobCreateOrConnectWithoutReviewedByInput = {
+  where: Prisma.AiJobWhereUniqueInput
+  create: Prisma.XOR<Prisma.AiJobCreateWithoutReviewedByInput, Prisma.AiJobUncheckedCreateWithoutReviewedByInput>
+}
+
+export type AiJobCreateManyReviewedByInputEnvelope = {
+  data: Prisma.AiJobCreateManyReviewedByInput | Prisma.AiJobCreateManyReviewedByInput[]
+  skipDuplicates?: boolean
+}
+
+export type AiJobCreateWithoutCreatedByInput = {
+  id?: string
+  type: $Enums.AiJobType
+  status?: $Enums.AiJobStatus
+  prompt?: string | null
+  result?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  error?: string | null
+  attempts?: number
+  queuedAt?: Date | string | null
+  providerTaskId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  reviewStatus?: $Enums.ReviewStatus
+  reviewedAt?: Date | string | null
+  reviewNotes?: string | null
+  property?: Prisma.PropertyCreateNestedOneWithoutAiJobsInput
+  reviewedBy?: Prisma.UserCreateNestedOneWithoutReviewedJobsInput
+  media?: Prisma.PropertyMediaCreateNestedManyWithoutAiJobInput
+  history?: Prisma.AiJobAttemptCreateNestedManyWithoutJobInput
+}
+
+export type AiJobUncheckedCreateWithoutCreatedByInput = {
+  id?: string
+  propertyId?: string | null
+  type: $Enums.AiJobType
+  status?: $Enums.AiJobStatus
+  prompt?: string | null
+  result?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  error?: string | null
+  attempts?: number
+  queuedAt?: Date | string | null
+  providerTaskId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  reviewStatus?: $Enums.ReviewStatus
+  reviewedById?: string | null
+  reviewedAt?: Date | string | null
+  reviewNotes?: string | null
+  media?: Prisma.PropertyMediaUncheckedCreateNestedManyWithoutAiJobInput
+  history?: Prisma.AiJobAttemptUncheckedCreateNestedManyWithoutJobInput
+}
+
+export type AiJobCreateOrConnectWithoutCreatedByInput = {
+  where: Prisma.AiJobWhereUniqueInput
+  create: Prisma.XOR<Prisma.AiJobCreateWithoutCreatedByInput, Prisma.AiJobUncheckedCreateWithoutCreatedByInput>
+}
+
+export type AiJobCreateManyCreatedByInputEnvelope = {
+  data: Prisma.AiJobCreateManyCreatedByInput | Prisma.AiJobCreateManyCreatedByInput[]
+  skipDuplicates?: boolean
+}
+
+export type AiJobUpsertWithWhereUniqueWithoutReviewedByInput = {
+  where: Prisma.AiJobWhereUniqueInput
+  update: Prisma.XOR<Prisma.AiJobUpdateWithoutReviewedByInput, Prisma.AiJobUncheckedUpdateWithoutReviewedByInput>
+  create: Prisma.XOR<Prisma.AiJobCreateWithoutReviewedByInput, Prisma.AiJobUncheckedCreateWithoutReviewedByInput>
+}
+
+export type AiJobUpdateWithWhereUniqueWithoutReviewedByInput = {
+  where: Prisma.AiJobWhereUniqueInput
+  data: Prisma.XOR<Prisma.AiJobUpdateWithoutReviewedByInput, Prisma.AiJobUncheckedUpdateWithoutReviewedByInput>
+}
+
+export type AiJobUpdateManyWithWhereWithoutReviewedByInput = {
+  where: Prisma.AiJobScalarWhereInput
+  data: Prisma.XOR<Prisma.AiJobUpdateManyMutationInput, Prisma.AiJobUncheckedUpdateManyWithoutReviewedByInput>
+}
+
+export type AiJobScalarWhereInput = {
+  AND?: Prisma.AiJobScalarWhereInput | Prisma.AiJobScalarWhereInput[]
+  OR?: Prisma.AiJobScalarWhereInput[]
+  NOT?: Prisma.AiJobScalarWhereInput | Prisma.AiJobScalarWhereInput[]
+  id?: Prisma.StringFilter<"AiJob"> | string
+  propertyId?: Prisma.StringNullableFilter<"AiJob"> | string | null
+  type?: Prisma.EnumAiJobTypeFilter<"AiJob"> | $Enums.AiJobType
+  status?: Prisma.EnumAiJobStatusFilter<"AiJob"> | $Enums.AiJobStatus
+  prompt?: Prisma.StringNullableFilter<"AiJob"> | string | null
+  result?: Prisma.JsonNullableFilter<"AiJob">
+  error?: Prisma.StringNullableFilter<"AiJob"> | string | null
+  attempts?: Prisma.IntFilter<"AiJob"> | number
+  queuedAt?: Prisma.DateTimeNullableFilter<"AiJob"> | Date | string | null
+  providerTaskId?: Prisma.StringNullableFilter<"AiJob"> | string | null
+  createdById?: Prisma.StringNullableFilter<"AiJob"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"AiJob"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"AiJob"> | Date | string
+  reviewStatus?: Prisma.EnumReviewStatusFilter<"AiJob"> | $Enums.ReviewStatus
+  reviewedById?: Prisma.StringNullableFilter<"AiJob"> | string | null
+  reviewedAt?: Prisma.DateTimeNullableFilter<"AiJob"> | Date | string | null
+  reviewNotes?: Prisma.StringNullableFilter<"AiJob"> | string | null
+}
+
+export type AiJobUpsertWithWhereUniqueWithoutCreatedByInput = {
+  where: Prisma.AiJobWhereUniqueInput
+  update: Prisma.XOR<Prisma.AiJobUpdateWithoutCreatedByInput, Prisma.AiJobUncheckedUpdateWithoutCreatedByInput>
+  create: Prisma.XOR<Prisma.AiJobCreateWithoutCreatedByInput, Prisma.AiJobUncheckedCreateWithoutCreatedByInput>
+}
+
+export type AiJobUpdateWithWhereUniqueWithoutCreatedByInput = {
+  where: Prisma.AiJobWhereUniqueInput
+  data: Prisma.XOR<Prisma.AiJobUpdateWithoutCreatedByInput, Prisma.AiJobUncheckedUpdateWithoutCreatedByInput>
+}
+
+export type AiJobUpdateManyWithWhereWithoutCreatedByInput = {
+  where: Prisma.AiJobScalarWhereInput
+  data: Prisma.XOR<Prisma.AiJobUpdateManyMutationInput, Prisma.AiJobUncheckedUpdateManyWithoutCreatedByInput>
 }
 
 export type AiJobCreateWithoutPropertyInput = {
@@ -523,8 +982,17 @@ export type AiJobCreateWithoutPropertyInput = {
   result?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   error?: string | null
   attempts?: number
+  queuedAt?: Date | string | null
+  providerTaskId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  reviewStatus?: $Enums.ReviewStatus
+  reviewedAt?: Date | string | null
+  reviewNotes?: string | null
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedAiJobsInput
+  reviewedBy?: Prisma.UserCreateNestedOneWithoutReviewedJobsInput
+  media?: Prisma.PropertyMediaCreateNestedManyWithoutAiJobInput
+  history?: Prisma.AiJobAttemptCreateNestedManyWithoutJobInput
 }
 
 export type AiJobUncheckedCreateWithoutPropertyInput = {
@@ -535,8 +1003,17 @@ export type AiJobUncheckedCreateWithoutPropertyInput = {
   result?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   error?: string | null
   attempts?: number
+  queuedAt?: Date | string | null
+  providerTaskId?: string | null
+  createdById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  reviewStatus?: $Enums.ReviewStatus
+  reviewedById?: string | null
+  reviewedAt?: Date | string | null
+  reviewNotes?: string | null
+  media?: Prisma.PropertyMediaUncheckedCreateNestedManyWithoutAiJobInput
+  history?: Prisma.AiJobAttemptUncheckedCreateNestedManyWithoutJobInput
 }
 
 export type AiJobCreateOrConnectWithoutPropertyInput = {
@@ -565,20 +1042,364 @@ export type AiJobUpdateManyWithWhereWithoutPropertyInput = {
   data: Prisma.XOR<Prisma.AiJobUpdateManyMutationInput, Prisma.AiJobUncheckedUpdateManyWithoutPropertyInput>
 }
 
-export type AiJobScalarWhereInput = {
-  AND?: Prisma.AiJobScalarWhereInput | Prisma.AiJobScalarWhereInput[]
-  OR?: Prisma.AiJobScalarWhereInput[]
-  NOT?: Prisma.AiJobScalarWhereInput | Prisma.AiJobScalarWhereInput[]
-  id?: Prisma.StringFilter<"AiJob"> | string
-  propertyId?: Prisma.StringNullableFilter<"AiJob"> | string | null
-  type?: Prisma.EnumAiJobTypeFilter<"AiJob"> | $Enums.AiJobType
-  status?: Prisma.EnumAiJobStatusFilter<"AiJob"> | $Enums.AiJobStatus
-  prompt?: Prisma.StringNullableFilter<"AiJob"> | string | null
-  result?: Prisma.JsonNullableFilter<"AiJob">
-  error?: Prisma.StringNullableFilter<"AiJob"> | string | null
-  attempts?: Prisma.IntFilter<"AiJob"> | number
-  createdAt?: Prisma.DateTimeFilter<"AiJob"> | Date | string
-  updatedAt?: Prisma.DateTimeFilter<"AiJob"> | Date | string
+export type AiJobCreateWithoutMediaInput = {
+  id?: string
+  type: $Enums.AiJobType
+  status?: $Enums.AiJobStatus
+  prompt?: string | null
+  result?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  error?: string | null
+  attempts?: number
+  queuedAt?: Date | string | null
+  providerTaskId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  reviewStatus?: $Enums.ReviewStatus
+  reviewedAt?: Date | string | null
+  reviewNotes?: string | null
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedAiJobsInput
+  property?: Prisma.PropertyCreateNestedOneWithoutAiJobsInput
+  reviewedBy?: Prisma.UserCreateNestedOneWithoutReviewedJobsInput
+  history?: Prisma.AiJobAttemptCreateNestedManyWithoutJobInput
+}
+
+export type AiJobUncheckedCreateWithoutMediaInput = {
+  id?: string
+  propertyId?: string | null
+  type: $Enums.AiJobType
+  status?: $Enums.AiJobStatus
+  prompt?: string | null
+  result?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  error?: string | null
+  attempts?: number
+  queuedAt?: Date | string | null
+  providerTaskId?: string | null
+  createdById?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  reviewStatus?: $Enums.ReviewStatus
+  reviewedById?: string | null
+  reviewedAt?: Date | string | null
+  reviewNotes?: string | null
+  history?: Prisma.AiJobAttemptUncheckedCreateNestedManyWithoutJobInput
+}
+
+export type AiJobCreateOrConnectWithoutMediaInput = {
+  where: Prisma.AiJobWhereUniqueInput
+  create: Prisma.XOR<Prisma.AiJobCreateWithoutMediaInput, Prisma.AiJobUncheckedCreateWithoutMediaInput>
+}
+
+export type AiJobUpsertWithoutMediaInput = {
+  update: Prisma.XOR<Prisma.AiJobUpdateWithoutMediaInput, Prisma.AiJobUncheckedUpdateWithoutMediaInput>
+  create: Prisma.XOR<Prisma.AiJobCreateWithoutMediaInput, Prisma.AiJobUncheckedCreateWithoutMediaInput>
+  where?: Prisma.AiJobWhereInput
+}
+
+export type AiJobUpdateToOneWithWhereWithoutMediaInput = {
+  where?: Prisma.AiJobWhereInput
+  data: Prisma.XOR<Prisma.AiJobUpdateWithoutMediaInput, Prisma.AiJobUncheckedUpdateWithoutMediaInput>
+}
+
+export type AiJobUpdateWithoutMediaInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumAiJobTypeFieldUpdateOperationsInput | $Enums.AiJobType
+  status?: Prisma.EnumAiJobStatusFieldUpdateOperationsInput | $Enums.AiJobStatus
+  prompt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  result?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attempts?: Prisma.IntFieldUpdateOperationsInput | number
+  queuedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  providerTaskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reviewStatus?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedAiJobsNestedInput
+  property?: Prisma.PropertyUpdateOneWithoutAiJobsNestedInput
+  reviewedBy?: Prisma.UserUpdateOneWithoutReviewedJobsNestedInput
+  history?: Prisma.AiJobAttemptUpdateManyWithoutJobNestedInput
+}
+
+export type AiJobUncheckedUpdateWithoutMediaInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumAiJobTypeFieldUpdateOperationsInput | $Enums.AiJobType
+  status?: Prisma.EnumAiJobStatusFieldUpdateOperationsInput | $Enums.AiJobStatus
+  prompt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  result?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attempts?: Prisma.IntFieldUpdateOperationsInput | number
+  queuedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  providerTaskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reviewStatus?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+  reviewedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  history?: Prisma.AiJobAttemptUncheckedUpdateManyWithoutJobNestedInput
+}
+
+export type AiJobCreateWithoutHistoryInput = {
+  id?: string
+  type: $Enums.AiJobType
+  status?: $Enums.AiJobStatus
+  prompt?: string | null
+  result?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  error?: string | null
+  attempts?: number
+  queuedAt?: Date | string | null
+  providerTaskId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  reviewStatus?: $Enums.ReviewStatus
+  reviewedAt?: Date | string | null
+  reviewNotes?: string | null
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedAiJobsInput
+  property?: Prisma.PropertyCreateNestedOneWithoutAiJobsInput
+  reviewedBy?: Prisma.UserCreateNestedOneWithoutReviewedJobsInput
+  media?: Prisma.PropertyMediaCreateNestedManyWithoutAiJobInput
+}
+
+export type AiJobUncheckedCreateWithoutHistoryInput = {
+  id?: string
+  propertyId?: string | null
+  type: $Enums.AiJobType
+  status?: $Enums.AiJobStatus
+  prompt?: string | null
+  result?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  error?: string | null
+  attempts?: number
+  queuedAt?: Date | string | null
+  providerTaskId?: string | null
+  createdById?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  reviewStatus?: $Enums.ReviewStatus
+  reviewedById?: string | null
+  reviewedAt?: Date | string | null
+  reviewNotes?: string | null
+  media?: Prisma.PropertyMediaUncheckedCreateNestedManyWithoutAiJobInput
+}
+
+export type AiJobCreateOrConnectWithoutHistoryInput = {
+  where: Prisma.AiJobWhereUniqueInput
+  create: Prisma.XOR<Prisma.AiJobCreateWithoutHistoryInput, Prisma.AiJobUncheckedCreateWithoutHistoryInput>
+}
+
+export type AiJobUpsertWithoutHistoryInput = {
+  update: Prisma.XOR<Prisma.AiJobUpdateWithoutHistoryInput, Prisma.AiJobUncheckedUpdateWithoutHistoryInput>
+  create: Prisma.XOR<Prisma.AiJobCreateWithoutHistoryInput, Prisma.AiJobUncheckedCreateWithoutHistoryInput>
+  where?: Prisma.AiJobWhereInput
+}
+
+export type AiJobUpdateToOneWithWhereWithoutHistoryInput = {
+  where?: Prisma.AiJobWhereInput
+  data: Prisma.XOR<Prisma.AiJobUpdateWithoutHistoryInput, Prisma.AiJobUncheckedUpdateWithoutHistoryInput>
+}
+
+export type AiJobUpdateWithoutHistoryInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumAiJobTypeFieldUpdateOperationsInput | $Enums.AiJobType
+  status?: Prisma.EnumAiJobStatusFieldUpdateOperationsInput | $Enums.AiJobStatus
+  prompt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  result?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attempts?: Prisma.IntFieldUpdateOperationsInput | number
+  queuedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  providerTaskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reviewStatus?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedAiJobsNestedInput
+  property?: Prisma.PropertyUpdateOneWithoutAiJobsNestedInput
+  reviewedBy?: Prisma.UserUpdateOneWithoutReviewedJobsNestedInput
+  media?: Prisma.PropertyMediaUpdateManyWithoutAiJobNestedInput
+}
+
+export type AiJobUncheckedUpdateWithoutHistoryInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumAiJobTypeFieldUpdateOperationsInput | $Enums.AiJobType
+  status?: Prisma.EnumAiJobStatusFieldUpdateOperationsInput | $Enums.AiJobStatus
+  prompt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  result?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attempts?: Prisma.IntFieldUpdateOperationsInput | number
+  queuedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  providerTaskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reviewStatus?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+  reviewedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  media?: Prisma.PropertyMediaUncheckedUpdateManyWithoutAiJobNestedInput
+}
+
+export type AiJobCreateManyReviewedByInput = {
+  id?: string
+  propertyId?: string | null
+  type: $Enums.AiJobType
+  status?: $Enums.AiJobStatus
+  prompt?: string | null
+  result?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  error?: string | null
+  attempts?: number
+  queuedAt?: Date | string | null
+  providerTaskId?: string | null
+  createdById?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  reviewStatus?: $Enums.ReviewStatus
+  reviewedAt?: Date | string | null
+  reviewNotes?: string | null
+}
+
+export type AiJobCreateManyCreatedByInput = {
+  id?: string
+  propertyId?: string | null
+  type: $Enums.AiJobType
+  status?: $Enums.AiJobStatus
+  prompt?: string | null
+  result?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  error?: string | null
+  attempts?: number
+  queuedAt?: Date | string | null
+  providerTaskId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  reviewStatus?: $Enums.ReviewStatus
+  reviewedById?: string | null
+  reviewedAt?: Date | string | null
+  reviewNotes?: string | null
+}
+
+export type AiJobUpdateWithoutReviewedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumAiJobTypeFieldUpdateOperationsInput | $Enums.AiJobType
+  status?: Prisma.EnumAiJobStatusFieldUpdateOperationsInput | $Enums.AiJobStatus
+  prompt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  result?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attempts?: Prisma.IntFieldUpdateOperationsInput | number
+  queuedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  providerTaskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reviewStatus?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedAiJobsNestedInput
+  property?: Prisma.PropertyUpdateOneWithoutAiJobsNestedInput
+  media?: Prisma.PropertyMediaUpdateManyWithoutAiJobNestedInput
+  history?: Prisma.AiJobAttemptUpdateManyWithoutJobNestedInput
+}
+
+export type AiJobUncheckedUpdateWithoutReviewedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumAiJobTypeFieldUpdateOperationsInput | $Enums.AiJobType
+  status?: Prisma.EnumAiJobStatusFieldUpdateOperationsInput | $Enums.AiJobStatus
+  prompt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  result?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attempts?: Prisma.IntFieldUpdateOperationsInput | number
+  queuedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  providerTaskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reviewStatus?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  media?: Prisma.PropertyMediaUncheckedUpdateManyWithoutAiJobNestedInput
+  history?: Prisma.AiJobAttemptUncheckedUpdateManyWithoutJobNestedInput
+}
+
+export type AiJobUncheckedUpdateManyWithoutReviewedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumAiJobTypeFieldUpdateOperationsInput | $Enums.AiJobType
+  status?: Prisma.EnumAiJobStatusFieldUpdateOperationsInput | $Enums.AiJobStatus
+  prompt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  result?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attempts?: Prisma.IntFieldUpdateOperationsInput | number
+  queuedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  providerTaskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reviewStatus?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type AiJobUpdateWithoutCreatedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumAiJobTypeFieldUpdateOperationsInput | $Enums.AiJobType
+  status?: Prisma.EnumAiJobStatusFieldUpdateOperationsInput | $Enums.AiJobStatus
+  prompt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  result?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attempts?: Prisma.IntFieldUpdateOperationsInput | number
+  queuedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  providerTaskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reviewStatus?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  property?: Prisma.PropertyUpdateOneWithoutAiJobsNestedInput
+  reviewedBy?: Prisma.UserUpdateOneWithoutReviewedJobsNestedInput
+  media?: Prisma.PropertyMediaUpdateManyWithoutAiJobNestedInput
+  history?: Prisma.AiJobAttemptUpdateManyWithoutJobNestedInput
+}
+
+export type AiJobUncheckedUpdateWithoutCreatedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumAiJobTypeFieldUpdateOperationsInput | $Enums.AiJobType
+  status?: Prisma.EnumAiJobStatusFieldUpdateOperationsInput | $Enums.AiJobStatus
+  prompt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  result?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attempts?: Prisma.IntFieldUpdateOperationsInput | number
+  queuedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  providerTaskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reviewStatus?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+  reviewedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  media?: Prisma.PropertyMediaUncheckedUpdateManyWithoutAiJobNestedInput
+  history?: Prisma.AiJobAttemptUncheckedUpdateManyWithoutJobNestedInput
+}
+
+export type AiJobUncheckedUpdateManyWithoutCreatedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumAiJobTypeFieldUpdateOperationsInput | $Enums.AiJobType
+  status?: Prisma.EnumAiJobStatusFieldUpdateOperationsInput | $Enums.AiJobStatus
+  prompt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  result?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attempts?: Prisma.IntFieldUpdateOperationsInput | number
+  queuedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  providerTaskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reviewStatus?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+  reviewedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type AiJobCreateManyPropertyInput = {
@@ -589,8 +1410,15 @@ export type AiJobCreateManyPropertyInput = {
   result?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   error?: string | null
   attempts?: number
+  queuedAt?: Date | string | null
+  providerTaskId?: string | null
+  createdById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  reviewStatus?: $Enums.ReviewStatus
+  reviewedById?: string | null
+  reviewedAt?: Date | string | null
+  reviewNotes?: string | null
 }
 
 export type AiJobUpdateWithoutPropertyInput = {
@@ -601,8 +1429,17 @@ export type AiJobUpdateWithoutPropertyInput = {
   result?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attempts?: Prisma.IntFieldUpdateOperationsInput | number
+  queuedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  providerTaskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reviewStatus?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedAiJobsNestedInput
+  reviewedBy?: Prisma.UserUpdateOneWithoutReviewedJobsNestedInput
+  media?: Prisma.PropertyMediaUpdateManyWithoutAiJobNestedInput
+  history?: Prisma.AiJobAttemptUpdateManyWithoutJobNestedInput
 }
 
 export type AiJobUncheckedUpdateWithoutPropertyInput = {
@@ -613,8 +1450,17 @@ export type AiJobUncheckedUpdateWithoutPropertyInput = {
   result?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attempts?: Prisma.IntFieldUpdateOperationsInput | number
+  queuedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  providerTaskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reviewStatus?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+  reviewedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  media?: Prisma.PropertyMediaUncheckedUpdateManyWithoutAiJobNestedInput
+  history?: Prisma.AiJobAttemptUncheckedUpdateManyWithoutJobNestedInput
 }
 
 export type AiJobUncheckedUpdateManyWithoutPropertyInput = {
@@ -625,10 +1471,55 @@ export type AiJobUncheckedUpdateManyWithoutPropertyInput = {
   result?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attempts?: Prisma.IntFieldUpdateOperationsInput | number
+  queuedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  providerTaskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reviewStatus?: Prisma.EnumReviewStatusFieldUpdateOperationsInput | $Enums.ReviewStatus
+  reviewedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
+
+/**
+ * Count Type AiJobCountOutputType
+ */
+
+export type AiJobCountOutputType = {
+  media: number
+  history: number
+}
+
+export type AiJobCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  media?: boolean | AiJobCountOutputTypeCountMediaArgs
+  history?: boolean | AiJobCountOutputTypeCountHistoryArgs
+}
+
+/**
+ * AiJobCountOutputType without action
+ */
+export type AiJobCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AiJobCountOutputType
+   */
+  select?: Prisma.AiJobCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * AiJobCountOutputType without action
+ */
+export type AiJobCountOutputTypeCountMediaArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PropertyMediaWhereInput
+}
+
+/**
+ * AiJobCountOutputType without action
+ */
+export type AiJobCountOutputTypeCountHistoryArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AiJobAttemptWhereInput
+}
 
 
 export type AiJobSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -640,9 +1531,21 @@ export type AiJobSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   result?: boolean
   error?: boolean
   attempts?: boolean
+  queuedAt?: boolean
+  providerTaskId?: boolean
+  createdById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  reviewStatus?: boolean
+  reviewedById?: boolean
+  reviewedAt?: boolean
+  reviewNotes?: boolean
+  createdBy?: boolean | Prisma.AiJob$createdByArgs<ExtArgs>
   property?: boolean | Prisma.AiJob$propertyArgs<ExtArgs>
+  reviewedBy?: boolean | Prisma.AiJob$reviewedByArgs<ExtArgs>
+  media?: boolean | Prisma.AiJob$mediaArgs<ExtArgs>
+  history?: boolean | Prisma.AiJob$historyArgs<ExtArgs>
+  _count?: boolean | Prisma.AiJobCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["aiJob"]>
 
 export type AiJobSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -654,9 +1557,18 @@ export type AiJobSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   result?: boolean
   error?: boolean
   attempts?: boolean
+  queuedAt?: boolean
+  providerTaskId?: boolean
+  createdById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  reviewStatus?: boolean
+  reviewedById?: boolean
+  reviewedAt?: boolean
+  reviewNotes?: boolean
+  createdBy?: boolean | Prisma.AiJob$createdByArgs<ExtArgs>
   property?: boolean | Prisma.AiJob$propertyArgs<ExtArgs>
+  reviewedBy?: boolean | Prisma.AiJob$reviewedByArgs<ExtArgs>
 }, ExtArgs["result"]["aiJob"]>
 
 export type AiJobSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -668,9 +1580,18 @@ export type AiJobSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   result?: boolean
   error?: boolean
   attempts?: boolean
+  queuedAt?: boolean
+  providerTaskId?: boolean
+  createdById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  reviewStatus?: boolean
+  reviewedById?: boolean
+  reviewedAt?: boolean
+  reviewNotes?: boolean
+  createdBy?: boolean | Prisma.AiJob$createdByArgs<ExtArgs>
   property?: boolean | Prisma.AiJob$propertyArgs<ExtArgs>
+  reviewedBy?: boolean | Prisma.AiJob$reviewedByArgs<ExtArgs>
 }, ExtArgs["result"]["aiJob"]>
 
 export type AiJobSelectScalar = {
@@ -682,25 +1603,45 @@ export type AiJobSelectScalar = {
   result?: boolean
   error?: boolean
   attempts?: boolean
+  queuedAt?: boolean
+  providerTaskId?: boolean
+  createdById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  reviewStatus?: boolean
+  reviewedById?: boolean
+  reviewedAt?: boolean
+  reviewNotes?: boolean
 }
 
-export type AiJobOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "propertyId" | "type" | "status" | "prompt" | "result" | "error" | "attempts" | "createdAt" | "updatedAt", ExtArgs["result"]["aiJob"]>
+export type AiJobOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "propertyId" | "type" | "status" | "prompt" | "result" | "error" | "attempts" | "queuedAt" | "providerTaskId" | "createdById" | "createdAt" | "updatedAt" | "reviewStatus" | "reviewedById" | "reviewedAt" | "reviewNotes", ExtArgs["result"]["aiJob"]>
 export type AiJobInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  createdBy?: boolean | Prisma.AiJob$createdByArgs<ExtArgs>
   property?: boolean | Prisma.AiJob$propertyArgs<ExtArgs>
+  reviewedBy?: boolean | Prisma.AiJob$reviewedByArgs<ExtArgs>
+  media?: boolean | Prisma.AiJob$mediaArgs<ExtArgs>
+  history?: boolean | Prisma.AiJob$historyArgs<ExtArgs>
+  _count?: boolean | Prisma.AiJobCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type AiJobIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  createdBy?: boolean | Prisma.AiJob$createdByArgs<ExtArgs>
   property?: boolean | Prisma.AiJob$propertyArgs<ExtArgs>
+  reviewedBy?: boolean | Prisma.AiJob$reviewedByArgs<ExtArgs>
 }
 export type AiJobIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  createdBy?: boolean | Prisma.AiJob$createdByArgs<ExtArgs>
   property?: boolean | Prisma.AiJob$propertyArgs<ExtArgs>
+  reviewedBy?: boolean | Prisma.AiJob$reviewedByArgs<ExtArgs>
 }
 
 export type $AiJobPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "AiJob"
   objects: {
+    createdBy: Prisma.$UserPayload<ExtArgs> | null
     property: Prisma.$PropertyPayload<ExtArgs> | null
+    reviewedBy: Prisma.$UserPayload<ExtArgs> | null
+    media: Prisma.$PropertyMediaPayload<ExtArgs>[]
+    history: Prisma.$AiJobAttemptPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -711,8 +1652,15 @@ export type $AiJobPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     result: runtime.JsonValue | null
     error: string | null
     attempts: number
+    queuedAt: Date | null
+    providerTaskId: string | null
+    createdById: string | null
     createdAt: Date
     updatedAt: Date
+    reviewStatus: $Enums.ReviewStatus
+    reviewedById: string | null
+    reviewedAt: Date | null
+    reviewNotes: string | null
   }, ExtArgs["result"]["aiJob"]>
   composites: {}
 }
@@ -1107,7 +2055,11 @@ readonly fields: AiJobFieldRefs;
  */
 export interface Prisma__AiJobClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  createdBy<T extends Prisma.AiJob$createdByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AiJob$createdByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   property<T extends Prisma.AiJob$propertyArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AiJob$propertyArgs<ExtArgs>>): Prisma.Prisma__PropertyClient<runtime.Types.Result.GetResult<Prisma.$PropertyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  reviewedBy<T extends Prisma.AiJob$reviewedByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AiJob$reviewedByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  media<T extends Prisma.AiJob$mediaArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AiJob$mediaArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PropertyMediaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  history<T extends Prisma.AiJob$historyArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AiJob$historyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AiJobAttemptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1145,8 +2097,15 @@ export interface AiJobFieldRefs {
   readonly result: Prisma.FieldRef<"AiJob", 'Json'>
   readonly error: Prisma.FieldRef<"AiJob", 'String'>
   readonly attempts: Prisma.FieldRef<"AiJob", 'Int'>
+  readonly queuedAt: Prisma.FieldRef<"AiJob", 'DateTime'>
+  readonly providerTaskId: Prisma.FieldRef<"AiJob", 'String'>
+  readonly createdById: Prisma.FieldRef<"AiJob", 'String'>
   readonly createdAt: Prisma.FieldRef<"AiJob", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"AiJob", 'DateTime'>
+  readonly reviewStatus: Prisma.FieldRef<"AiJob", 'ReviewStatus'>
+  readonly reviewedById: Prisma.FieldRef<"AiJob", 'String'>
+  readonly reviewedAt: Prisma.FieldRef<"AiJob", 'DateTime'>
+  readonly reviewNotes: Prisma.FieldRef<"AiJob", 'String'>
 }
     
 
@@ -1548,6 +2507,25 @@ export type AiJobDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
 }
 
 /**
+ * AiJob.createdBy
+ */
+export type AiJob$createdByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
+}
+
+/**
  * AiJob.property
  */
 export type AiJob$propertyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1564,6 +2542,73 @@ export type AiJob$propertyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    */
   include?: Prisma.PropertyInclude<ExtArgs> | null
   where?: Prisma.PropertyWhereInput
+}
+
+/**
+ * AiJob.reviewedBy
+ */
+export type AiJob$reviewedByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
+}
+
+/**
+ * AiJob.media
+ */
+export type AiJob$mediaArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PropertyMedia
+   */
+  select?: Prisma.PropertyMediaSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PropertyMedia
+   */
+  omit?: Prisma.PropertyMediaOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PropertyMediaInclude<ExtArgs> | null
+  where?: Prisma.PropertyMediaWhereInput
+  orderBy?: Prisma.PropertyMediaOrderByWithRelationInput | Prisma.PropertyMediaOrderByWithRelationInput[]
+  cursor?: Prisma.PropertyMediaWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PropertyMediaScalarFieldEnum | Prisma.PropertyMediaScalarFieldEnum[]
+}
+
+/**
+ * AiJob.history
+ */
+export type AiJob$historyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AiJobAttempt
+   */
+  select?: Prisma.AiJobAttemptSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AiJobAttempt
+   */
+  omit?: Prisma.AiJobAttemptOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AiJobAttemptInclude<ExtArgs> | null
+  where?: Prisma.AiJobAttemptWhereInput
+  orderBy?: Prisma.AiJobAttemptOrderByWithRelationInput | Prisma.AiJobAttemptOrderByWithRelationInput[]
+  cursor?: Prisma.AiJobAttemptWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AiJobAttemptScalarFieldEnum | Prisma.AiJobAttemptScalarFieldEnum[]
 }
 
 /**

@@ -50,7 +50,10 @@ export type MediaType = (typeof MediaType)[keyof typeof MediaType]
 
 export const CampaignStatus = {
   DRAFT: 'DRAFT',
+  QUEUED: 'QUEUED',
+  SENDING: 'SENDING',
   SENT: 'SENT',
+  PARTIALLY_FAILED: 'PARTIALLY_FAILED',
   FAILED: 'FAILED'
 } as const
 
@@ -71,6 +74,7 @@ export type CampaignEventType = (typeof CampaignEventType)[keyof typeof Campaign
 
 
 export const SubscriberStatus = {
+  PENDING: 'PENDING',
   ACTIVE: 'ACTIVE',
   UNSUBSCRIBED: 'UNSUBSCRIBED'
 } as const
@@ -129,6 +133,10 @@ export type ImportJobType = (typeof ImportJobType)[keyof typeof ImportJobType]
 
 
 export const ImportJobStatus = {
+  READY: 'READY',
+  QUEUED: 'QUEUED',
+  PARTIALLY_COMPLETED: 'PARTIALLY_COMPLETED',
+  CANCELLED: 'CANCELLED',
   PENDING: 'PENDING',
   PROCESSING: 'PROCESSING',
   COMPLETED: 'COMPLETED',
@@ -136,3 +144,80 @@ export const ImportJobStatus = {
 } as const
 
 export type ImportJobStatus = (typeof ImportJobStatus)[keyof typeof ImportJobStatus]
+
+
+export const PublicationStatus = {
+  DRAFT: 'DRAFT',
+  PUBLISHED: 'PUBLISHED'
+} as const
+
+export type PublicationStatus = (typeof PublicationStatus)[keyof typeof PublicationStatus]
+
+
+export const ConsentPurpose = {
+  MARKETING: 'MARKETING',
+  INTEREST: 'INTEREST',
+  ACCOUNT: 'ACCOUNT'
+} as const
+
+export type ConsentPurpose = (typeof ConsentPurpose)[keyof typeof ConsentPurpose]
+
+
+export const DeliveryStatus = {
+  PENDING: 'PENDING',
+  SENDING: 'SENDING',
+  SENT: 'SENT',
+  FAILED: 'FAILED',
+  SKIPPED: 'SKIPPED'
+} as const
+
+export type DeliveryStatus = (typeof DeliveryStatus)[keyof typeof DeliveryStatus]
+
+
+export const TemplatePurpose = {
+  CAMPAIGN: 'CAMPAIGN',
+  INTEREST_FOLLOW_UP: 'INTEREST_FOLLOW_UP'
+} as const
+
+export type TemplatePurpose = (typeof TemplatePurpose)[keyof typeof TemplatePurpose]
+
+
+export const ReviewStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+} as const
+
+export type ReviewStatus = (typeof ReviewStatus)[keyof typeof ReviewStatus]
+
+
+export const IndexStatus = {
+  PENDING: 'PENDING',
+  INDEXED: 'INDEXED',
+  FAILED: 'FAILED'
+} as const
+
+export type IndexStatus = (typeof IndexStatus)[keyof typeof IndexStatus]
+
+
+export const ImportUploadStatus = {
+  UPLOADED: 'UPLOADED',
+  VALIDATING: 'VALIDATING',
+  INVALID: 'INVALID',
+  READY: 'READY',
+  CONSUMED: 'CONSUMED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type ImportUploadStatus = (typeof ImportUploadStatus)[keyof typeof ImportUploadStatus]
+
+
+export const ImportChunkStatus = {
+  WAITING: 'WAITING',
+  ACTIVE: 'ACTIVE',
+  RETRYING: 'RETRYING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED'
+} as const
+
+export type ImportChunkStatus = (typeof ImportChunkStatus)[keyof typeof ImportChunkStatus]

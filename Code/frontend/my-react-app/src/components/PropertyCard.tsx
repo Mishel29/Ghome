@@ -21,6 +21,10 @@ export default function PropertyCard({ property: p, showCompare = false }: Props
   const badge = statusLabel[p.status] ?? { label: p.status, bg: "bg-stone" };
   const isSaved = savedIds.includes(p.id);
   const isCompared = compareIds.includes(p.id);
+  const priceLabel = p.price.min === p.price.max ? fmt(p.price.min) : `${fmt(p.price.min)}–${fmt(p.price.max)}`;
+  const propertyType = p.type || "Property";
+  const saleType = p.saleType || "New homes";
+  const completionLabel = p.completionYear ? `Completed ${p.completionYear}` : null;
 
   return (
     <div className="bg-cream-dark flex flex-col group cursor-pointer" onClick={() => navigate(`/properties/${p.id}`)}>
@@ -56,21 +60,33 @@ export default function PropertyCard({ property: p, showCompare = false }: Props
 
       {/* Card body */}
       <div className="flex-1 flex flex-col p-4 gap-3">
-        <p className="text-sm font-semibold text-navy leading-snug">{p.type}</p>
-        <div className="flex gap-4 text-xs text-stone">
-          <span>{fmt(p.price.min)}–{fmt(p.price.max)}</span>
-          <span>{p.beds.join(", ")} bed</span>
+        <div className="flex items-start justify-between gap-3 border-b border-[#ddd5c5] pb-3">
+          <div>
+            <div className="flex items-center gap-2 flex-wrap">
+              <p className="text-sm font-semibold text-navy leading-snug">{propertyType}</p>
+              <span className="bg-navy/5 text-navy px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide">{saleType}</span>
+            </div>
+            {completionLabel && <p className="text-xs text-stone mt-1">{completionLabel}</p>}
+          </div>
+          <span className="text-base font-bold text-navy whitespace-nowrap">{priceLabel}</span>
+        </div>
+        <div className="flex gap-2 flex-wrap text-xs text-stone">
+          <span className="bg-cream px-2 py-1">{p.beds.join(", ")} bed</span>
+          <span className="bg-cream px-2 py-1">{p.baths.join(", ")} bath</span>
+          {p.sqft.min > 0 && <span className="bg-cream px-2 py-1">{p.sqft.min.toLocaleString()} sq ft</span>}
         </div>
         <div className="mt-auto flex items-center justify-between pt-2 border-t border-[#ddd5c5]">
-          <button
-            onClick={(e) => {e.stopPropagation(); navigate(`/properties/${p.id}`);}}
-            className="text-xs font-semibold text-navy hover:text-amber flex items-center gap-1 transition-colors"
-          >
-            View {p.name}
-            <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-              <path d="M5 12h14M12 5l7 7-7 7"/>
-            </svg>
-          </button>
+          <div className="flex items-center gap-3 flex-wrap">
+            <button
+              onClick={(e) => {e.stopPropagation(); navigate(`/properties/${p.id}`);}}
+              className="text-xs font-semibold text-navy hover:text-amber flex items-center gap-1 transition-colors"
+            >
+              View {p.name}
+              <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </button>
+          </div>
           {showCompare && (
             <button
               onClick={(e) => { e.stopPropagation(); toggleCompare(p.id); }}

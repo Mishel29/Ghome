@@ -66,6 +66,7 @@ export const ModelName = {
   CampaignRecipient: 'CampaignRecipient',
   CampaignEvent: 'CampaignEvent',
   CampaignTemplate: 'CampaignTemplate',
+  TemplateProperty: 'TemplateProperty',
   NewsArticle: 'NewsArticle',
   NewsProperty: 'NewsProperty',
   AnalyticsEvent: 'AnalyticsEvent',
@@ -73,7 +74,18 @@ export const ModelName = {
   RagChunk: 'RagChunk',
   AiJob: 'AiJob',
   ImportJob: 'ImportJob',
-  AuditLog: 'AuditLog'
+  AuditLog: 'AuditLog',
+  Development: 'Development',
+  PageContent: 'PageContent',
+  PageMedia: 'PageMedia',
+  Session: 'Session',
+  InterestFollowUp: 'InterestFollowUp',
+  DeliveryAttempt: 'DeliveryAttempt',
+  AiJobAttempt: 'AiJobAttempt',
+  UnsubscribeToken: 'UnsubscribeToken',
+  PropertyImportUpload: 'PropertyImportUpload',
+  ImportChunk: 'ImportChunk',
+  ImportRowError: 'ImportRowError'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -132,7 +144,13 @@ export const PropertyScalarFieldEnum = {
   publishedAt: 'publishedAt',
   agentId: 'agentId',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  publicationStatus: 'publicationStatus',
+  developmentId: 'developmentId',
+  slug: 'slug',
+  sizeSqmMax: 'sizeSqmMax',
+  bedroomOptions: 'bedroomOptions',
+  bathroomOptions: 'bathroomOptions'
 } as const
 
 export type PropertyScalarFieldEnum = (typeof PropertyScalarFieldEnum)[keyof typeof PropertyScalarFieldEnum]
@@ -145,7 +163,11 @@ export const PropertyMediaScalarFieldEnum = {
   type: 'type',
   isPrimary: 'isPrimary',
   sortOrder: 'sortOrder',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  altText: 'altText',
+  storageKey: 'storageKey',
+  mimeType: 'mimeType',
+  aiJobId: 'aiJobId'
 } as const
 
 export type PropertyMediaScalarFieldEnum = (typeof PropertyMediaScalarFieldEnum)[keyof typeof PropertyMediaScalarFieldEnum]
@@ -172,7 +194,9 @@ export const PropertyValueHistoryScalarFieldEnum = {
   propertyId: 'propertyId',
   year: 'year',
   value: 'value',
-  growthPercent: 'growthPercent'
+  growthPercent: 'growthPercent',
+  source: 'source',
+  isSynthetic: 'isSynthetic'
 } as const
 
 export type PropertyValueHistoryScalarFieldEnum = (typeof PropertyValueHistoryScalarFieldEnum)[keyof typeof PropertyValueHistoryScalarFieldEnum]
@@ -213,7 +237,9 @@ export const ConsentScalarFieldEnum = {
   type: 'type',
   granted: 'granted',
   version: 'version',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  subscriberId: 'subscriberId',
+  source: 'source'
 } as const
 
 export type ConsentScalarFieldEnum = (typeof ConsentScalarFieldEnum)[keyof typeof ConsentScalarFieldEnum]
@@ -228,7 +254,10 @@ export const SubscriberScalarFieldEnum = {
   subscribedAt: 'subscribedAt',
   unsubscribedAt: 'unsubscribedAt',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  consentGrantedAt: 'consentGrantedAt',
+  consentVersion: 'consentVersion',
+  unsubscribeTokenHash: 'unsubscribeTokenHash'
 } as const
 
 export type SubscriberScalarFieldEnum = (typeof SubscriberScalarFieldEnum)[keyof typeof SubscriberScalarFieldEnum]
@@ -242,7 +271,14 @@ export const CampaignScalarFieldEnum = {
   createdById: 'createdById',
   sentAt: 'sentAt',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  newsArticleId: 'newsArticleId',
+  templateId: 'templateId',
+  bodyText: 'bodyText',
+  renderedHtml: 'renderedHtml',
+  recipientCount: 'recipientCount',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt'
 } as const
 
 export type CampaignScalarFieldEnum = (typeof CampaignScalarFieldEnum)[keyof typeof CampaignScalarFieldEnum]
@@ -250,7 +286,10 @@ export type CampaignScalarFieldEnum = (typeof CampaignScalarFieldEnum)[keyof typ
 
 export const CampaignPropertyScalarFieldEnum = {
   campaignId: 'campaignId',
-  propertyId: 'propertyId'
+  id: 'id',
+  propertyId: 'propertyId',
+  propertyName: 'propertyName',
+  propertySnapshot: 'propertySnapshot'
 } as const
 
 export type CampaignPropertyScalarFieldEnum = (typeof CampaignPropertyScalarFieldEnum)[keyof typeof CampaignPropertyScalarFieldEnum]
@@ -264,7 +303,17 @@ export const CampaignRecipientScalarFieldEnum = {
   sentAt: 'sentAt',
   deliveredAt: 'deliveredAt',
   failedAt: 'failedAt',
-  errorMessage: 'errorMessage'
+  errorMessage: 'errorMessage',
+  recipientEmail: 'recipientEmail',
+  recipientName: 'recipientName',
+  renderedHtml: 'renderedHtml',
+  providerMessageId: 'providerMessageId',
+  trackingTokenHash: 'trackingTokenHash',
+  attemptCount: 'attemptCount',
+  nextAttemptAt: 'nextAttemptAt',
+  lockedAt: 'lockedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type CampaignRecipientScalarFieldEnum = (typeof CampaignRecipientScalarFieldEnum)[keyof typeof CampaignRecipientScalarFieldEnum]
@@ -276,7 +325,9 @@ export const CampaignEventScalarFieldEnum = {
   subscriberId: 'subscriberId',
   propertyId: 'propertyId',
   type: 'type',
-  occurredAt: 'occurredAt'
+  occurredAt: 'occurredAt',
+  recipientId: 'recipientId',
+  deduplicationKey: 'deduplicationKey'
 } as const
 
 export type CampaignEventScalarFieldEnum = (typeof CampaignEventScalarFieldEnum)[keyof typeof CampaignEventScalarFieldEnum]
@@ -288,10 +339,20 @@ export const CampaignTemplateScalarFieldEnum = {
   subject: 'subject',
   htmlContent: 'htmlContent',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  purpose: 'purpose',
+  createdById: 'createdById'
 } as const
 
 export type CampaignTemplateScalarFieldEnum = (typeof CampaignTemplateScalarFieldEnum)[keyof typeof CampaignTemplateScalarFieldEnum]
+
+
+export const TemplatePropertyScalarFieldEnum = {
+  templateId: 'templateId',
+  propertyId: 'propertyId'
+} as const
+
+export type TemplatePropertyScalarFieldEnum = (typeof TemplatePropertyScalarFieldEnum)[keyof typeof TemplatePropertyScalarFieldEnum]
 
 
 export const NewsArticleScalarFieldEnum = {
@@ -300,11 +361,14 @@ export const NewsArticleScalarFieldEnum = {
   summary: 'summary',
   content: 'content',
   imageUrl: 'imageUrl',
-  published: 'published',
-  publishDate: 'publishDate',
+  publicationStatus: 'publicationStatus',
+  publishedAt: 'publishedAt',
   createdById: 'createdById',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  externalUrl: 'externalUrl',
+  activeFrom: 'activeFrom',
+  activeUntil: 'activeUntil'
 } as const
 
 export type NewsArticleScalarFieldEnum = (typeof NewsArticleScalarFieldEnum)[keyof typeof NewsArticleScalarFieldEnum]
@@ -338,7 +402,13 @@ export const RagDocumentScalarFieldEnum = {
   content: 'content',
   sourceType: 'sourceType',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  newsArticleId: 'newsArticleId',
+  mediaId: 'mediaId',
+  sourceUrl: 'sourceUrl',
+  contentHash: 'contentHash',
+  indexedAt: 'indexedAt',
+  indexStatus: 'indexStatus'
 } as const
 
 export type RagDocumentScalarFieldEnum = (typeof RagDocumentScalarFieldEnum)[keyof typeof RagDocumentScalarFieldEnum]
@@ -348,6 +418,10 @@ export const RagChunkScalarFieldEnum = {
   id: 'id',
   documentId: 'documentId',
   content: 'content',
+  ordinal: 'ordinal',
+  embedding: 'embedding',
+  embeddingModel: 'embeddingModel',
+  externalVectorId: 'externalVectorId',
   createdAt: 'createdAt'
 } as const
 
@@ -363,8 +437,15 @@ export const AiJobScalarFieldEnum = {
   result: 'result',
   error: 'error',
   attempts: 'attempts',
+  queuedAt: 'queuedAt',
+  providerTaskId: 'providerTaskId',
+  createdById: 'createdById',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  reviewStatus: 'reviewStatus',
+  reviewedById: 'reviewedById',
+  reviewedAt: 'reviewedAt',
+  reviewNotes: 'reviewNotes'
 } as const
 
 export type AiJobScalarFieldEnum = (typeof AiJobScalarFieldEnum)[keyof typeof AiJobScalarFieldEnum]
@@ -381,7 +462,13 @@ export const ImportJobScalarFieldEnum = {
   errors: 'errors',
   createdById: 'createdById',
   createdAt: 'createdAt',
-  completedAt: 'completedAt'
+  completedAt: 'completedAt',
+  uploadId: 'uploadId',
+  startedAt: 'startedAt',
+  totalJobs: 'totalJobs',
+  completedJobs: 'completedJobs',
+  failedJobs: 'failedJobs',
+  errorSummary: 'errorSummary'
 } as const
 
 export type ImportJobScalarFieldEnum = (typeof ImportJobScalarFieldEnum)[keyof typeof ImportJobScalarFieldEnum]
@@ -398,6 +485,171 @@ export const AuditLogScalarFieldEnum = {
 } as const
 
 export type AuditLogScalarFieldEnum = (typeof AuditLogScalarFieldEnum)[keyof typeof AuditLogScalarFieldEnum]
+
+
+export const DevelopmentScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  name: 'name',
+  location: 'location',
+  description: 'description',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DevelopmentScalarFieldEnum = (typeof DevelopmentScalarFieldEnum)[keyof typeof DevelopmentScalarFieldEnum]
+
+
+export const PageContentScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  title: 'title',
+  heroHeading: 'heroHeading',
+  heroText: 'heroText',
+  heroImageUrl: 'heroImageUrl',
+  introduction: 'introduction',
+  publicationStatus: 'publicationStatus',
+  publishedAt: 'publishedAt',
+  developmentId: 'developmentId',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PageContentScalarFieldEnum = (typeof PageContentScalarFieldEnum)[keyof typeof PageContentScalarFieldEnum]
+
+
+export const PageMediaScalarFieldEnum = {
+  id: 'id',
+  pageId: 'pageId',
+  url: 'url',
+  altText: 'altText',
+  sortOrder: 'sortOrder'
+} as const
+
+export type PageMediaScalarFieldEnum = (typeof PageMediaScalarFieldEnum)[keyof typeof PageMediaScalarFieldEnum]
+
+
+export const SessionScalarFieldEnum = {
+  id: 'id',
+  tokenHash: 'tokenHash',
+  userId: 'userId',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt'
+} as const
+
+export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeof SessionScalarFieldEnum]
+
+
+export const InterestFollowUpScalarFieldEnum = {
+  id: 'id',
+  interestId: 'interestId',
+  templateId: 'templateId',
+  sentById: 'sentById',
+  subject: 'subject',
+  body: 'body',
+  status: 'status',
+  sentAt: 'sentAt',
+  failedAt: 'failedAt',
+  errorMessage: 'errorMessage',
+  queuedAt: 'queuedAt',
+  lockedAt: 'lockedAt',
+  sendRequestedAt: 'sendRequestedAt',
+  attemptCount: 'attemptCount',
+  providerMessageId: 'providerMessageId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type InterestFollowUpScalarFieldEnum = (typeof InterestFollowUpScalarFieldEnum)[keyof typeof InterestFollowUpScalarFieldEnum]
+
+
+export const DeliveryAttemptScalarFieldEnum = {
+  id: 'id',
+  recipientId: 'recipientId',
+  attemptNumber: 'attemptNumber',
+  status: 'status',
+  providerMessageId: 'providerMessageId',
+  errorMessage: 'errorMessage',
+  startedAt: 'startedAt',
+  finishedAt: 'finishedAt'
+} as const
+
+export type DeliveryAttemptScalarFieldEnum = (typeof DeliveryAttemptScalarFieldEnum)[keyof typeof DeliveryAttemptScalarFieldEnum]
+
+
+export const AiJobAttemptScalarFieldEnum = {
+  id: 'id',
+  jobId: 'jobId',
+  attemptNumber: 'attemptNumber',
+  prompt: 'prompt',
+  result: 'result',
+  error: 'error',
+  status: 'status',
+  createdAt: 'createdAt',
+  completedAt: 'completedAt'
+} as const
+
+export type AiJobAttemptScalarFieldEnum = (typeof AiJobAttemptScalarFieldEnum)[keyof typeof AiJobAttemptScalarFieldEnum]
+
+
+export const UnsubscribeTokenScalarFieldEnum = {
+  id: 'id',
+  tokenHash: 'tokenHash',
+  subscriberId: 'subscriberId',
+  createdAt: 'createdAt'
+} as const
+
+export type UnsubscribeTokenScalarFieldEnum = (typeof UnsubscribeTokenScalarFieldEnum)[keyof typeof UnsubscribeTokenScalarFieldEnum]
+
+
+export const PropertyImportUploadScalarFieldEnum = {
+  id: 'id',
+  filename: 'filename',
+  type: 'type',
+  byteSize: 'byteSize',
+  content: 'content',
+  status: 'status',
+  validation: 'validation',
+  validatedRows: 'validatedRows',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  expiresAt: 'expiresAt'
+} as const
+
+export type PropertyImportUploadScalarFieldEnum = (typeof PropertyImportUploadScalarFieldEnum)[keyof typeof PropertyImportUploadScalarFieldEnum]
+
+
+export const ImportChunkScalarFieldEnum = {
+  id: 'id',
+  importId: 'importId',
+  chunkIndex: 'chunkIndex',
+  records: 'records',
+  totalRows: 'totalRows',
+  processedRows: 'processedRows',
+  status: 'status',
+  attempts: 'attempts',
+  lastError: 'lastError',
+  queuedAt: 'queuedAt',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt'
+} as const
+
+export type ImportChunkScalarFieldEnum = (typeof ImportChunkScalarFieldEnum)[keyof typeof ImportChunkScalarFieldEnum]
+
+
+export const ImportRowErrorScalarFieldEnum = {
+  id: 'id',
+  importId: 'importId',
+  chunkId: 'chunkId',
+  rowNumber: 'rowNumber',
+  field: 'field',
+  value: 'value',
+  message: 'message',
+  errorType: 'errorType'
+} as const
+
+export type ImportRowErrorScalarFieldEnum = (typeof ImportRowErrorScalarFieldEnum)[keyof typeof ImportRowErrorScalarFieldEnum]
 
 
 export const SortOrder = {

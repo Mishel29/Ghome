@@ -6,9 +6,11 @@ import type { PropertyFilterInput } from "../api/schemaTypes";
 import PropertyCard from "../components/PropertyCard";
 import { fmt } from "../data";
 
-const COUNTIES = ["All", "Dublin", "Cork", "Galway", "Limerick", "Wicklow", "Kildare"];
-const STAGES = ["All", "Planning", "Under Construction", "Ready to Move"];
-const STATUS = ["All", "on-sale", "coming-soon", "sold-out"];
+const COUNTIES = ["All", "Dublin"];
+const STAGES = ["All", "Ready to Move"];
+const STATUS = ["All", "on-sale"];
+const TYPES = ["All", "House", "Apartment"];
+const SALE_TYPES = ["All", "New", "Second hand", "Third hand", "Fourth hand"];
 
 export default function PropertiesList() {
   const [searchParams] = useSearchParams();
@@ -27,16 +29,18 @@ function PropertyResults({ initialSearch, initial }: { initialSearch: string; in
   const [maxPrice, setMaxPrice] = useState(initial.maxPrice??1000000);
   const [minBeds, setMinBeds] = useState(initial.minBedrooms??0);
   const [sort, setSort] = useState(initial.sort??"latest");
+  const [type, setType] = useState(initial.type ?? "All");
+  const [saleType, setSaleType] = useState(initial.saleType ?? "All");
   const [search, setSearch] = useState(initial.search??initialSearch);
-  const [extra,setExtra]=useState({location:initial.location??"",maxBedrooms:initial.maxBedrooms,minBathrooms:initial.minBathrooms,maxBathrooms:initial.maxBathrooms,listedFrom:initial.listedFrom??"",listedTo:initial.listedTo??""});
+  const [extra,setExtra]=useState({location:initial.location??"",postalCode:initial.postalCode??"",maxBedrooms:initial.maxBedrooms,minBathrooms:initial.minBathrooms,maxBathrooms:initial.maxBathrooms});
 
   const filter = useMemo<PropertyFilterInput>(() => ({ ...extra, search: search || undefined,
     county: county === "All" ? undefined : county,
     status: status === "All" ? undefined : status.toUpperCase().replaceAll("-", "_") as PropertyFilterInput["status"],
     stage: stage === "All" ? undefined : stage.toUpperCase().replaceAll(" ", "_") as PropertyFilterInput["stage"],
     minPrice: minPrice || undefined, maxPrice: maxPrice === 1000000 ? undefined : maxPrice,
-    minBedrooms: minBeds || undefined, sort,
-  }), [search, county, status, stage, minPrice, maxPrice, minBeds, sort, extra]);
+    minBedrooms: minBeds || undefined, type: type === "All" ? undefined : type, saleType: saleType === "All" ? undefined : saleType, sort,
+  }), [search, county, status, stage, minPrice, maxPrice, minBeds, type, saleType, sort, extra]);
   const filterKey = JSON.stringify(filter);
   const offset = page.filter === filterKey ? page.offset : 0;
   const setOffset = (offset: number) => setPage({ filter: filterKey, offset });
@@ -97,6 +101,16 @@ function PropertyResults({ initialSearch, initial }: { initialSearch: string; in
               </select>
             </div>
 
+            <div>
+              <label className="text-xs font-semibold text-stone uppercase tracking-wider block mb-2">Property Type</label>
+              <select className="w-full px-3 py-2 border border-[#ddd5c5] bg-cream text-sm text-navy" value={type} onChange={(e) => setType(e.target.value)}>{TYPES.map((value) => <option key={value}>{value}</option>)}</select>
+            </div>
+
+            <div>
+              <label className="text-xs font-semibold text-stone uppercase tracking-wider block mb-2">Sale Type</label>
+              <select className="w-full px-3 py-2 border border-[#ddd5c5] bg-cream text-sm text-navy" value={saleType} onChange={(e) => setSaleType(e.target.value)}>{SALE_TYPES.map((value) => <option key={value}>{value}</option>)}</select>
+            </div>
+
             {/* Price range */}
             <div>
               <label className="text-xs font-semibold text-stone uppercase tracking-wider block mb-2">Price Range</label>
@@ -139,8 +153,8 @@ function PropertyResults({ initialSearch, initial }: { initialSearch: string; in
 
             <div className="space-y-3">
               <label className="block text-xs">Location<input aria-label="Location" className="w-full border p-2" value={extra.location} onChange={(e)=>setExtra({...extra,location:e.target.value})}/></label>
+              <label className="block text-xs">Postal code<input aria-label="Postal code" className="w-full border p-2" placeholder="e.g. Dublin 6" value={extra.postalCode} onChange={(e)=>setExtra({...extra,postalCode:e.target.value})}/></label>
               {([['maxBedrooms','Max bedrooms'],['minBathrooms','Min bathrooms'],['maxBathrooms','Max bathrooms']] as const).map(([key,label])=><label key={key} className="block text-xs">{label}<input aria-label={label} type="number" min="0" className="w-full border p-2" value={extra[key]??''} onChange={(e)=>setExtra({...extra,[key]:e.target.value?Number(e.target.value):undefined})}/></label>)}
-              {(['listedFrom','listedTo'] as const).map((key)=><label key={key} className="block text-xs">{key==='listedFrom'?'Listed from':'Listed to'}<input aria-label={key} type="date" className="w-full border p-2" value={extra[key]} onChange={(e)=>setExtra({...extra,[key]:e.target.value})}/></label>)}
             </div>
             {/* Stage */}
             <div>
@@ -155,7 +169,7 @@ function PropertyResults({ initialSearch, initial }: { initialSearch: string; in
             </div>
 
             <button
-              onClick={() => { setCounty("All"); setStage("All"); setStatus("All"); setMinPrice(0); setMaxPrice(1000000); setMinBeds(0); setSearch(""); setExtra({location:"",maxBedrooms:undefined,minBathrooms:undefined,maxBathrooms:undefined,listedFrom:"",listedTo:""}); }}
+              onClick={() => { setCounty("All"); setStage("All"); setStatus("All"); setType("All"); setSaleType("All"); setMinPrice(0); setMaxPrice(1000000); setMinBeds(0); setSearch(""); setExtra({location:"",postalCode:"",maxBedrooms:undefined,minBathrooms:undefined,maxBathrooms:undefined}); }}
               className="w-full py-2 border border-navy text-navy text-xs font-semibold hover:bg-navy hover:text-white transition-all"
             >
               Clear Filters
@@ -173,8 +187,8 @@ function PropertyResults({ initialSearch, initial }: { initialSearch: string; in
               onChange={(e) => setSort(e.target.value)}
             >
               <option value="latest">Latest Listed</option>
-              <option value="price-asc">Price: Low to High</option>
-              <option value="price-desc">Price: High to Low</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
             </select>
           </div>
 

@@ -34,6 +34,9 @@ export type SubscriberMinAggregateOutputType = {
   unsubscribedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
+  consentGrantedAt: Date | null
+  consentVersion: string | null
+  unsubscribeTokenHash: string | null
 }
 
 export type SubscriberMaxAggregateOutputType = {
@@ -46,6 +49,9 @@ export type SubscriberMaxAggregateOutputType = {
   unsubscribedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
+  consentGrantedAt: Date | null
+  consentVersion: string | null
+  unsubscribeTokenHash: string | null
 }
 
 export type SubscriberCountAggregateOutputType = {
@@ -58,6 +64,9 @@ export type SubscriberCountAggregateOutputType = {
   unsubscribedAt: number
   createdAt: number
   updatedAt: number
+  consentGrantedAt: number
+  consentVersion: number
+  unsubscribeTokenHash: number
   _all: number
 }
 
@@ -72,6 +81,9 @@ export type SubscriberMinAggregateInputType = {
   unsubscribedAt?: true
   createdAt?: true
   updatedAt?: true
+  consentGrantedAt?: true
+  consentVersion?: true
+  unsubscribeTokenHash?: true
 }
 
 export type SubscriberMaxAggregateInputType = {
@@ -84,6 +96,9 @@ export type SubscriberMaxAggregateInputType = {
   unsubscribedAt?: true
   createdAt?: true
   updatedAt?: true
+  consentGrantedAt?: true
+  consentVersion?: true
+  unsubscribeTokenHash?: true
 }
 
 export type SubscriberCountAggregateInputType = {
@@ -96,6 +111,9 @@ export type SubscriberCountAggregateInputType = {
   unsubscribedAt?: true
   createdAt?: true
   updatedAt?: true
+  consentGrantedAt?: true
+  consentVersion?: true
+  unsubscribeTokenHash?: true
   _all?: true
 }
 
@@ -177,10 +195,13 @@ export type SubscriberGroupByOutputType = {
   email: string
   phone: string | null
   status: $Enums.SubscriberStatus
-  subscribedAt: Date
+  subscribedAt: Date | null
   unsubscribedAt: Date | null
   createdAt: Date
   updatedAt: Date
+  consentGrantedAt: Date | null
+  consentVersion: string | null
+  unsubscribeTokenHash: string | null
   _count: SubscriberCountAggregateOutputType | null
   _min: SubscriberMinAggregateOutputType | null
   _max: SubscriberMaxAggregateOutputType | null
@@ -210,12 +231,17 @@ export type SubscriberWhereInput = {
   email?: Prisma.StringFilter<"Subscriber"> | string
   phone?: Prisma.StringNullableFilter<"Subscriber"> | string | null
   status?: Prisma.EnumSubscriberStatusFilter<"Subscriber"> | $Enums.SubscriberStatus
-  subscribedAt?: Prisma.DateTimeFilter<"Subscriber"> | Date | string
+  subscribedAt?: Prisma.DateTimeNullableFilter<"Subscriber"> | Date | string | null
   unsubscribedAt?: Prisma.DateTimeNullableFilter<"Subscriber"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Subscriber"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Subscriber"> | Date | string
+  consentGrantedAt?: Prisma.DateTimeNullableFilter<"Subscriber"> | Date | string | null
+  consentVersion?: Prisma.StringNullableFilter<"Subscriber"> | string | null
+  unsubscribeTokenHash?: Prisma.StringNullableFilter<"Subscriber"> | string | null
   campaignRecipients?: Prisma.CampaignRecipientListRelationFilter
   campaignEvents?: Prisma.CampaignEventListRelationFilter
+  consents?: Prisma.ConsentListRelationFilter
+  unsubscribeTokens?: Prisma.UnsubscribeTokenListRelationFilter
 }
 
 export type SubscriberOrderByWithRelationInput = {
@@ -224,30 +250,40 @@ export type SubscriberOrderByWithRelationInput = {
   email?: Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
-  subscribedAt?: Prisma.SortOrder
+  subscribedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   unsubscribedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  consentGrantedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  consentVersion?: Prisma.SortOrderInput | Prisma.SortOrder
+  unsubscribeTokenHash?: Prisma.SortOrderInput | Prisma.SortOrder
   campaignRecipients?: Prisma.CampaignRecipientOrderByRelationAggregateInput
   campaignEvents?: Prisma.CampaignEventOrderByRelationAggregateInput
+  consents?: Prisma.ConsentOrderByRelationAggregateInput
+  unsubscribeTokens?: Prisma.UnsubscribeTokenOrderByRelationAggregateInput
 }
 
 export type SubscriberWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   email?: string
+  unsubscribeTokenHash?: string
   AND?: Prisma.SubscriberWhereInput | Prisma.SubscriberWhereInput[]
   OR?: Prisma.SubscriberWhereInput[]
   NOT?: Prisma.SubscriberWhereInput | Prisma.SubscriberWhereInput[]
   name?: Prisma.StringFilter<"Subscriber"> | string
   phone?: Prisma.StringNullableFilter<"Subscriber"> | string | null
   status?: Prisma.EnumSubscriberStatusFilter<"Subscriber"> | $Enums.SubscriberStatus
-  subscribedAt?: Prisma.DateTimeFilter<"Subscriber"> | Date | string
+  subscribedAt?: Prisma.DateTimeNullableFilter<"Subscriber"> | Date | string | null
   unsubscribedAt?: Prisma.DateTimeNullableFilter<"Subscriber"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Subscriber"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Subscriber"> | Date | string
+  consentGrantedAt?: Prisma.DateTimeNullableFilter<"Subscriber"> | Date | string | null
+  consentVersion?: Prisma.StringNullableFilter<"Subscriber"> | string | null
   campaignRecipients?: Prisma.CampaignRecipientListRelationFilter
   campaignEvents?: Prisma.CampaignEventListRelationFilter
-}, "id" | "email">
+  consents?: Prisma.ConsentListRelationFilter
+  unsubscribeTokens?: Prisma.UnsubscribeTokenListRelationFilter
+}, "id" | "email" | "unsubscribeTokenHash">
 
 export type SubscriberOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -255,10 +291,13 @@ export type SubscriberOrderByWithAggregationInput = {
   email?: Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
-  subscribedAt?: Prisma.SortOrder
+  subscribedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   unsubscribedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  consentGrantedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  consentVersion?: Prisma.SortOrderInput | Prisma.SortOrder
+  unsubscribeTokenHash?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.SubscriberCountOrderByAggregateInput
   _max?: Prisma.SubscriberMaxOrderByAggregateInput
   _min?: Prisma.SubscriberMinOrderByAggregateInput
@@ -273,10 +312,13 @@ export type SubscriberScalarWhereWithAggregatesInput = {
   email?: Prisma.StringWithAggregatesFilter<"Subscriber"> | string
   phone?: Prisma.StringNullableWithAggregatesFilter<"Subscriber"> | string | null
   status?: Prisma.EnumSubscriberStatusWithAggregatesFilter<"Subscriber"> | $Enums.SubscriberStatus
-  subscribedAt?: Prisma.DateTimeWithAggregatesFilter<"Subscriber"> | Date | string
+  subscribedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Subscriber"> | Date | string | null
   unsubscribedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Subscriber"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Subscriber"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Subscriber"> | Date | string
+  consentGrantedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Subscriber"> | Date | string | null
+  consentVersion?: Prisma.StringNullableWithAggregatesFilter<"Subscriber"> | string | null
+  unsubscribeTokenHash?: Prisma.StringNullableWithAggregatesFilter<"Subscriber"> | string | null
 }
 
 export type SubscriberCreateInput = {
@@ -285,12 +327,17 @@ export type SubscriberCreateInput = {
   email: string
   phone?: string | null
   status?: $Enums.SubscriberStatus
-  subscribedAt?: Date | string
+  subscribedAt?: Date | string | null
   unsubscribedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  consentGrantedAt?: Date | string | null
+  consentVersion?: string | null
+  unsubscribeTokenHash?: string | null
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutSubscriberInput
   campaignEvents?: Prisma.CampaignEventCreateNestedManyWithoutSubscriberInput
+  consents?: Prisma.ConsentCreateNestedManyWithoutSubscriberInput
+  unsubscribeTokens?: Prisma.UnsubscribeTokenCreateNestedManyWithoutSubscriberInput
 }
 
 export type SubscriberUncheckedCreateInput = {
@@ -299,12 +346,17 @@ export type SubscriberUncheckedCreateInput = {
   email: string
   phone?: string | null
   status?: $Enums.SubscriberStatus
-  subscribedAt?: Date | string
+  subscribedAt?: Date | string | null
   unsubscribedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  consentGrantedAt?: Date | string | null
+  consentVersion?: string | null
+  unsubscribeTokenHash?: string | null
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutSubscriberInput
   campaignEvents?: Prisma.CampaignEventUncheckedCreateNestedManyWithoutSubscriberInput
+  consents?: Prisma.ConsentUncheckedCreateNestedManyWithoutSubscriberInput
+  unsubscribeTokens?: Prisma.UnsubscribeTokenUncheckedCreateNestedManyWithoutSubscriberInput
 }
 
 export type SubscriberUpdateInput = {
@@ -313,12 +365,17 @@ export type SubscriberUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumSubscriberStatusFieldUpdateOperationsInput | $Enums.SubscriberStatus
-  subscribedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subscribedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   unsubscribedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  consentGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  consentVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  unsubscribeTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutSubscriberNestedInput
   campaignEvents?: Prisma.CampaignEventUpdateManyWithoutSubscriberNestedInput
+  consents?: Prisma.ConsentUpdateManyWithoutSubscriberNestedInput
+  unsubscribeTokens?: Prisma.UnsubscribeTokenUpdateManyWithoutSubscriberNestedInput
 }
 
 export type SubscriberUncheckedUpdateInput = {
@@ -327,12 +384,17 @@ export type SubscriberUncheckedUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumSubscriberStatusFieldUpdateOperationsInput | $Enums.SubscriberStatus
-  subscribedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subscribedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   unsubscribedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  consentGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  consentVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  unsubscribeTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutSubscriberNestedInput
   campaignEvents?: Prisma.CampaignEventUncheckedUpdateManyWithoutSubscriberNestedInput
+  consents?: Prisma.ConsentUncheckedUpdateManyWithoutSubscriberNestedInput
+  unsubscribeTokens?: Prisma.UnsubscribeTokenUncheckedUpdateManyWithoutSubscriberNestedInput
 }
 
 export type SubscriberCreateManyInput = {
@@ -341,10 +403,13 @@ export type SubscriberCreateManyInput = {
   email: string
   phone?: string | null
   status?: $Enums.SubscriberStatus
-  subscribedAt?: Date | string
+  subscribedAt?: Date | string | null
   unsubscribedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  consentGrantedAt?: Date | string | null
+  consentVersion?: string | null
+  unsubscribeTokenHash?: string | null
 }
 
 export type SubscriberUpdateManyMutationInput = {
@@ -353,10 +418,13 @@ export type SubscriberUpdateManyMutationInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumSubscriberStatusFieldUpdateOperationsInput | $Enums.SubscriberStatus
-  subscribedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subscribedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   unsubscribedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  consentGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  consentVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  unsubscribeTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type SubscriberUncheckedUpdateManyInput = {
@@ -365,10 +433,18 @@ export type SubscriberUncheckedUpdateManyInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumSubscriberStatusFieldUpdateOperationsInput | $Enums.SubscriberStatus
-  subscribedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subscribedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   unsubscribedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  consentGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  consentVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  unsubscribeTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type SubscriberNullableScalarRelationFilter = {
+  is?: Prisma.SubscriberWhereInput | null
+  isNot?: Prisma.SubscriberWhereInput | null
 }
 
 export type SubscriberCountOrderByAggregateInput = {
@@ -381,6 +457,9 @@ export type SubscriberCountOrderByAggregateInput = {
   unsubscribedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  consentGrantedAt?: Prisma.SortOrder
+  consentVersion?: Prisma.SortOrder
+  unsubscribeTokenHash?: Prisma.SortOrder
 }
 
 export type SubscriberMaxOrderByAggregateInput = {
@@ -393,6 +472,9 @@ export type SubscriberMaxOrderByAggregateInput = {
   unsubscribedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  consentGrantedAt?: Prisma.SortOrder
+  consentVersion?: Prisma.SortOrder
+  unsubscribeTokenHash?: Prisma.SortOrder
 }
 
 export type SubscriberMinOrderByAggregateInput = {
@@ -405,6 +487,9 @@ export type SubscriberMinOrderByAggregateInput = {
   unsubscribedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  consentGrantedAt?: Prisma.SortOrder
+  consentVersion?: Prisma.SortOrder
+  unsubscribeTokenHash?: Prisma.SortOrder
 }
 
 export type SubscriberScalarRelationFilter = {
@@ -412,9 +497,20 @@ export type SubscriberScalarRelationFilter = {
   isNot?: Prisma.SubscriberWhereInput
 }
 
-export type SubscriberNullableScalarRelationFilter = {
-  is?: Prisma.SubscriberWhereInput | null
-  isNot?: Prisma.SubscriberWhereInput | null
+export type SubscriberCreateNestedOneWithoutConsentsInput = {
+  create?: Prisma.XOR<Prisma.SubscriberCreateWithoutConsentsInput, Prisma.SubscriberUncheckedCreateWithoutConsentsInput>
+  connectOrCreate?: Prisma.SubscriberCreateOrConnectWithoutConsentsInput
+  connect?: Prisma.SubscriberWhereUniqueInput
+}
+
+export type SubscriberUpdateOneWithoutConsentsNestedInput = {
+  create?: Prisma.XOR<Prisma.SubscriberCreateWithoutConsentsInput, Prisma.SubscriberUncheckedCreateWithoutConsentsInput>
+  connectOrCreate?: Prisma.SubscriberCreateOrConnectWithoutConsentsInput
+  upsert?: Prisma.SubscriberUpsertWithoutConsentsInput
+  disconnect?: Prisma.SubscriberWhereInput | boolean
+  delete?: Prisma.SubscriberWhereInput | boolean
+  connect?: Prisma.SubscriberWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.SubscriberUpdateToOneWithWhereWithoutConsentsInput, Prisma.SubscriberUpdateWithoutConsentsInput>, Prisma.SubscriberUncheckedUpdateWithoutConsentsInput>
 }
 
 export type EnumSubscriberStatusFieldUpdateOperationsInput = {
@@ -427,10 +523,12 @@ export type SubscriberCreateNestedOneWithoutCampaignRecipientsInput = {
   connect?: Prisma.SubscriberWhereUniqueInput
 }
 
-export type SubscriberUpdateOneRequiredWithoutCampaignRecipientsNestedInput = {
+export type SubscriberUpdateOneWithoutCampaignRecipientsNestedInput = {
   create?: Prisma.XOR<Prisma.SubscriberCreateWithoutCampaignRecipientsInput, Prisma.SubscriberUncheckedCreateWithoutCampaignRecipientsInput>
   connectOrCreate?: Prisma.SubscriberCreateOrConnectWithoutCampaignRecipientsInput
   upsert?: Prisma.SubscriberUpsertWithoutCampaignRecipientsInput
+  disconnect?: Prisma.SubscriberWhereInput | boolean
+  delete?: Prisma.SubscriberWhereInput | boolean
   connect?: Prisma.SubscriberWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.SubscriberUpdateToOneWithWhereWithoutCampaignRecipientsInput, Prisma.SubscriberUpdateWithoutCampaignRecipientsInput>, Prisma.SubscriberUncheckedUpdateWithoutCampaignRecipientsInput>
 }
@@ -451,17 +549,124 @@ export type SubscriberUpdateOneWithoutCampaignEventsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.SubscriberUpdateToOneWithWhereWithoutCampaignEventsInput, Prisma.SubscriberUpdateWithoutCampaignEventsInput>, Prisma.SubscriberUncheckedUpdateWithoutCampaignEventsInput>
 }
 
+export type SubscriberCreateNestedOneWithoutUnsubscribeTokensInput = {
+  create?: Prisma.XOR<Prisma.SubscriberCreateWithoutUnsubscribeTokensInput, Prisma.SubscriberUncheckedCreateWithoutUnsubscribeTokensInput>
+  connectOrCreate?: Prisma.SubscriberCreateOrConnectWithoutUnsubscribeTokensInput
+  connect?: Prisma.SubscriberWhereUniqueInput
+}
+
+export type SubscriberUpdateOneRequiredWithoutUnsubscribeTokensNestedInput = {
+  create?: Prisma.XOR<Prisma.SubscriberCreateWithoutUnsubscribeTokensInput, Prisma.SubscriberUncheckedCreateWithoutUnsubscribeTokensInput>
+  connectOrCreate?: Prisma.SubscriberCreateOrConnectWithoutUnsubscribeTokensInput
+  upsert?: Prisma.SubscriberUpsertWithoutUnsubscribeTokensInput
+  connect?: Prisma.SubscriberWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.SubscriberUpdateToOneWithWhereWithoutUnsubscribeTokensInput, Prisma.SubscriberUpdateWithoutUnsubscribeTokensInput>, Prisma.SubscriberUncheckedUpdateWithoutUnsubscribeTokensInput>
+}
+
+export type SubscriberCreateWithoutConsentsInput = {
+  id?: string
+  name: string
+  email: string
+  phone?: string | null
+  status?: $Enums.SubscriberStatus
+  subscribedAt?: Date | string | null
+  unsubscribedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  consentGrantedAt?: Date | string | null
+  consentVersion?: string | null
+  unsubscribeTokenHash?: string | null
+  campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutSubscriberInput
+  campaignEvents?: Prisma.CampaignEventCreateNestedManyWithoutSubscriberInput
+  unsubscribeTokens?: Prisma.UnsubscribeTokenCreateNestedManyWithoutSubscriberInput
+}
+
+export type SubscriberUncheckedCreateWithoutConsentsInput = {
+  id?: string
+  name: string
+  email: string
+  phone?: string | null
+  status?: $Enums.SubscriberStatus
+  subscribedAt?: Date | string | null
+  unsubscribedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  consentGrantedAt?: Date | string | null
+  consentVersion?: string | null
+  unsubscribeTokenHash?: string | null
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutSubscriberInput
+  campaignEvents?: Prisma.CampaignEventUncheckedCreateNestedManyWithoutSubscriberInput
+  unsubscribeTokens?: Prisma.UnsubscribeTokenUncheckedCreateNestedManyWithoutSubscriberInput
+}
+
+export type SubscriberCreateOrConnectWithoutConsentsInput = {
+  where: Prisma.SubscriberWhereUniqueInput
+  create: Prisma.XOR<Prisma.SubscriberCreateWithoutConsentsInput, Prisma.SubscriberUncheckedCreateWithoutConsentsInput>
+}
+
+export type SubscriberUpsertWithoutConsentsInput = {
+  update: Prisma.XOR<Prisma.SubscriberUpdateWithoutConsentsInput, Prisma.SubscriberUncheckedUpdateWithoutConsentsInput>
+  create: Prisma.XOR<Prisma.SubscriberCreateWithoutConsentsInput, Prisma.SubscriberUncheckedCreateWithoutConsentsInput>
+  where?: Prisma.SubscriberWhereInput
+}
+
+export type SubscriberUpdateToOneWithWhereWithoutConsentsInput = {
+  where?: Prisma.SubscriberWhereInput
+  data: Prisma.XOR<Prisma.SubscriberUpdateWithoutConsentsInput, Prisma.SubscriberUncheckedUpdateWithoutConsentsInput>
+}
+
+export type SubscriberUpdateWithoutConsentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumSubscriberStatusFieldUpdateOperationsInput | $Enums.SubscriberStatus
+  subscribedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  unsubscribedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  consentGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  consentVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  unsubscribeTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutSubscriberNestedInput
+  campaignEvents?: Prisma.CampaignEventUpdateManyWithoutSubscriberNestedInput
+  unsubscribeTokens?: Prisma.UnsubscribeTokenUpdateManyWithoutSubscriberNestedInput
+}
+
+export type SubscriberUncheckedUpdateWithoutConsentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumSubscriberStatusFieldUpdateOperationsInput | $Enums.SubscriberStatus
+  subscribedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  unsubscribedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  consentGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  consentVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  unsubscribeTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutSubscriberNestedInput
+  campaignEvents?: Prisma.CampaignEventUncheckedUpdateManyWithoutSubscriberNestedInput
+  unsubscribeTokens?: Prisma.UnsubscribeTokenUncheckedUpdateManyWithoutSubscriberNestedInput
+}
+
 export type SubscriberCreateWithoutCampaignRecipientsInput = {
   id?: string
   name: string
   email: string
   phone?: string | null
   status?: $Enums.SubscriberStatus
-  subscribedAt?: Date | string
+  subscribedAt?: Date | string | null
   unsubscribedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  consentGrantedAt?: Date | string | null
+  consentVersion?: string | null
+  unsubscribeTokenHash?: string | null
   campaignEvents?: Prisma.CampaignEventCreateNestedManyWithoutSubscriberInput
+  consents?: Prisma.ConsentCreateNestedManyWithoutSubscriberInput
+  unsubscribeTokens?: Prisma.UnsubscribeTokenCreateNestedManyWithoutSubscriberInput
 }
 
 export type SubscriberUncheckedCreateWithoutCampaignRecipientsInput = {
@@ -470,11 +675,16 @@ export type SubscriberUncheckedCreateWithoutCampaignRecipientsInput = {
   email: string
   phone?: string | null
   status?: $Enums.SubscriberStatus
-  subscribedAt?: Date | string
+  subscribedAt?: Date | string | null
   unsubscribedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  consentGrantedAt?: Date | string | null
+  consentVersion?: string | null
+  unsubscribeTokenHash?: string | null
   campaignEvents?: Prisma.CampaignEventUncheckedCreateNestedManyWithoutSubscriberInput
+  consents?: Prisma.ConsentUncheckedCreateNestedManyWithoutSubscriberInput
+  unsubscribeTokens?: Prisma.UnsubscribeTokenUncheckedCreateNestedManyWithoutSubscriberInput
 }
 
 export type SubscriberCreateOrConnectWithoutCampaignRecipientsInput = {
@@ -499,11 +709,16 @@ export type SubscriberUpdateWithoutCampaignRecipientsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumSubscriberStatusFieldUpdateOperationsInput | $Enums.SubscriberStatus
-  subscribedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subscribedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   unsubscribedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  consentGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  consentVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  unsubscribeTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   campaignEvents?: Prisma.CampaignEventUpdateManyWithoutSubscriberNestedInput
+  consents?: Prisma.ConsentUpdateManyWithoutSubscriberNestedInput
+  unsubscribeTokens?: Prisma.UnsubscribeTokenUpdateManyWithoutSubscriberNestedInput
 }
 
 export type SubscriberUncheckedUpdateWithoutCampaignRecipientsInput = {
@@ -512,11 +727,16 @@ export type SubscriberUncheckedUpdateWithoutCampaignRecipientsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumSubscriberStatusFieldUpdateOperationsInput | $Enums.SubscriberStatus
-  subscribedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subscribedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   unsubscribedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  consentGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  consentVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  unsubscribeTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   campaignEvents?: Prisma.CampaignEventUncheckedUpdateManyWithoutSubscriberNestedInput
+  consents?: Prisma.ConsentUncheckedUpdateManyWithoutSubscriberNestedInput
+  unsubscribeTokens?: Prisma.UnsubscribeTokenUncheckedUpdateManyWithoutSubscriberNestedInput
 }
 
 export type SubscriberCreateWithoutCampaignEventsInput = {
@@ -525,11 +745,16 @@ export type SubscriberCreateWithoutCampaignEventsInput = {
   email: string
   phone?: string | null
   status?: $Enums.SubscriberStatus
-  subscribedAt?: Date | string
+  subscribedAt?: Date | string | null
   unsubscribedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  consentGrantedAt?: Date | string | null
+  consentVersion?: string | null
+  unsubscribeTokenHash?: string | null
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutSubscriberInput
+  consents?: Prisma.ConsentCreateNestedManyWithoutSubscriberInput
+  unsubscribeTokens?: Prisma.UnsubscribeTokenCreateNestedManyWithoutSubscriberInput
 }
 
 export type SubscriberUncheckedCreateWithoutCampaignEventsInput = {
@@ -538,11 +763,16 @@ export type SubscriberUncheckedCreateWithoutCampaignEventsInput = {
   email: string
   phone?: string | null
   status?: $Enums.SubscriberStatus
-  subscribedAt?: Date | string
+  subscribedAt?: Date | string | null
   unsubscribedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  consentGrantedAt?: Date | string | null
+  consentVersion?: string | null
+  unsubscribeTokenHash?: string | null
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutSubscriberInput
+  consents?: Prisma.ConsentUncheckedCreateNestedManyWithoutSubscriberInput
+  unsubscribeTokens?: Prisma.UnsubscribeTokenUncheckedCreateNestedManyWithoutSubscriberInput
 }
 
 export type SubscriberCreateOrConnectWithoutCampaignEventsInput = {
@@ -567,11 +797,16 @@ export type SubscriberUpdateWithoutCampaignEventsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumSubscriberStatusFieldUpdateOperationsInput | $Enums.SubscriberStatus
-  subscribedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subscribedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   unsubscribedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  consentGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  consentVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  unsubscribeTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutSubscriberNestedInput
+  consents?: Prisma.ConsentUpdateManyWithoutSubscriberNestedInput
+  unsubscribeTokens?: Prisma.UnsubscribeTokenUpdateManyWithoutSubscriberNestedInput
 }
 
 export type SubscriberUncheckedUpdateWithoutCampaignEventsInput = {
@@ -580,11 +815,104 @@ export type SubscriberUncheckedUpdateWithoutCampaignEventsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumSubscriberStatusFieldUpdateOperationsInput | $Enums.SubscriberStatus
-  subscribedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subscribedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   unsubscribedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  consentGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  consentVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  unsubscribeTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutSubscriberNestedInput
+  consents?: Prisma.ConsentUncheckedUpdateManyWithoutSubscriberNestedInput
+  unsubscribeTokens?: Prisma.UnsubscribeTokenUncheckedUpdateManyWithoutSubscriberNestedInput
+}
+
+export type SubscriberCreateWithoutUnsubscribeTokensInput = {
+  id?: string
+  name: string
+  email: string
+  phone?: string | null
+  status?: $Enums.SubscriberStatus
+  subscribedAt?: Date | string | null
+  unsubscribedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  consentGrantedAt?: Date | string | null
+  consentVersion?: string | null
+  unsubscribeTokenHash?: string | null
+  campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutSubscriberInput
+  campaignEvents?: Prisma.CampaignEventCreateNestedManyWithoutSubscriberInput
+  consents?: Prisma.ConsentCreateNestedManyWithoutSubscriberInput
+}
+
+export type SubscriberUncheckedCreateWithoutUnsubscribeTokensInput = {
+  id?: string
+  name: string
+  email: string
+  phone?: string | null
+  status?: $Enums.SubscriberStatus
+  subscribedAt?: Date | string | null
+  unsubscribedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  consentGrantedAt?: Date | string | null
+  consentVersion?: string | null
+  unsubscribeTokenHash?: string | null
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutSubscriberInput
+  campaignEvents?: Prisma.CampaignEventUncheckedCreateNestedManyWithoutSubscriberInput
+  consents?: Prisma.ConsentUncheckedCreateNestedManyWithoutSubscriberInput
+}
+
+export type SubscriberCreateOrConnectWithoutUnsubscribeTokensInput = {
+  where: Prisma.SubscriberWhereUniqueInput
+  create: Prisma.XOR<Prisma.SubscriberCreateWithoutUnsubscribeTokensInput, Prisma.SubscriberUncheckedCreateWithoutUnsubscribeTokensInput>
+}
+
+export type SubscriberUpsertWithoutUnsubscribeTokensInput = {
+  update: Prisma.XOR<Prisma.SubscriberUpdateWithoutUnsubscribeTokensInput, Prisma.SubscriberUncheckedUpdateWithoutUnsubscribeTokensInput>
+  create: Prisma.XOR<Prisma.SubscriberCreateWithoutUnsubscribeTokensInput, Prisma.SubscriberUncheckedCreateWithoutUnsubscribeTokensInput>
+  where?: Prisma.SubscriberWhereInput
+}
+
+export type SubscriberUpdateToOneWithWhereWithoutUnsubscribeTokensInput = {
+  where?: Prisma.SubscriberWhereInput
+  data: Prisma.XOR<Prisma.SubscriberUpdateWithoutUnsubscribeTokensInput, Prisma.SubscriberUncheckedUpdateWithoutUnsubscribeTokensInput>
+}
+
+export type SubscriberUpdateWithoutUnsubscribeTokensInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumSubscriberStatusFieldUpdateOperationsInput | $Enums.SubscriberStatus
+  subscribedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  unsubscribedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  consentGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  consentVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  unsubscribeTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutSubscriberNestedInput
+  campaignEvents?: Prisma.CampaignEventUpdateManyWithoutSubscriberNestedInput
+  consents?: Prisma.ConsentUpdateManyWithoutSubscriberNestedInput
+}
+
+export type SubscriberUncheckedUpdateWithoutUnsubscribeTokensInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumSubscriberStatusFieldUpdateOperationsInput | $Enums.SubscriberStatus
+  subscribedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  unsubscribedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  consentGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  consentVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  unsubscribeTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutSubscriberNestedInput
+  campaignEvents?: Prisma.CampaignEventUncheckedUpdateManyWithoutSubscriberNestedInput
+  consents?: Prisma.ConsentUncheckedUpdateManyWithoutSubscriberNestedInput
 }
 
 
@@ -595,11 +923,15 @@ export type SubscriberUncheckedUpdateWithoutCampaignEventsInput = {
 export type SubscriberCountOutputType = {
   campaignRecipients: number
   campaignEvents: number
+  consents: number
+  unsubscribeTokens: number
 }
 
 export type SubscriberCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   campaignRecipients?: boolean | SubscriberCountOutputTypeCountCampaignRecipientsArgs
   campaignEvents?: boolean | SubscriberCountOutputTypeCountCampaignEventsArgs
+  consents?: boolean | SubscriberCountOutputTypeCountConsentsArgs
+  unsubscribeTokens?: boolean | SubscriberCountOutputTypeCountUnsubscribeTokensArgs
 }
 
 /**
@@ -626,6 +958,20 @@ export type SubscriberCountOutputTypeCountCampaignEventsArgs<ExtArgs extends run
   where?: Prisma.CampaignEventWhereInput
 }
 
+/**
+ * SubscriberCountOutputType without action
+ */
+export type SubscriberCountOutputTypeCountConsentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ConsentWhereInput
+}
+
+/**
+ * SubscriberCountOutputType without action
+ */
+export type SubscriberCountOutputTypeCountUnsubscribeTokensArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.UnsubscribeTokenWhereInput
+}
+
 
 export type SubscriberSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -637,8 +983,13 @@ export type SubscriberSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   unsubscribedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  consentGrantedAt?: boolean
+  consentVersion?: boolean
+  unsubscribeTokenHash?: boolean
   campaignRecipients?: boolean | Prisma.Subscriber$campaignRecipientsArgs<ExtArgs>
   campaignEvents?: boolean | Prisma.Subscriber$campaignEventsArgs<ExtArgs>
+  consents?: boolean | Prisma.Subscriber$consentsArgs<ExtArgs>
+  unsubscribeTokens?: boolean | Prisma.Subscriber$unsubscribeTokensArgs<ExtArgs>
   _count?: boolean | Prisma.SubscriberCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["subscriber"]>
 
@@ -652,6 +1003,9 @@ export type SubscriberSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   unsubscribedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  consentGrantedAt?: boolean
+  consentVersion?: boolean
+  unsubscribeTokenHash?: boolean
 }, ExtArgs["result"]["subscriber"]>
 
 export type SubscriberSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -664,6 +1018,9 @@ export type SubscriberSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   unsubscribedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  consentGrantedAt?: boolean
+  consentVersion?: boolean
+  unsubscribeTokenHash?: boolean
 }, ExtArgs["result"]["subscriber"]>
 
 export type SubscriberSelectScalar = {
@@ -676,12 +1033,17 @@ export type SubscriberSelectScalar = {
   unsubscribedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  consentGrantedAt?: boolean
+  consentVersion?: boolean
+  unsubscribeTokenHash?: boolean
 }
 
-export type SubscriberOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "phone" | "status" | "subscribedAt" | "unsubscribedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["subscriber"]>
+export type SubscriberOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "phone" | "status" | "subscribedAt" | "unsubscribedAt" | "createdAt" | "updatedAt" | "consentGrantedAt" | "consentVersion" | "unsubscribeTokenHash", ExtArgs["result"]["subscriber"]>
 export type SubscriberInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   campaignRecipients?: boolean | Prisma.Subscriber$campaignRecipientsArgs<ExtArgs>
   campaignEvents?: boolean | Prisma.Subscriber$campaignEventsArgs<ExtArgs>
+  consents?: boolean | Prisma.Subscriber$consentsArgs<ExtArgs>
+  unsubscribeTokens?: boolean | Prisma.Subscriber$unsubscribeTokensArgs<ExtArgs>
   _count?: boolean | Prisma.SubscriberCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type SubscriberIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -692,6 +1054,8 @@ export type $SubscriberPayload<ExtArgs extends runtime.Types.Extensions.Internal
   objects: {
     campaignRecipients: Prisma.$CampaignRecipientPayload<ExtArgs>[]
     campaignEvents: Prisma.$CampaignEventPayload<ExtArgs>[]
+    consents: Prisma.$ConsentPayload<ExtArgs>[]
+    unsubscribeTokens: Prisma.$UnsubscribeTokenPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -699,10 +1063,13 @@ export type $SubscriberPayload<ExtArgs extends runtime.Types.Extensions.Internal
     email: string
     phone: string | null
     status: $Enums.SubscriberStatus
-    subscribedAt: Date
+    subscribedAt: Date | null
     unsubscribedAt: Date | null
     createdAt: Date
     updatedAt: Date
+    consentGrantedAt: Date | null
+    consentVersion: string | null
+    unsubscribeTokenHash: string | null
   }, ExtArgs["result"]["subscriber"]>
   composites: {}
 }
@@ -1099,6 +1466,8 @@ export interface Prisma__SubscriberClient<T, Null = never, ExtArgs extends runti
   readonly [Symbol.toStringTag]: "PrismaPromise"
   campaignRecipients<T extends Prisma.Subscriber$campaignRecipientsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Subscriber$campaignRecipientsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CampaignRecipientPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   campaignEvents<T extends Prisma.Subscriber$campaignEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Subscriber$campaignEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CampaignEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  consents<T extends Prisma.Subscriber$consentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Subscriber$consentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ConsentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  unsubscribeTokens<T extends Prisma.Subscriber$unsubscribeTokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Subscriber$unsubscribeTokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UnsubscribeTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1137,6 +1506,9 @@ export interface SubscriberFieldRefs {
   readonly unsubscribedAt: Prisma.FieldRef<"Subscriber", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Subscriber", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Subscriber", 'DateTime'>
+  readonly consentGrantedAt: Prisma.FieldRef<"Subscriber", 'DateTime'>
+  readonly consentVersion: Prisma.FieldRef<"Subscriber", 'String'>
+  readonly unsubscribeTokenHash: Prisma.FieldRef<"Subscriber", 'String'>
 }
     
 
@@ -1575,6 +1947,54 @@ export type Subscriber$campaignEventsArgs<ExtArgs extends runtime.Types.Extensio
   take?: number
   skip?: number
   distinct?: Prisma.CampaignEventScalarFieldEnum | Prisma.CampaignEventScalarFieldEnum[]
+}
+
+/**
+ * Subscriber.consents
+ */
+export type Subscriber$consentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Consent
+   */
+  select?: Prisma.ConsentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Consent
+   */
+  omit?: Prisma.ConsentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ConsentInclude<ExtArgs> | null
+  where?: Prisma.ConsentWhereInput
+  orderBy?: Prisma.ConsentOrderByWithRelationInput | Prisma.ConsentOrderByWithRelationInput[]
+  cursor?: Prisma.ConsentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ConsentScalarFieldEnum | Prisma.ConsentScalarFieldEnum[]
+}
+
+/**
+ * Subscriber.unsubscribeTokens
+ */
+export type Subscriber$unsubscribeTokensArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the UnsubscribeToken
+   */
+  select?: Prisma.UnsubscribeTokenSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the UnsubscribeToken
+   */
+  omit?: Prisma.UnsubscribeTokenOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UnsubscribeTokenInclude<ExtArgs> | null
+  where?: Prisma.UnsubscribeTokenWhereInput
+  orderBy?: Prisma.UnsubscribeTokenOrderByWithRelationInput | Prisma.UnsubscribeTokenOrderByWithRelationInput[]
+  cursor?: Prisma.UnsubscribeTokenWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.UnsubscribeTokenScalarFieldEnum | Prisma.UnsubscribeTokenScalarFieldEnum[]
 }
 
 /**

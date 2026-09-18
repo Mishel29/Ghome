@@ -30,12 +30,18 @@ export type ImportJobAvgAggregateOutputType = {
   totalRows: number | null
   successfulRows: number | null
   failedRows: number | null
+  totalJobs: number | null
+  completedJobs: number | null
+  failedJobs: number | null
 }
 
 export type ImportJobSumAggregateOutputType = {
   totalRows: number | null
   successfulRows: number | null
   failedRows: number | null
+  totalJobs: number | null
+  completedJobs: number | null
+  failedJobs: number | null
 }
 
 export type ImportJobMinAggregateOutputType = {
@@ -49,6 +55,12 @@ export type ImportJobMinAggregateOutputType = {
   createdById: string | null
   createdAt: Date | null
   completedAt: Date | null
+  uploadId: string | null
+  startedAt: Date | null
+  totalJobs: number | null
+  completedJobs: number | null
+  failedJobs: number | null
+  errorSummary: string | null
 }
 
 export type ImportJobMaxAggregateOutputType = {
@@ -62,6 +74,12 @@ export type ImportJobMaxAggregateOutputType = {
   createdById: string | null
   createdAt: Date | null
   completedAt: Date | null
+  uploadId: string | null
+  startedAt: Date | null
+  totalJobs: number | null
+  completedJobs: number | null
+  failedJobs: number | null
+  errorSummary: string | null
 }
 
 export type ImportJobCountAggregateOutputType = {
@@ -76,6 +94,12 @@ export type ImportJobCountAggregateOutputType = {
   createdById: number
   createdAt: number
   completedAt: number
+  uploadId: number
+  startedAt: number
+  totalJobs: number
+  completedJobs: number
+  failedJobs: number
+  errorSummary: number
   _all: number
 }
 
@@ -84,12 +108,18 @@ export type ImportJobAvgAggregateInputType = {
   totalRows?: true
   successfulRows?: true
   failedRows?: true
+  totalJobs?: true
+  completedJobs?: true
+  failedJobs?: true
 }
 
 export type ImportJobSumAggregateInputType = {
   totalRows?: true
   successfulRows?: true
   failedRows?: true
+  totalJobs?: true
+  completedJobs?: true
+  failedJobs?: true
 }
 
 export type ImportJobMinAggregateInputType = {
@@ -103,6 +133,12 @@ export type ImportJobMinAggregateInputType = {
   createdById?: true
   createdAt?: true
   completedAt?: true
+  uploadId?: true
+  startedAt?: true
+  totalJobs?: true
+  completedJobs?: true
+  failedJobs?: true
+  errorSummary?: true
 }
 
 export type ImportJobMaxAggregateInputType = {
@@ -116,6 +152,12 @@ export type ImportJobMaxAggregateInputType = {
   createdById?: true
   createdAt?: true
   completedAt?: true
+  uploadId?: true
+  startedAt?: true
+  totalJobs?: true
+  completedJobs?: true
+  failedJobs?: true
+  errorSummary?: true
 }
 
 export type ImportJobCountAggregateInputType = {
@@ -130,6 +172,12 @@ export type ImportJobCountAggregateInputType = {
   createdById?: true
   createdAt?: true
   completedAt?: true
+  uploadId?: true
+  startedAt?: true
+  totalJobs?: true
+  completedJobs?: true
+  failedJobs?: true
+  errorSummary?: true
   _all?: true
 }
 
@@ -231,6 +279,12 @@ export type ImportJobGroupByOutputType = {
   createdById: string | null
   createdAt: Date
   completedAt: Date | null
+  uploadId: string | null
+  startedAt: Date | null
+  totalJobs: number
+  completedJobs: number
+  failedJobs: number
+  errorSummary: string | null
   _count: ImportJobCountAggregateOutputType | null
   _avg: ImportJobAvgAggregateOutputType | null
   _sum: ImportJobSumAggregateOutputType | null
@@ -268,7 +322,16 @@ export type ImportJobWhereInput = {
   createdById?: Prisma.StringNullableFilter<"ImportJob"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ImportJob"> | Date | string
   completedAt?: Prisma.DateTimeNullableFilter<"ImportJob"> | Date | string | null
+  uploadId?: Prisma.StringNullableFilter<"ImportJob"> | string | null
+  startedAt?: Prisma.DateTimeNullableFilter<"ImportJob"> | Date | string | null
+  totalJobs?: Prisma.IntFilter<"ImportJob"> | number
+  completedJobs?: Prisma.IntFilter<"ImportJob"> | number
+  failedJobs?: Prisma.IntFilter<"ImportJob"> | number
+  errorSummary?: Prisma.StringNullableFilter<"ImportJob"> | string | null
   createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  upload?: Prisma.XOR<Prisma.PropertyImportUploadNullableScalarRelationFilter, Prisma.PropertyImportUploadWhereInput> | null
+  chunks?: Prisma.ImportChunkListRelationFilter
+  rowErrors?: Prisma.ImportRowErrorListRelationFilter
 }
 
 export type ImportJobOrderByWithRelationInput = {
@@ -283,11 +346,21 @@ export type ImportJobOrderByWithRelationInput = {
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  uploadId?: Prisma.SortOrderInput | Prisma.SortOrder
+  startedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  totalJobs?: Prisma.SortOrder
+  completedJobs?: Prisma.SortOrder
+  failedJobs?: Prisma.SortOrder
+  errorSummary?: Prisma.SortOrderInput | Prisma.SortOrder
   createdBy?: Prisma.UserOrderByWithRelationInput
+  upload?: Prisma.PropertyImportUploadOrderByWithRelationInput
+  chunks?: Prisma.ImportChunkOrderByRelationAggregateInput
+  rowErrors?: Prisma.ImportRowErrorOrderByRelationAggregateInput
 }
 
 export type ImportJobWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  uploadId?: string
   AND?: Prisma.ImportJobWhereInput | Prisma.ImportJobWhereInput[]
   OR?: Prisma.ImportJobWhereInput[]
   NOT?: Prisma.ImportJobWhereInput | Prisma.ImportJobWhereInput[]
@@ -301,8 +374,16 @@ export type ImportJobWhereUniqueInput = Prisma.AtLeast<{
   createdById?: Prisma.StringNullableFilter<"ImportJob"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ImportJob"> | Date | string
   completedAt?: Prisma.DateTimeNullableFilter<"ImportJob"> | Date | string | null
+  startedAt?: Prisma.DateTimeNullableFilter<"ImportJob"> | Date | string | null
+  totalJobs?: Prisma.IntFilter<"ImportJob"> | number
+  completedJobs?: Prisma.IntFilter<"ImportJob"> | number
+  failedJobs?: Prisma.IntFilter<"ImportJob"> | number
+  errorSummary?: Prisma.StringNullableFilter<"ImportJob"> | string | null
   createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
-}, "id">
+  upload?: Prisma.XOR<Prisma.PropertyImportUploadNullableScalarRelationFilter, Prisma.PropertyImportUploadWhereInput> | null
+  chunks?: Prisma.ImportChunkListRelationFilter
+  rowErrors?: Prisma.ImportRowErrorListRelationFilter
+}, "id" | "uploadId">
 
 export type ImportJobOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -316,6 +397,12 @@ export type ImportJobOrderByWithAggregationInput = {
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  uploadId?: Prisma.SortOrderInput | Prisma.SortOrder
+  startedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  totalJobs?: Prisma.SortOrder
+  completedJobs?: Prisma.SortOrder
+  failedJobs?: Prisma.SortOrder
+  errorSummary?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.ImportJobCountOrderByAggregateInput
   _avg?: Prisma.ImportJobAvgOrderByAggregateInput
   _max?: Prisma.ImportJobMaxOrderByAggregateInput
@@ -338,6 +425,12 @@ export type ImportJobScalarWhereWithAggregatesInput = {
   createdById?: Prisma.StringNullableWithAggregatesFilter<"ImportJob"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ImportJob"> | Date | string
   completedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"ImportJob"> | Date | string | null
+  uploadId?: Prisma.StringNullableWithAggregatesFilter<"ImportJob"> | string | null
+  startedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"ImportJob"> | Date | string | null
+  totalJobs?: Prisma.IntWithAggregatesFilter<"ImportJob"> | number
+  completedJobs?: Prisma.IntWithAggregatesFilter<"ImportJob"> | number
+  failedJobs?: Prisma.IntWithAggregatesFilter<"ImportJob"> | number
+  errorSummary?: Prisma.StringNullableWithAggregatesFilter<"ImportJob"> | string | null
 }
 
 export type ImportJobCreateInput = {
@@ -351,7 +444,15 @@ export type ImportJobCreateInput = {
   errors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   completedAt?: Date | string | null
+  startedAt?: Date | string | null
+  totalJobs?: number
+  completedJobs?: number
+  failedJobs?: number
+  errorSummary?: string | null
   createdBy?: Prisma.UserCreateNestedOneWithoutImportJobsInput
+  upload?: Prisma.PropertyImportUploadCreateNestedOneWithoutImportJobInput
+  chunks?: Prisma.ImportChunkCreateNestedManyWithoutImportJobInput
+  rowErrors?: Prisma.ImportRowErrorCreateNestedManyWithoutImportJobInput
 }
 
 export type ImportJobUncheckedCreateInput = {
@@ -366,6 +467,14 @@ export type ImportJobUncheckedCreateInput = {
   createdById?: string | null
   createdAt?: Date | string
   completedAt?: Date | string | null
+  uploadId?: string | null
+  startedAt?: Date | string | null
+  totalJobs?: number
+  completedJobs?: number
+  failedJobs?: number
+  errorSummary?: string | null
+  chunks?: Prisma.ImportChunkUncheckedCreateNestedManyWithoutImportJobInput
+  rowErrors?: Prisma.ImportRowErrorUncheckedCreateNestedManyWithoutImportJobInput
 }
 
 export type ImportJobUpdateInput = {
@@ -379,7 +488,15 @@ export type ImportJobUpdateInput = {
   errors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totalJobs?: Prisma.IntFieldUpdateOperationsInput | number
+  completedJobs?: Prisma.IntFieldUpdateOperationsInput | number
+  failedJobs?: Prisma.IntFieldUpdateOperationsInput | number
+  errorSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdBy?: Prisma.UserUpdateOneWithoutImportJobsNestedInput
+  upload?: Prisma.PropertyImportUploadUpdateOneWithoutImportJobNestedInput
+  chunks?: Prisma.ImportChunkUpdateManyWithoutImportJobNestedInput
+  rowErrors?: Prisma.ImportRowErrorUpdateManyWithoutImportJobNestedInput
 }
 
 export type ImportJobUncheckedUpdateInput = {
@@ -394,6 +511,14 @@ export type ImportJobUncheckedUpdateInput = {
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  uploadId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totalJobs?: Prisma.IntFieldUpdateOperationsInput | number
+  completedJobs?: Prisma.IntFieldUpdateOperationsInput | number
+  failedJobs?: Prisma.IntFieldUpdateOperationsInput | number
+  errorSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chunks?: Prisma.ImportChunkUncheckedUpdateManyWithoutImportJobNestedInput
+  rowErrors?: Prisma.ImportRowErrorUncheckedUpdateManyWithoutImportJobNestedInput
 }
 
 export type ImportJobCreateManyInput = {
@@ -408,6 +533,12 @@ export type ImportJobCreateManyInput = {
   createdById?: string | null
   createdAt?: Date | string
   completedAt?: Date | string | null
+  uploadId?: string | null
+  startedAt?: Date | string | null
+  totalJobs?: number
+  completedJobs?: number
+  failedJobs?: number
+  errorSummary?: string | null
 }
 
 export type ImportJobUpdateManyMutationInput = {
@@ -421,6 +552,11 @@ export type ImportJobUpdateManyMutationInput = {
   errors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totalJobs?: Prisma.IntFieldUpdateOperationsInput | number
+  completedJobs?: Prisma.IntFieldUpdateOperationsInput | number
+  failedJobs?: Prisma.IntFieldUpdateOperationsInput | number
+  errorSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ImportJobUncheckedUpdateManyInput = {
@@ -435,6 +571,12 @@ export type ImportJobUncheckedUpdateManyInput = {
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  uploadId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totalJobs?: Prisma.IntFieldUpdateOperationsInput | number
+  completedJobs?: Prisma.IntFieldUpdateOperationsInput | number
+  failedJobs?: Prisma.IntFieldUpdateOperationsInput | number
+  errorSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ImportJobListRelationFilter = {
@@ -459,12 +601,21 @@ export type ImportJobCountOrderByAggregateInput = {
   createdById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
+  uploadId?: Prisma.SortOrder
+  startedAt?: Prisma.SortOrder
+  totalJobs?: Prisma.SortOrder
+  completedJobs?: Prisma.SortOrder
+  failedJobs?: Prisma.SortOrder
+  errorSummary?: Prisma.SortOrder
 }
 
 export type ImportJobAvgOrderByAggregateInput = {
   totalRows?: Prisma.SortOrder
   successfulRows?: Prisma.SortOrder
   failedRows?: Prisma.SortOrder
+  totalJobs?: Prisma.SortOrder
+  completedJobs?: Prisma.SortOrder
+  failedJobs?: Prisma.SortOrder
 }
 
 export type ImportJobMaxOrderByAggregateInput = {
@@ -478,6 +629,12 @@ export type ImportJobMaxOrderByAggregateInput = {
   createdById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
+  uploadId?: Prisma.SortOrder
+  startedAt?: Prisma.SortOrder
+  totalJobs?: Prisma.SortOrder
+  completedJobs?: Prisma.SortOrder
+  failedJobs?: Prisma.SortOrder
+  errorSummary?: Prisma.SortOrder
 }
 
 export type ImportJobMinOrderByAggregateInput = {
@@ -491,12 +648,31 @@ export type ImportJobMinOrderByAggregateInput = {
   createdById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
+  uploadId?: Prisma.SortOrder
+  startedAt?: Prisma.SortOrder
+  totalJobs?: Prisma.SortOrder
+  completedJobs?: Prisma.SortOrder
+  failedJobs?: Prisma.SortOrder
+  errorSummary?: Prisma.SortOrder
 }
 
 export type ImportJobSumOrderByAggregateInput = {
   totalRows?: Prisma.SortOrder
   successfulRows?: Prisma.SortOrder
   failedRows?: Prisma.SortOrder
+  totalJobs?: Prisma.SortOrder
+  completedJobs?: Prisma.SortOrder
+  failedJobs?: Prisma.SortOrder
+}
+
+export type ImportJobNullableScalarRelationFilter = {
+  is?: Prisma.ImportJobWhereInput | null
+  isNot?: Prisma.ImportJobWhereInput | null
+}
+
+export type ImportJobScalarRelationFilter = {
+  is?: Prisma.ImportJobWhereInput
+  isNot?: Prisma.ImportJobWhereInput
 }
 
 export type ImportJobCreateNestedManyWithoutCreatedByInput = {
@@ -549,6 +725,66 @@ export type EnumImportJobStatusFieldUpdateOperationsInput = {
   set?: $Enums.ImportJobStatus
 }
 
+export type ImportJobCreateNestedOneWithoutUploadInput = {
+  create?: Prisma.XOR<Prisma.ImportJobCreateWithoutUploadInput, Prisma.ImportJobUncheckedCreateWithoutUploadInput>
+  connectOrCreate?: Prisma.ImportJobCreateOrConnectWithoutUploadInput
+  connect?: Prisma.ImportJobWhereUniqueInput
+}
+
+export type ImportJobUncheckedCreateNestedOneWithoutUploadInput = {
+  create?: Prisma.XOR<Prisma.ImportJobCreateWithoutUploadInput, Prisma.ImportJobUncheckedCreateWithoutUploadInput>
+  connectOrCreate?: Prisma.ImportJobCreateOrConnectWithoutUploadInput
+  connect?: Prisma.ImportJobWhereUniqueInput
+}
+
+export type ImportJobUpdateOneWithoutUploadNestedInput = {
+  create?: Prisma.XOR<Prisma.ImportJobCreateWithoutUploadInput, Prisma.ImportJobUncheckedCreateWithoutUploadInput>
+  connectOrCreate?: Prisma.ImportJobCreateOrConnectWithoutUploadInput
+  upsert?: Prisma.ImportJobUpsertWithoutUploadInput
+  disconnect?: Prisma.ImportJobWhereInput | boolean
+  delete?: Prisma.ImportJobWhereInput | boolean
+  connect?: Prisma.ImportJobWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ImportJobUpdateToOneWithWhereWithoutUploadInput, Prisma.ImportJobUpdateWithoutUploadInput>, Prisma.ImportJobUncheckedUpdateWithoutUploadInput>
+}
+
+export type ImportJobUncheckedUpdateOneWithoutUploadNestedInput = {
+  create?: Prisma.XOR<Prisma.ImportJobCreateWithoutUploadInput, Prisma.ImportJobUncheckedCreateWithoutUploadInput>
+  connectOrCreate?: Prisma.ImportJobCreateOrConnectWithoutUploadInput
+  upsert?: Prisma.ImportJobUpsertWithoutUploadInput
+  disconnect?: Prisma.ImportJobWhereInput | boolean
+  delete?: Prisma.ImportJobWhereInput | boolean
+  connect?: Prisma.ImportJobWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ImportJobUpdateToOneWithWhereWithoutUploadInput, Prisma.ImportJobUpdateWithoutUploadInput>, Prisma.ImportJobUncheckedUpdateWithoutUploadInput>
+}
+
+export type ImportJobCreateNestedOneWithoutChunksInput = {
+  create?: Prisma.XOR<Prisma.ImportJobCreateWithoutChunksInput, Prisma.ImportJobUncheckedCreateWithoutChunksInput>
+  connectOrCreate?: Prisma.ImportJobCreateOrConnectWithoutChunksInput
+  connect?: Prisma.ImportJobWhereUniqueInput
+}
+
+export type ImportJobUpdateOneRequiredWithoutChunksNestedInput = {
+  create?: Prisma.XOR<Prisma.ImportJobCreateWithoutChunksInput, Prisma.ImportJobUncheckedCreateWithoutChunksInput>
+  connectOrCreate?: Prisma.ImportJobCreateOrConnectWithoutChunksInput
+  upsert?: Prisma.ImportJobUpsertWithoutChunksInput
+  connect?: Prisma.ImportJobWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ImportJobUpdateToOneWithWhereWithoutChunksInput, Prisma.ImportJobUpdateWithoutChunksInput>, Prisma.ImportJobUncheckedUpdateWithoutChunksInput>
+}
+
+export type ImportJobCreateNestedOneWithoutRowErrorsInput = {
+  create?: Prisma.XOR<Prisma.ImportJobCreateWithoutRowErrorsInput, Prisma.ImportJobUncheckedCreateWithoutRowErrorsInput>
+  connectOrCreate?: Prisma.ImportJobCreateOrConnectWithoutRowErrorsInput
+  connect?: Prisma.ImportJobWhereUniqueInput
+}
+
+export type ImportJobUpdateOneRequiredWithoutRowErrorsNestedInput = {
+  create?: Prisma.XOR<Prisma.ImportJobCreateWithoutRowErrorsInput, Prisma.ImportJobUncheckedCreateWithoutRowErrorsInput>
+  connectOrCreate?: Prisma.ImportJobCreateOrConnectWithoutRowErrorsInput
+  upsert?: Prisma.ImportJobUpsertWithoutRowErrorsInput
+  connect?: Prisma.ImportJobWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ImportJobUpdateToOneWithWhereWithoutRowErrorsInput, Prisma.ImportJobUpdateWithoutRowErrorsInput>, Prisma.ImportJobUncheckedUpdateWithoutRowErrorsInput>
+}
+
 export type ImportJobCreateWithoutCreatedByInput = {
   id?: string
   type: $Enums.ImportJobType
@@ -560,6 +796,14 @@ export type ImportJobCreateWithoutCreatedByInput = {
   errors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   completedAt?: Date | string | null
+  startedAt?: Date | string | null
+  totalJobs?: number
+  completedJobs?: number
+  failedJobs?: number
+  errorSummary?: string | null
+  upload?: Prisma.PropertyImportUploadCreateNestedOneWithoutImportJobInput
+  chunks?: Prisma.ImportChunkCreateNestedManyWithoutImportJobInput
+  rowErrors?: Prisma.ImportRowErrorCreateNestedManyWithoutImportJobInput
 }
 
 export type ImportJobUncheckedCreateWithoutCreatedByInput = {
@@ -573,6 +817,14 @@ export type ImportJobUncheckedCreateWithoutCreatedByInput = {
   errors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   completedAt?: Date | string | null
+  uploadId?: string | null
+  startedAt?: Date | string | null
+  totalJobs?: number
+  completedJobs?: number
+  failedJobs?: number
+  errorSummary?: string | null
+  chunks?: Prisma.ImportChunkUncheckedCreateNestedManyWithoutImportJobInput
+  rowErrors?: Prisma.ImportRowErrorUncheckedCreateNestedManyWithoutImportJobInput
 }
 
 export type ImportJobCreateOrConnectWithoutCreatedByInput = {
@@ -616,6 +868,312 @@ export type ImportJobScalarWhereInput = {
   createdById?: Prisma.StringNullableFilter<"ImportJob"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ImportJob"> | Date | string
   completedAt?: Prisma.DateTimeNullableFilter<"ImportJob"> | Date | string | null
+  uploadId?: Prisma.StringNullableFilter<"ImportJob"> | string | null
+  startedAt?: Prisma.DateTimeNullableFilter<"ImportJob"> | Date | string | null
+  totalJobs?: Prisma.IntFilter<"ImportJob"> | number
+  completedJobs?: Prisma.IntFilter<"ImportJob"> | number
+  failedJobs?: Prisma.IntFilter<"ImportJob"> | number
+  errorSummary?: Prisma.StringNullableFilter<"ImportJob"> | string | null
+}
+
+export type ImportJobCreateWithoutUploadInput = {
+  id?: string
+  type: $Enums.ImportJobType
+  status?: $Enums.ImportJobStatus
+  filename: string
+  totalRows?: number
+  successfulRows?: number
+  failedRows?: number
+  errors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  completedAt?: Date | string | null
+  startedAt?: Date | string | null
+  totalJobs?: number
+  completedJobs?: number
+  failedJobs?: number
+  errorSummary?: string | null
+  createdBy?: Prisma.UserCreateNestedOneWithoutImportJobsInput
+  chunks?: Prisma.ImportChunkCreateNestedManyWithoutImportJobInput
+  rowErrors?: Prisma.ImportRowErrorCreateNestedManyWithoutImportJobInput
+}
+
+export type ImportJobUncheckedCreateWithoutUploadInput = {
+  id?: string
+  type: $Enums.ImportJobType
+  status?: $Enums.ImportJobStatus
+  filename: string
+  totalRows?: number
+  successfulRows?: number
+  failedRows?: number
+  errors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdById?: string | null
+  createdAt?: Date | string
+  completedAt?: Date | string | null
+  startedAt?: Date | string | null
+  totalJobs?: number
+  completedJobs?: number
+  failedJobs?: number
+  errorSummary?: string | null
+  chunks?: Prisma.ImportChunkUncheckedCreateNestedManyWithoutImportJobInput
+  rowErrors?: Prisma.ImportRowErrorUncheckedCreateNestedManyWithoutImportJobInput
+}
+
+export type ImportJobCreateOrConnectWithoutUploadInput = {
+  where: Prisma.ImportJobWhereUniqueInput
+  create: Prisma.XOR<Prisma.ImportJobCreateWithoutUploadInput, Prisma.ImportJobUncheckedCreateWithoutUploadInput>
+}
+
+export type ImportJobUpsertWithoutUploadInput = {
+  update: Prisma.XOR<Prisma.ImportJobUpdateWithoutUploadInput, Prisma.ImportJobUncheckedUpdateWithoutUploadInput>
+  create: Prisma.XOR<Prisma.ImportJobCreateWithoutUploadInput, Prisma.ImportJobUncheckedCreateWithoutUploadInput>
+  where?: Prisma.ImportJobWhereInput
+}
+
+export type ImportJobUpdateToOneWithWhereWithoutUploadInput = {
+  where?: Prisma.ImportJobWhereInput
+  data: Prisma.XOR<Prisma.ImportJobUpdateWithoutUploadInput, Prisma.ImportJobUncheckedUpdateWithoutUploadInput>
+}
+
+export type ImportJobUpdateWithoutUploadInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumImportJobTypeFieldUpdateOperationsInput | $Enums.ImportJobType
+  status?: Prisma.EnumImportJobStatusFieldUpdateOperationsInput | $Enums.ImportJobStatus
+  filename?: Prisma.StringFieldUpdateOperationsInput | string
+  totalRows?: Prisma.IntFieldUpdateOperationsInput | number
+  successfulRows?: Prisma.IntFieldUpdateOperationsInput | number
+  failedRows?: Prisma.IntFieldUpdateOperationsInput | number
+  errors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totalJobs?: Prisma.IntFieldUpdateOperationsInput | number
+  completedJobs?: Prisma.IntFieldUpdateOperationsInput | number
+  failedJobs?: Prisma.IntFieldUpdateOperationsInput | number
+  errorSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdBy?: Prisma.UserUpdateOneWithoutImportJobsNestedInput
+  chunks?: Prisma.ImportChunkUpdateManyWithoutImportJobNestedInput
+  rowErrors?: Prisma.ImportRowErrorUpdateManyWithoutImportJobNestedInput
+}
+
+export type ImportJobUncheckedUpdateWithoutUploadInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumImportJobTypeFieldUpdateOperationsInput | $Enums.ImportJobType
+  status?: Prisma.EnumImportJobStatusFieldUpdateOperationsInput | $Enums.ImportJobStatus
+  filename?: Prisma.StringFieldUpdateOperationsInput | string
+  totalRows?: Prisma.IntFieldUpdateOperationsInput | number
+  successfulRows?: Prisma.IntFieldUpdateOperationsInput | number
+  failedRows?: Prisma.IntFieldUpdateOperationsInput | number
+  errors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totalJobs?: Prisma.IntFieldUpdateOperationsInput | number
+  completedJobs?: Prisma.IntFieldUpdateOperationsInput | number
+  failedJobs?: Prisma.IntFieldUpdateOperationsInput | number
+  errorSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chunks?: Prisma.ImportChunkUncheckedUpdateManyWithoutImportJobNestedInput
+  rowErrors?: Prisma.ImportRowErrorUncheckedUpdateManyWithoutImportJobNestedInput
+}
+
+export type ImportJobCreateWithoutChunksInput = {
+  id?: string
+  type: $Enums.ImportJobType
+  status?: $Enums.ImportJobStatus
+  filename: string
+  totalRows?: number
+  successfulRows?: number
+  failedRows?: number
+  errors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  completedAt?: Date | string | null
+  startedAt?: Date | string | null
+  totalJobs?: number
+  completedJobs?: number
+  failedJobs?: number
+  errorSummary?: string | null
+  createdBy?: Prisma.UserCreateNestedOneWithoutImportJobsInput
+  upload?: Prisma.PropertyImportUploadCreateNestedOneWithoutImportJobInput
+  rowErrors?: Prisma.ImportRowErrorCreateNestedManyWithoutImportJobInput
+}
+
+export type ImportJobUncheckedCreateWithoutChunksInput = {
+  id?: string
+  type: $Enums.ImportJobType
+  status?: $Enums.ImportJobStatus
+  filename: string
+  totalRows?: number
+  successfulRows?: number
+  failedRows?: number
+  errors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdById?: string | null
+  createdAt?: Date | string
+  completedAt?: Date | string | null
+  uploadId?: string | null
+  startedAt?: Date | string | null
+  totalJobs?: number
+  completedJobs?: number
+  failedJobs?: number
+  errorSummary?: string | null
+  rowErrors?: Prisma.ImportRowErrorUncheckedCreateNestedManyWithoutImportJobInput
+}
+
+export type ImportJobCreateOrConnectWithoutChunksInput = {
+  where: Prisma.ImportJobWhereUniqueInput
+  create: Prisma.XOR<Prisma.ImportJobCreateWithoutChunksInput, Prisma.ImportJobUncheckedCreateWithoutChunksInput>
+}
+
+export type ImportJobUpsertWithoutChunksInput = {
+  update: Prisma.XOR<Prisma.ImportJobUpdateWithoutChunksInput, Prisma.ImportJobUncheckedUpdateWithoutChunksInput>
+  create: Prisma.XOR<Prisma.ImportJobCreateWithoutChunksInput, Prisma.ImportJobUncheckedCreateWithoutChunksInput>
+  where?: Prisma.ImportJobWhereInput
+}
+
+export type ImportJobUpdateToOneWithWhereWithoutChunksInput = {
+  where?: Prisma.ImportJobWhereInput
+  data: Prisma.XOR<Prisma.ImportJobUpdateWithoutChunksInput, Prisma.ImportJobUncheckedUpdateWithoutChunksInput>
+}
+
+export type ImportJobUpdateWithoutChunksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumImportJobTypeFieldUpdateOperationsInput | $Enums.ImportJobType
+  status?: Prisma.EnumImportJobStatusFieldUpdateOperationsInput | $Enums.ImportJobStatus
+  filename?: Prisma.StringFieldUpdateOperationsInput | string
+  totalRows?: Prisma.IntFieldUpdateOperationsInput | number
+  successfulRows?: Prisma.IntFieldUpdateOperationsInput | number
+  failedRows?: Prisma.IntFieldUpdateOperationsInput | number
+  errors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totalJobs?: Prisma.IntFieldUpdateOperationsInput | number
+  completedJobs?: Prisma.IntFieldUpdateOperationsInput | number
+  failedJobs?: Prisma.IntFieldUpdateOperationsInput | number
+  errorSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdBy?: Prisma.UserUpdateOneWithoutImportJobsNestedInput
+  upload?: Prisma.PropertyImportUploadUpdateOneWithoutImportJobNestedInput
+  rowErrors?: Prisma.ImportRowErrorUpdateManyWithoutImportJobNestedInput
+}
+
+export type ImportJobUncheckedUpdateWithoutChunksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumImportJobTypeFieldUpdateOperationsInput | $Enums.ImportJobType
+  status?: Prisma.EnumImportJobStatusFieldUpdateOperationsInput | $Enums.ImportJobStatus
+  filename?: Prisma.StringFieldUpdateOperationsInput | string
+  totalRows?: Prisma.IntFieldUpdateOperationsInput | number
+  successfulRows?: Prisma.IntFieldUpdateOperationsInput | number
+  failedRows?: Prisma.IntFieldUpdateOperationsInput | number
+  errors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  uploadId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totalJobs?: Prisma.IntFieldUpdateOperationsInput | number
+  completedJobs?: Prisma.IntFieldUpdateOperationsInput | number
+  failedJobs?: Prisma.IntFieldUpdateOperationsInput | number
+  errorSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rowErrors?: Prisma.ImportRowErrorUncheckedUpdateManyWithoutImportJobNestedInput
+}
+
+export type ImportJobCreateWithoutRowErrorsInput = {
+  id?: string
+  type: $Enums.ImportJobType
+  status?: $Enums.ImportJobStatus
+  filename: string
+  totalRows?: number
+  successfulRows?: number
+  failedRows?: number
+  errors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  completedAt?: Date | string | null
+  startedAt?: Date | string | null
+  totalJobs?: number
+  completedJobs?: number
+  failedJobs?: number
+  errorSummary?: string | null
+  createdBy?: Prisma.UserCreateNestedOneWithoutImportJobsInput
+  upload?: Prisma.PropertyImportUploadCreateNestedOneWithoutImportJobInput
+  chunks?: Prisma.ImportChunkCreateNestedManyWithoutImportJobInput
+}
+
+export type ImportJobUncheckedCreateWithoutRowErrorsInput = {
+  id?: string
+  type: $Enums.ImportJobType
+  status?: $Enums.ImportJobStatus
+  filename: string
+  totalRows?: number
+  successfulRows?: number
+  failedRows?: number
+  errors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdById?: string | null
+  createdAt?: Date | string
+  completedAt?: Date | string | null
+  uploadId?: string | null
+  startedAt?: Date | string | null
+  totalJobs?: number
+  completedJobs?: number
+  failedJobs?: number
+  errorSummary?: string | null
+  chunks?: Prisma.ImportChunkUncheckedCreateNestedManyWithoutImportJobInput
+}
+
+export type ImportJobCreateOrConnectWithoutRowErrorsInput = {
+  where: Prisma.ImportJobWhereUniqueInput
+  create: Prisma.XOR<Prisma.ImportJobCreateWithoutRowErrorsInput, Prisma.ImportJobUncheckedCreateWithoutRowErrorsInput>
+}
+
+export type ImportJobUpsertWithoutRowErrorsInput = {
+  update: Prisma.XOR<Prisma.ImportJobUpdateWithoutRowErrorsInput, Prisma.ImportJobUncheckedUpdateWithoutRowErrorsInput>
+  create: Prisma.XOR<Prisma.ImportJobCreateWithoutRowErrorsInput, Prisma.ImportJobUncheckedCreateWithoutRowErrorsInput>
+  where?: Prisma.ImportJobWhereInput
+}
+
+export type ImportJobUpdateToOneWithWhereWithoutRowErrorsInput = {
+  where?: Prisma.ImportJobWhereInput
+  data: Prisma.XOR<Prisma.ImportJobUpdateWithoutRowErrorsInput, Prisma.ImportJobUncheckedUpdateWithoutRowErrorsInput>
+}
+
+export type ImportJobUpdateWithoutRowErrorsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumImportJobTypeFieldUpdateOperationsInput | $Enums.ImportJobType
+  status?: Prisma.EnumImportJobStatusFieldUpdateOperationsInput | $Enums.ImportJobStatus
+  filename?: Prisma.StringFieldUpdateOperationsInput | string
+  totalRows?: Prisma.IntFieldUpdateOperationsInput | number
+  successfulRows?: Prisma.IntFieldUpdateOperationsInput | number
+  failedRows?: Prisma.IntFieldUpdateOperationsInput | number
+  errors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totalJobs?: Prisma.IntFieldUpdateOperationsInput | number
+  completedJobs?: Prisma.IntFieldUpdateOperationsInput | number
+  failedJobs?: Prisma.IntFieldUpdateOperationsInput | number
+  errorSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdBy?: Prisma.UserUpdateOneWithoutImportJobsNestedInput
+  upload?: Prisma.PropertyImportUploadUpdateOneWithoutImportJobNestedInput
+  chunks?: Prisma.ImportChunkUpdateManyWithoutImportJobNestedInput
+}
+
+export type ImportJobUncheckedUpdateWithoutRowErrorsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumImportJobTypeFieldUpdateOperationsInput | $Enums.ImportJobType
+  status?: Prisma.EnumImportJobStatusFieldUpdateOperationsInput | $Enums.ImportJobStatus
+  filename?: Prisma.StringFieldUpdateOperationsInput | string
+  totalRows?: Prisma.IntFieldUpdateOperationsInput | number
+  successfulRows?: Prisma.IntFieldUpdateOperationsInput | number
+  failedRows?: Prisma.IntFieldUpdateOperationsInput | number
+  errors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  uploadId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totalJobs?: Prisma.IntFieldUpdateOperationsInput | number
+  completedJobs?: Prisma.IntFieldUpdateOperationsInput | number
+  failedJobs?: Prisma.IntFieldUpdateOperationsInput | number
+  errorSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chunks?: Prisma.ImportChunkUncheckedUpdateManyWithoutImportJobNestedInput
 }
 
 export type ImportJobCreateManyCreatedByInput = {
@@ -629,6 +1187,12 @@ export type ImportJobCreateManyCreatedByInput = {
   errors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   completedAt?: Date | string | null
+  uploadId?: string | null
+  startedAt?: Date | string | null
+  totalJobs?: number
+  completedJobs?: number
+  failedJobs?: number
+  errorSummary?: string | null
 }
 
 export type ImportJobUpdateWithoutCreatedByInput = {
@@ -642,6 +1206,14 @@ export type ImportJobUpdateWithoutCreatedByInput = {
   errors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totalJobs?: Prisma.IntFieldUpdateOperationsInput | number
+  completedJobs?: Prisma.IntFieldUpdateOperationsInput | number
+  failedJobs?: Prisma.IntFieldUpdateOperationsInput | number
+  errorSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  upload?: Prisma.PropertyImportUploadUpdateOneWithoutImportJobNestedInput
+  chunks?: Prisma.ImportChunkUpdateManyWithoutImportJobNestedInput
+  rowErrors?: Prisma.ImportRowErrorUpdateManyWithoutImportJobNestedInput
 }
 
 export type ImportJobUncheckedUpdateWithoutCreatedByInput = {
@@ -655,6 +1227,14 @@ export type ImportJobUncheckedUpdateWithoutCreatedByInput = {
   errors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  uploadId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totalJobs?: Prisma.IntFieldUpdateOperationsInput | number
+  completedJobs?: Prisma.IntFieldUpdateOperationsInput | number
+  failedJobs?: Prisma.IntFieldUpdateOperationsInput | number
+  errorSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chunks?: Prisma.ImportChunkUncheckedUpdateManyWithoutImportJobNestedInput
+  rowErrors?: Prisma.ImportRowErrorUncheckedUpdateManyWithoutImportJobNestedInput
 }
 
 export type ImportJobUncheckedUpdateManyWithoutCreatedByInput = {
@@ -668,8 +1248,52 @@ export type ImportJobUncheckedUpdateManyWithoutCreatedByInput = {
   errors?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  uploadId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totalJobs?: Prisma.IntFieldUpdateOperationsInput | number
+  completedJobs?: Prisma.IntFieldUpdateOperationsInput | number
+  failedJobs?: Prisma.IntFieldUpdateOperationsInput | number
+  errorSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
+
+/**
+ * Count Type ImportJobCountOutputType
+ */
+
+export type ImportJobCountOutputType = {
+  chunks: number
+  rowErrors: number
+}
+
+export type ImportJobCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  chunks?: boolean | ImportJobCountOutputTypeCountChunksArgs
+  rowErrors?: boolean | ImportJobCountOutputTypeCountRowErrorsArgs
+}
+
+/**
+ * ImportJobCountOutputType without action
+ */
+export type ImportJobCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ImportJobCountOutputType
+   */
+  select?: Prisma.ImportJobCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * ImportJobCountOutputType without action
+ */
+export type ImportJobCountOutputTypeCountChunksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ImportChunkWhereInput
+}
+
+/**
+ * ImportJobCountOutputType without action
+ */
+export type ImportJobCountOutputTypeCountRowErrorsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ImportRowErrorWhereInput
+}
 
 
 export type ImportJobSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -684,7 +1308,17 @@ export type ImportJobSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   createdById?: boolean
   createdAt?: boolean
   completedAt?: boolean
+  uploadId?: boolean
+  startedAt?: boolean
+  totalJobs?: boolean
+  completedJobs?: boolean
+  failedJobs?: boolean
+  errorSummary?: boolean
   createdBy?: boolean | Prisma.ImportJob$createdByArgs<ExtArgs>
+  upload?: boolean | Prisma.ImportJob$uploadArgs<ExtArgs>
+  chunks?: boolean | Prisma.ImportJob$chunksArgs<ExtArgs>
+  rowErrors?: boolean | Prisma.ImportJob$rowErrorsArgs<ExtArgs>
+  _count?: boolean | Prisma.ImportJobCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["importJob"]>
 
 export type ImportJobSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -699,7 +1333,14 @@ export type ImportJobSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   createdById?: boolean
   createdAt?: boolean
   completedAt?: boolean
+  uploadId?: boolean
+  startedAt?: boolean
+  totalJobs?: boolean
+  completedJobs?: boolean
+  failedJobs?: boolean
+  errorSummary?: boolean
   createdBy?: boolean | Prisma.ImportJob$createdByArgs<ExtArgs>
+  upload?: boolean | Prisma.ImportJob$uploadArgs<ExtArgs>
 }, ExtArgs["result"]["importJob"]>
 
 export type ImportJobSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -714,7 +1355,14 @@ export type ImportJobSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   createdById?: boolean
   createdAt?: boolean
   completedAt?: boolean
+  uploadId?: boolean
+  startedAt?: boolean
+  totalJobs?: boolean
+  completedJobs?: boolean
+  failedJobs?: boolean
+  errorSummary?: boolean
   createdBy?: boolean | Prisma.ImportJob$createdByArgs<ExtArgs>
+  upload?: boolean | Prisma.ImportJob$uploadArgs<ExtArgs>
 }, ExtArgs["result"]["importJob"]>
 
 export type ImportJobSelectScalar = {
@@ -729,23 +1377,38 @@ export type ImportJobSelectScalar = {
   createdById?: boolean
   createdAt?: boolean
   completedAt?: boolean
+  uploadId?: boolean
+  startedAt?: boolean
+  totalJobs?: boolean
+  completedJobs?: boolean
+  failedJobs?: boolean
+  errorSummary?: boolean
 }
 
-export type ImportJobOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "type" | "status" | "filename" | "totalRows" | "successfulRows" | "failedRows" | "errors" | "createdById" | "createdAt" | "completedAt", ExtArgs["result"]["importJob"]>
+export type ImportJobOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "type" | "status" | "filename" | "totalRows" | "successfulRows" | "failedRows" | "errors" | "createdById" | "createdAt" | "completedAt" | "uploadId" | "startedAt" | "totalJobs" | "completedJobs" | "failedJobs" | "errorSummary", ExtArgs["result"]["importJob"]>
 export type ImportJobInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   createdBy?: boolean | Prisma.ImportJob$createdByArgs<ExtArgs>
+  upload?: boolean | Prisma.ImportJob$uploadArgs<ExtArgs>
+  chunks?: boolean | Prisma.ImportJob$chunksArgs<ExtArgs>
+  rowErrors?: boolean | Prisma.ImportJob$rowErrorsArgs<ExtArgs>
+  _count?: boolean | Prisma.ImportJobCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ImportJobIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   createdBy?: boolean | Prisma.ImportJob$createdByArgs<ExtArgs>
+  upload?: boolean | Prisma.ImportJob$uploadArgs<ExtArgs>
 }
 export type ImportJobIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   createdBy?: boolean | Prisma.ImportJob$createdByArgs<ExtArgs>
+  upload?: boolean | Prisma.ImportJob$uploadArgs<ExtArgs>
 }
 
 export type $ImportJobPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "ImportJob"
   objects: {
     createdBy: Prisma.$UserPayload<ExtArgs> | null
+    upload: Prisma.$PropertyImportUploadPayload<ExtArgs> | null
+    chunks: Prisma.$ImportChunkPayload<ExtArgs>[]
+    rowErrors: Prisma.$ImportRowErrorPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -759,6 +1422,12 @@ export type $ImportJobPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     createdById: string | null
     createdAt: Date
     completedAt: Date | null
+    uploadId: string | null
+    startedAt: Date | null
+    totalJobs: number
+    completedJobs: number
+    failedJobs: number
+    errorSummary: string | null
   }, ExtArgs["result"]["importJob"]>
   composites: {}
 }
@@ -1154,6 +1823,9 @@ readonly fields: ImportJobFieldRefs;
 export interface Prisma__ImportJobClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   createdBy<T extends Prisma.ImportJob$createdByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ImportJob$createdByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  upload<T extends Prisma.ImportJob$uploadArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ImportJob$uploadArgs<ExtArgs>>): Prisma.Prisma__PropertyImportUploadClient<runtime.Types.Result.GetResult<Prisma.$PropertyImportUploadPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  chunks<T extends Prisma.ImportJob$chunksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ImportJob$chunksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ImportChunkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  rowErrors<T extends Prisma.ImportJob$rowErrorsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ImportJob$rowErrorsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ImportRowErrorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1194,6 +1866,12 @@ export interface ImportJobFieldRefs {
   readonly createdById: Prisma.FieldRef<"ImportJob", 'String'>
   readonly createdAt: Prisma.FieldRef<"ImportJob", 'DateTime'>
   readonly completedAt: Prisma.FieldRef<"ImportJob", 'DateTime'>
+  readonly uploadId: Prisma.FieldRef<"ImportJob", 'String'>
+  readonly startedAt: Prisma.FieldRef<"ImportJob", 'DateTime'>
+  readonly totalJobs: Prisma.FieldRef<"ImportJob", 'Int'>
+  readonly completedJobs: Prisma.FieldRef<"ImportJob", 'Int'>
+  readonly failedJobs: Prisma.FieldRef<"ImportJob", 'Int'>
+  readonly errorSummary: Prisma.FieldRef<"ImportJob", 'String'>
 }
     
 
@@ -1611,6 +2289,73 @@ export type ImportJob$createdByArgs<ExtArgs extends runtime.Types.Extensions.Int
    */
   include?: Prisma.UserInclude<ExtArgs> | null
   where?: Prisma.UserWhereInput
+}
+
+/**
+ * ImportJob.upload
+ */
+export type ImportJob$uploadArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PropertyImportUpload
+   */
+  select?: Prisma.PropertyImportUploadSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PropertyImportUpload
+   */
+  omit?: Prisma.PropertyImportUploadOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PropertyImportUploadInclude<ExtArgs> | null
+  where?: Prisma.PropertyImportUploadWhereInput
+}
+
+/**
+ * ImportJob.chunks
+ */
+export type ImportJob$chunksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ImportChunk
+   */
+  select?: Prisma.ImportChunkSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ImportChunk
+   */
+  omit?: Prisma.ImportChunkOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ImportChunkInclude<ExtArgs> | null
+  where?: Prisma.ImportChunkWhereInput
+  orderBy?: Prisma.ImportChunkOrderByWithRelationInput | Prisma.ImportChunkOrderByWithRelationInput[]
+  cursor?: Prisma.ImportChunkWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ImportChunkScalarFieldEnum | Prisma.ImportChunkScalarFieldEnum[]
+}
+
+/**
+ * ImportJob.rowErrors
+ */
+export type ImportJob$rowErrorsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ImportRowError
+   */
+  select?: Prisma.ImportRowErrorSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ImportRowError
+   */
+  omit?: Prisma.ImportRowErrorOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ImportRowErrorInclude<ExtArgs> | null
+  where?: Prisma.ImportRowErrorWhereInput
+  orderBy?: Prisma.ImportRowErrorOrderByWithRelationInput | Prisma.ImportRowErrorOrderByWithRelationInput[]
+  cursor?: Prisma.ImportRowErrorWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ImportRowErrorScalarFieldEnum | Prisma.ImportRowErrorScalarFieldEnum[]
 }
 
 /**

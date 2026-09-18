@@ -36,6 +36,11 @@ export interface PropertyValueHistory {
   source: string | null;
 }
 
+export interface PropertyHistoricalPrice {
+  year: number;
+  price: number;
+}
+
 export interface Property {
   id: string;
   sourceKey: string | null;
@@ -70,6 +75,7 @@ export interface Property {
   media: Array<PropertyMedia>;
   features: Array<Feature>;
   valueHistory: Array<PropertyValueHistory>;
+  historicalPrices: Array<PropertyHistoricalPrice>;
   listedDate: string | null;
   createdAt: string;
   updatedAt: string;
@@ -83,6 +89,9 @@ export interface Property {
 export interface PropertyFilterInput {
   search?: string | null;
   county?: string | null;
+  postalCode?: string | null;
+  type?: string | null;
+  saleType?: string | null;
   status?: PropertyStatus | null;
   stage?: PropertyStage | null;
   minPrice?: number | null;
@@ -91,6 +100,7 @@ export interface PropertyFilterInput {
   maxBedrooms?: number | null;
   minBathrooms?: number | null;
   maxBathrooms?: number | null;
+  completionYear?: number | null;
   location?: string | null;
   listedFrom?: string | null;
   listedTo?: string | null;
@@ -137,7 +147,6 @@ export interface Query {
   interestGroups: Array<InterestGroup>;
   newsPage: NewsConnection;
   publicNewsPage: NewsConnection;
-  homeTours: Array<HomeTour>;
   subscriberImportHistory: Array<PropertyImport>;
   savedProperties: Array<Property>;
   propertyAssistant: PropertyAssistantResult;
@@ -181,7 +190,7 @@ export interface PageContent {
 
 export interface NewsArticle {
   id: string;
-  slug: string | null;
+  externalUrl: string | null;
   title: string;
   summary: string | null;
   content: string | null;
@@ -192,6 +201,8 @@ export interface NewsArticle {
   activeUntil: string | null;
   properties: Array<Property>;
   updatedAt: string;
+  newsClickCount: number;
+  taggedPropertyVisitCount: number;
 }
 
 export interface Subscriber {
@@ -272,7 +283,7 @@ export interface PageInput {
 }
 
 export interface NewsInput {
-  slug?: string | null;
+  externalUrl?: string | null;
   title: string;
   summary?: string | null;
   content?: string | null;
@@ -284,6 +295,7 @@ export interface NewsInput {
 
 export interface HouseTypeInput {
   name: string;
+  agentName?: string | null;
   sourceKey?: string | null;
   agentId?: string | null;
   sizeCategory?: string | null;
@@ -311,6 +323,7 @@ export interface HouseTypeInput {
   bathroomOptions?: Array<number> | null;
   description?: string | null;
   listedDate?: string | null;
+  historicalPrices?: Array<PropertyHistoricalPrice> | null;
   images?: Array<PageMediaInput> | null;
 }
 
@@ -356,9 +369,6 @@ export interface Mutation {
   saveFollowUp: InterestFollowUp;
   sendFollowUp: InterestFollowUp;
   submitInterest: Interest;
-  generateHomeTour: HomeTour;
-  reviewHomeTour: HomeTour;
-  replacePropertyVideo: PropertyMedia;
   uploadPropertyImage: UploadedImage;
   uploadSubscriberFile: PropertyUpload;
   startSubscriberImport: PropertyImport;
@@ -394,6 +404,8 @@ export interface CsvValidation {
   errors: Array<ImportError>;
   totalErrors: number;
   errorsTruncated: boolean;
+  duplicateProperties: Array<{rowNumber:number;name:string;existingPropertyId:string|null;existingPropertyName:string|null;source:string;resolution:string|null}>;
+  unresolvedDuplicateCount: number;
 }
 
 export interface PropertyUpload {
@@ -472,6 +484,7 @@ export interface InterestFilter {
   from?: string | null;
   to?: string | null;
   propertyId?: string | null;
+  propertyName?: string | null;
   location?: string | null;
   agentId?: string | null;
   pendingOnly?: boolean | null;
@@ -521,6 +534,14 @@ export interface SubscriberConnection {
   totalCount: number;
   activeCount: number;
   unsubscribedCount: number;
+}
+
+export interface SubscriberStats {
+  totalSubscribers: number;
+  totalUnsubscribers: number;
+  averageSubscribersPerDay: number;
+  averageUnsubscribersPerDay: number;
+  days: Array<{ date: string; registrations: number; activeRegistrations: number; unsubscribes: number }>;
 }
 
 export interface CampaignConnection {
@@ -579,6 +600,8 @@ export interface CampaignTemplate {
 }
 
 export interface CampaignDay {
+  campaignId: string;
+  campaignSubject: string;
   date: string;
   sent: number;
   clicks: number;
@@ -634,28 +657,18 @@ export interface InterestConnection {
   pendingCount: number;
 }
 
+export interface InterestStats {
+  total: number;
+  averagePerDay: number;
+  totalFollowUps: number;
+  averageFollowUpsPerDay: number;
+  days: Array<{ date: string; interests: number; followUps: number }>;
+}
+
 export interface InterestGroup {
   property: InterestProperty;
   totalCount: number;
   pendingCount: number;
-}
-
-export type AiJobStatus = "PENDING" | "PROCESSING" | "COMPLETED" | "FAILED";
-
-export type ReviewStatus = "PENDING" | "APPROVED" | "REJECTED";
-
-export interface HomeTour {
-  id: string;
-  propertyId: string | null;
-  prompt: string | null;
-  status: AiJobStatus;
-  reviewStatus: ReviewStatus;
-  error: string | null;
-  videoUrl: string | null;
-  providerTaskId: string | null;
-  createdAt: string;
-  reviewedAt: string | null;
-  reviewNotes: string | null;
 }
 
 export interface PropertyAssistantResult {

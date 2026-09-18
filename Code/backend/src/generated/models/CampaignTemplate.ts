@@ -31,6 +31,8 @@ export type CampaignTemplateMinAggregateOutputType = {
   htmlContent: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  purpose: $Enums.TemplatePurpose | null
+  createdById: string | null
 }
 
 export type CampaignTemplateMaxAggregateOutputType = {
@@ -40,6 +42,8 @@ export type CampaignTemplateMaxAggregateOutputType = {
   htmlContent: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  purpose: $Enums.TemplatePurpose | null
+  createdById: string | null
 }
 
 export type CampaignTemplateCountAggregateOutputType = {
@@ -49,6 +53,8 @@ export type CampaignTemplateCountAggregateOutputType = {
   htmlContent: number
   createdAt: number
   updatedAt: number
+  purpose: number
+  createdById: number
   _all: number
 }
 
@@ -60,6 +66,8 @@ export type CampaignTemplateMinAggregateInputType = {
   htmlContent?: true
   createdAt?: true
   updatedAt?: true
+  purpose?: true
+  createdById?: true
 }
 
 export type CampaignTemplateMaxAggregateInputType = {
@@ -69,6 +77,8 @@ export type CampaignTemplateMaxAggregateInputType = {
   htmlContent?: true
   createdAt?: true
   updatedAt?: true
+  purpose?: true
+  createdById?: true
 }
 
 export type CampaignTemplateCountAggregateInputType = {
@@ -78,6 +88,8 @@ export type CampaignTemplateCountAggregateInputType = {
   htmlContent?: true
   createdAt?: true
   updatedAt?: true
+  purpose?: true
+  createdById?: true
   _all?: true
 }
 
@@ -160,6 +172,8 @@ export type CampaignTemplateGroupByOutputType = {
   htmlContent: string
   createdAt: Date
   updatedAt: Date
+  purpose: $Enums.TemplatePurpose
+  createdById: string | null
   _count: CampaignTemplateCountAggregateOutputType | null
   _min: CampaignTemplateMinAggregateOutputType | null
   _max: CampaignTemplateMaxAggregateOutputType | null
@@ -190,6 +204,12 @@ export type CampaignTemplateWhereInput = {
   htmlContent?: Prisma.StringFilter<"CampaignTemplate"> | string
   createdAt?: Prisma.DateTimeFilter<"CampaignTemplate"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CampaignTemplate"> | Date | string
+  purpose?: Prisma.EnumTemplatePurposeFilter<"CampaignTemplate"> | $Enums.TemplatePurpose
+  createdById?: Prisma.StringNullableFilter<"CampaignTemplate"> | string | null
+  createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  campaigns?: Prisma.CampaignListRelationFilter
+  followUps?: Prisma.InterestFollowUpListRelationFilter
+  properties?: Prisma.TemplatePropertyListRelationFilter
 }
 
 export type CampaignTemplateOrderByWithRelationInput = {
@@ -199,6 +219,12 @@ export type CampaignTemplateOrderByWithRelationInput = {
   htmlContent?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  purpose?: Prisma.SortOrder
+  createdById?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdBy?: Prisma.UserOrderByWithRelationInput
+  campaigns?: Prisma.CampaignOrderByRelationAggregateInput
+  followUps?: Prisma.InterestFollowUpOrderByRelationAggregateInput
+  properties?: Prisma.TemplatePropertyOrderByRelationAggregateInput
 }
 
 export type CampaignTemplateWhereUniqueInput = Prisma.AtLeast<{
@@ -211,6 +237,12 @@ export type CampaignTemplateWhereUniqueInput = Prisma.AtLeast<{
   htmlContent?: Prisma.StringFilter<"CampaignTemplate"> | string
   createdAt?: Prisma.DateTimeFilter<"CampaignTemplate"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CampaignTemplate"> | Date | string
+  purpose?: Prisma.EnumTemplatePurposeFilter<"CampaignTemplate"> | $Enums.TemplatePurpose
+  createdById?: Prisma.StringNullableFilter<"CampaignTemplate"> | string | null
+  createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  campaigns?: Prisma.CampaignListRelationFilter
+  followUps?: Prisma.InterestFollowUpListRelationFilter
+  properties?: Prisma.TemplatePropertyListRelationFilter
 }, "id">
 
 export type CampaignTemplateOrderByWithAggregationInput = {
@@ -220,6 +252,8 @@ export type CampaignTemplateOrderByWithAggregationInput = {
   htmlContent?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  purpose?: Prisma.SortOrder
+  createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.CampaignTemplateCountOrderByAggregateInput
   _max?: Prisma.CampaignTemplateMaxOrderByAggregateInput
   _min?: Prisma.CampaignTemplateMinOrderByAggregateInput
@@ -235,6 +269,8 @@ export type CampaignTemplateScalarWhereWithAggregatesInput = {
   htmlContent?: Prisma.StringWithAggregatesFilter<"CampaignTemplate"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"CampaignTemplate"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"CampaignTemplate"> | Date | string
+  purpose?: Prisma.EnumTemplatePurposeWithAggregatesFilter<"CampaignTemplate"> | $Enums.TemplatePurpose
+  createdById?: Prisma.StringNullableWithAggregatesFilter<"CampaignTemplate"> | string | null
 }
 
 export type CampaignTemplateCreateInput = {
@@ -244,6 +280,11 @@ export type CampaignTemplateCreateInput = {
   htmlContent: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  purpose?: $Enums.TemplatePurpose
+  createdBy?: Prisma.UserCreateNestedOneWithoutTemplatesInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutTemplateInput
+  followUps?: Prisma.InterestFollowUpCreateNestedManyWithoutTemplateInput
+  properties?: Prisma.TemplatePropertyCreateNestedManyWithoutTemplateInput
 }
 
 export type CampaignTemplateUncheckedCreateInput = {
@@ -253,6 +294,11 @@ export type CampaignTemplateUncheckedCreateInput = {
   htmlContent: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  purpose?: $Enums.TemplatePurpose
+  createdById?: string | null
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutTemplateInput
+  followUps?: Prisma.InterestFollowUpUncheckedCreateNestedManyWithoutTemplateInput
+  properties?: Prisma.TemplatePropertyUncheckedCreateNestedManyWithoutTemplateInput
 }
 
 export type CampaignTemplateUpdateInput = {
@@ -262,6 +308,11 @@ export type CampaignTemplateUpdateInput = {
   htmlContent?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  purpose?: Prisma.EnumTemplatePurposeFieldUpdateOperationsInput | $Enums.TemplatePurpose
+  createdBy?: Prisma.UserUpdateOneWithoutTemplatesNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutTemplateNestedInput
+  followUps?: Prisma.InterestFollowUpUpdateManyWithoutTemplateNestedInput
+  properties?: Prisma.TemplatePropertyUpdateManyWithoutTemplateNestedInput
 }
 
 export type CampaignTemplateUncheckedUpdateInput = {
@@ -271,6 +322,11 @@ export type CampaignTemplateUncheckedUpdateInput = {
   htmlContent?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  purpose?: Prisma.EnumTemplatePurposeFieldUpdateOperationsInput | $Enums.TemplatePurpose
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutTemplateNestedInput
+  followUps?: Prisma.InterestFollowUpUncheckedUpdateManyWithoutTemplateNestedInput
+  properties?: Prisma.TemplatePropertyUncheckedUpdateManyWithoutTemplateNestedInput
 }
 
 export type CampaignTemplateCreateManyInput = {
@@ -280,6 +336,8 @@ export type CampaignTemplateCreateManyInput = {
   htmlContent: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  purpose?: $Enums.TemplatePurpose
+  createdById?: string | null
 }
 
 export type CampaignTemplateUpdateManyMutationInput = {
@@ -289,6 +347,7 @@ export type CampaignTemplateUpdateManyMutationInput = {
   htmlContent?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  purpose?: Prisma.EnumTemplatePurposeFieldUpdateOperationsInput | $Enums.TemplatePurpose
 }
 
 export type CampaignTemplateUncheckedUpdateManyInput = {
@@ -298,6 +357,23 @@ export type CampaignTemplateUncheckedUpdateManyInput = {
   htmlContent?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  purpose?: Prisma.EnumTemplatePurposeFieldUpdateOperationsInput | $Enums.TemplatePurpose
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type CampaignTemplateListRelationFilter = {
+  every?: Prisma.CampaignTemplateWhereInput
+  some?: Prisma.CampaignTemplateWhereInput
+  none?: Prisma.CampaignTemplateWhereInput
+}
+
+export type CampaignTemplateOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
+export type CampaignTemplateNullableScalarRelationFilter = {
+  is?: Prisma.CampaignTemplateWhereInput | null
+  isNot?: Prisma.CampaignTemplateWhereInput | null
 }
 
 export type CampaignTemplateCountOrderByAggregateInput = {
@@ -307,6 +383,8 @@ export type CampaignTemplateCountOrderByAggregateInput = {
   htmlContent?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  purpose?: Prisma.SortOrder
+  createdById?: Prisma.SortOrder
 }
 
 export type CampaignTemplateMaxOrderByAggregateInput = {
@@ -316,6 +394,8 @@ export type CampaignTemplateMaxOrderByAggregateInput = {
   htmlContent?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  purpose?: Prisma.SortOrder
+  createdById?: Prisma.SortOrder
 }
 
 export type CampaignTemplateMinOrderByAggregateInput = {
@@ -325,8 +405,470 @@ export type CampaignTemplateMinOrderByAggregateInput = {
   htmlContent?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  purpose?: Prisma.SortOrder
+  createdById?: Prisma.SortOrder
 }
 
+export type CampaignTemplateScalarRelationFilter = {
+  is?: Prisma.CampaignTemplateWhereInput
+  isNot?: Prisma.CampaignTemplateWhereInput
+}
+
+export type CampaignTemplateCreateNestedManyWithoutCreatedByInput = {
+  create?: Prisma.XOR<Prisma.CampaignTemplateCreateWithoutCreatedByInput, Prisma.CampaignTemplateUncheckedCreateWithoutCreatedByInput> | Prisma.CampaignTemplateCreateWithoutCreatedByInput[] | Prisma.CampaignTemplateUncheckedCreateWithoutCreatedByInput[]
+  connectOrCreate?: Prisma.CampaignTemplateCreateOrConnectWithoutCreatedByInput | Prisma.CampaignTemplateCreateOrConnectWithoutCreatedByInput[]
+  createMany?: Prisma.CampaignTemplateCreateManyCreatedByInputEnvelope
+  connect?: Prisma.CampaignTemplateWhereUniqueInput | Prisma.CampaignTemplateWhereUniqueInput[]
+}
+
+export type CampaignTemplateUncheckedCreateNestedManyWithoutCreatedByInput = {
+  create?: Prisma.XOR<Prisma.CampaignTemplateCreateWithoutCreatedByInput, Prisma.CampaignTemplateUncheckedCreateWithoutCreatedByInput> | Prisma.CampaignTemplateCreateWithoutCreatedByInput[] | Prisma.CampaignTemplateUncheckedCreateWithoutCreatedByInput[]
+  connectOrCreate?: Prisma.CampaignTemplateCreateOrConnectWithoutCreatedByInput | Prisma.CampaignTemplateCreateOrConnectWithoutCreatedByInput[]
+  createMany?: Prisma.CampaignTemplateCreateManyCreatedByInputEnvelope
+  connect?: Prisma.CampaignTemplateWhereUniqueInput | Prisma.CampaignTemplateWhereUniqueInput[]
+}
+
+export type CampaignTemplateUpdateManyWithoutCreatedByNestedInput = {
+  create?: Prisma.XOR<Prisma.CampaignTemplateCreateWithoutCreatedByInput, Prisma.CampaignTemplateUncheckedCreateWithoutCreatedByInput> | Prisma.CampaignTemplateCreateWithoutCreatedByInput[] | Prisma.CampaignTemplateUncheckedCreateWithoutCreatedByInput[]
+  connectOrCreate?: Prisma.CampaignTemplateCreateOrConnectWithoutCreatedByInput | Prisma.CampaignTemplateCreateOrConnectWithoutCreatedByInput[]
+  upsert?: Prisma.CampaignTemplateUpsertWithWhereUniqueWithoutCreatedByInput | Prisma.CampaignTemplateUpsertWithWhereUniqueWithoutCreatedByInput[]
+  createMany?: Prisma.CampaignTemplateCreateManyCreatedByInputEnvelope
+  set?: Prisma.CampaignTemplateWhereUniqueInput | Prisma.CampaignTemplateWhereUniqueInput[]
+  disconnect?: Prisma.CampaignTemplateWhereUniqueInput | Prisma.CampaignTemplateWhereUniqueInput[]
+  delete?: Prisma.CampaignTemplateWhereUniqueInput | Prisma.CampaignTemplateWhereUniqueInput[]
+  connect?: Prisma.CampaignTemplateWhereUniqueInput | Prisma.CampaignTemplateWhereUniqueInput[]
+  update?: Prisma.CampaignTemplateUpdateWithWhereUniqueWithoutCreatedByInput | Prisma.CampaignTemplateUpdateWithWhereUniqueWithoutCreatedByInput[]
+  updateMany?: Prisma.CampaignTemplateUpdateManyWithWhereWithoutCreatedByInput | Prisma.CampaignTemplateUpdateManyWithWhereWithoutCreatedByInput[]
+  deleteMany?: Prisma.CampaignTemplateScalarWhereInput | Prisma.CampaignTemplateScalarWhereInput[]
+}
+
+export type CampaignTemplateUncheckedUpdateManyWithoutCreatedByNestedInput = {
+  create?: Prisma.XOR<Prisma.CampaignTemplateCreateWithoutCreatedByInput, Prisma.CampaignTemplateUncheckedCreateWithoutCreatedByInput> | Prisma.CampaignTemplateCreateWithoutCreatedByInput[] | Prisma.CampaignTemplateUncheckedCreateWithoutCreatedByInput[]
+  connectOrCreate?: Prisma.CampaignTemplateCreateOrConnectWithoutCreatedByInput | Prisma.CampaignTemplateCreateOrConnectWithoutCreatedByInput[]
+  upsert?: Prisma.CampaignTemplateUpsertWithWhereUniqueWithoutCreatedByInput | Prisma.CampaignTemplateUpsertWithWhereUniqueWithoutCreatedByInput[]
+  createMany?: Prisma.CampaignTemplateCreateManyCreatedByInputEnvelope
+  set?: Prisma.CampaignTemplateWhereUniqueInput | Prisma.CampaignTemplateWhereUniqueInput[]
+  disconnect?: Prisma.CampaignTemplateWhereUniqueInput | Prisma.CampaignTemplateWhereUniqueInput[]
+  delete?: Prisma.CampaignTemplateWhereUniqueInput | Prisma.CampaignTemplateWhereUniqueInput[]
+  connect?: Prisma.CampaignTemplateWhereUniqueInput | Prisma.CampaignTemplateWhereUniqueInput[]
+  update?: Prisma.CampaignTemplateUpdateWithWhereUniqueWithoutCreatedByInput | Prisma.CampaignTemplateUpdateWithWhereUniqueWithoutCreatedByInput[]
+  updateMany?: Prisma.CampaignTemplateUpdateManyWithWhereWithoutCreatedByInput | Prisma.CampaignTemplateUpdateManyWithWhereWithoutCreatedByInput[]
+  deleteMany?: Prisma.CampaignTemplateScalarWhereInput | Prisma.CampaignTemplateScalarWhereInput[]
+}
+
+export type CampaignTemplateCreateNestedOneWithoutCampaignsInput = {
+  create?: Prisma.XOR<Prisma.CampaignTemplateCreateWithoutCampaignsInput, Prisma.CampaignTemplateUncheckedCreateWithoutCampaignsInput>
+  connectOrCreate?: Prisma.CampaignTemplateCreateOrConnectWithoutCampaignsInput
+  connect?: Prisma.CampaignTemplateWhereUniqueInput
+}
+
+export type CampaignTemplateUpdateOneWithoutCampaignsNestedInput = {
+  create?: Prisma.XOR<Prisma.CampaignTemplateCreateWithoutCampaignsInput, Prisma.CampaignTemplateUncheckedCreateWithoutCampaignsInput>
+  connectOrCreate?: Prisma.CampaignTemplateCreateOrConnectWithoutCampaignsInput
+  upsert?: Prisma.CampaignTemplateUpsertWithoutCampaignsInput
+  disconnect?: Prisma.CampaignTemplateWhereInput | boolean
+  delete?: Prisma.CampaignTemplateWhereInput | boolean
+  connect?: Prisma.CampaignTemplateWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CampaignTemplateUpdateToOneWithWhereWithoutCampaignsInput, Prisma.CampaignTemplateUpdateWithoutCampaignsInput>, Prisma.CampaignTemplateUncheckedUpdateWithoutCampaignsInput>
+}
+
+export type EnumTemplatePurposeFieldUpdateOperationsInput = {
+  set?: $Enums.TemplatePurpose
+}
+
+export type CampaignTemplateCreateNestedOneWithoutPropertiesInput = {
+  create?: Prisma.XOR<Prisma.CampaignTemplateCreateWithoutPropertiesInput, Prisma.CampaignTemplateUncheckedCreateWithoutPropertiesInput>
+  connectOrCreate?: Prisma.CampaignTemplateCreateOrConnectWithoutPropertiesInput
+  connect?: Prisma.CampaignTemplateWhereUniqueInput
+}
+
+export type CampaignTemplateUpdateOneRequiredWithoutPropertiesNestedInput = {
+  create?: Prisma.XOR<Prisma.CampaignTemplateCreateWithoutPropertiesInput, Prisma.CampaignTemplateUncheckedCreateWithoutPropertiesInput>
+  connectOrCreate?: Prisma.CampaignTemplateCreateOrConnectWithoutPropertiesInput
+  upsert?: Prisma.CampaignTemplateUpsertWithoutPropertiesInput
+  connect?: Prisma.CampaignTemplateWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CampaignTemplateUpdateToOneWithWhereWithoutPropertiesInput, Prisma.CampaignTemplateUpdateWithoutPropertiesInput>, Prisma.CampaignTemplateUncheckedUpdateWithoutPropertiesInput>
+}
+
+export type CampaignTemplateCreateNestedOneWithoutFollowUpsInput = {
+  create?: Prisma.XOR<Prisma.CampaignTemplateCreateWithoutFollowUpsInput, Prisma.CampaignTemplateUncheckedCreateWithoutFollowUpsInput>
+  connectOrCreate?: Prisma.CampaignTemplateCreateOrConnectWithoutFollowUpsInput
+  connect?: Prisma.CampaignTemplateWhereUniqueInput
+}
+
+export type CampaignTemplateUpdateOneWithoutFollowUpsNestedInput = {
+  create?: Prisma.XOR<Prisma.CampaignTemplateCreateWithoutFollowUpsInput, Prisma.CampaignTemplateUncheckedCreateWithoutFollowUpsInput>
+  connectOrCreate?: Prisma.CampaignTemplateCreateOrConnectWithoutFollowUpsInput
+  upsert?: Prisma.CampaignTemplateUpsertWithoutFollowUpsInput
+  disconnect?: Prisma.CampaignTemplateWhereInput | boolean
+  delete?: Prisma.CampaignTemplateWhereInput | boolean
+  connect?: Prisma.CampaignTemplateWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CampaignTemplateUpdateToOneWithWhereWithoutFollowUpsInput, Prisma.CampaignTemplateUpdateWithoutFollowUpsInput>, Prisma.CampaignTemplateUncheckedUpdateWithoutFollowUpsInput>
+}
+
+export type CampaignTemplateCreateWithoutCreatedByInput = {
+  id?: string
+  name: string
+  subject?: string | null
+  htmlContent: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  purpose?: $Enums.TemplatePurpose
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutTemplateInput
+  followUps?: Prisma.InterestFollowUpCreateNestedManyWithoutTemplateInput
+  properties?: Prisma.TemplatePropertyCreateNestedManyWithoutTemplateInput
+}
+
+export type CampaignTemplateUncheckedCreateWithoutCreatedByInput = {
+  id?: string
+  name: string
+  subject?: string | null
+  htmlContent: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  purpose?: $Enums.TemplatePurpose
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutTemplateInput
+  followUps?: Prisma.InterestFollowUpUncheckedCreateNestedManyWithoutTemplateInput
+  properties?: Prisma.TemplatePropertyUncheckedCreateNestedManyWithoutTemplateInput
+}
+
+export type CampaignTemplateCreateOrConnectWithoutCreatedByInput = {
+  where: Prisma.CampaignTemplateWhereUniqueInput
+  create: Prisma.XOR<Prisma.CampaignTemplateCreateWithoutCreatedByInput, Prisma.CampaignTemplateUncheckedCreateWithoutCreatedByInput>
+}
+
+export type CampaignTemplateCreateManyCreatedByInputEnvelope = {
+  data: Prisma.CampaignTemplateCreateManyCreatedByInput | Prisma.CampaignTemplateCreateManyCreatedByInput[]
+  skipDuplicates?: boolean
+}
+
+export type CampaignTemplateUpsertWithWhereUniqueWithoutCreatedByInput = {
+  where: Prisma.CampaignTemplateWhereUniqueInput
+  update: Prisma.XOR<Prisma.CampaignTemplateUpdateWithoutCreatedByInput, Prisma.CampaignTemplateUncheckedUpdateWithoutCreatedByInput>
+  create: Prisma.XOR<Prisma.CampaignTemplateCreateWithoutCreatedByInput, Prisma.CampaignTemplateUncheckedCreateWithoutCreatedByInput>
+}
+
+export type CampaignTemplateUpdateWithWhereUniqueWithoutCreatedByInput = {
+  where: Prisma.CampaignTemplateWhereUniqueInput
+  data: Prisma.XOR<Prisma.CampaignTemplateUpdateWithoutCreatedByInput, Prisma.CampaignTemplateUncheckedUpdateWithoutCreatedByInput>
+}
+
+export type CampaignTemplateUpdateManyWithWhereWithoutCreatedByInput = {
+  where: Prisma.CampaignTemplateScalarWhereInput
+  data: Prisma.XOR<Prisma.CampaignTemplateUpdateManyMutationInput, Prisma.CampaignTemplateUncheckedUpdateManyWithoutCreatedByInput>
+}
+
+export type CampaignTemplateScalarWhereInput = {
+  AND?: Prisma.CampaignTemplateScalarWhereInput | Prisma.CampaignTemplateScalarWhereInput[]
+  OR?: Prisma.CampaignTemplateScalarWhereInput[]
+  NOT?: Prisma.CampaignTemplateScalarWhereInput | Prisma.CampaignTemplateScalarWhereInput[]
+  id?: Prisma.StringFilter<"CampaignTemplate"> | string
+  name?: Prisma.StringFilter<"CampaignTemplate"> | string
+  subject?: Prisma.StringNullableFilter<"CampaignTemplate"> | string | null
+  htmlContent?: Prisma.StringFilter<"CampaignTemplate"> | string
+  createdAt?: Prisma.DateTimeFilter<"CampaignTemplate"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"CampaignTemplate"> | Date | string
+  purpose?: Prisma.EnumTemplatePurposeFilter<"CampaignTemplate"> | $Enums.TemplatePurpose
+  createdById?: Prisma.StringNullableFilter<"CampaignTemplate"> | string | null
+}
+
+export type CampaignTemplateCreateWithoutCampaignsInput = {
+  id?: string
+  name: string
+  subject?: string | null
+  htmlContent: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  purpose?: $Enums.TemplatePurpose
+  createdBy?: Prisma.UserCreateNestedOneWithoutTemplatesInput
+  followUps?: Prisma.InterestFollowUpCreateNestedManyWithoutTemplateInput
+  properties?: Prisma.TemplatePropertyCreateNestedManyWithoutTemplateInput
+}
+
+export type CampaignTemplateUncheckedCreateWithoutCampaignsInput = {
+  id?: string
+  name: string
+  subject?: string | null
+  htmlContent: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  purpose?: $Enums.TemplatePurpose
+  createdById?: string | null
+  followUps?: Prisma.InterestFollowUpUncheckedCreateNestedManyWithoutTemplateInput
+  properties?: Prisma.TemplatePropertyUncheckedCreateNestedManyWithoutTemplateInput
+}
+
+export type CampaignTemplateCreateOrConnectWithoutCampaignsInput = {
+  where: Prisma.CampaignTemplateWhereUniqueInput
+  create: Prisma.XOR<Prisma.CampaignTemplateCreateWithoutCampaignsInput, Prisma.CampaignTemplateUncheckedCreateWithoutCampaignsInput>
+}
+
+export type CampaignTemplateUpsertWithoutCampaignsInput = {
+  update: Prisma.XOR<Prisma.CampaignTemplateUpdateWithoutCampaignsInput, Prisma.CampaignTemplateUncheckedUpdateWithoutCampaignsInput>
+  create: Prisma.XOR<Prisma.CampaignTemplateCreateWithoutCampaignsInput, Prisma.CampaignTemplateUncheckedCreateWithoutCampaignsInput>
+  where?: Prisma.CampaignTemplateWhereInput
+}
+
+export type CampaignTemplateUpdateToOneWithWhereWithoutCampaignsInput = {
+  where?: Prisma.CampaignTemplateWhereInput
+  data: Prisma.XOR<Prisma.CampaignTemplateUpdateWithoutCampaignsInput, Prisma.CampaignTemplateUncheckedUpdateWithoutCampaignsInput>
+}
+
+export type CampaignTemplateUpdateWithoutCampaignsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  subject?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  htmlContent?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  purpose?: Prisma.EnumTemplatePurposeFieldUpdateOperationsInput | $Enums.TemplatePurpose
+  createdBy?: Prisma.UserUpdateOneWithoutTemplatesNestedInput
+  followUps?: Prisma.InterestFollowUpUpdateManyWithoutTemplateNestedInput
+  properties?: Prisma.TemplatePropertyUpdateManyWithoutTemplateNestedInput
+}
+
+export type CampaignTemplateUncheckedUpdateWithoutCampaignsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  subject?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  htmlContent?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  purpose?: Prisma.EnumTemplatePurposeFieldUpdateOperationsInput | $Enums.TemplatePurpose
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  followUps?: Prisma.InterestFollowUpUncheckedUpdateManyWithoutTemplateNestedInput
+  properties?: Prisma.TemplatePropertyUncheckedUpdateManyWithoutTemplateNestedInput
+}
+
+export type CampaignTemplateCreateWithoutPropertiesInput = {
+  id?: string
+  name: string
+  subject?: string | null
+  htmlContent: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  purpose?: $Enums.TemplatePurpose
+  createdBy?: Prisma.UserCreateNestedOneWithoutTemplatesInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutTemplateInput
+  followUps?: Prisma.InterestFollowUpCreateNestedManyWithoutTemplateInput
+}
+
+export type CampaignTemplateUncheckedCreateWithoutPropertiesInput = {
+  id?: string
+  name: string
+  subject?: string | null
+  htmlContent: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  purpose?: $Enums.TemplatePurpose
+  createdById?: string | null
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutTemplateInput
+  followUps?: Prisma.InterestFollowUpUncheckedCreateNestedManyWithoutTemplateInput
+}
+
+export type CampaignTemplateCreateOrConnectWithoutPropertiesInput = {
+  where: Prisma.CampaignTemplateWhereUniqueInput
+  create: Prisma.XOR<Prisma.CampaignTemplateCreateWithoutPropertiesInput, Prisma.CampaignTemplateUncheckedCreateWithoutPropertiesInput>
+}
+
+export type CampaignTemplateUpsertWithoutPropertiesInput = {
+  update: Prisma.XOR<Prisma.CampaignTemplateUpdateWithoutPropertiesInput, Prisma.CampaignTemplateUncheckedUpdateWithoutPropertiesInput>
+  create: Prisma.XOR<Prisma.CampaignTemplateCreateWithoutPropertiesInput, Prisma.CampaignTemplateUncheckedCreateWithoutPropertiesInput>
+  where?: Prisma.CampaignTemplateWhereInput
+}
+
+export type CampaignTemplateUpdateToOneWithWhereWithoutPropertiesInput = {
+  where?: Prisma.CampaignTemplateWhereInput
+  data: Prisma.XOR<Prisma.CampaignTemplateUpdateWithoutPropertiesInput, Prisma.CampaignTemplateUncheckedUpdateWithoutPropertiesInput>
+}
+
+export type CampaignTemplateUpdateWithoutPropertiesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  subject?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  htmlContent?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  purpose?: Prisma.EnumTemplatePurposeFieldUpdateOperationsInput | $Enums.TemplatePurpose
+  createdBy?: Prisma.UserUpdateOneWithoutTemplatesNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutTemplateNestedInput
+  followUps?: Prisma.InterestFollowUpUpdateManyWithoutTemplateNestedInput
+}
+
+export type CampaignTemplateUncheckedUpdateWithoutPropertiesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  subject?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  htmlContent?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  purpose?: Prisma.EnumTemplatePurposeFieldUpdateOperationsInput | $Enums.TemplatePurpose
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutTemplateNestedInput
+  followUps?: Prisma.InterestFollowUpUncheckedUpdateManyWithoutTemplateNestedInput
+}
+
+export type CampaignTemplateCreateWithoutFollowUpsInput = {
+  id?: string
+  name: string
+  subject?: string | null
+  htmlContent: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  purpose?: $Enums.TemplatePurpose
+  createdBy?: Prisma.UserCreateNestedOneWithoutTemplatesInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutTemplateInput
+  properties?: Prisma.TemplatePropertyCreateNestedManyWithoutTemplateInput
+}
+
+export type CampaignTemplateUncheckedCreateWithoutFollowUpsInput = {
+  id?: string
+  name: string
+  subject?: string | null
+  htmlContent: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  purpose?: $Enums.TemplatePurpose
+  createdById?: string | null
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutTemplateInput
+  properties?: Prisma.TemplatePropertyUncheckedCreateNestedManyWithoutTemplateInput
+}
+
+export type CampaignTemplateCreateOrConnectWithoutFollowUpsInput = {
+  where: Prisma.CampaignTemplateWhereUniqueInput
+  create: Prisma.XOR<Prisma.CampaignTemplateCreateWithoutFollowUpsInput, Prisma.CampaignTemplateUncheckedCreateWithoutFollowUpsInput>
+}
+
+export type CampaignTemplateUpsertWithoutFollowUpsInput = {
+  update: Prisma.XOR<Prisma.CampaignTemplateUpdateWithoutFollowUpsInput, Prisma.CampaignTemplateUncheckedUpdateWithoutFollowUpsInput>
+  create: Prisma.XOR<Prisma.CampaignTemplateCreateWithoutFollowUpsInput, Prisma.CampaignTemplateUncheckedCreateWithoutFollowUpsInput>
+  where?: Prisma.CampaignTemplateWhereInput
+}
+
+export type CampaignTemplateUpdateToOneWithWhereWithoutFollowUpsInput = {
+  where?: Prisma.CampaignTemplateWhereInput
+  data: Prisma.XOR<Prisma.CampaignTemplateUpdateWithoutFollowUpsInput, Prisma.CampaignTemplateUncheckedUpdateWithoutFollowUpsInput>
+}
+
+export type CampaignTemplateUpdateWithoutFollowUpsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  subject?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  htmlContent?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  purpose?: Prisma.EnumTemplatePurposeFieldUpdateOperationsInput | $Enums.TemplatePurpose
+  createdBy?: Prisma.UserUpdateOneWithoutTemplatesNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutTemplateNestedInput
+  properties?: Prisma.TemplatePropertyUpdateManyWithoutTemplateNestedInput
+}
+
+export type CampaignTemplateUncheckedUpdateWithoutFollowUpsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  subject?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  htmlContent?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  purpose?: Prisma.EnumTemplatePurposeFieldUpdateOperationsInput | $Enums.TemplatePurpose
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutTemplateNestedInput
+  properties?: Prisma.TemplatePropertyUncheckedUpdateManyWithoutTemplateNestedInput
+}
+
+export type CampaignTemplateCreateManyCreatedByInput = {
+  id?: string
+  name: string
+  subject?: string | null
+  htmlContent: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  purpose?: $Enums.TemplatePurpose
+}
+
+export type CampaignTemplateUpdateWithoutCreatedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  subject?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  htmlContent?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  purpose?: Prisma.EnumTemplatePurposeFieldUpdateOperationsInput | $Enums.TemplatePurpose
+  campaigns?: Prisma.CampaignUpdateManyWithoutTemplateNestedInput
+  followUps?: Prisma.InterestFollowUpUpdateManyWithoutTemplateNestedInput
+  properties?: Prisma.TemplatePropertyUpdateManyWithoutTemplateNestedInput
+}
+
+export type CampaignTemplateUncheckedUpdateWithoutCreatedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  subject?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  htmlContent?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  purpose?: Prisma.EnumTemplatePurposeFieldUpdateOperationsInput | $Enums.TemplatePurpose
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutTemplateNestedInput
+  followUps?: Prisma.InterestFollowUpUncheckedUpdateManyWithoutTemplateNestedInput
+  properties?: Prisma.TemplatePropertyUncheckedUpdateManyWithoutTemplateNestedInput
+}
+
+export type CampaignTemplateUncheckedUpdateManyWithoutCreatedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  subject?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  htmlContent?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  purpose?: Prisma.EnumTemplatePurposeFieldUpdateOperationsInput | $Enums.TemplatePurpose
+}
+
+
+/**
+ * Count Type CampaignTemplateCountOutputType
+ */
+
+export type CampaignTemplateCountOutputType = {
+  campaigns: number
+  followUps: number
+  properties: number
+}
+
+export type CampaignTemplateCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  campaigns?: boolean | CampaignTemplateCountOutputTypeCountCampaignsArgs
+  followUps?: boolean | CampaignTemplateCountOutputTypeCountFollowUpsArgs
+  properties?: boolean | CampaignTemplateCountOutputTypeCountPropertiesArgs
+}
+
+/**
+ * CampaignTemplateCountOutputType without action
+ */
+export type CampaignTemplateCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CampaignTemplateCountOutputType
+   */
+  select?: Prisma.CampaignTemplateCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * CampaignTemplateCountOutputType without action
+ */
+export type CampaignTemplateCountOutputTypeCountCampaignsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CampaignWhereInput
+}
+
+/**
+ * CampaignTemplateCountOutputType without action
+ */
+export type CampaignTemplateCountOutputTypeCountFollowUpsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.InterestFollowUpWhereInput
+}
+
+/**
+ * CampaignTemplateCountOutputType without action
+ */
+export type CampaignTemplateCountOutputTypeCountPropertiesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TemplatePropertyWhereInput
+}
 
 
 export type CampaignTemplateSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -336,6 +878,13 @@ export type CampaignTemplateSelect<ExtArgs extends runtime.Types.Extensions.Inte
   htmlContent?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  purpose?: boolean
+  createdById?: boolean
+  createdBy?: boolean | Prisma.CampaignTemplate$createdByArgs<ExtArgs>
+  campaigns?: boolean | Prisma.CampaignTemplate$campaignsArgs<ExtArgs>
+  followUps?: boolean | Prisma.CampaignTemplate$followUpsArgs<ExtArgs>
+  properties?: boolean | Prisma.CampaignTemplate$propertiesArgs<ExtArgs>
+  _count?: boolean | Prisma.CampaignTemplateCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["campaignTemplate"]>
 
 export type CampaignTemplateSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -345,6 +894,9 @@ export type CampaignTemplateSelectCreateManyAndReturn<ExtArgs extends runtime.Ty
   htmlContent?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  purpose?: boolean
+  createdById?: boolean
+  createdBy?: boolean | Prisma.CampaignTemplate$createdByArgs<ExtArgs>
 }, ExtArgs["result"]["campaignTemplate"]>
 
 export type CampaignTemplateSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -354,6 +906,9 @@ export type CampaignTemplateSelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
   htmlContent?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  purpose?: boolean
+  createdById?: boolean
+  createdBy?: boolean | Prisma.CampaignTemplate$createdByArgs<ExtArgs>
 }, ExtArgs["result"]["campaignTemplate"]>
 
 export type CampaignTemplateSelectScalar = {
@@ -363,13 +918,33 @@ export type CampaignTemplateSelectScalar = {
   htmlContent?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  purpose?: boolean
+  createdById?: boolean
 }
 
-export type CampaignTemplateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "subject" | "htmlContent" | "createdAt" | "updatedAt", ExtArgs["result"]["campaignTemplate"]>
+export type CampaignTemplateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "subject" | "htmlContent" | "createdAt" | "updatedAt" | "purpose" | "createdById", ExtArgs["result"]["campaignTemplate"]>
+export type CampaignTemplateInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  createdBy?: boolean | Prisma.CampaignTemplate$createdByArgs<ExtArgs>
+  campaigns?: boolean | Prisma.CampaignTemplate$campaignsArgs<ExtArgs>
+  followUps?: boolean | Prisma.CampaignTemplate$followUpsArgs<ExtArgs>
+  properties?: boolean | Prisma.CampaignTemplate$propertiesArgs<ExtArgs>
+  _count?: boolean | Prisma.CampaignTemplateCountOutputTypeDefaultArgs<ExtArgs>
+}
+export type CampaignTemplateIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  createdBy?: boolean | Prisma.CampaignTemplate$createdByArgs<ExtArgs>
+}
+export type CampaignTemplateIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  createdBy?: boolean | Prisma.CampaignTemplate$createdByArgs<ExtArgs>
+}
 
 export type $CampaignTemplatePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "CampaignTemplate"
-  objects: {}
+  objects: {
+    createdBy: Prisma.$UserPayload<ExtArgs> | null
+    campaigns: Prisma.$CampaignPayload<ExtArgs>[]
+    followUps: Prisma.$InterestFollowUpPayload<ExtArgs>[]
+    properties: Prisma.$TemplatePropertyPayload<ExtArgs>[]
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     name: string
@@ -377,6 +952,8 @@ export type $CampaignTemplatePayload<ExtArgs extends runtime.Types.Extensions.In
     htmlContent: string
     createdAt: Date
     updatedAt: Date
+    purpose: $Enums.TemplatePurpose
+    createdById: string | null
   }, ExtArgs["result"]["campaignTemplate"]>
   composites: {}
 }
@@ -771,6 +1348,10 @@ readonly fields: CampaignTemplateFieldRefs;
  */
 export interface Prisma__CampaignTemplateClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  createdBy<T extends Prisma.CampaignTemplate$createdByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CampaignTemplate$createdByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  campaigns<T extends Prisma.CampaignTemplate$campaignsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CampaignTemplate$campaignsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CampaignPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  followUps<T extends Prisma.CampaignTemplate$followUpsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CampaignTemplate$followUpsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InterestFollowUpPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  properties<T extends Prisma.CampaignTemplate$propertiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CampaignTemplate$propertiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TemplatePropertyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -806,6 +1387,8 @@ export interface CampaignTemplateFieldRefs {
   readonly htmlContent: Prisma.FieldRef<"CampaignTemplate", 'String'>
   readonly createdAt: Prisma.FieldRef<"CampaignTemplate", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"CampaignTemplate", 'DateTime'>
+  readonly purpose: Prisma.FieldRef<"CampaignTemplate", 'TemplatePurpose'>
+  readonly createdById: Prisma.FieldRef<"CampaignTemplate", 'String'>
 }
     
 
@@ -822,6 +1405,10 @@ export type CampaignTemplateFindUniqueArgs<ExtArgs extends runtime.Types.Extensi
    * Omit specific fields from the CampaignTemplate
    */
   omit?: Prisma.CampaignTemplateOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CampaignTemplateInclude<ExtArgs> | null
   /**
    * Filter, which CampaignTemplate to fetch.
    */
@@ -841,6 +1428,10 @@ export type CampaignTemplateFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.
    */
   omit?: Prisma.CampaignTemplateOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CampaignTemplateInclude<ExtArgs> | null
+  /**
    * Filter, which CampaignTemplate to fetch.
    */
   where: Prisma.CampaignTemplateWhereUniqueInput
@@ -858,6 +1449,10 @@ export type CampaignTemplateFindFirstArgs<ExtArgs extends runtime.Types.Extensio
    * Omit specific fields from the CampaignTemplate
    */
   omit?: Prisma.CampaignTemplateOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CampaignTemplateInclude<ExtArgs> | null
   /**
    * Filter, which CampaignTemplate to fetch.
    */
@@ -907,6 +1502,10 @@ export type CampaignTemplateFindFirstOrThrowArgs<ExtArgs extends runtime.Types.E
    */
   omit?: Prisma.CampaignTemplateOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CampaignTemplateInclude<ExtArgs> | null
+  /**
    * Filter, which CampaignTemplate to fetch.
    */
   where?: Prisma.CampaignTemplateWhereInput
@@ -954,6 +1553,10 @@ export type CampaignTemplateFindManyArgs<ExtArgs extends runtime.Types.Extension
    * Omit specific fields from the CampaignTemplate
    */
   omit?: Prisma.CampaignTemplateOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CampaignTemplateInclude<ExtArgs> | null
   /**
    * Filter, which CampaignTemplates to fetch.
    */
@@ -1003,6 +1606,10 @@ export type CampaignTemplateCreateArgs<ExtArgs extends runtime.Types.Extensions.
    */
   omit?: Prisma.CampaignTemplateOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CampaignTemplateInclude<ExtArgs> | null
+  /**
    * The data needed to create a CampaignTemplate.
    */
   data: Prisma.XOR<Prisma.CampaignTemplateCreateInput, Prisma.CampaignTemplateUncheckedCreateInput>
@@ -1036,6 +1643,10 @@ export type CampaignTemplateCreateManyAndReturnArgs<ExtArgs extends runtime.Type
    */
   data: Prisma.CampaignTemplateCreateManyInput | Prisma.CampaignTemplateCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CampaignTemplateIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1050,6 +1661,10 @@ export type CampaignTemplateUpdateArgs<ExtArgs extends runtime.Types.Extensions.
    * Omit specific fields from the CampaignTemplate
    */
   omit?: Prisma.CampaignTemplateOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CampaignTemplateInclude<ExtArgs> | null
   /**
    * The data needed to update a CampaignTemplate.
    */
@@ -1102,6 +1717,10 @@ export type CampaignTemplateUpdateManyAndReturnArgs<ExtArgs extends runtime.Type
    * Limit how many CampaignTemplates to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CampaignTemplateIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1116,6 +1735,10 @@ export type CampaignTemplateUpsertArgs<ExtArgs extends runtime.Types.Extensions.
    * Omit specific fields from the CampaignTemplate
    */
   omit?: Prisma.CampaignTemplateOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CampaignTemplateInclude<ExtArgs> | null
   /**
    * The filter to search for the CampaignTemplate to update in case it exists.
    */
@@ -1143,6 +1766,10 @@ export type CampaignTemplateDeleteArgs<ExtArgs extends runtime.Types.Extensions.
    */
   omit?: Prisma.CampaignTemplateOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CampaignTemplateInclude<ExtArgs> | null
+  /**
    * Filter which CampaignTemplate to delete.
    */
   where: Prisma.CampaignTemplateWhereUniqueInput
@@ -1163,6 +1790,97 @@ export type CampaignTemplateDeleteManyArgs<ExtArgs extends runtime.Types.Extensi
 }
 
 /**
+ * CampaignTemplate.createdBy
+ */
+export type CampaignTemplate$createdByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
+}
+
+/**
+ * CampaignTemplate.campaigns
+ */
+export type CampaignTemplate$campaignsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Campaign
+   */
+  select?: Prisma.CampaignSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Campaign
+   */
+  omit?: Prisma.CampaignOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CampaignInclude<ExtArgs> | null
+  where?: Prisma.CampaignWhereInput
+  orderBy?: Prisma.CampaignOrderByWithRelationInput | Prisma.CampaignOrderByWithRelationInput[]
+  cursor?: Prisma.CampaignWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CampaignScalarFieldEnum | Prisma.CampaignScalarFieldEnum[]
+}
+
+/**
+ * CampaignTemplate.followUps
+ */
+export type CampaignTemplate$followUpsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the InterestFollowUp
+   */
+  select?: Prisma.InterestFollowUpSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the InterestFollowUp
+   */
+  omit?: Prisma.InterestFollowUpOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.InterestFollowUpInclude<ExtArgs> | null
+  where?: Prisma.InterestFollowUpWhereInput
+  orderBy?: Prisma.InterestFollowUpOrderByWithRelationInput | Prisma.InterestFollowUpOrderByWithRelationInput[]
+  cursor?: Prisma.InterestFollowUpWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.InterestFollowUpScalarFieldEnum | Prisma.InterestFollowUpScalarFieldEnum[]
+}
+
+/**
+ * CampaignTemplate.properties
+ */
+export type CampaignTemplate$propertiesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TemplateProperty
+   */
+  select?: Prisma.TemplatePropertySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TemplateProperty
+   */
+  omit?: Prisma.TemplatePropertyOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TemplatePropertyInclude<ExtArgs> | null
+  where?: Prisma.TemplatePropertyWhereInput
+  orderBy?: Prisma.TemplatePropertyOrderByWithRelationInput | Prisma.TemplatePropertyOrderByWithRelationInput[]
+  cursor?: Prisma.TemplatePropertyWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TemplatePropertyScalarFieldEnum | Prisma.TemplatePropertyScalarFieldEnum[]
+}
+
+/**
  * CampaignTemplate without action
  */
 export type CampaignTemplateDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1174,4 +1892,8 @@ export type CampaignTemplateDefaultArgs<ExtArgs extends runtime.Types.Extensions
    * Omit specific fields from the CampaignTemplate
    */
   omit?: Prisma.CampaignTemplateOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CampaignTemplateInclude<ExtArgs> | null
 }

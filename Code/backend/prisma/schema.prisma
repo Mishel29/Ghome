@@ -7,6 +7,7 @@ generator client {
   provider = "prisma-client"
   output   = "../src/generated"
 }
+
 datasource db {
   provider = "postgresql"
 }
@@ -39,73 +40,89 @@ model User {
   role         UserRole @default(USER)
   phone        String?
 
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  properties       Property[]       @relation("PropertyAgent")
-  interests        Interest[]       @relation("InterestUser")
-  assignedInterests Interest[]      @relation("InterestAgent")
-  savedProperties  SavedProperty[]
-  consents         Consent[]
-  campaigns        Campaign[]
-  newsArticles     NewsArticle[]
-  analyticsEvents AnalyticsEvent[]
-  auditLogs        AuditLog[]
-  importJobs ImportJob[]
+  properties        Property[]             @relation("PropertyAgent")
+  interests         Interest[]             @relation("InterestUser")
+  assignedInterests Interest[]             @relation("InterestAgent")
+  savedProperties   SavedProperty[]
+  consents          Consent[]
+  campaigns         Campaign[]
+  newsArticles      NewsArticle[]
+  analyticsEvents   AnalyticsEvent[]
+  auditLogs         AuditLog[]
+  importJobs        ImportJob[]
+  sessions          Session[]
+  reviewedJobs      AiJob[]                @relation("JobReviewer")
+  followUps         InterestFollowUp[]
+  pageContent       PageContent[]
+  templates         CampaignTemplate[]
+  propertyUploads   PropertyImportUpload[]
+  createdAiJobs     AiJob[]                @relation("JobCreator")
 }
 
 model Property {
-  id                String   @id @default(cuid())
-  sourceKey         String   @unique
+  id        String  @id @default(cuid())
+  sourceKey String? @unique
 
-  name              String
-  location          String
-  county            String
-  address           String
-  postalCode        String
+  name       String
+  location   String?
+  county     String?
+  address    String?
+  postalCode String?
 
-  type              String
-  saleType          String
+  type     String?
+  saleType String?
 
-  status            PropertyStatus
-  stage             PropertyStage
+  status PropertyStatus @default(DRAFT)
+  stage  PropertyStage?
 
-  priceMin          Decimal
-  priceMax          Decimal
+  priceMin Decimal?
+  priceMax Decimal?
 
-  bedroomsMin       Int
-  bedroomsMax       Int
-  bathroomsMin      Int
-  bathroomsMax      Int
+  bedroomsMin  Int?
+  bedroomsMax  Int?
+  bathroomsMin Int?
+  bathroomsMax Int?
 
-  sizeSqm           Int
-  sizeCategory      String?
+  sizeSqm      Decimal? @db.Decimal(12, 2)
+  sizeCategory String?
 
-  completionYear    Int?
+  completionYear Int?
 
-  description       String?
+  description String?
 
-  listedDate        DateTime?
-  publishedAt       DateTime?
+  listedDate  DateTime?
+  publishedAt DateTime?
 
-  agentId           String?
+  agentId String?
 
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  agent             User? @relation("PropertyAgent", fields: [agentId], references: [id])
+  agent User? @relation("PropertyAgent", fields: [agentId], references: [id])
 
   media             PropertyMedia[]
   features          PropertyFeature[]
   valueHistory      PropertyValueHistory[]
   savedBy           SavedProperty[]
   interests         Interest[]
-  campaignEvents CampaignEvent[]
+  campaignEvents    CampaignEvent[]
   campaignLinks     CampaignProperty[]
   newsLinks         NewsProperty[]
   analyticsEvents   AnalyticsEvent[]
   ragDocuments      RagDocument[]
   aiJobs            AiJob[]
+  templateLinks     TemplateProperty[]
+  // DRAFT/OFFLINE legacy sale states remain supported, but never grant visibility.
+  publicationStatus PublicationStatus      @default(DRAFT)
+  developmentId     String?
+  slug              String?                @unique
+  sizeSqmMax        Decimal?               @db.Decimal(12, 2)
+  bedroomOptions    Int[]                  @default([])
+  bathroomOptions   Int[]                  @default([])
+  development       Development?           @relation(fields: [developmentId], references: [id], onDelete: SetNull)
 
   @@index([county])
   @@index([status])
@@ -114,6 +131,7 @@ model Property {
   @@index([bedroomsMin])
   @@index([bathroomsMin])
   @@index([listedDate])
+  @@index([publicationStatus, publishedAt])
 }
 
 enum MediaType {
@@ -124,60 +142,71 @@ enum MediaType {
 }
 
 model PropertyMedia {
-  id         String    @id @default(cuid())
+  id         String @id @default(cuid())
   propertyId String
 
-  url        String
-  type       MediaType
-  isPrimary  Boolean   @default(false)
-  sortOrder  Int       @default(0)
+  url       String
+  type      MediaType
+  isPrimary Boolean   @default(false)
+  sortOrder Int       @default(0)
 
-  createdAt  DateTime  @default(now())
+  createdAt DateTime @default(now())
 
-  property   Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  property     Property      @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  altText      String?
+  storageKey   String?
+  mimeType     String?
+  aiJobId      String?
+  aiJob        AiJob?        @relation(fields: [aiJobId], references: [id], onDelete: SetNull)
+  ragDocuments RagDocument[]
 
   @@index([propertyId])
+  @@index([aiJobId])
 }
 
 model Feature {
-  id          String            @id @default(cuid())
-  name        String            @unique
+  id   String @id @default(cuid())
+  name String @unique
 
-  properties  PropertyFeature[]
+  properties PropertyFeature[]
 }
 
 model PropertyFeature {
-  propertyId  String
-  featureId   String
+  propertyId String
+  featureId  String
 
-  property    Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
-  feature     Feature  @relation(fields: [featureId], references: [id], onDelete: Cascade)
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  feature  Feature  @relation(fields: [featureId], references: [id], onDelete: Cascade)
 
   @@id([propertyId, featureId])
 }
 
 model PropertyValueHistory {
-  id          String   @id @default(cuid())
-  propertyId  String
+  id         String @id @default(cuid())
+  propertyId String
 
-  year        Int
-  value       Decimal
+  year          Int
+  value         Decimal
   growthPercent Decimal?
 
   property    Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  source      String?
+  isSynthetic Boolean  @default(false)
 
   @@unique([propertyId, year])
+  @@index([propertyId])
   @@index([year])
 }
+
 model SavedProperty {
-  id         String   @id @default(cuid())
+  id         String @id @default(cuid())
   userId     String
   propertyId String
 
-  createdAt  DateTime @default(now())
+  createdAt DateTime @default(now())
 
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
 
   @@unique([userId, propertyId])
   @@index([userId])
@@ -185,27 +214,28 @@ model SavedProperty {
 }
 
 model Interest {
-  id             String   @id @default(cuid())
-  propertyId     String
-  userId         String?
-  agentId        String?
+  id         String  @id @default(cuid())
+  propertyId String
+  userId     String?
+  agentId    String?
 
-  name           String
-  email          String
-  phone          String?
-  message        String?
+  name    String
+  email   String
+  phone   String?
+  message String?
 
-  dataConsent    Boolean  @default(false)
-  followUpSent   Boolean  @default(false)
+  dataConsent  Boolean @default(false)
+  followUpSent Boolean @default(false)
 
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  property       Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
-  user           User?    @relation("InterestUser", fields: [userId], references: [id], onDelete: SetNull)
-  agent          User?    @relation("InterestAgent", fields: [agentId], references: [id], onDelete: SetNull)
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  user     User?    @relation("InterestUser", fields: [userId], references: [id], onDelete: SetNull)
+  agent    User?    @relation("InterestAgent", fields: [agentId], references: [id], onDelete: SetNull)
 
-  consents Consent[]
+  consents  Consent[]
+  followUps InterestFollowUp[]
 
   @@index([propertyId])
   @@index([userId])
@@ -214,26 +244,33 @@ model Interest {
 }
 
 model Consent {
-  id          String   @id @default(cuid())
-  userId      String?
-  interestId  String?
+  id         String  @id @default(cuid())
+  userId     String?
+  interestId String?
 
-  type        String
-  granted     Boolean
-  version     String?
+  type    ConsentPurpose
+  granted Boolean
+  version String?
 
-  createdAt   DateTime @default(now())
+  createdAt DateTime @default(now())
 
-  user       User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
-  interest   Interest? @relation(fields: [interestId], references: [id], onDelete: SetNull)
+  user         User?       @relation(fields: [userId], references: [id], onDelete: Restrict)
+  interest     Interest?   @relation(fields: [interestId], references: [id], onDelete: Restrict)
+  subscriberId String?
+  source       String?
+  subscriber   Subscriber? @relation(fields: [subscriberId], references: [id], onDelete: Restrict)
 
   @@index([userId])
   @@index([interestId])
+  @@index([subscriberId, createdAt])
 }
 
 enum CampaignStatus {
   DRAFT
+  QUEUED
+  SENDING
   SENT
+  PARTIALLY_FAILED
   FAILED
 }
 
@@ -248,28 +285,35 @@ enum CampaignEventType {
 }
 
 enum SubscriberStatus {
+  PENDING
   ACTIVE
   UNSUBSCRIBED
 }
 
 model Subscriber {
-  id              String           @id @default(cuid())
-  name            String
-  email           String           @unique
-  phone           String?
+  id    String  @id @default(cuid())
+  name  String
+  email String  @unique
+  phone String?
 
-  status          SubscriberStatus @default(ACTIVE)
-  subscribedAt    DateTime         @default(now())
-  unsubscribedAt  DateTime?
+  status         SubscriberStatus @default(PENDING)
+  subscribedAt   DateTime?
+  unsubscribedAt DateTime?
 
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  campaignRecipients CampaignRecipient[]
-  campaignEvents     CampaignEvent[]
+  campaignRecipients   CampaignRecipient[]
+  campaignEvents       CampaignEvent[]
+  consentGrantedAt     DateTime?
+  consentVersion       String?
+  unsubscribeTokenHash String?             @unique
+  consents             Consent[]
+  unsubscribeTokens    UnsubscribeToken[]
 
   @@index([status])
   @@index([subscribedAt])
+  @@index([unsubscribedAt])
 }
 
 model Campaign {
@@ -278,112 +322,165 @@ model Campaign {
   status       CampaignStatus @default(DRAFT)
   templateHtml String?
 
-  createdById  String?
-  sentAt       DateTime?
+  createdById String?
+  sentAt      DateTime?
 
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  createdBy    User?          @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  createdBy User? @relation(fields: [createdById], references: [id], onDelete: SetNull)
 
-  properties   CampaignProperty[]
-  recipients   CampaignRecipient[]
-  events       CampaignEvent[]
+  properties      CampaignProperty[]
+  recipients      CampaignRecipient[]
+  events          CampaignEvent[]
   analyticsEvents AnalyticsEvent[]
+  newsArticleId   String?
+  templateId      String?
+  bodyText        String?
+  renderedHtml    String?
+  recipientCount  Int                 @default(0)
+  startedAt       DateTime?
+  completedAt     DateTime?
+  newsArticle     NewsArticle?        @relation(fields: [newsArticleId], references: [id], onDelete: SetNull)
+  template        CampaignTemplate?   @relation(fields: [templateId], references: [id], onDelete: SetNull)
 
   @@index([status])
   @@index([createdAt])
+  @@index([sentAt])
 }
 
 model CampaignProperty {
-  campaignId String
-  propertyId String
+  campaignId       String
+  id               String  @id @default(cuid())
+  propertyId       String?
+  propertyName     String
+  propertySnapshot Json?
 
-  campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
-  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  campaign Campaign  @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  property Property? @relation(fields: [propertyId], references: [id], onDelete: SetNull)
 
-  @@id([campaignId, propertyId])
+  @@unique([campaignId, propertyId])
 }
 
 model CampaignRecipient {
-  id           String   @id @default(cuid())
+  id           String  @id @default(cuid())
   campaignId   String
-  subscriberId String
+  subscriberId String?
 
-  status       String   @default("PENDING")
+  status DeliveryStatus @default(PENDING)
 
   sentAt       DateTime?
   deliveredAt  DateTime?
   failedAt     DateTime?
   errorMessage String?
 
-  campaign     Campaign   @relation(fields: [campaignId], references: [id], onDelete: Cascade)
-  subscriber   Subscriber @relation(fields: [subscriberId], references: [id], onDelete: Cascade)
+  campaign          Campaign          @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  subscriber        Subscriber?       @relation(fields: [subscriberId], references: [id], onDelete: SetNull)
+  recipientEmail    String
+  recipientName     String
+  renderedHtml      String?
+  providerMessageId String?           @unique
+  trackingTokenHash String?           @unique
+  attemptCount      Int               @default(0)
+  nextAttemptAt     DateTime?
+  lockedAt          DateTime?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  attempts          DeliveryAttempt[]
+  events            CampaignEvent[]
 
   @@unique([campaignId, subscriberId])
   @@index([campaignId])
   @@index([subscriberId])
   @@index([status])
+  @@index([status, nextAttemptAt])
+  @@index([sentAt])
 }
 
 model CampaignEvent {
-  id           String             @id @default(cuid())
+  id           String  @id @default(cuid())
   campaignId   String
   subscriberId String?
   propertyId   String?
 
-  type         CampaignEventType
-  occurredAt   DateTime           @default(now())
+  type       CampaignEventType
+  occurredAt DateTime          @default(now())
 
-  campaign     Campaign   @relation(fields: [campaignId], references: [id], onDelete: Cascade)
-  subscriber   Subscriber? @relation(fields: [subscriberId], references: [id], onDelete: SetNull)
-  property     Property?  @relation(fields: [propertyId], references: [id], onDelete: SetNull)
+  campaign         Campaign           @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  subscriber       Subscriber?        @relation(fields: [subscriberId], references: [id], onDelete: SetNull)
+  property         Property?          @relation(fields: [propertyId], references: [id], onDelete: SetNull)
+  recipientId      String?
+  deduplicationKey String?            @unique
+  recipient        CampaignRecipient? @relation(fields: [recipientId], references: [id], onDelete: SetNull)
 
   @@index([campaignId])
   @@index([subscriberId])
   @@index([propertyId])
   @@index([type])
   @@index([occurredAt])
+  @@index([recipientId])
 }
 
 model CampaignTemplate {
-  id          String   @id @default(cuid())
+  id          String  @id @default(cuid())
   name        String
   subject     String?
   htmlContent String
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+  purpose     TemplatePurpose    @default(CAMPAIGN)
+  createdById String?
+  createdBy   User?              @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  campaigns   Campaign[]
+  followUps   InterestFollowUp[]
+  properties  TemplateProperty[]
 }
+
+model TemplateProperty {
+  templateId String
+  propertyId String
+  template   CampaignTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  property   Property         @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@id([templateId, propertyId])
+  @@index([propertyId])
+}
+
 model NewsArticle {
-  id          String   @id @default(cuid())
+  id String @id @default(cuid())
 
-  title       String
-  summary     String?
-  content     String?
-  imageUrl    String?
+  title    String
+  summary  String?
+  content  String?
+  imageUrl String?
 
-  published   Boolean  @default(false)
-  publishDate DateTime?
+  publicationStatus PublicationStatus @default(DRAFT)
+  publishedAt       DateTime?
 
   createdById String?
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  createdBy   User?           @relation(fields: [createdById], references: [id], onDelete: SetNull)
-  properties  NewsProperty[]
+  createdBy    User?          @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  properties   NewsProperty[]
+  externalUrl  String?
+  activeFrom   DateTime?
+  activeUntil  DateTime?
+  campaigns    Campaign[]
+  ragDocuments RagDocument[]
 
-  @@index([published])
-  @@index([publishDate])
+  @@index([publicationStatus, activeFrom])
+  @@index([publishedAt])
 }
 
 model NewsProperty {
   newsArticleId String
-  propertyId   String
+  propertyId    String
 
-  newsArticle  NewsArticle @relation(fields: [newsArticleId], references: [id], onDelete: Cascade)
-  property     Property    @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  newsArticle NewsArticle @relation(fields: [newsArticleId], references: [id], onDelete: Cascade)
+  property    Property    @relation(fields: [propertyId], references: [id], onDelete: Cascade)
 
   @@id([newsArticleId, propertyId])
   @@index([propertyId])
@@ -400,20 +497,20 @@ enum AnalyticsEventType {
 }
 
 model AnalyticsEvent {
-  id         String             @id @default(cuid())
+  id String @id @default(cuid())
 
   userId     String?
   propertyId String?
   campaignId String?
 
-  eventType  AnalyticsEventType
-  metadata   Json?
+  eventType AnalyticsEventType
+  metadata  Json?
 
-  createdAt  DateTime           @default(now())
+  createdAt DateTime @default(now())
 
-  user       User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
-  property   Property?   @relation(fields: [propertyId], references: [id], onDelete: SetNull)
-  campaign   Campaign?   @relation(fields: [campaignId], references: [id], onDelete: SetNull)
+  user     User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  property Property? @relation(fields: [propertyId], references: [id], onDelete: SetNull)
+  campaign Campaign? @relation(fields: [campaignId], references: [id], onDelete: SetNull)
 
   @@index([userId])
   @@index([propertyId])
@@ -421,6 +518,7 @@ model AnalyticsEvent {
   @@index([eventType])
   @@index([createdAt])
 }
+
 enum RagSourceType {
   PROPERTY
   NEWS
@@ -447,6 +545,10 @@ enum ImportJobType {
 }
 
 enum ImportJobStatus {
+  READY
+  QUEUED
+  PARTIALLY_COMPLETED
+  CANCELLED
   PENDING
   PROCESSING
   COMPLETED
@@ -454,55 +556,76 @@ enum ImportJobStatus {
 }
 
 model RagDocument {
-  id         String         @id @default(cuid())
+  id         String        @id @default(cuid())
   propertyId String?
   title      String
   content    String
   sourceType RagSourceType
 
-  createdAt  DateTime       @default(now())
-  updatedAt  DateTime       @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  property   Property?      @relation(fields: [propertyId], references: [id], onDelete: Cascade)
-  chunks     RagChunk[]
+  property      Property?      @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  chunks        RagChunk[]
+  newsArticleId String?
+  mediaId       String?
+  sourceUrl     String?
+  contentHash   String?
+  indexedAt     DateTime?
+  indexStatus   IndexStatus    @default(PENDING)
+  newsArticle   NewsArticle?   @relation(fields: [newsArticleId], references: [id], onDelete: Cascade)
+  media         PropertyMedia? @relation(fields: [mediaId], references: [id], onDelete: Cascade)
 
   @@index([propertyId])
   @@index([sourceType])
 }
 
 model RagChunk {
-  id         String      @id @default(cuid())
+  id         String @id @default(cuid())
   documentId String
   content    String
 
-  /*
-   * We will add the pgvector embedding column
-   * after the relational schema is working.
-   */
+  // Embeddings may be held in an external vector store; no pgvector dependency.
+  ordinal          Int     @default(0)
+  embedding        Float[] @default([])
+  embeddingModel   String?
+  externalVectorId String? @unique
 
-  createdAt  DateTime @default(now())
+  createdAt DateTime @default(now())
 
-  document   RagDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  document RagDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
 
+  @@unique([documentId, ordinal])
   @@index([documentId])
 }
 
 model AiJob {
-  id         String      @id @default(cuid())
+  id         String  @id @default(cuid())
   propertyId String?
 
-  type       AiJobType
-  status     AiJobStatus @default(PENDING)
+  type   AiJobType
+  status AiJobStatus @default(PENDING)
 
-  prompt     String?
-  result     Json?
-  error      String?
-  attempts   Int         @default(0)
+  prompt         String?
+  result         Json?
+  error          String?
+  attempts       Int       @default(0)
+  queuedAt       DateTime?
+  providerTaskId String?
+  createdById    String?
+  createdBy      User?     @relation("JobCreator", fields: [createdById], references: [id], onDelete: SetNull)
 
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  property   Property? @relation(fields: [propertyId], references: [id], onDelete: SetNull)
+  property     Property?       @relation(fields: [propertyId], references: [id], onDelete: SetNull)
+  reviewStatus ReviewStatus    @default(PENDING)
+  reviewedById String?
+  reviewedAt   DateTime?
+  reviewNotes  String?
+  reviewedBy   User?           @relation("JobReviewer", fields: [reviewedById], references: [id], onDelete: Restrict)
+  media        PropertyMedia[]
+  history      AiJobAttempt[]
 
   @@index([propertyId])
   @@index([type])
@@ -511,24 +634,33 @@ model AiJob {
 }
 
 model ImportJob {
-  id             String          @id @default(cuid())
+  id String @id @default(cuid())
 
-  type           ImportJobType
-  status         ImportJobStatus @default(PENDING)
+  type   ImportJobType
+  status ImportJobStatus @default(PENDING)
 
   filename       String
-  totalRows      Int             @default(0)
-  successfulRows Int             @default(0)
-  failedRows     Int             @default(0)
+  totalRows      Int    @default(0)
+  successfulRows Int    @default(0)
+  failedRows     Int    @default(0)
 
-  errors         Json?
+  errors Json?
 
-  createdById    String?
+  createdById String?
 
-  createdAt      DateTime        @default(now())
-  completedAt    DateTime?
+  createdAt   DateTime  @default(now())
+  completedAt DateTime?
 
-  createdBy      User?           @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  createdBy     User?                 @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  uploadId      String?               @unique
+  startedAt     DateTime?
+  totalJobs     Int                   @default(0)
+  completedJobs Int                   @default(0)
+  failedJobs    Int                   @default(0)
+  errorSummary  String?
+  upload        PropertyImportUpload? @relation(fields: [uploadId], references: [id], onDelete: SetNull)
+  chunks        ImportChunk[]
+  rowErrors     ImportRowError[]
 
   @@index([type])
   @@index([status])
@@ -536,21 +668,249 @@ model ImportJob {
 }
 
 model AuditLog {
-  id         String   @id @default(cuid())
+  id String @id @default(cuid())
 
-  userId     String?
+  userId String?
 
   action     String
   entityType String
   entityId   String?
   metadata   Json?
 
-  createdAt  DateTime @default(now())
+  createdAt DateTime @default(now())
 
-  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   @@index([userId])
   @@index([entityType])
   @@index([entityId])
   @@index([createdAt])
+}
+
+// Shared visibility state, independent of sales or job processing state.
+enum PublicationStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum ConsentPurpose {
+  MARKETING
+  INTEREST
+  ACCOUNT
+}
+
+enum DeliveryStatus {
+  PENDING
+  SENDING
+  SENT
+  FAILED
+  SKIPPED
+}
+
+enum TemplatePurpose {
+  CAMPAIGN
+  INTEREST_FOLLOW_UP
+}
+
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum IndexStatus {
+  PENDING
+  INDEXED
+  FAILED
+}
+
+model Development {
+  id          String        @id @default(cuid())
+  slug        String        @unique
+  name        String
+  location    String?
+  description String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  properties  Property[]
+  pages       PageContent[]
+}
+
+model PageContent {
+  id                String            @id @default(cuid())
+  slug              String            @unique
+  title             String
+  heroHeading       String?
+  heroText          String?
+  heroImageUrl      String?
+  introduction      String?
+  publicationStatus PublicationStatus @default(DRAFT)
+  publishedAt       DateTime?
+  developmentId     String?
+  createdById       String?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  development       Development?      @relation(fields: [developmentId], references: [id], onDelete: SetNull)
+  createdBy         User?             @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  gallery           PageMedia[]
+
+  @@index([publicationStatus, publishedAt])
+}
+
+model PageMedia {
+  id        String      @id @default(cuid())
+  pageId    String
+  url       String
+  altText   String?
+  sortOrder Int         @default(0)
+  page      PageContent @relation(fields: [pageId], references: [id], onDelete: Cascade)
+
+  @@index([pageId, sortOrder])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model InterestFollowUp {
+  id                String            @id @default(cuid())
+  interestId        String
+  templateId        String?
+  sentById          String?
+  subject           String
+  body              String
+  status            DeliveryStatus    @default(PENDING)
+  sentAt            DateTime?
+  failedAt          DateTime?
+  errorMessage      String?
+  queuedAt          DateTime?
+  lockedAt          DateTime?
+  sendRequestedAt   DateTime?
+  attemptCount      Int               @default(0)
+  providerMessageId String?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  interest          Interest          @relation(fields: [interestId], references: [id], onDelete: Cascade)
+  template          CampaignTemplate? @relation(fields: [templateId], references: [id], onDelete: SetNull)
+  sentBy            User?             @relation(fields: [sentById], references: [id], onDelete: SetNull)
+
+  @@index([interestId, createdAt])
+}
+
+model DeliveryAttempt {
+  id                String            @id @default(cuid())
+  recipientId       String
+  attemptNumber     Int
+  status            DeliveryStatus
+  providerMessageId String?
+  errorMessage      String?
+  startedAt         DateTime          @default(now())
+  finishedAt        DateTime?
+  recipient         CampaignRecipient @relation(fields: [recipientId], references: [id], onDelete: Cascade)
+
+  @@unique([recipientId, attemptNumber])
+}
+
+model AiJobAttempt {
+  id            String      @id @default(cuid())
+  jobId         String
+  attemptNumber Int
+  prompt        String
+  result        Json?
+  error         String?
+  status        AiJobStatus @default(PENDING)
+  createdAt     DateTime    @default(now())
+  completedAt   DateTime?
+  job           AiJob       @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@unique([jobId, attemptNumber])
+}
+
+model UnsubscribeToken {
+  id           String     @id @default(cuid())
+  tokenHash    String     @unique
+  subscriberId String
+  createdAt    DateTime   @default(now())
+  subscriber   Subscriber @relation(fields: [subscriberId], references: [id], onDelete: Cascade)
+
+  @@index([subscriberId])
+}
+
+enum ImportUploadStatus {
+  UPLOADED
+  VALIDATING
+  INVALID
+  READY
+  CONSUMED
+  CANCELLED
+}
+
+enum ImportChunkStatus {
+  WAITING
+  ACTIVE
+  RETRYING
+  COMPLETED
+  FAILED
+}
+
+model PropertyImportUpload {
+  id            String             @id @default(cuid())
+  filename      String
+  type          ImportJobType      @default(PROPERTY_IMPORT)
+  byteSize      Int
+  content       String?
+  status        ImportUploadStatus @default(UPLOADED)
+  validation    Json?
+  validatedRows Json?
+  createdById   String
+  createdAt     DateTime           @default(now())
+  expiresAt     DateTime
+  createdBy     User               @relation(fields: [createdById], references: [id], onDelete: Restrict)
+  importJob     ImportJob?
+
+  @@index([expiresAt, status])
+  @@index([createdById, createdAt])
+}
+
+model ImportChunk {
+  id            String            @id @default(cuid())
+  importId      String
+  chunkIndex    Int
+  records       Json?
+  totalRows     Int
+  processedRows Int               @default(0)
+  status        ImportChunkStatus @default(WAITING)
+  attempts      Int               @default(0)
+  lastError     String?
+  queuedAt      DateTime?
+  startedAt     DateTime?
+  completedAt   DateTime?
+  importJob     ImportJob         @relation(fields: [importId], references: [id], onDelete: Cascade)
+  rowErrors     ImportRowError[]
+
+  @@unique([importId, chunkIndex])
+  @@index([status, queuedAt])
+}
+
+model ImportRowError {
+  id        String       @id @default(cuid())
+  importId  String
+  chunkId   String?
+  rowNumber Int
+  field     String
+  value     String?
+  message   String
+  errorType String
+  importJob ImportJob    @relation(fields: [importId], references: [id], onDelete: Cascade)
+  chunk     ImportChunk? @relation(fields: [chunkId], references: [id], onDelete: Cascade)
+
+  @@index([importId, rowNumber])
 }

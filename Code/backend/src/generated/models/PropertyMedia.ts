@@ -42,6 +42,10 @@ export type PropertyMediaMinAggregateOutputType = {
   isPrimary: boolean | null
   sortOrder: number | null
   createdAt: Date | null
+  altText: string | null
+  storageKey: string | null
+  mimeType: string | null
+  aiJobId: string | null
 }
 
 export type PropertyMediaMaxAggregateOutputType = {
@@ -52,6 +56,10 @@ export type PropertyMediaMaxAggregateOutputType = {
   isPrimary: boolean | null
   sortOrder: number | null
   createdAt: Date | null
+  altText: string | null
+  storageKey: string | null
+  mimeType: string | null
+  aiJobId: string | null
 }
 
 export type PropertyMediaCountAggregateOutputType = {
@@ -62,6 +70,10 @@ export type PropertyMediaCountAggregateOutputType = {
   isPrimary: number
   sortOrder: number
   createdAt: number
+  altText: number
+  storageKey: number
+  mimeType: number
+  aiJobId: number
   _all: number
 }
 
@@ -82,6 +94,10 @@ export type PropertyMediaMinAggregateInputType = {
   isPrimary?: true
   sortOrder?: true
   createdAt?: true
+  altText?: true
+  storageKey?: true
+  mimeType?: true
+  aiJobId?: true
 }
 
 export type PropertyMediaMaxAggregateInputType = {
@@ -92,6 +108,10 @@ export type PropertyMediaMaxAggregateInputType = {
   isPrimary?: true
   sortOrder?: true
   createdAt?: true
+  altText?: true
+  storageKey?: true
+  mimeType?: true
+  aiJobId?: true
 }
 
 export type PropertyMediaCountAggregateInputType = {
@@ -102,6 +122,10 @@ export type PropertyMediaCountAggregateInputType = {
   isPrimary?: true
   sortOrder?: true
   createdAt?: true
+  altText?: true
+  storageKey?: true
+  mimeType?: true
+  aiJobId?: true
   _all?: true
 }
 
@@ -199,6 +223,10 @@ export type PropertyMediaGroupByOutputType = {
   isPrimary: boolean
   sortOrder: number
   createdAt: Date
+  altText: string | null
+  storageKey: string | null
+  mimeType: string | null
+  aiJobId: string | null
   _count: PropertyMediaCountAggregateOutputType | null
   _avg: PropertyMediaAvgAggregateOutputType | null
   _sum: PropertyMediaSumAggregateOutputType | null
@@ -232,7 +260,13 @@ export type PropertyMediaWhereInput = {
   isPrimary?: Prisma.BoolFilter<"PropertyMedia"> | boolean
   sortOrder?: Prisma.IntFilter<"PropertyMedia"> | number
   createdAt?: Prisma.DateTimeFilter<"PropertyMedia"> | Date | string
+  altText?: Prisma.StringNullableFilter<"PropertyMedia"> | string | null
+  storageKey?: Prisma.StringNullableFilter<"PropertyMedia"> | string | null
+  mimeType?: Prisma.StringNullableFilter<"PropertyMedia"> | string | null
+  aiJobId?: Prisma.StringNullableFilter<"PropertyMedia"> | string | null
   property?: Prisma.XOR<Prisma.PropertyScalarRelationFilter, Prisma.PropertyWhereInput>
+  aiJob?: Prisma.XOR<Prisma.AiJobNullableScalarRelationFilter, Prisma.AiJobWhereInput> | null
+  ragDocuments?: Prisma.RagDocumentListRelationFilter
 }
 
 export type PropertyMediaOrderByWithRelationInput = {
@@ -243,7 +277,13 @@ export type PropertyMediaOrderByWithRelationInput = {
   isPrimary?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  altText?: Prisma.SortOrderInput | Prisma.SortOrder
+  storageKey?: Prisma.SortOrderInput | Prisma.SortOrder
+  mimeType?: Prisma.SortOrderInput | Prisma.SortOrder
+  aiJobId?: Prisma.SortOrderInput | Prisma.SortOrder
   property?: Prisma.PropertyOrderByWithRelationInput
+  aiJob?: Prisma.AiJobOrderByWithRelationInput
+  ragDocuments?: Prisma.RagDocumentOrderByRelationAggregateInput
 }
 
 export type PropertyMediaWhereUniqueInput = Prisma.AtLeast<{
@@ -257,7 +297,13 @@ export type PropertyMediaWhereUniqueInput = Prisma.AtLeast<{
   isPrimary?: Prisma.BoolFilter<"PropertyMedia"> | boolean
   sortOrder?: Prisma.IntFilter<"PropertyMedia"> | number
   createdAt?: Prisma.DateTimeFilter<"PropertyMedia"> | Date | string
+  altText?: Prisma.StringNullableFilter<"PropertyMedia"> | string | null
+  storageKey?: Prisma.StringNullableFilter<"PropertyMedia"> | string | null
+  mimeType?: Prisma.StringNullableFilter<"PropertyMedia"> | string | null
+  aiJobId?: Prisma.StringNullableFilter<"PropertyMedia"> | string | null
   property?: Prisma.XOR<Prisma.PropertyScalarRelationFilter, Prisma.PropertyWhereInput>
+  aiJob?: Prisma.XOR<Prisma.AiJobNullableScalarRelationFilter, Prisma.AiJobWhereInput> | null
+  ragDocuments?: Prisma.RagDocumentListRelationFilter
 }, "id">
 
 export type PropertyMediaOrderByWithAggregationInput = {
@@ -268,6 +314,10 @@ export type PropertyMediaOrderByWithAggregationInput = {
   isPrimary?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  altText?: Prisma.SortOrderInput | Prisma.SortOrder
+  storageKey?: Prisma.SortOrderInput | Prisma.SortOrder
+  mimeType?: Prisma.SortOrderInput | Prisma.SortOrder
+  aiJobId?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.PropertyMediaCountOrderByAggregateInput
   _avg?: Prisma.PropertyMediaAvgOrderByAggregateInput
   _max?: Prisma.PropertyMediaMaxOrderByAggregateInput
@@ -286,6 +336,10 @@ export type PropertyMediaScalarWhereWithAggregatesInput = {
   isPrimary?: Prisma.BoolWithAggregatesFilter<"PropertyMedia"> | boolean
   sortOrder?: Prisma.IntWithAggregatesFilter<"PropertyMedia"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"PropertyMedia"> | Date | string
+  altText?: Prisma.StringNullableWithAggregatesFilter<"PropertyMedia"> | string | null
+  storageKey?: Prisma.StringNullableWithAggregatesFilter<"PropertyMedia"> | string | null
+  mimeType?: Prisma.StringNullableWithAggregatesFilter<"PropertyMedia"> | string | null
+  aiJobId?: Prisma.StringNullableWithAggregatesFilter<"PropertyMedia"> | string | null
 }
 
 export type PropertyMediaCreateInput = {
@@ -295,7 +349,12 @@ export type PropertyMediaCreateInput = {
   isPrimary?: boolean
   sortOrder?: number
   createdAt?: Date | string
+  altText?: string | null
+  storageKey?: string | null
+  mimeType?: string | null
   property: Prisma.PropertyCreateNestedOneWithoutMediaInput
+  aiJob?: Prisma.AiJobCreateNestedOneWithoutMediaInput
+  ragDocuments?: Prisma.RagDocumentCreateNestedManyWithoutMediaInput
 }
 
 export type PropertyMediaUncheckedCreateInput = {
@@ -306,6 +365,11 @@ export type PropertyMediaUncheckedCreateInput = {
   isPrimary?: boolean
   sortOrder?: number
   createdAt?: Date | string
+  altText?: string | null
+  storageKey?: string | null
+  mimeType?: string | null
+  aiJobId?: string | null
+  ragDocuments?: Prisma.RagDocumentUncheckedCreateNestedManyWithoutMediaInput
 }
 
 export type PropertyMediaUpdateInput = {
@@ -315,7 +379,12 @@ export type PropertyMediaUpdateInput = {
   isPrimary?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  altText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  storageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   property?: Prisma.PropertyUpdateOneRequiredWithoutMediaNestedInput
+  aiJob?: Prisma.AiJobUpdateOneWithoutMediaNestedInput
+  ragDocuments?: Prisma.RagDocumentUpdateManyWithoutMediaNestedInput
 }
 
 export type PropertyMediaUncheckedUpdateInput = {
@@ -326,6 +395,11 @@ export type PropertyMediaUncheckedUpdateInput = {
   isPrimary?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  altText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  storageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aiJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ragDocuments?: Prisma.RagDocumentUncheckedUpdateManyWithoutMediaNestedInput
 }
 
 export type PropertyMediaCreateManyInput = {
@@ -336,6 +410,10 @@ export type PropertyMediaCreateManyInput = {
   isPrimary?: boolean
   sortOrder?: number
   createdAt?: Date | string
+  altText?: string | null
+  storageKey?: string | null
+  mimeType?: string | null
+  aiJobId?: string | null
 }
 
 export type PropertyMediaUpdateManyMutationInput = {
@@ -345,6 +423,9 @@ export type PropertyMediaUpdateManyMutationInput = {
   isPrimary?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  altText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  storageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type PropertyMediaUncheckedUpdateManyInput = {
@@ -355,6 +436,10 @@ export type PropertyMediaUncheckedUpdateManyInput = {
   isPrimary?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  altText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  storageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aiJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type PropertyMediaListRelationFilter = {
@@ -375,6 +460,10 @@ export type PropertyMediaCountOrderByAggregateInput = {
   isPrimary?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  altText?: Prisma.SortOrder
+  storageKey?: Prisma.SortOrder
+  mimeType?: Prisma.SortOrder
+  aiJobId?: Prisma.SortOrder
 }
 
 export type PropertyMediaAvgOrderByAggregateInput = {
@@ -389,6 +478,10 @@ export type PropertyMediaMaxOrderByAggregateInput = {
   isPrimary?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  altText?: Prisma.SortOrder
+  storageKey?: Prisma.SortOrder
+  mimeType?: Prisma.SortOrder
+  aiJobId?: Prisma.SortOrder
 }
 
 export type PropertyMediaMinOrderByAggregateInput = {
@@ -399,10 +492,19 @@ export type PropertyMediaMinOrderByAggregateInput = {
   isPrimary?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  altText?: Prisma.SortOrder
+  storageKey?: Prisma.SortOrder
+  mimeType?: Prisma.SortOrder
+  aiJobId?: Prisma.SortOrder
 }
 
 export type PropertyMediaSumOrderByAggregateInput = {
   sortOrder?: Prisma.SortOrder
+}
+
+export type PropertyMediaNullableScalarRelationFilter = {
+  is?: Prisma.PropertyMediaWhereInput | null
+  isNot?: Prisma.PropertyMediaWhereInput | null
 }
 
 export type PropertyMediaCreateNestedManyWithoutPropertyInput = {
@@ -455,6 +557,72 @@ export type BoolFieldUpdateOperationsInput = {
   set?: boolean
 }
 
+export type IntFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
+export type PropertyMediaCreateNestedOneWithoutRagDocumentsInput = {
+  create?: Prisma.XOR<Prisma.PropertyMediaCreateWithoutRagDocumentsInput, Prisma.PropertyMediaUncheckedCreateWithoutRagDocumentsInput>
+  connectOrCreate?: Prisma.PropertyMediaCreateOrConnectWithoutRagDocumentsInput
+  connect?: Prisma.PropertyMediaWhereUniqueInput
+}
+
+export type PropertyMediaUpdateOneWithoutRagDocumentsNestedInput = {
+  create?: Prisma.XOR<Prisma.PropertyMediaCreateWithoutRagDocumentsInput, Prisma.PropertyMediaUncheckedCreateWithoutRagDocumentsInput>
+  connectOrCreate?: Prisma.PropertyMediaCreateOrConnectWithoutRagDocumentsInput
+  upsert?: Prisma.PropertyMediaUpsertWithoutRagDocumentsInput
+  disconnect?: Prisma.PropertyMediaWhereInput | boolean
+  delete?: Prisma.PropertyMediaWhereInput | boolean
+  connect?: Prisma.PropertyMediaWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PropertyMediaUpdateToOneWithWhereWithoutRagDocumentsInput, Prisma.PropertyMediaUpdateWithoutRagDocumentsInput>, Prisma.PropertyMediaUncheckedUpdateWithoutRagDocumentsInput>
+}
+
+export type PropertyMediaCreateNestedManyWithoutAiJobInput = {
+  create?: Prisma.XOR<Prisma.PropertyMediaCreateWithoutAiJobInput, Prisma.PropertyMediaUncheckedCreateWithoutAiJobInput> | Prisma.PropertyMediaCreateWithoutAiJobInput[] | Prisma.PropertyMediaUncheckedCreateWithoutAiJobInput[]
+  connectOrCreate?: Prisma.PropertyMediaCreateOrConnectWithoutAiJobInput | Prisma.PropertyMediaCreateOrConnectWithoutAiJobInput[]
+  createMany?: Prisma.PropertyMediaCreateManyAiJobInputEnvelope
+  connect?: Prisma.PropertyMediaWhereUniqueInput | Prisma.PropertyMediaWhereUniqueInput[]
+}
+
+export type PropertyMediaUncheckedCreateNestedManyWithoutAiJobInput = {
+  create?: Prisma.XOR<Prisma.PropertyMediaCreateWithoutAiJobInput, Prisma.PropertyMediaUncheckedCreateWithoutAiJobInput> | Prisma.PropertyMediaCreateWithoutAiJobInput[] | Prisma.PropertyMediaUncheckedCreateWithoutAiJobInput[]
+  connectOrCreate?: Prisma.PropertyMediaCreateOrConnectWithoutAiJobInput | Prisma.PropertyMediaCreateOrConnectWithoutAiJobInput[]
+  createMany?: Prisma.PropertyMediaCreateManyAiJobInputEnvelope
+  connect?: Prisma.PropertyMediaWhereUniqueInput | Prisma.PropertyMediaWhereUniqueInput[]
+}
+
+export type PropertyMediaUpdateManyWithoutAiJobNestedInput = {
+  create?: Prisma.XOR<Prisma.PropertyMediaCreateWithoutAiJobInput, Prisma.PropertyMediaUncheckedCreateWithoutAiJobInput> | Prisma.PropertyMediaCreateWithoutAiJobInput[] | Prisma.PropertyMediaUncheckedCreateWithoutAiJobInput[]
+  connectOrCreate?: Prisma.PropertyMediaCreateOrConnectWithoutAiJobInput | Prisma.PropertyMediaCreateOrConnectWithoutAiJobInput[]
+  upsert?: Prisma.PropertyMediaUpsertWithWhereUniqueWithoutAiJobInput | Prisma.PropertyMediaUpsertWithWhereUniqueWithoutAiJobInput[]
+  createMany?: Prisma.PropertyMediaCreateManyAiJobInputEnvelope
+  set?: Prisma.PropertyMediaWhereUniqueInput | Prisma.PropertyMediaWhereUniqueInput[]
+  disconnect?: Prisma.PropertyMediaWhereUniqueInput | Prisma.PropertyMediaWhereUniqueInput[]
+  delete?: Prisma.PropertyMediaWhereUniqueInput | Prisma.PropertyMediaWhereUniqueInput[]
+  connect?: Prisma.PropertyMediaWhereUniqueInput | Prisma.PropertyMediaWhereUniqueInput[]
+  update?: Prisma.PropertyMediaUpdateWithWhereUniqueWithoutAiJobInput | Prisma.PropertyMediaUpdateWithWhereUniqueWithoutAiJobInput[]
+  updateMany?: Prisma.PropertyMediaUpdateManyWithWhereWithoutAiJobInput | Prisma.PropertyMediaUpdateManyWithWhereWithoutAiJobInput[]
+  deleteMany?: Prisma.PropertyMediaScalarWhereInput | Prisma.PropertyMediaScalarWhereInput[]
+}
+
+export type PropertyMediaUncheckedUpdateManyWithoutAiJobNestedInput = {
+  create?: Prisma.XOR<Prisma.PropertyMediaCreateWithoutAiJobInput, Prisma.PropertyMediaUncheckedCreateWithoutAiJobInput> | Prisma.PropertyMediaCreateWithoutAiJobInput[] | Prisma.PropertyMediaUncheckedCreateWithoutAiJobInput[]
+  connectOrCreate?: Prisma.PropertyMediaCreateOrConnectWithoutAiJobInput | Prisma.PropertyMediaCreateOrConnectWithoutAiJobInput[]
+  upsert?: Prisma.PropertyMediaUpsertWithWhereUniqueWithoutAiJobInput | Prisma.PropertyMediaUpsertWithWhereUniqueWithoutAiJobInput[]
+  createMany?: Prisma.PropertyMediaCreateManyAiJobInputEnvelope
+  set?: Prisma.PropertyMediaWhereUniqueInput | Prisma.PropertyMediaWhereUniqueInput[]
+  disconnect?: Prisma.PropertyMediaWhereUniqueInput | Prisma.PropertyMediaWhereUniqueInput[]
+  delete?: Prisma.PropertyMediaWhereUniqueInput | Prisma.PropertyMediaWhereUniqueInput[]
+  connect?: Prisma.PropertyMediaWhereUniqueInput | Prisma.PropertyMediaWhereUniqueInput[]
+  update?: Prisma.PropertyMediaUpdateWithWhereUniqueWithoutAiJobInput | Prisma.PropertyMediaUpdateWithWhereUniqueWithoutAiJobInput[]
+  updateMany?: Prisma.PropertyMediaUpdateManyWithWhereWithoutAiJobInput | Prisma.PropertyMediaUpdateManyWithWhereWithoutAiJobInput[]
+  deleteMany?: Prisma.PropertyMediaScalarWhereInput | Prisma.PropertyMediaScalarWhereInput[]
+}
+
 export type PropertyMediaCreateWithoutPropertyInput = {
   id?: string
   url: string
@@ -462,6 +630,11 @@ export type PropertyMediaCreateWithoutPropertyInput = {
   isPrimary?: boolean
   sortOrder?: number
   createdAt?: Date | string
+  altText?: string | null
+  storageKey?: string | null
+  mimeType?: string | null
+  aiJob?: Prisma.AiJobCreateNestedOneWithoutMediaInput
+  ragDocuments?: Prisma.RagDocumentCreateNestedManyWithoutMediaInput
 }
 
 export type PropertyMediaUncheckedCreateWithoutPropertyInput = {
@@ -471,6 +644,11 @@ export type PropertyMediaUncheckedCreateWithoutPropertyInput = {
   isPrimary?: boolean
   sortOrder?: number
   createdAt?: Date | string
+  altText?: string | null
+  storageKey?: string | null
+  mimeType?: string | null
+  aiJobId?: string | null
+  ragDocuments?: Prisma.RagDocumentUncheckedCreateNestedManyWithoutMediaInput
 }
 
 export type PropertyMediaCreateOrConnectWithoutPropertyInput = {
@@ -510,6 +688,136 @@ export type PropertyMediaScalarWhereInput = {
   isPrimary?: Prisma.BoolFilter<"PropertyMedia"> | boolean
   sortOrder?: Prisma.IntFilter<"PropertyMedia"> | number
   createdAt?: Prisma.DateTimeFilter<"PropertyMedia"> | Date | string
+  altText?: Prisma.StringNullableFilter<"PropertyMedia"> | string | null
+  storageKey?: Prisma.StringNullableFilter<"PropertyMedia"> | string | null
+  mimeType?: Prisma.StringNullableFilter<"PropertyMedia"> | string | null
+  aiJobId?: Prisma.StringNullableFilter<"PropertyMedia"> | string | null
+}
+
+export type PropertyMediaCreateWithoutRagDocumentsInput = {
+  id?: string
+  url: string
+  type: $Enums.MediaType
+  isPrimary?: boolean
+  sortOrder?: number
+  createdAt?: Date | string
+  altText?: string | null
+  storageKey?: string | null
+  mimeType?: string | null
+  property: Prisma.PropertyCreateNestedOneWithoutMediaInput
+  aiJob?: Prisma.AiJobCreateNestedOneWithoutMediaInput
+}
+
+export type PropertyMediaUncheckedCreateWithoutRagDocumentsInput = {
+  id?: string
+  propertyId: string
+  url: string
+  type: $Enums.MediaType
+  isPrimary?: boolean
+  sortOrder?: number
+  createdAt?: Date | string
+  altText?: string | null
+  storageKey?: string | null
+  mimeType?: string | null
+  aiJobId?: string | null
+}
+
+export type PropertyMediaCreateOrConnectWithoutRagDocumentsInput = {
+  where: Prisma.PropertyMediaWhereUniqueInput
+  create: Prisma.XOR<Prisma.PropertyMediaCreateWithoutRagDocumentsInput, Prisma.PropertyMediaUncheckedCreateWithoutRagDocumentsInput>
+}
+
+export type PropertyMediaUpsertWithoutRagDocumentsInput = {
+  update: Prisma.XOR<Prisma.PropertyMediaUpdateWithoutRagDocumentsInput, Prisma.PropertyMediaUncheckedUpdateWithoutRagDocumentsInput>
+  create: Prisma.XOR<Prisma.PropertyMediaCreateWithoutRagDocumentsInput, Prisma.PropertyMediaUncheckedCreateWithoutRagDocumentsInput>
+  where?: Prisma.PropertyMediaWhereInput
+}
+
+export type PropertyMediaUpdateToOneWithWhereWithoutRagDocumentsInput = {
+  where?: Prisma.PropertyMediaWhereInput
+  data: Prisma.XOR<Prisma.PropertyMediaUpdateWithoutRagDocumentsInput, Prisma.PropertyMediaUncheckedUpdateWithoutRagDocumentsInput>
+}
+
+export type PropertyMediaUpdateWithoutRagDocumentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  url?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumMediaTypeFieldUpdateOperationsInput | $Enums.MediaType
+  isPrimary?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  altText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  storageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  property?: Prisma.PropertyUpdateOneRequiredWithoutMediaNestedInput
+  aiJob?: Prisma.AiJobUpdateOneWithoutMediaNestedInput
+}
+
+export type PropertyMediaUncheckedUpdateWithoutRagDocumentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyId?: Prisma.StringFieldUpdateOperationsInput | string
+  url?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumMediaTypeFieldUpdateOperationsInput | $Enums.MediaType
+  isPrimary?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  altText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  storageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aiJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type PropertyMediaCreateWithoutAiJobInput = {
+  id?: string
+  url: string
+  type: $Enums.MediaType
+  isPrimary?: boolean
+  sortOrder?: number
+  createdAt?: Date | string
+  altText?: string | null
+  storageKey?: string | null
+  mimeType?: string | null
+  property: Prisma.PropertyCreateNestedOneWithoutMediaInput
+  ragDocuments?: Prisma.RagDocumentCreateNestedManyWithoutMediaInput
+}
+
+export type PropertyMediaUncheckedCreateWithoutAiJobInput = {
+  id?: string
+  propertyId: string
+  url: string
+  type: $Enums.MediaType
+  isPrimary?: boolean
+  sortOrder?: number
+  createdAt?: Date | string
+  altText?: string | null
+  storageKey?: string | null
+  mimeType?: string | null
+  ragDocuments?: Prisma.RagDocumentUncheckedCreateNestedManyWithoutMediaInput
+}
+
+export type PropertyMediaCreateOrConnectWithoutAiJobInput = {
+  where: Prisma.PropertyMediaWhereUniqueInput
+  create: Prisma.XOR<Prisma.PropertyMediaCreateWithoutAiJobInput, Prisma.PropertyMediaUncheckedCreateWithoutAiJobInput>
+}
+
+export type PropertyMediaCreateManyAiJobInputEnvelope = {
+  data: Prisma.PropertyMediaCreateManyAiJobInput | Prisma.PropertyMediaCreateManyAiJobInput[]
+  skipDuplicates?: boolean
+}
+
+export type PropertyMediaUpsertWithWhereUniqueWithoutAiJobInput = {
+  where: Prisma.PropertyMediaWhereUniqueInput
+  update: Prisma.XOR<Prisma.PropertyMediaUpdateWithoutAiJobInput, Prisma.PropertyMediaUncheckedUpdateWithoutAiJobInput>
+  create: Prisma.XOR<Prisma.PropertyMediaCreateWithoutAiJobInput, Prisma.PropertyMediaUncheckedCreateWithoutAiJobInput>
+}
+
+export type PropertyMediaUpdateWithWhereUniqueWithoutAiJobInput = {
+  where: Prisma.PropertyMediaWhereUniqueInput
+  data: Prisma.XOR<Prisma.PropertyMediaUpdateWithoutAiJobInput, Prisma.PropertyMediaUncheckedUpdateWithoutAiJobInput>
+}
+
+export type PropertyMediaUpdateManyWithWhereWithoutAiJobInput = {
+  where: Prisma.PropertyMediaScalarWhereInput
+  data: Prisma.XOR<Prisma.PropertyMediaUpdateManyMutationInput, Prisma.PropertyMediaUncheckedUpdateManyWithoutAiJobInput>
 }
 
 export type PropertyMediaCreateManyPropertyInput = {
@@ -519,6 +827,10 @@ export type PropertyMediaCreateManyPropertyInput = {
   isPrimary?: boolean
   sortOrder?: number
   createdAt?: Date | string
+  altText?: string | null
+  storageKey?: string | null
+  mimeType?: string | null
+  aiJobId?: string | null
 }
 
 export type PropertyMediaUpdateWithoutPropertyInput = {
@@ -528,6 +840,11 @@ export type PropertyMediaUpdateWithoutPropertyInput = {
   isPrimary?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  altText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  storageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aiJob?: Prisma.AiJobUpdateOneWithoutMediaNestedInput
+  ragDocuments?: Prisma.RagDocumentUpdateManyWithoutMediaNestedInput
 }
 
 export type PropertyMediaUncheckedUpdateWithoutPropertyInput = {
@@ -537,6 +854,11 @@ export type PropertyMediaUncheckedUpdateWithoutPropertyInput = {
   isPrimary?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  altText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  storageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aiJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ragDocuments?: Prisma.RagDocumentUncheckedUpdateManyWithoutMediaNestedInput
 }
 
 export type PropertyMediaUncheckedUpdateManyWithoutPropertyInput = {
@@ -546,8 +868,95 @@ export type PropertyMediaUncheckedUpdateManyWithoutPropertyInput = {
   isPrimary?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  altText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  storageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aiJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
+export type PropertyMediaCreateManyAiJobInput = {
+  id?: string
+  propertyId: string
+  url: string
+  type: $Enums.MediaType
+  isPrimary?: boolean
+  sortOrder?: number
+  createdAt?: Date | string
+  altText?: string | null
+  storageKey?: string | null
+  mimeType?: string | null
+}
+
+export type PropertyMediaUpdateWithoutAiJobInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  url?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumMediaTypeFieldUpdateOperationsInput | $Enums.MediaType
+  isPrimary?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  altText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  storageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  property?: Prisma.PropertyUpdateOneRequiredWithoutMediaNestedInput
+  ragDocuments?: Prisma.RagDocumentUpdateManyWithoutMediaNestedInput
+}
+
+export type PropertyMediaUncheckedUpdateWithoutAiJobInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyId?: Prisma.StringFieldUpdateOperationsInput | string
+  url?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumMediaTypeFieldUpdateOperationsInput | $Enums.MediaType
+  isPrimary?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  altText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  storageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ragDocuments?: Prisma.RagDocumentUncheckedUpdateManyWithoutMediaNestedInput
+}
+
+export type PropertyMediaUncheckedUpdateManyWithoutAiJobInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyId?: Prisma.StringFieldUpdateOperationsInput | string
+  url?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumMediaTypeFieldUpdateOperationsInput | $Enums.MediaType
+  isPrimary?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  altText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  storageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+
+/**
+ * Count Type PropertyMediaCountOutputType
+ */
+
+export type PropertyMediaCountOutputType = {
+  ragDocuments: number
+}
+
+export type PropertyMediaCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  ragDocuments?: boolean | PropertyMediaCountOutputTypeCountRagDocumentsArgs
+}
+
+/**
+ * PropertyMediaCountOutputType without action
+ */
+export type PropertyMediaCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PropertyMediaCountOutputType
+   */
+  select?: Prisma.PropertyMediaCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * PropertyMediaCountOutputType without action
+ */
+export type PropertyMediaCountOutputTypeCountRagDocumentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RagDocumentWhereInput
+}
 
 
 export type PropertyMediaSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -558,7 +967,14 @@ export type PropertyMediaSelect<ExtArgs extends runtime.Types.Extensions.Interna
   isPrimary?: boolean
   sortOrder?: boolean
   createdAt?: boolean
+  altText?: boolean
+  storageKey?: boolean
+  mimeType?: boolean
+  aiJobId?: boolean
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
+  aiJob?: boolean | Prisma.PropertyMedia$aiJobArgs<ExtArgs>
+  ragDocuments?: boolean | Prisma.PropertyMedia$ragDocumentsArgs<ExtArgs>
+  _count?: boolean | Prisma.PropertyMediaCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["propertyMedia"]>
 
 export type PropertyMediaSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -569,7 +985,12 @@ export type PropertyMediaSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   isPrimary?: boolean
   sortOrder?: boolean
   createdAt?: boolean
+  altText?: boolean
+  storageKey?: boolean
+  mimeType?: boolean
+  aiJobId?: boolean
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
+  aiJob?: boolean | Prisma.PropertyMedia$aiJobArgs<ExtArgs>
 }, ExtArgs["result"]["propertyMedia"]>
 
 export type PropertyMediaSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -580,7 +1001,12 @@ export type PropertyMediaSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   isPrimary?: boolean
   sortOrder?: boolean
   createdAt?: boolean
+  altText?: boolean
+  storageKey?: boolean
+  mimeType?: boolean
+  aiJobId?: boolean
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
+  aiJob?: boolean | Prisma.PropertyMedia$aiJobArgs<ExtArgs>
 }, ExtArgs["result"]["propertyMedia"]>
 
 export type PropertyMediaSelectScalar = {
@@ -591,23 +1017,34 @@ export type PropertyMediaSelectScalar = {
   isPrimary?: boolean
   sortOrder?: boolean
   createdAt?: boolean
+  altText?: boolean
+  storageKey?: boolean
+  mimeType?: boolean
+  aiJobId?: boolean
 }
 
-export type PropertyMediaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "propertyId" | "url" | "type" | "isPrimary" | "sortOrder" | "createdAt", ExtArgs["result"]["propertyMedia"]>
+export type PropertyMediaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "propertyId" | "url" | "type" | "isPrimary" | "sortOrder" | "createdAt" | "altText" | "storageKey" | "mimeType" | "aiJobId", ExtArgs["result"]["propertyMedia"]>
 export type PropertyMediaInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
+  aiJob?: boolean | Prisma.PropertyMedia$aiJobArgs<ExtArgs>
+  ragDocuments?: boolean | Prisma.PropertyMedia$ragDocumentsArgs<ExtArgs>
+  _count?: boolean | Prisma.PropertyMediaCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type PropertyMediaIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
+  aiJob?: boolean | Prisma.PropertyMedia$aiJobArgs<ExtArgs>
 }
 export type PropertyMediaIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
+  aiJob?: boolean | Prisma.PropertyMedia$aiJobArgs<ExtArgs>
 }
 
 export type $PropertyMediaPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "PropertyMedia"
   objects: {
     property: Prisma.$PropertyPayload<ExtArgs>
+    aiJob: Prisma.$AiJobPayload<ExtArgs> | null
+    ragDocuments: Prisma.$RagDocumentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -617,6 +1054,10 @@ export type $PropertyMediaPayload<ExtArgs extends runtime.Types.Extensions.Inter
     isPrimary: boolean
     sortOrder: number
     createdAt: Date
+    altText: string | null
+    storageKey: string | null
+    mimeType: string | null
+    aiJobId: string | null
   }, ExtArgs["result"]["propertyMedia"]>
   composites: {}
 }
@@ -1012,6 +1453,8 @@ readonly fields: PropertyMediaFieldRefs;
 export interface Prisma__PropertyMediaClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   property<T extends Prisma.PropertyDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PropertyDefaultArgs<ExtArgs>>): Prisma.Prisma__PropertyClient<runtime.Types.Result.GetResult<Prisma.$PropertyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  aiJob<T extends Prisma.PropertyMedia$aiJobArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PropertyMedia$aiJobArgs<ExtArgs>>): Prisma.Prisma__AiJobClient<runtime.Types.Result.GetResult<Prisma.$AiJobPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  ragDocuments<T extends Prisma.PropertyMedia$ragDocumentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PropertyMedia$ragDocumentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RagDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1048,6 +1491,10 @@ export interface PropertyMediaFieldRefs {
   readonly isPrimary: Prisma.FieldRef<"PropertyMedia", 'Boolean'>
   readonly sortOrder: Prisma.FieldRef<"PropertyMedia", 'Int'>
   readonly createdAt: Prisma.FieldRef<"PropertyMedia", 'DateTime'>
+  readonly altText: Prisma.FieldRef<"PropertyMedia", 'String'>
+  readonly storageKey: Prisma.FieldRef<"PropertyMedia", 'String'>
+  readonly mimeType: Prisma.FieldRef<"PropertyMedia", 'String'>
+  readonly aiJobId: Prisma.FieldRef<"PropertyMedia", 'String'>
 }
     
 
@@ -1446,6 +1893,49 @@ export type PropertyMediaDeleteManyArgs<ExtArgs extends runtime.Types.Extensions
    * Limit how many PropertyMedias to delete.
    */
   limit?: number
+}
+
+/**
+ * PropertyMedia.aiJob
+ */
+export type PropertyMedia$aiJobArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AiJob
+   */
+  select?: Prisma.AiJobSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AiJob
+   */
+  omit?: Prisma.AiJobOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AiJobInclude<ExtArgs> | null
+  where?: Prisma.AiJobWhereInput
+}
+
+/**
+ * PropertyMedia.ragDocuments
+ */
+export type PropertyMedia$ragDocumentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the RagDocument
+   */
+  select?: Prisma.RagDocumentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the RagDocument
+   */
+  omit?: Prisma.RagDocumentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RagDocumentInclude<ExtArgs> | null
+  where?: Prisma.RagDocumentWhereInput
+  orderBy?: Prisma.RagDocumentOrderByWithRelationInput | Prisma.RagDocumentOrderByWithRelationInput[]
+  cursor?: Prisma.RagDocumentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.RagDocumentScalarFieldEnum | Prisma.RagDocumentScalarFieldEnum[]
 }
 
 /**
