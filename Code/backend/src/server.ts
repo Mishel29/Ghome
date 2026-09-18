@@ -5,7 +5,7 @@ import { buildSchema, GraphQLError } from "graphql";
 import { prisma } from "./lib/prisma.js";
 import "dotenv/config";
 import { createHash, randomBytes, scryptSync, timingSafeEqual } from "node:crypto";
-import XLSX from "xlsx";
+import { parse } from "csv-parse/sync";
 import { validateHistoricalPrices } from "./import/historicalPrices.js";
 import { PROPERTY_CSV_COLUMNS, validatePropertyCsvHeaders } from "./import/propertyCsvSchema.js";
 import { calculateSubscriberStats } from "./subscriberStats.js";
@@ -685,12 +685,10 @@ function uploadResult(upload: { id: string; filename: string; status: string; by
 }
 
 function validateUploadedPropertyCsv(contentBase64: string) {
-  const workbook = XLSX.read(Buffer.from(contentBase64, "base64"), { type: "buffer" });
-  const sheet = workbook.Sheets[workbook.SheetNames[0] ?? ""];
-  if (!sheet) throw new Error("CSV does not contain a worksheet");
-  const headerRows = XLSX.utils.sheet_to_json<unknown[]>(sheet, { header: 1, blankrows: false });
+  const content = Buffer.from(contentBase64, "base64").toString("utf8");
+  const headerRows = parse(content, { bom: true, relax_column_count: true, skip_empty_lines: true, to_line: 1 }) as unknown[][];
   const schema = validatePropertyCsvHeaders(headerRows[0] ?? []);
-  const rows = XLSX.utils.sheet_to_json<Record<string, unknown>>(sheet, { defval: null });
+  const rows = parse(content, { bom: true, columns: true, relax_column_count: true, skip_empty_lines: true, trim: false }) as Array<Record<string, unknown>>;
   const errors: Array<{ rowNumber: number; field: string; value: string | null; message: string; errorType: string }> = [];
   let validRows = 0;
   for (const [index, row] of rows.entries()) {
@@ -747,13 +745,11 @@ async function propertyImportDuplicates(rows: Array<Record<string, unknown>>, fi
 }
 
 function validateUploadedSubscriberCsv(contentBase64: string) {
-  const workbook = XLSX.read(Buffer.from(contentBase64, "base64"), { type: "buffer" });
-  const sheet = workbook.Sheets[workbook.SheetNames[0] ?? ""];
-  if (!sheet) throw new Error("CSV does not contain a worksheet");
-  const headers = XLSX.utils.sheet_to_json<unknown[]>(sheet, { header: 1, blankrows: false })[0]?.map(String) ?? [];
+  const content = Buffer.from(contentBase64, "base64").toString("utf8");
+  const headers = (parse(content, { bom: true, relax_column_count: true, skip_empty_lines: true, to_line: 1 }) as unknown[][])[0]?.map(String) ?? [];
   const expected = ["Name", "Email", "Phone"];
   const schema = { valid: headers.length === expected.length && expected.every((header, index) => headers[index] === header), expectedColumns: expected, receivedColumns: headers };
-  const rows = XLSX.utils.sheet_to_json<Record<string, unknown>>(sheet, { defval: null });
+  const rows = parse(content, { bom: true, columns: true, relax_column_count: true, skip_empty_lines: true, trim: false }) as Array<Record<string, unknown>>;
   const errors: Array<{ rowNumber: number; field: string; value: string | null; message: string; errorType: string }> = [];
   let validRows = 0;
   for (const [index, row] of rows.entries()) {

@@ -3,7 +3,7 @@ WORKDIR /app
 ARG VITE_GRAPHQL_URL=http://localhost:4000/graphql
 ENV VITE_GRAPHQL_URL=$VITE_GRAPHQL_URL
 COPY package.json package-lock.json ./
-RUN npm install --ignore-scripts
+RUN npm ci
 COPY . .
 RUN npm run build
 
