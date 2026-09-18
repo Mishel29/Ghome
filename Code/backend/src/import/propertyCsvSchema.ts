@@ -17,6 +17,8 @@ export const PROPERTY_CSV_COLUMNS = [
   "Completion Year",
   "Years",
   "Historical Prices",
+  "Image URL",
+  "Video URL",
 ] as const;
 
 export type PropertyCsvSchemaResult = {
@@ -31,16 +33,17 @@ export type PropertyCsvSchemaResult = {
 };
 
 export function validatePropertyCsvHeaders(headers: unknown[]): PropertyCsvSchemaResult {
-  const receivedColumns = headers.map((header) => String(header ?? ""));
+  const rawHeaders = Array.from(headers, (header) => String(header ?? ""));
+  const receivedColumns = rawHeaders.filter((header) => header.trim());
   const expectedColumns = [...PROPERTY_CSV_COLUMNS];
   const requiredColumns = expectedColumns.slice(0, 16);
   const missingColumns = requiredColumns.filter((column) => !receivedColumns.includes(column));
   const unknownColumns = receivedColumns.filter((column) => column.trim() && !expectedColumns.includes(column as typeof PROPERTY_CSV_COLUMNS[number]));
   const duplicateColumns = [...new Set(receivedColumns.filter((column, index) => column !== "" && receivedColumns.indexOf(column) !== index))];
-  const emptyColumns = receivedColumns.flatMap((column, index) => column.trim() ? [] : [index + 1]);
+  const emptyColumns = rawHeaders.flatMap((column, index) => column.trim() ? [] : [index + 1]);
 
   return {
-    valid: missingColumns.length === 0 && unknownColumns.length === 0 && duplicateColumns.length === 0 && emptyColumns.length === 0,
+    valid: missingColumns.length === 0 && unknownColumns.length === 0 && duplicateColumns.length === 0,
     expectedColumns,
     requiredColumns,
     receivedColumns,

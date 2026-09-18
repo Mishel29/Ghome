@@ -102,7 +102,7 @@ function PropertyContent({ p }: { p: Property }) {
         </button>
       </section>
 
-      {p.videoUrl && <section id="home-tour" className="max-w-6xl mx-auto p-6"><h2 className="text-xl mb-4">Home tour</h2><video controls preload="metadata" src={p.videoUrl} className="w-full max-h-[600px]" aria-label="Property home tour" /></section>}
+      {p.videoUrl && <section id="home-tour" className="max-w-6xl mx-auto p-6"><h2 className="text-xl mb-4">Home tour</h2><PropertyVideo url={p.videoUrl}/></section>}
       {/* Quick actions bar */}
       <section className="bg-navy">
         <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 divide-x divide-white/10">
@@ -273,6 +273,12 @@ function PropertyContent({ p }: { p: Property }) {
       )}
     </div>
   );
+}
+
+function PropertyVideo({ url }: { url: string }) {
+  const videoId = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{11})/)?.[1];
+  if (videoId) return <iframe className="w-full aspect-video" src={`https://www.youtube-nocookie.com/embed/${videoId}`} title="Property home tour" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />;
+  return <video controls preload="metadata" src={url} className="w-full max-h-[600px]" aria-label="Property home tour" />;
 }
 
 

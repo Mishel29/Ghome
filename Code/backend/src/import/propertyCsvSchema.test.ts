@@ -16,3 +16,11 @@ test("reports missing, unknown, duplicate, and empty headers", () => {
   assert.deepEqual(result.unknownColumns, ["Unknown"]);
   assert.deepEqual(result.emptyColumns, [4]);
 });
+
+test("allows an empty spacer column before optional media URLs", () => {
+  const headers = [...PROPERTY_CSV_COLUMNS.slice(0, -2), , "Image URL", "Video URL"];
+  const result = validatePropertyCsvHeaders(headers);
+  assert.equal(result.valid, true);
+  assert.deepEqual(result.emptyColumns, [19]);
+  assert.equal(result.receivedColumns.includes("Image URL"), true);
+});

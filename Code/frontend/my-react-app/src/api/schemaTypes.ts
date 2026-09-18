@@ -147,7 +147,6 @@ export interface Query {
   interestGroups: Array<InterestGroup>;
   newsPage: NewsConnection;
   publicNewsPage: NewsConnection;
-  homeTours: Array<HomeTour>;
   subscriberImportHistory: Array<PropertyImport>;
   savedProperties: Array<Property>;
   propertyAssistant: PropertyAssistantResult;
@@ -370,9 +369,6 @@ export interface Mutation {
   saveFollowUp: InterestFollowUp;
   sendFollowUp: InterestFollowUp;
   submitInterest: Interest;
-  generateHomeTour: HomeTour;
-  reviewHomeTour: HomeTour;
-  replacePropertyVideo: PropertyMedia;
   uploadPropertyImage: UploadedImage;
   uploadSubscriberFile: PropertyUpload;
   startSubscriberImport: PropertyImport;
@@ -408,6 +404,8 @@ export interface CsvValidation {
   errors: Array<ImportError>;
   totalErrors: number;
   errorsTruncated: boolean;
+  duplicateProperties: Array<{rowNumber:number;name:string;existingPropertyId:string|null;existingPropertyName:string|null;source:string;resolution:string|null}>;
+  unresolvedDuplicateCount: number;
 }
 
 export interface PropertyUpload {
@@ -602,6 +600,8 @@ export interface CampaignTemplate {
 }
 
 export interface CampaignDay {
+  campaignId: string;
+  campaignSubject: string;
   date: string;
   sent: number;
   clicks: number;
@@ -669,24 +669,6 @@ export interface InterestGroup {
   property: InterestProperty;
   totalCount: number;
   pendingCount: number;
-}
-
-export type AiJobStatus = "PENDING" | "PROCESSING" | "COMPLETED" | "FAILED";
-
-export type ReviewStatus = "PENDING" | "APPROVED" | "REJECTED";
-
-export interface HomeTour {
-  id: string;
-  propertyId: string | null;
-  prompt: string | null;
-  status: AiJobStatus;
-  reviewStatus: ReviewStatus;
-  error: string | null;
-  videoUrl: string | null;
-  providerTaskId: string | null;
-  createdAt: string;
-  reviewedAt: string | null;
-  reviewNotes: string | null;
 }
 
 export interface PropertyAssistantResult {

@@ -17,6 +17,7 @@ export async function saveProperty(input: HouseTypeInput, id?: string) {
   return (await graphqlRequest<{ saveProperty: Property }>(`mutation($id:ID,$input:HouseTypeInput!){saveProperty(id:$id,input:$input){${PROPERTY_FIELDS}}}`, { id, input })).saveProperty;
 }
 export async function publishProperty(id: string) { return (await graphqlRequest<{ publishProperty: Property }>(`mutation($id:ID!){publishProperty(id:$id){${PROPERTY_FIELDS}}}`, { id })).publishProperty; }
+export async function publishProperties(ids: string[]) { return (await graphqlRequest<{ publishProperties: number }>('mutation($ids:[ID!]!){publishProperties(ids:$ids)}', { ids })).publishProperties; }
 export async function deleteProperty(id: string) { await graphqlRequest('mutation($id:ID!){deleteProperty(id:$id)}', { id }); }
 const statuses = { ON_SALE: "on-sale", COMING_SOON: "coming-soon", SOLD_OUT: "sold-out", OFFLINE: "offline", DRAFT: "draft" } as const;
 const stages = { PLANNING: "Planning", UNDER_CONSTRUCTION: "Under Construction", READY_TO_MOVE: "Ready to Move" } as const;

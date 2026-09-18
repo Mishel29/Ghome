@@ -37,9 +37,9 @@ export default function Analytics() {
   useEffect(() => {
     if (!selectorOpen) return;
     let active = true;
-    setLoadingResults(true);
-    setResultError("");
     const timer = setTimeout(() => {
+      setLoadingResults(true);
+      setResultError("");
       propertyPage(false, { ...filter, publicationStatus: "PUBLISHED" }, resultOffset, 24)
         .then((page) => { if (active) { setResults(page.nodes.map(viewProperty)); setResultTotal(page.totalCount); } })
         .catch((error) => { if (active) setResultError(error instanceof Error ? error.message : "Could not load properties"); })
