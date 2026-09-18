@@ -10,6 +10,7 @@ import { validateHistoricalPrices } from "./import/historicalPrices.js";
 import { validatePropertyCsvHeaders } from "./import/propertyCsvSchema.js";
 import { calculateSubscriberStats } from "./subscriberStats.js";
 import sanitizeHtml from "sanitize-html";
+import nodemailer from "nodemailer";
 
 const app = express();
 
@@ -417,6 +418,16 @@ type PropertyConnection {
 
   type HtmlResult { html: String! }
 
+  enum CampaignStatus { DRAFT QUEUED SENDING SENT PARTIALLY_FAILED FAILED }
+  enum DeliveryStatus { PENDING SENDING SENT FAILED SKIPPED }
+  input CampaignFilter { search: String, from: String, to: String, status: CampaignStatus, offset: Int, limit: Int }
+  input CampaignInput { subject: String!, templateHtml: String, bodyText: String, templateId: ID, propertyIds: [ID!], newsArticleId: ID }
+  type CampaignProperty { id: ID!, propertyId: ID, propertyName: String! }
+  type CampaignRecipient { id: ID!, recipientEmail: String!, recipientName: String!, status: DeliveryStatus!, sentAt: String, failedAt: String, errorMessage: String, attemptCount: Int! }
+  type Campaign { id: ID!, subject: String!, templateHtml: String, bodyText: String, renderedHtml: String, status: CampaignStatus!, newsArticleId: ID, templateId: ID, sentAt: String, recipientCount: Int!, recipients: [CampaignRecipient!]!, properties: [CampaignProperty!]!, createdAt: String!, completedAt: String, clickCount: Int, interestCount: Int, saveCount: Int, sentCount: Int, failedCount: Int }
+  type CampaignConnection { nodes: [Campaign!]!, totalCount: Int! }
+  type CampaignPreview { subject: String!, html: String!, consentedRecipientCount: Int! }
+
   input TemplateInput {
     name: String!
     subject: String
@@ -536,6 +547,9 @@ type PropertyConnection {
     logout: Boolean!
     createUser(input: CreateUserInput!): User!
     saveTemplate(id: ID, input: TemplateInput!): CampaignTemplate!
+    saveCampaign(id: ID, input: CampaignInput!): Campaign!
+    sendCampaign(id: ID!): Campaign!
+    deleteCampaign(id: ID!): Boolean!
     saveNews(id: ID, input: NewsInput!): NewsArticle!
     publishNews(id: ID!): NewsArticle!
     deleteNews(id: ID!): Boolean!
@@ -556,6 +570,8 @@ type PropertyConnection {
     recordMortgageCalculation(price: Float!, deposit: Float!, rate: Float!, years: Int!, income: Float!): Boolean!
     submitInterest(input: InterestInput!): Interest!
     addSubscriber(input: SubscriberInput!): Subscriber!
+    deleteSubscriber(id: ID!): Boolean!
+    deleteSubscribers(ids: [ID!]!): Int!
     saveFollowUp(id: ID, input: FollowUpInput!): InterestFollowUp!
     sendFollowUp(id: ID!): InterestFollowUp!
   }
@@ -575,7 +591,7 @@ type Query {
   ): PropertyConnection!
   adminProperty(id: ID!): Property
   adminDashboard: AdminDashboard!
-  campaignStats: [CampaignDay!]!
+  campaignStats(from: String, to: String): [CampaignDay!]!
   propertyImportUpload(id: ID!): PropertyUpload!
   propertyImportStatus(id: ID!, jobOffset: Int, errorOffset: Int): PropertyImport!
   propertyImportHistory: [PropertyImport!]!
@@ -587,11 +603,14 @@ type Query {
   interestGroups(input: InterestFilter): [InterestGroup!]!
   agents: [User!]!
   subscribersPage(input: SubscriberFilter): SubscriberConnection!
-  exportSubscribers(status: SubscriberStatus!): FileDownload!
+  exportSubscribers(status: SubscriberStatus): FileDownload!
   subscriberStats(from: String, to: String): SubscriberStats!
   usersPage(input: AdminListInput): UserConnection!
   templatesPage(input: AdminListInput): TemplateConnection!
   templatePreview(id: ID!): HtmlResult!
+  campaignsPage(input: CampaignFilter): CampaignConnection!
+  campaignDetail(id: ID!, offset: Int, limit: Int): Campaign!
+  campaignPreview(id: ID!): CampaignPreview!
   newsPage(input: AdminListInput): NewsConnection!
   publicNewsPage(input: AdminListInput): NewsConnection!
   newsArticle(id: ID!): NewsArticle
@@ -864,7 +883,7 @@ function serializeTemplate(template: { id: string; name: string; subject: string
   };
 }
 
-function renderTemplatePreview(template: { htmlContent: string; properties: Array<{ property: { name: string; location: string | null; priceMin: unknown; priceMax: unknown; type: string | null; bedroomsMin: number | null; sizeSqm: unknown; media: Array<{ url: string; isPrimary: boolean; type: string }> } }> }) {
+function renderTemplatePreview(template: { htmlContent: string; properties: Array<{ property: { name: string; location: string | null; priceMin: unknown; priceMax: unknown; type: string | null; bedroomsMin: number | null; sizeSqm: unknown; media: Array<{ url: string; isPrimary: boolean; type: string }> } }> }, unsubscribeUrl = "#unsubscribe") {
   const propertyCells = template.properties.map(({ property }) => {
         const image = property.media.find((media) => media.isPrimary && media.type === "IMAGE") ?? property.media.find((media) => media.type === "IMAGE");
         const priceMin = property.priceMin == null ? null : Number(property.priceMin);
@@ -880,10 +899,32 @@ function renderTemplatePreview(template: { htmlContent: string; properties: Arra
     ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tbody>${propertyRows.join("")}</tbody></table>`
     : "<p>No properties selected for this template.</p>";
   const rendered = template.htmlContent.replace(/\{\{name\}\}/g, "Sample recipient").replace(/\{\{properties\}\}/g, propertyCards);
-  return sanitizeHtml(rendered, {
+  const safe = sanitizeHtml(rendered, {
     allowedTags: sanitizeHtml.defaults.allowedTags,
     allowedAttributes: sanitizeHtml.defaults.allowedAttributes,
   });
+  return `${safe}<hr style="border:0;border-top:1px solid #ddd5c5;margin:28px 0 16px" /><p style="color:#667085;font-size:12px;text-align:center;margin:0">You are receiving this email because you opted in to Harborstone Homes communications. <a href="${unsubscribeUrl}" style="color:#1b2a4a">Unsubscribe</a></p>`;
+}
+
+const mailTransport = nodemailer.createTransport({
+  host: process.env.SMTP_HOST,
+  port: Number(process.env.SMTP_PORT ?? 587),
+  secure: Number(process.env.SMTP_PORT ?? 587) === 465,
+  auth: process.env.SMTP_USER && process.env.SMTP_PASSWORD ? { user: process.env.SMTP_USER, pass: process.env.SMTP_PASSWORD } : undefined,
+});
+
+function unsubscribeUrl(token: string) {
+  return `${process.env.PUBLIC_BACKEND_URL ?? "http://localhost:4000"}/unsubscribe?token=${encodeURIComponent(token)}`;
+}
+
+async function ensureUnsubscribeToken(subscriberId: string) {
+  const token = randomBytes(32).toString("hex");
+  await prisma.unsubscribeToken.create({ data: { tokenHash: tokenDigest(token), subscriberId } });
+  return token;
+}
+
+function serializeCampaign(campaign: { id: string; subject: string; templateHtml: string | null; bodyText: string | null; renderedHtml: string | null; status: string; newsArticleId: string | null; templateId: string | null; sentAt: Date | null; recipientCount: number; createdAt: Date; completedAt: Date | null; properties: Array<{ id: string; propertyId: string | null; propertyName: string }>; recipients: Array<{ id: string; recipientEmail: string; recipientName: string; status: string; sentAt: Date | null; failedAt: Date | null; errorMessage: string | null; attemptCount: number }> }) {
+  return { ...campaign, sentAt: campaign.sentAt?.toISOString() ?? null, createdAt: campaign.createdAt.toISOString(), completedAt: campaign.completedAt?.toISOString() ?? null, recipients: campaign.recipients.map((recipient) => ({ ...recipient, sentAt: recipient.sentAt?.toISOString() ?? null, failedAt: recipient.failedAt?.toISOString() ?? null })), clickCount: 0, interestCount: 0, saveCount: 0, sentCount: campaign.recipients.filter((recipient) => recipient.status === "SENT").length, failedCount: campaign.recipients.filter((recipient) => recipient.status === "FAILED").length };
 }
 
 const root = {
@@ -954,6 +995,66 @@ const root = {
       return tx.campaignTemplate.findUniqueOrThrow({ where: { id: saved.id }, include: { properties: true } });
     });
     return serializeTemplate(template);
+  },
+  saveCampaign: async ({ id, input }: { id?: string; input: { subject: string; templateHtml?: string; bodyText?: string; templateId?: string | null; propertyIds?: string[]; newsArticleId?: string | null } }, context: { token?: string }) => {
+    const admin = await requireAdmin(context);
+    const propertyIds = [...new Set(input.propertyIds ?? [])];
+    if (propertyIds.length) {
+      const count = await prisma.property.count({ where: { id: { in: propertyIds }, publicationStatus: "PUBLISHED" } });
+      if (count !== propertyIds.length) throw new Error("Campaigns can only include published properties");
+    }
+    const campaign = await prisma.$transaction(async (tx) => {
+      const saved = id ? await tx.campaign.update({ where: { id }, data: { subject: input.subject.trim(), templateHtml: input.templateHtml ?? null, bodyText: input.bodyText ?? null, templateId: input.templateId ?? null, newsArticleId: input.newsArticleId ?? null } }) : await tx.campaign.create({ data: { subject: input.subject.trim(), templateHtml: input.templateHtml ?? null, bodyText: input.bodyText ?? null, templateId: input.templateId ?? null, newsArticleId: input.newsArticleId ?? null, createdById: admin.id } });
+      await tx.campaignProperty.deleteMany({ where: { campaignId: saved.id } });
+      if (propertyIds.length) {
+        const properties = await tx.property.findMany({ where: { id: { in: propertyIds } }, select: { id: true, name: true } });
+        await tx.campaignProperty.createMany({ data: properties.map((property) => ({ campaignId: saved.id, propertyId: property.id, propertyName: property.name })) });
+      }
+      return tx.campaign.findUniqueOrThrow({ where: { id: saved.id }, include: { properties: true, recipients: true } });
+    });
+    return serializeCampaign(campaign);
+  },
+  sendCampaign: async ({ id }: { id: string }, context: { token?: string }) => {
+    await requireAdmin(context);
+    const campaignData = await prisma.campaign.findUniqueOrThrow({ where: { id }, include: { template: true, properties: { include: { property: { include: { media: true } } } } } });
+    const subscribers = await prisma.subscriber.findMany({ where: { status: "ACTIVE", consentGrantedAt: { not: null } }, select: { id: true, email: true, name: true } });
+    const campaign = await prisma.$transaction(async (tx) => {
+      await tx.campaignRecipient.deleteMany({ where: { campaignId: id, status: "PENDING" } });
+      if (subscribers.length) await tx.campaignRecipient.createMany({ data: subscribers.map((subscriber) => ({ campaignId: id, subscriberId: subscriber.id, recipientEmail: subscriber.email, recipientName: subscriber.name })) });
+      return tx.campaign.update({ where: { id }, data: { status: "QUEUED", startedAt: new Date(), recipientCount: subscribers.length }, include: { properties: true, recipients: true } });
+    });
+    if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASSWORD) throw new Error("Email service is not configured");
+    let sent = 0;
+    for (const recipient of subscribers) {
+      const row = await prisma.campaignRecipient.findUniqueOrThrow({ where: { campaignId_subscriberId: { campaignId: id, subscriberId: recipient.id } } });
+      const attemptNumber = row.attemptCount + 1;
+      await prisma.campaignRecipient.update({ where: { id: row.id }, data: { status: "SENDING", attemptCount: attemptNumber } });
+      const attempt = await prisma.deliveryAttempt.create({ data: { recipientId: row.id, attemptNumber, status: "SENDING" } });
+      try {
+        const rawToken = await ensureUnsubscribeToken(recipient.id);
+        const html = renderTemplatePreview({ htmlContent: campaignData.template?.htmlContent ?? campaignData.templateHtml ?? "", properties: campaignData.properties.filter((link) => link.property).map((link) => ({ property: link.property! })) }, unsubscribeUrl(rawToken));
+        const info = await mailTransport.sendMail({ from: `${process.env.MAIL_FROM_NAME ?? "Harborstone Homes"} <${process.env.MAIL_FROM_EMAIL ?? process.env.SMTP_USER}>`, to: recipient.email, subject: campaignData.subject, html });
+        await prisma.$transaction([
+          prisma.campaignRecipient.update({ where: { id: row.id }, data: { status: "SENT", sentAt: new Date(), providerMessageId: info.messageId } }),
+          prisma.deliveryAttempt.update({ where: { id: attempt.id }, data: { status: "SENT", providerMessageId: info.messageId, finishedAt: new Date() } }),
+        ]);
+        sent++;
+      } catch (error) {
+        const message = error instanceof Error ? error.message : "Email delivery failed";
+        await prisma.$transaction([
+          prisma.campaignRecipient.update({ where: { id: row.id }, data: { status: "FAILED", failedAt: new Date(), errorMessage: message } }),
+          prisma.deliveryAttempt.update({ where: { id: attempt.id }, data: { status: "FAILED", errorMessage: message, finishedAt: new Date() } }),
+        ]);
+      }
+    }
+    const finalStatus = sent === subscribers.length ? "SENT" : sent ? "PARTIALLY_FAILED" : "FAILED";
+    const completed = await prisma.campaign.update({ where: { id }, data: { status: finalStatus, sentAt: sent ? new Date() : null, completedAt: new Date() }, include: { properties: true, recipients: true } });
+    return serializeCampaign(completed);
+  },
+  deleteCampaign: async ({ id }: { id: string }, context: { token?: string }) => {
+    await requireAdmin(context);
+    await prisma.campaign.delete({ where: { id } });
+    return true;
   },
   saveNews: async ({ id, input }: { id?: string; input: { externalUrl?: string; title: string; summary?: string; content?: string; imageUrl?: string; activeFrom?: string | null; activeUntil?: string | null; propertyIds?: string[] } }, context: { token?: string }) => {
     const admin = await requireAdmin(context);
@@ -1173,6 +1274,26 @@ const root = {
     await prisma.consent.create({ data: { subscriberId: subscriber.id, type: "MARKETING", granted: true, version: "marketing-v1", source: "admin-registration" } });
     return { ...subscriber, consentGrantedAt: subscriber.consentGrantedAt?.toISOString() ?? null, subscribedAt: subscriber.subscribedAt?.toISOString() ?? null, unsubscribedAt: null };
   },
+  deleteSubscriber: async ({ id }: { id: string }, context: { token?: string }) => {
+    await requireAdmin(context);
+    await prisma.$transaction(async (tx) => {
+      await tx.consent.deleteMany({ where: { subscriberId: id } });
+      await tx.unsubscribeToken.deleteMany({ where: { subscriberId: id } });
+      await tx.subscriber.delete({ where: { id } });
+    });
+    return true;
+  },
+  deleteSubscribers: async ({ ids }: { ids: string[] }, context: { token?: string }) => {
+    await requireAdmin(context);
+    const uniqueIds = [...new Set(ids)];
+    if (!uniqueIds.length) return 0;
+    await prisma.$transaction(async (tx) => {
+      await tx.consent.deleteMany({ where: { subscriberId: { in: uniqueIds } } });
+      await tx.unsubscribeToken.deleteMany({ where: { subscriberId: { in: uniqueIds } } });
+      await tx.subscriber.deleteMany({ where: { id: { in: uniqueIds } } });
+    });
+    return uniqueIds.length;
+  },
   saveFollowUp: async ({ id, input }: { id?: string; input: { interestId: string; subject: string; body: string; templateId?: string } }, context: { token?: string }) => {
     const admin = await requireAdmin(context);
     const data = { interestId: input.interestId, subject: input.subject.trim(), body: input.body.trim(), templateId: input.templateId ?? null, sentById: admin.id };
@@ -1271,15 +1392,15 @@ const root = {
     ]);
     return { nodes: nodes.map((subscriber) => ({ ...subscriber, consentGrantedAt: subscriber.consentGrantedAt?.toISOString() ?? null, subscribedAt: subscriber.subscribedAt?.toISOString() ?? null, unsubscribedAt: subscriber.unsubscribedAt?.toISOString() ?? null })), totalCount, activeCount, unsubscribedCount };
   },
-  exportSubscribers: async ({ status }: { status: "PENDING" | "ACTIVE" | "UNSUBSCRIBED" }, context: { token?: string }) => {
+  exportSubscribers: async ({ status }: { status?: "PENDING" | "ACTIVE" | "UNSUBSCRIBED" }, context: { token?: string }) => {
     await requireAdmin(context);
-    const subscribers = await prisma.subscriber.findMany({ where: { status }, orderBy: { createdAt: "asc" } });
+    const subscribers = await prisma.subscriber.findMany({ where: status ? { status } : undefined, orderBy: { createdAt: "asc" } });
     const escape = (value: unknown) => `"${String(value ?? "").replace(/"/g, '""')}"`;
     const csv = [
       ["Name", "Email", "Phone", "Status", "Subscribed At", "Unsubscribed At"].join(","),
       ...subscribers.map((subscriber) => [subscriber.name, subscriber.email, subscriber.phone, subscriber.status, subscriber.subscribedAt?.toISOString(), subscriber.unsubscribedAt?.toISOString()].map(escape).join(",")),
     ].join("\r\n");
-    return { filename: `subscribers-${status.toLowerCase()}.csv`, mimeType: "text/csv;charset=utf-8", contentBase64: Buffer.from(csv, "utf8").toString("base64") };
+    return { filename: `subscribers-${status?.toLowerCase() ?? "all"}.csv`, mimeType: "text/csv;charset=utf-8", contentBase64: Buffer.from(csv, "utf8").toString("base64") };
   },
   subscriberStats: async ({ from, to }: { from?: string; to?: string }, context: { token?: string }) => {
     await requireAdmin(context);
@@ -1305,6 +1426,30 @@ const root = {
       prisma.campaignTemplate.count({ where }),
     ]);
     return { nodes: nodes.map(serializeTemplate), totalCount };
+  },
+  campaignsPage: async ({ input }: { input?: { search?: string; from?: string; to?: string; status?: string; offset?: number; limit?: number } }, context: { token?: string }) => {
+    await requireAdmin(context);
+    const where = { ...(input?.search ? { subject: { contains: input.search, mode: "insensitive" as const } } : {}), ...(input?.status ? { status: input.status as never } : {}), ...(input?.from || input?.to ? { createdAt: { ...(input.from ? { gte: new Date(input.from) } : {}), ...(input.to ? { lte: new Date(`${input.to}T23:59:59.999Z`) } : {}) } } : {}) };
+    const [nodes, totalCount] = await Promise.all([
+      prisma.campaign.findMany({ where, orderBy: { createdAt: "desc" }, skip: Math.max(input?.offset ?? 0, 0), take: Math.min(Math.max(input?.limit ?? 20, 1), 100), include: { properties: true, recipients: true } }),
+      prisma.campaign.count({ where }),
+    ]);
+    return { nodes: nodes.map(serializeCampaign), totalCount };
+  },
+  campaignDetail: async ({ id, offset = 0, limit = 50 }: { id: string; offset?: number; limit?: number }, context: { token?: string }) => {
+    await requireAdmin(context);
+    const campaign = await prisma.campaign.findUniqueOrThrow({ where: { id }, include: { properties: true, recipients: { skip: offset, take: limit, orderBy: { createdAt: "asc" } } } });
+    return serializeCampaign(campaign);
+  },
+  campaignPreview: async ({ id }: { id: string }, context: { token?: string }) => {
+    await requireAdmin(context);
+    const [campaign, consentedRecipientCount] = await Promise.all([
+      prisma.campaign.findUniqueOrThrow({ where: { id }, include: { template: true, properties: { include: { property: { include: { media: true } } } } } }),
+      prisma.subscriber.count({ where: { status: "ACTIVE", consentGrantedAt: { not: null } } }),
+    ]);
+    const html = campaign.template?.htmlContent ?? campaign.templateHtml ?? "";
+    const preview = renderTemplatePreview({ htmlContent: html, properties: campaign.properties.map((link) => ({ property: link.property! })) });
+    return { subject: campaign.subject, html: preview, consentedRecipientCount };
   },
   templatePreview: async ({ id }: { id: string }, context: { token?: string }) => {
     await requireAdmin(context);
@@ -1438,9 +1583,34 @@ const root = {
     ]);
     return { properties, publishedProperties, subscribers, unsubscribers, campaigns, sentCampaigns, interests, pendingInterests, news, users };
   },
-  campaignStats: async (_args: unknown, context: { token?: string }) => {
+  campaignStats: async ({ from, to }: { from?: string; to?: string }, context: { token?: string }) => {
     await requireAdmin(context);
-    return [];
+    const start = from ? new Date(`${from}T00:00:00.000Z`) : null;
+    const end = to ? new Date(`${to}T23:59:59.999Z`) : null;
+    const events = await prisma.campaignEvent.findMany({
+      where: {
+        ...(start || end ? { occurredAt: { ...(start ? { gte: start } : {}), ...(end ? { lte: end } : {}) } } : {}),
+        type: { in: ["SENT", "CLICKED", "INTEREST", "UNSUBSCRIBED"] },
+      },
+      select: { type: true, occurredAt: true },
+      orderBy: { occurredAt: "asc" },
+    });
+    const days = new Map<string, { sent: number; clicks: number; interests: number; unsubscribes: number }>();
+    for (const event of events) {
+      const date = event.occurredAt.toISOString().slice(0, 10);
+      const day = days.get(date) ?? { sent: 0, clicks: 0, interests: 0, unsubscribes: 0 };
+      if (event.type === "SENT") day.sent += 1;
+      if (event.type === "CLICKED") day.clicks += 1;
+      if (event.type === "INTEREST") day.interests += 1;
+      if (event.type === "UNSUBSCRIBED") day.unsubscribes += 1;
+      days.set(date, day);
+    }
+    return [...days.entries()].map(([date, day]) => ({
+      date,
+      ...day,
+      clickRate: day.sent ? day.clicks / day.sent : 0,
+      interestRate: day.sent ? day.interests / day.sent : 0,
+    }));
   },
   propertyImportUpload: async ({ id }: { id: string }, context: { token?: string }) => {
     await requireAdmin(context);
@@ -1738,4 +1908,16 @@ const PORT = 4000;
 app.listen(PORT, () => {
   console.log(`Backend running on http://localhost:${PORT}`);
   console.log(`GraphQL endpoint: http://localhost:${PORT}/graphql`);
+});
+
+app.get("/unsubscribe", async (req, res) => {
+  const token = typeof req.query.token === "string" ? req.query.token : "";
+  if (!token) return res.status(400).send("Invalid unsubscribe link.");
+  const record = await prisma.unsubscribeToken.findUnique({ where: { tokenHash: tokenDigest(token) } });
+  if (!record) return res.status(404).send("This unsubscribe link is invalid or has expired.");
+  await prisma.$transaction([
+    prisma.subscriber.update({ where: { id: record.subscriberId }, data: { status: "UNSUBSCRIBED", unsubscribedAt: new Date() } }),
+    prisma.unsubscribeToken.delete({ where: { id: record.id } }),
+  ]);
+  res.type("html").send("<h1>You have been unsubscribed</h1><p>You will no longer receive Harborstone Homes marketing emails.</p>");
 });
