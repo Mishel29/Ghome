@@ -1,0 +1,319 @@
+# Harborstone Homes (Ghome)
+
+A full-stack property marketing and administration platform built as a coding challenge.
+
+The application provides a public-facing property website alongside an administration platform for managing properties, content, subscribers and marketing activity.
+
+## Project Overview
+
+Harborstone Homes is designed around a fictional residential property development platform.
+
+The project includes:
+
+- Public property browsing
+- Property search and filtering
+- Property comparison
+- Property details
+- Mortgage calculator
+- Saved properties
+- Expressions of interest
+- Subscriber consent management
+- Property and engagement analytics
+- News/content management
+- Admin authentication
+- Admin property management
+- Subscriber management
+- Email campaign management
+- Campaign delivery tracking
+- Property and historical-data imports
+- GraphQL API
+- PostgreSQL database
+- Background email processing
+
+<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/978b6208-c051-4368-b425-b4882d3a9035" />
+
+### Public user
+
+A public user can:
+
+- Browse available properties.
+- Search and filter properties.
+- Open detailed property pages.
+- Compare properties.
+- Calculate an estimated mortgage.
+- Save properties.
+- View saved properties.
+- Submit an expression of interest.
+- Provide data consent when submitting interest.
+- Read property-related news.
+- Use a property chatbot.
+- Log in to access personalised functionality.
+
+### Administrator
+
+An administrator can:
+
+- Sign in to the admin area.
+- View dashboard summaries.
+- Create, edit, publish, archive, or delete properties.
+- Upload property data from CSV or Excel files.
+- Manage photos, videos, floor plans, and features.
+- Review AI home-tour generation jobs. (seeded video as of now )
+- Manage subscribers.
+- Import subscribers.
+- Create and preview email campaigns.
+- Send campaigns to consented subscribers.
+- Review campaign delivery status.
+- Manage expressions of interest.
+- Send follow-up communication.
+- Create and publish news posts.
+- Link news posts to properties.
+- Review analytics and campaign statistics.
+
+
+```mermaid
+flowchart TD
+    Browser[User browser]
+    Frontend[React TypeScript frontend\nVite + Tailwind + React Router]
+    GraphQL[Express GraphQL backend]
+    Prisma[Prisma client]
+    PostgreSQL[(PostgreSQL)]
+    EmailAPI[Independent email service API]
+    EmailWorker[Independent background worker]
+    SMTP[SMTP provider - Brevo]
+
+    Browser --> Frontend
+    Frontend --> GraphQL
+    GraphQL --> Prisma
+    Prisma --> PostgreSQL
+    EmailAPI --> PostgreSQL
+    EmailWorker --> PostgreSQL
+    EmailWorker --> SMTP
+```
+
+# Running the Project Locally
+
+## Prerequisites
+
+Before running the project locally, make sure you have the following installed:
+
+- Node.js
+- npm
+- PostgreSQL
+- Git
+- Docker (optional)
+
+---
+
+ # Running Locally
+ 
+## Prerequisites
+ 
+- Node.js
+- npm
+- PostgreSQL
+## 1. Backend
+ 
+```bash
+cd backend
+npm install
+```
+ 
+Create `backend/.env`:
+ 
+```env
+DATABASE_URL="postgresql://USERNAME:PASSWORD@localhost:5432/DATABASE_NAME"
+```
+ 
+Then run:
+ 
+```bash
+npx prisma generate
+npx prisma migrate deploy
+npm run admin:bootstrap
+npm run build
+npm start
+```
+ 
+Backend:
+ 
+```text
+http://localhost:4000
+```
+ 
+GraphQL:
+ 
+```text
+http://localhost:4000/graphql
+```
+ 
+## 2. Frontend
+ 
+Open a new terminal:
+ 
+```bash
+cd frontend/my-react-app
+npm install
+```
+ 
+Create `frontend/my-react-app/.env`:
+ 
+```env
+VITE_GRAPHQL_URL="http://localhost:4000/graphql"
+```
+ 
+Start the frontend:
+ 
+```bash
+npm run dev
+```
+ 
+Open the URL shown by Vite.
+ 
+## 3. Email Service
+ 
+If testing email functionality:
+ 
+```bash
+cd email
+npm install
+```
+ 
+Configure the required SMTP variables in `.env` and start the email service using its configured npm command.
+ 
+## 4. Tests
+ 
+### Backend
+ 
+```bash
+cd backend
+npm test
+```
+ 
+### Frontend
+ 
+```bash
+cd frontend/my-react-app
+npm run lint
+npx tsc -b
+npm run build
+npx playwright test
+```
+ 
+## 5. Docker
+ 
+### Backend
+ 
+```bash
+cd backend
+docker build -t harborstone-backend .
+docker run --name harborstone-backend-test -p 4000:4000 harborstone-backend
+```
+ 
+The backend container runs:
+ 
+```text
+Prisma migrations → Admin bootstrap → Backend server
+```
+ 
+The container requires a PostgreSQL database accessible through `DATABASE_URL`.
+ 
+> Do not commit `.env` files or database/SMTP credentials to the repository.
+ 
+
+
+## Key Technology Decisions
+
+### React + Vite
+
+I used React with Vite for the frontend instead of moving the project to Next.js.
+
+#### Why?
+
+The project was already set up using React and Vite, so I decided to continue with the existing setup rather than spend time moving the application to another framework.
+
+This allowed me to focus on building the actual features required for the project.
+
+#### Trade-off
+
+Using Vite means I don't get some of the features that Next.js provides, such as built-in server-side rendering and its built-in routing and data-fetching features.
+
+For the current project, a React and Vite setup was enough for what I needed.
+
+---
+
+### GraphQL
+
+I used GraphQL for communication between the frontend and backend instead of a traditional REST API.
+
+#### Why?
+
+The application has a lot of property information and different filters.
+
+With GraphQL, the frontend can request exactly the data it needs instead of receiving a fixed response containing everything.
+
+This also makes it easier to add or change the data returned by the API as the application grows.
+
+#### Trade-off
+
+GraphQL requires more setup than a simple REST API because the application needs a schema and resolvers.
+
+For this project, I felt the flexibility was useful enough to justify the additional setup.
+
+---
+
+### PostgreSQL + Prisma
+
+I used PostgreSQL as the database and Prisma to communicate with the database from the backend.
+
+#### Why?
+
+The application contains several types of related data, including:
+
+- Properties
+- Property history
+- Users
+- Subscribers
+- Campaigns
+- Campaign recipients
+- Content
+
+PostgreSQL is a good fit for this type of structured and related data.
+
+Prisma also makes it easier to work with the database from TypeScript while providing type safety.
+
+#### Trade-off
+
+Using PostgreSQL and Prisma requires more setup than using a simple database such as SQLite.
+
+It also means managing database configuration and migrations.
+
+However, the extra setup makes sense for this project because the application has multiple related pieces of data.
+
+
+# AI Usage
+
+AI tools were used as a supporting development tool during the project, mainly for troubleshooting, discussing technical approaches and improving documentation.
+
+The core product thinking and planning were done by me. I spent significant time identifying the application's use cases, deciding what functionality was needed, designing the database schema and relationships, and planning how the different parts of the system should work together.
+
+I then used the use cases I had defined to create the frontend designs in Figma. The Figma designs were used as the basis for implementing the React frontend.
+
+AI was mainly used when I needed a second perspective or help investigating a specific technical problem. Examples include:
+
+- Debugging TypeScript and PostgreSQL issues
+- Discussing different implementation approaches
+- Getting help with smaller pieces of code when needed
+- Reviewing parts of the GraphQL and database implementation
+- Helping structure and improve the documentation
+
+
+Testing and verification were still carried out against the actual application and database. AI feedback was used as an additional way to question and validate my implementation rather than as a replacement for my own testing.
+
+I did not rely on AI to design the entire application or generate the project from scratch. The use cases, database schema, frontend requirements, application structure and overall technical decisions were developed by me.
+
+AI suggestions were treated as suggestions and were tested against the actual application before being used.
+
+The final decisions around the product requirements, use cases, database design, business logic and implemented features were made by me.
+
+
