@@ -1,7 +1,7 @@
 FROM node:22.17.1-alpine AS build
 WORKDIR /app
 COPY package.json package-lock.json ./
-RUN npm install --ignore-scripts
+RUN npm ci
 COPY tsconfig.json prisma7.config.ts ./
 COPY prisma ./prisma
 COPY src ./src

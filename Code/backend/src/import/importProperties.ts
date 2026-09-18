@@ -1,5 +1,5 @@
 import "dotenv/config";
-import XLSX from "xlsx";
+import { parse } from "csv-parse/sync";
 import { prisma } from "../lib/prisma.js";
 import fs from "node:fs";
 import { historicalValidationMessage, validateHistoricalPrices } from "./historicalPrices.js";
@@ -103,28 +103,14 @@ function calculateGrowth(
 async function main() {
   console.log("Reading dataset...");
 
-  const workbook = XLSX.readFile(FILE_PATH);
-
-  const firstSheetName = workbook.SheetNames[0];
-
-  if (!firstSheetName) {
-    throw new Error("No worksheet found in Excel file.");
-  }
-
-  const worksheet = workbook.Sheets[firstSheetName];
-
-  const headerRows = XLSX.utils.sheet_to_json<unknown[]>(worksheet, {
-    header: 1,
-    blankrows: false,
-  });
+  const csv = fs.readFileSync(FILE_PATH, "utf8");
+  const headerRows = parse(csv, { bom: true, relax_column_count: true, skip_empty_lines: true, to_line: 1 }) as unknown[][];
   const headerResult = validatePropertyCsvHeaders(headerRows[0] ?? []);
   if (!headerResult.valid) {
     throw new Error(`Invalid property CSV headers: ${JSON.stringify(headerResult)}`);
   }
 
-  const allRows = XLSX.utils.sheet_to_json<DatasetRow>(worksheet, {
-  defval: null,
-  });
+  const allRows = parse(csv, { bom: true, columns: true, relax_column_count: true, skip_empty_lines: true }) as DatasetRow[];
 
   const rows = allRows.slice(0, IMPORT_LIMIT);
 
