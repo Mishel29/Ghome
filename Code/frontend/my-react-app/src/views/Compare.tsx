@@ -107,6 +107,12 @@ export default function Compare() {
                       >
                         View Details
                       </button>
+                      <button
+                        onClick={() => navigate(`/mortgage?price=${encodeURIComponent(p.price.min)}`)}
+                        className="ml-2 border border-navy text-navy text-xs font-semibold px-4 py-2 hover:bg-navy hover:text-white transition-colors"
+                      >
+                        Mortgage Calculator
+                      </button>
                     </td>
                   ))}
                 </tr>

@@ -520,6 +520,7 @@ type PropertyConnection {
     deleteProperty(id: ID!): Boolean!
     setPropertySaved(propertyId: ID!, saved: Boolean!, campaignToken: String): Boolean!
     recordPropertyView(propertyId: ID!): Boolean!
+    recordMortgageCalculation(price: Float!, deposit: Float!, rate: Float!, years: Int!, income: Float!): Boolean!
     submitInterest(input: InterestInput!): Interest!
     addSubscriber(input: SubscriberInput!): Subscriber!
     saveFollowUp(id: ID, input: FollowUpInput!): InterestFollowUp!
@@ -580,16 +581,20 @@ function passwordHash(password: string) {
   return `scrypt:${salt}:${scryptSync(password, salt, 64).toString("hex")}`;
 }
 
-async function requireAdmin(context: { token?: string }) {
+async function requireUser(context: { token?: string }) {
   if (!context.token) throw new Error("Authentication required");
   const session = await prisma.session.findUnique({
     where: { tokenHash: tokenDigest(context.token) },
     include: { user: true },
   });
-  if (!session || session.expiresAt <= new Date() || session.user.role !== "ADMIN") {
-    throw new Error("Administrator authentication required");
-  }
+  if (!session || session.expiresAt <= new Date()) throw new Error("Authentication required");
   return session.user;
+}
+
+async function requireAdmin(context: { token?: string }) {
+  const user = await requireUser(context);
+  if (user.role !== "ADMIN") throw new Error("Administrator authentication required");
+  return user;
 }
 
 function uploadResult(upload: { id: string; filename: string; status: string; byteSize: number; expiresAt: Date; validation: unknown }) {
@@ -1021,22 +1026,29 @@ const root = {
     return true;
   },
   me: async (_args: unknown, context: { token?: string }) => {
-    const user = await requireAdmin(context);
+    const user = await requireUser(context);
     return { id: user.id, name: user.name, email: user.email, role: user.role, createdAt: user.createdAt.toISOString() };
   },
   savedProperties: async (_args: unknown, context: { token?: string }) => {
-    const user = await requireAdmin(context);
+    const user = await requireUser(context);
     const records = await prisma.savedProperty.findMany({ where: { userId: user.id }, include: { property: { include: { agent: true, media: true, features: { include: { feature: true } }, valueHistory: { orderBy: { year: "asc" } } } } }, orderBy: { createdAt: "desc" } });
     return records.map((record) => serializeProperty(record.property));
   },
   setPropertySaved: async ({ propertyId, saved }: { propertyId: string; saved: boolean }, context: { token?: string }) => {
-    const user = await requireAdmin(context);
+    const user = await requireUser(context);
     if (saved) await prisma.savedProperty.upsert({ where: { userId_propertyId: { userId: user.id, propertyId } }, create: { userId: user.id, propertyId }, update: {} });
     else await prisma.savedProperty.deleteMany({ where: { userId: user.id, propertyId } });
     return saved;
   },
   recordPropertyView: async ({ propertyId }: { propertyId: string }) => {
     await prisma.analyticsEvent.create({ data: { propertyId, eventType: "PROPERTY_VIEW" } });
+    return true;
+  },
+  recordMortgageCalculation: async ({ price, deposit, rate, years, income }: { price: number; deposit: number; rate: number; years: number; income: number }) => {
+    if (![price, deposit, rate, years, income].every(Number.isFinite) || price <= 0 || deposit < 0 || deposit > price || rate < 0 || rate > 100 || years <= 0 || years > 50 || income <= 0) {
+      throw new Error("Mortgage calculation inputs are invalid");
+    }
+    await prisma.analyticsEvent.create({ data: { eventType: "MORTGAGE_CALCULATED", metadata: { price, deposit, rate, years, income } } });
     return true;
   },
   submitInterest: async ({ input }: { input: { propertyId: string; name: string; email: string; phone?: string; message: string; consent: boolean } }, context: { token?: string }) => {

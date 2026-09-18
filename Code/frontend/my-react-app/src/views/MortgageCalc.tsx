@@ -1,4 +1,5 @@
 import { useSearchParams } from "react-router-dom";
+import { graphqlRequest } from "../api/graphql";
 import { mortgage } from "../lib/calculations";
 import { useState, useMemo } from "react";
 import { fmt } from "../data";
@@ -34,14 +35,32 @@ export default function MortgageCalc() {
   const [years, setYears] = useState(30);
   const [income1, setIncome1] = useState(75000);
   const [income2, setIncome2] = useState(0);
+  const [affordabilityChecked, setAffordabilityChecked] = useState(false);
+  const [affordabilityError, setAffordabilityError] = useState("");
 
   const calc = useMemo(() => {
     const result = mortgage(price, Math.min(deposit, price), rate, years);
     const {principal} = result;
-    const maxLoan = (income1 + income2) * 3.5;
-    const affordable = maxLoan >= principal;
-    return { ...result, maxLoan, affordable };
+    const totalIncome = income1 + income2;
+    const maxLoan = totalIncome * 3.5;
+    const affordable = totalIncome > 0 && maxLoan >= principal;
+    return { ...result, totalIncome, maxLoan, affordable };
   }, [price, deposit, rate, years, income1, income2]);
+
+  const checkAffordability = async () => {
+    setAffordabilityError("");
+    if (!Number.isFinite(calc.totalIncome) || calc.totalIncome <= 0) {
+      setAffordabilityChecked(false);
+      setAffordabilityError("Enter at least one annual gross income to check affordability.");
+      return;
+    }
+    try {
+      await graphqlRequest("mutation($price:Float!,$deposit:Float!,$rate:Float!,$years:Int!,$income:Float!){recordMortgageCalculation(price:$price,deposit:$deposit,rate:$rate,years:$years,income:$income)}", { price, deposit: Math.min(deposit, price), rate, years, income: calc.totalIncome });
+      setAffordabilityChecked(true);
+    } catch {
+      setAffordabilityChecked(true);
+    }
+  };
 
 
   return (
@@ -83,6 +102,8 @@ export default function MortgageCalc() {
                   <input
                     type="number"
                     className="w-full border border-[#ddd5c5] bg-cream px-3 py-2.5 text-sm text-navy"
+                    min={0}
+                    step={1000}
                     value={income1}
                     onChange={(e) => setIncome1(Math.max(0, Number(e.target.value)))}
                   />
@@ -92,11 +113,17 @@ export default function MortgageCalc() {
                   <input
                     type="number"
                     className="w-full border border-[#ddd5c5] bg-cream px-3 py-2.5 text-sm text-navy"
+                    min={0}
+                    step={1000}
                     value={income2}
                     onChange={(e) => setIncome2(Math.max(0, Number(e.target.value)))}
                   />
                 </div>
               </div>
+              <button type="button" className="mt-4 bg-navy text-white px-4 py-2 text-sm font-semibold" onClick={() => void checkAffordability()}>
+                Check affordability
+              </button>
+              {affordabilityError && <p className="text-xs text-red-700 mt-2">{affordabilityError}</p>}
             </div>
           </div>
 
@@ -127,13 +154,13 @@ export default function MortgageCalc() {
             {/* Affordability result */}
             <div className={`p-5 border-l-4 ${calc.affordable ? "border-sage bg-sage/10" : "border-amber bg-amber/10"}`}>
               <div className="font-semibold text-sm text-navy mb-1">
-                {calc.affordable ? "✓ Within illustrative income estimate" : "⚠ Above illustrative income estimate"}
+                {!affordabilityChecked ? "Check your affordability" : calc.affordable ? "✓ Within illustrative income estimate" : "⚠ Above illustrative income estimate"}
               </div>
               <div className="text-xs text-stone">
-                Based on 3.5× income, max loan: <strong>{fmt(Math.round(calc.maxLoan))}</strong>.<br/>
-                {calc.affordable
+                Based on 3.5× gross annual income, max loan: <strong>{fmt(Math.round(calc.maxLoan))}</strong>.<br/>
+                {affordabilityChecked && (calc.affordable
                   ? "This is an illustrative comparison, not a lending decision."
-                  : "Consider a larger deposit or lower purchase price."}
+                  : "Consider a larger deposit or lower purchase price.")}
               </div>
             </div>
 
