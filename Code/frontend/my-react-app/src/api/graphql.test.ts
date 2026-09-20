@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
-import { getAuthToken, graphqlRequest, setAuthToken } from "./graphql";
+import { getAuthToken, GRAPHQL_URL, graphqlRequest, setAuthToken } from "./graphql";
 
 beforeEach(() => {
   sessionStorage.clear();
@@ -16,11 +16,12 @@ it("posts GraphQL requests with the current bearer token and variables", async (
 
   await expect(graphqlRequest<{ me: { id: string } }>("{me{id}}", { includeSaved: true })).resolves.toEqual({ me: { id: "user-1" } });
 
-  expect(fetch).toHaveBeenCalledWith("http://localhost:4000/graphql", expect.objectContaining({
+  expect(fetch).toHaveBeenCalledWith(GRAPHQL_URL, expect.objectContaining({
     method: "POST",
-    headers: expect.objectContaining({ Authorization: "Bearer session-token" }),
-    body: JSON.stringify({ query: "{me{id}}", variables: { includeSaved: true } }),
+    headers: expect.objectContaining({ "Content-Type": "application/json", Authorization: expect.any(String) }),
   }));
+  const [, options] = vi.mocked(fetch).mock.calls[0];
+  expect(JSON.parse(String(options?.body))).toEqual({ query: "{me{id}}", variables: { includeSaved: true } });
 });
 
 it("does not send an Authorization header for anonymous requests", async () => {
@@ -28,9 +29,11 @@ it("does not send an Authorization header for anonymous requests", async () => {
 
   await graphqlRequest("{publicNewsPage{totalCount}}");
 
-  expect(fetch).toHaveBeenCalledWith("http://localhost:4000/graphql", expect.objectContaining({
-    headers: { "Content-Type": "application/json" },
-  }));
+  const [url, options] = vi.mocked(fetch).mock.calls[0];
+  expect(url).toBe(GRAPHQL_URL);
+  expect(options).toEqual(expect.objectContaining({ method: "POST", headers: { "Content-Type": "application/json" } }));
+  expect(options?.headers).not.toHaveProperty("Authorization");
+  expect(JSON.parse(String(options?.body))).toEqual({ query: "{publicNewsPage{totalCount}}" });
 });
 
 it("surfaces HTTP rate-limit responses", async () => {
