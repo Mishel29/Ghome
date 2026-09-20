@@ -1,88 +1,107 @@
 # Test Coverage Report
 
-## Executive Summary
-
-Measured on 2026-09-20. Vitest V8 coverage includes production source files; business modules are not excluded to inflate results.
+Measured on 2026-09-20 after clean `npm ci` installations. Vitest V8 coverage includes production source files; source is not excluded to inflate the totals.
 
 | Suite | Result | Statements | Branches | Functions | Lines |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| Backend Vitest | 35/35 passed | 21.60% | 16.56% | 21.07% | 21.90% |
-| Frontend Vitest | 20/20 passed | 17.54% | 13.75% | 13.57% | 21.84% |
+| Backend Vitest | 46/46 passed | 24.91% | 19.01% | 25.49% | 25.35% |
+| Frontend Vitest | 21/21 passed | 17.84% | 14.27% | 13.68% | 22.28% |
 | Playwright mocked | 12/12 passed | N/A | N/A | N/A | N/A |
 | Playwright real stack | 1/1 passed | N/A | N/A | N/A | N/A |
 | Backend GraphQL integration | 1/1 passed | N/A | N/A | N/A | N/A |
 
-The real-stack browser journey starts a local Docker project named `harborstone_e2e`, migrates and seeds only the `harborstone_test` database, runs Vite against `127.0.0.1`, and removes containers, network, and volumes in teardown. It rejects external `E2E_BASE_URL` and `E2E_GRAPHQL_URL` values. The seed requires both `E2E_TEST_MODE=true` and the Docker `postgres` host with a database ending in `_test`.
+The real-stack browser journey creates the isolated `harborstone_e2e` Docker project, migrates and seeds only `harborstone_test`, runs Vite on `127.0.0.1`, and removes its containers, network, and volumes in teardown. It rejects external E2E URLs.
 
-## Backend Coverage by Area
+## Campaign Send Tests
 
-| Area | Classification | Evidence |
+Classification: **STRONG**. The mocked Nodemailer tests cover outbound behavior without a network transport, and the disposable PostgreSQL integration test verifies token/event persistence through the actual backend.
+
+| Behavior | Status | Evidence |
 | --- | --- | --- |
-| Auth and authorization | ADEQUATE | Real integration verifies login, ownership, normal-user admin denial, and admin access. |
-| Properties and publication | ADEQUATE | Real integration and real Playwright verify public published visibility, hidden drafts, and admin draft visibility. |
-| Saved properties | ADEQUATE | Real integration covers ownership; real Playwright covers anonymous campaign saves and authenticated saved-list state. |
-| Interests and subscriber consent | ADEQUATE | Integration and real browser submission cover consent, normalized phone payloads, and campaign attribution. |
-| Campaign attribution and statistics | ADEQUATE | Schema test, integration test, and real browser flow cover two deduplicated saves, one interest, daily totals, and non-campaign activity. |
-| Unsubscribe | ADEQUATE | Integration and real browser test validate test-token consent revocation. |
-| Email transport | ADEQUATE | Mocked Nodemailer tests cover SMTP environment configuration, port 2525, unsubscribe links, success, persistent failure, and campaign continuation. |
-| Health, readiness, proxy, rate limiting | ADEQUATE | Unit tests exercise `/healthz`, success/failure `/readyz`, CORS, trusted proxy, and GraphQL limiter mounting; Docker verifies the live service. |
-| Large GraphQL resolver module | WEAK | Critical paths have integration evidence, but much of the 2,000+ line resolver remains outside focused unit tests. |
+| Successful SMTP send | PASS | Mocked `sendMail` verifies recipient, configured `From`, subject, unsubscribe link, tracking pixel, provider acceptance, recipient `SENT` state, and `SENT` event. |
+| Failed SMTP send | PASS | Thrown SMTP errors, explicit recipient rejection, and missing recipient acceptance persist `FAILED` recipient and delivery-attempt states without crashing the campaign. |
+| Per-recipient continuation | PASS | One failed recipient does not prevent a later recipient result from being persisted. |
+| Consent filtering | PASS | Delivery selects only `ACTIVE` subscribers with a non-null marketing consent timestamp. |
+| Invalid-address exclusion | PASS | An active, consented subscriber with an invalid email address is excluded; an empty eligible audience marks the campaign `FAILED` without attempting SMTP. |
+| Interest follow-up acceptance | PASS | Follow-ups use the shared transport and configured `From`, then persist `SENT` only when the intended recipient is accepted. |
+| Unsubscribe exclusion | PASS | The integration fixture includes an unsubscribed subscriber; campaign preview/send eligibility excludes it. |
+| Campaign unsubscribe link | PASS | Mocked campaign HTML includes a tokenized `/unsubscribe` URL. |
+| Interest follow-up unsubscribe link | PASS | Mocked follow-up HTML includes its tokenized `/unsubscribe` URL. |
+| Tracking pixel | PASS | Mocked campaign HTML includes `/campaign-open/<secure-token>`. |
+| OPEN event | PASS | Unit and integration tests verify one `OPENED` event for a valid token. |
+| Click, save, and interest events | PASS | Disposable integration and real-stack browser tests preserve existing attribution behavior. |
+| Campaign statistics | PASS | Daily and campaign-level open totals plus existing click/save/interest totals are verified. |
 
-## Frontend Coverage by Area
+## Campaign Open Tracking
 
-| Area | Classification | Evidence |
-| --- | --- | --- |
-| API client | ADEQUATE | Unit tests verify endpoint selection, authenticated and anonymous headers, GraphQL errors/session expiry, and HTTP 429 handling. |
-| App context and saved properties | ADEQUATE | Unit tests cover anonymous and authenticated attribution-bearing saves and local persistence; real Playwright covers saved ownership. |
-| Property cards | ADEQUATE | Component test verifies save/compare event isolation, details, price rendering, and navigation. |
-| Subscriber admin | ADEQUATE | Component test covers list data, consent, digits-only input, country prefix composition, and mutation payload. |
-| Campaign admin | ADEQUATE | Component tests cover saves/interests, daily zero values, GraphQL errors, campaign logs, and recipient failure display. |
-| Other public and operational views | WEAK | Mocked journeys cover main public workflows, but many low-risk content, import, AI, and settings screens still lack direct component tests. |
+- A campaign email appends a 1x1 invisible GIF URL using the existing random recipient tracking token.
+- `GET /campaign-open/:token` returns the same transparent `image/gif` for valid and invalid tokens and never exposes recipient information.
+- Valid tokens use `CampaignEvent.upsert` with `open:<recipientId>` as the unique key, so repeated image loads count as one open per campaign recipient.
+- Open counts are approximate: clients can block, proxy, cache, or prefetch remote images.
 
-## Playwright Journey Coverage
+## GitHub Actions CI
 
-| Journey | Status |
+Workflow: `.github/workflows/ci.yml`
+
+Triggers:
+
+- `push`
+- `pull_request`
+
+Checks:
+
+- Backend: `npm ci`, Prisma validation and generation, build, and unit tests.
+- Backend integration: GitHub Actions PostgreSQL service using only `harborstone_test`, migrations, and the guarded integration test.
+- Frontend: `npm ci`, typecheck, lint, unit tests, and production build.
+- Playwright: mocked journey suite with the bundled Chromium installed in CI.
+
+No production database URL, SMTP credential, administrator password, or API key is used by the workflow.
+
+## Production Verification
+
+| Check | Status |
 | --- | --- |
-| Public discovery, filters, detail, comparison, history, interest, saved state, mortgage, news, imports, and responsive search | PASS (12 mocked journeys) |
-| Local Docker frontend + backend + PostgreSQL campaign attribution journey | PASS |
-| Campaign click attribution, two saves, duplicate-save deduplication, non-campaign save exclusion, and one interest | PASS |
-| Normal and admin authentication, admin denial, saved-property ownership | PASS |
-| Published/draft property separation and published/draft/future news visibility | PASS |
-| Campaign statistics daily saves/interests and safe unsubscribe | PASS |
+| Backend clean install, Prisma validate/generate, build, and unit tests | PASS |
+| Backend Docker build and safe migration startup definition | PASS |
+| Disposable PostgreSQL integration | PASS |
+| Frontend clean install, typecheck, lint, tests, coverage, and build | PASS |
+| Mocked Playwright journeys | PASS |
+| Disposable real-stack Playwright journey | PASS |
+| Render configuration, reverse proxy, rate limiter, and public backend tracking URL pattern | PASS by source/configuration verification |
+| Vercel environment-driven GraphQL build and SPA routing | PASS by source/configuration verification |
 
-## Remaining Gaps
+## Remaining Gaps And Risks
 
-- The large backend resolver and full admin import/AI workflows are still not broadly unit-tested; their production source remains included in coverage.
-- Frontend global coverage remains below the 25% guideline because complete public layouts and many lower-risk administrative screens are included.
-- The next highest-value additions are focused resolver tests for campaign preview/send authorization edges and UI tests for property import error/retry handling.
+- Global coverage remains below 25% because the report includes the full resolver, import flows, scripts, and many public/admin views. Focused campaign delivery and tracking coverage is strong.
+- `npm audit --omit=dev` reports four high-severity advisories through the Prisma CLI's transitive `deepmerge-ts` and `mysql2` dependencies. This PostgreSQL application does not use the MySQL transport, and npm's only suggested fix is an unsafe Prisma 7-to-6 downgrade. Track an upstream non-breaking Prisma remediation before the next dependency refresh.
+- Background email queues, ISR/static generation, and direct image uploads remain intentionally deferred product enhancements.
 
-## Commands
-
-Run from the indicated package directory:
+## Commands And Artifacts
 
 ```bash
 # Code/backend
+npm ci
+npx prisma validate
+npx prisma generate
+npm run build
 npm test
 npm run test:coverage
 npm run test:integration
 
 # Code/frontend/my-react-app
+npm ci
 npm run typecheck
+npm run lint
 npm test
 npm run test:coverage
-npm run lint
 npm run build
 npm run test:e2e
 npm run test:e2e:real
 ```
 
-`test:integration` requires `TEST_DATABASE_URL` for a dedicated database ending in `_test`. `test:e2e:real` provisions its own guarded local Docker stack and does not accept deployment URLs.
-
-## Artifacts
-
-- Backend HTML: `Code/backend/coverage/backend/index.html`
+- Backend HTML coverage: `Code/backend/coverage/backend/index.html`
 - Backend LCOV: `Code/backend/coverage/backend/lcov.info`
-- Frontend HTML: `Code/frontend/my-react-app/coverage/frontend/index.html`
+- Frontend HTML coverage: `Code/frontend/my-react-app/coverage/frontend/index.html`
 - Frontend LCOV: `Code/frontend/my-react-app/coverage/frontend/lcov.info`
-- Playwright mocked HTML: `Code/frontend/my-react-app/playwright-report/index.html`
-- Playwright real-stack HTML: `Code/frontend/my-react-app/playwright-report/real-stack/index.html`
+- Mocked Playwright report: `Code/frontend/my-react-app/playwright-report/index.html`
+- Real-stack Playwright report: `Code/frontend/my-react-app/playwright-report/real-stack/index.html`

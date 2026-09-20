@@ -253,6 +253,7 @@ export interface Campaign {
   properties: Array<CampaignProperty>;
   createdAt: string;
   completedAt: string | null;
+  openCount: number | null;
   clickCount: number | null;
   interestCount: number | null;
   saveCount: number | null;
@@ -605,6 +606,7 @@ export interface CampaignDay {
   campaignSubject: string;
   date: string;
   sent: number;
+  opens: number;
   clicks: number;
   interests: number;
   saves: number;

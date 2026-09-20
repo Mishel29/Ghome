@@ -16,7 +16,7 @@ import helmet from "helmet";
 import { rateLimit } from "express-rate-limit";
 import { normalizePersonName, normalizePhone, subscriberNameKey } from "./lib/contact.js";
 import { aggregateCampaignStatistics } from "./lib/campaignStatistics.js";
-import { campaignClickUrl, unsubscribeUrl } from "./lib/emailContent.js";
+import { campaignClickUrl, campaignOpenUrl, unsubscribeUrl } from "./lib/emailContent.js";
 import { assertProductionRuntimeConfiguration, isAllowedCorsOrigin, publicAppUrl } from "./lib/runtimeConfig.js";
 
 export const app = express();
@@ -470,7 +470,7 @@ type PropertyConnection {
   input CampaignInput { subject: String!, templateHtml: String, bodyText: String, templateId: ID, propertyIds: [ID!], newsArticleId: ID }
   type CampaignProperty { id: ID!, propertyId: ID, propertyName: String! }
   type CampaignRecipient { id: ID!, recipientEmail: String!, recipientName: String!, status: DeliveryStatus!, sentAt: String, failedAt: String, errorMessage: String, attemptCount: Int! }
-  type Campaign { id: ID!, subject: String!, templateHtml: String, bodyText: String, renderedHtml: String, status: CampaignStatus!, newsArticleId: ID, templateId: ID, sentAt: String, recipientCount: Int!, recipients: [CampaignRecipient!]!, properties: [CampaignProperty!]!, createdAt: String!, completedAt: String, clickCount: Int, interestCount: Int, saveCount: Int, sentCount: Int, failedCount: Int }
+  type Campaign { id: ID!, subject: String!, templateHtml: String, bodyText: String, renderedHtml: String, status: CampaignStatus!, newsArticleId: ID, templateId: ID, sentAt: String, recipientCount: Int!, recipients: [CampaignRecipient!]!, properties: [CampaignProperty!]!, createdAt: String!, completedAt: String, openCount: Int, clickCount: Int, interestCount: Int, saveCount: Int, sentCount: Int, failedCount: Int }
   type CampaignConnection { nodes: [Campaign!]!, totalCount: Int! }
   type CampaignPreview { subject: String!, html: String!, consentedRecipientCount: Int! }
 
@@ -500,6 +500,7 @@ type PropertyConnection {
     campaignSubject: String!
     date: String!
     sent: Int!
+    opens: Int!
     clicks: Int!
     interests: Int!
     saves: Int!
@@ -986,7 +987,7 @@ function serializeTemplate(template: { id: string; name: string; subject: string
   };
 }
 
-function renderTemplatePreview(template: { htmlContent: string; properties: Array<{ property: { id: string; name: string; location: string | null; priceMin: unknown; priceMax: unknown; type: string | null; bedroomsMin: number | null; sizeSqm: unknown; media: Array<{ url: string; isPrimary: boolean; type: string }> } }> }, unsubscribeUrl = "#unsubscribe", propertyLinkUrl?: (propertyId: string) => string, linkTracker?: (url: string) => string) {
+function renderTemplatePreview(template: { htmlContent: string; properties: Array<{ property: { id: string; name: string; location: string | null; priceMin: unknown; priceMax: unknown; type: string | null; bedroomsMin: number | null; sizeSqm: unknown; media: Array<{ url: string; isPrimary: boolean; type: string }> } }> }, unsubscribeUrl = "#unsubscribe", propertyLinkUrl?: (propertyId: string) => string, linkTracker?: (url: string) => string, openTrackingUrl?: string) {
   const propertyCells = template.properties.map(({ property }) => {
         const image = property.media.find((media) => media.isPrimary && media.type === "IMAGE") ?? property.media.find((media) => media.type === "IMAGE");
         const priceMin = property.priceMin == null ? null : Number(property.priceMin);
@@ -1010,7 +1011,8 @@ function renderTemplatePreview(template: { htmlContent: string; properties: Arra
       a: (tagName: string, attribs: Record<string, string>) => ({ tagName, attribs: { ...attribs, href: attribs.href && /^https?:\/\//i.test(attribs.href) && !attribs.href.includes("/campaign-click?") ? linkTracker?.(attribs.href) ?? attribs.href : attribs.href } }),
     },
   } as unknown as Parameters<typeof sanitizeHtml>[1]);
-  return `${safe}<hr style="border:0;border-top:1px solid #ddd5c5;margin:28px 0 16px" /><p style="color:#667085;font-size:12px;text-align:center;margin:0">You are receiving this email because you opted in to Harborstone Homes communications. <a href="${unsubscribeUrl}" style="color:#1b2a4a">Unsubscribe</a></p>`;
+  const openPixel = openTrackingUrl ? `<img src="${openTrackingUrl}" width="1" height="1" alt="" style="display:none" />` : "";
+  return `${safe}<hr style="border:0;border-top:1px solid #ddd5c5;margin:28px 0 16px" /><p style="color:#667085;font-size:12px;text-align:center;margin:0">You are receiving this email because you opted in to Harborstone Homes communications. <a href="${unsubscribeUrl}" style="color:#1b2a4a">Unsubscribe</a></p>${openPixel}`;
 }
 
 export const mailTransport = nodemailer.createTransport({
@@ -1019,6 +1021,58 @@ export const mailTransport = nodemailer.createTransport({
   secure: Number(process.env.SMTP_PORT ?? 587) === 465,
   auth: process.env.SMTP_USER && process.env.SMTP_PASSWORD ? { user: process.env.SMTP_USER, pass: process.env.SMTP_PASSWORD } : undefined,
 });
+
+function smtpIsConfigured() {
+  return Boolean(process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASSWORD);
+}
+
+function isValidEmailAddress(email: string) {
+  return /^\S+@\S+\.\S+$/.test(email);
+}
+
+function mailFromAddress() {
+  const email = process.env.MAIL_FROM_EMAIL?.trim();
+  if (!email || !isValidEmailAddress(email)) throw new Error("Email sender is not configured");
+  const name = process.env.MAIL_FROM_NAME?.trim() || "Harborstone Homes";
+  return `${name} <${email}>`;
+}
+
+function maskEmail(email: string) {
+  const [local, domain] = email.split("@");
+  return domain ? `${local.slice(0, 1)}***@${domain}` : "***";
+}
+
+function containsRecipient(addresses: string[] | undefined, recipientEmail: string) {
+  const normalizedRecipient = recipientEmail.trim().toLowerCase();
+  return (addresses ?? []).some((address) => address.trim().toLowerCase() === normalizedRecipient);
+}
+
+function wasRecipientAccepted(info: { accepted?: string[]; rejected?: string[] }, recipientEmail: string) {
+  return containsRecipient(info.accepted, recipientEmail) && !containsRecipient(info.rejected, recipientEmail);
+}
+
+function smtpErrorDetails(error: unknown) {
+  const candidate = error as { code?: unknown };
+  return {
+    code: typeof candidate?.code === "string" ? candidate.code : undefined,
+    message: error instanceof Error ? error.message : "Email delivery failed",
+  };
+}
+
+export async function verifyMailTransport() {
+  if (!smtpIsConfigured()) {
+    console.warn("SMTP verification skipped because SMTP configuration is incomplete");
+    return false;
+  }
+  try {
+    await mailTransport.verify();
+    console.info("SMTP transport verified", { host: process.env.SMTP_HOST, port: Number(process.env.SMTP_PORT ?? 587) });
+    return true;
+  } catch (error) {
+    console.error("SMTP transport verification failed", smtpErrorDetails(error));
+    return false;
+  }
+}
 
 function followUpEmailContent(body: string, interest: { name: string; property: { name: string }; agent: { name: string } | null }, unsubscribeLink?: string) {
   const text = body
@@ -1066,7 +1120,7 @@ async function recordCampaignInterestEvent(token: string | null | undefined, pro
 function serializeCampaign(campaign: { id: string; subject: string; templateHtml: string | null; bodyText: string | null; renderedHtml: string | null; status: string; newsArticleId: string | null; templateId: string | null; sentAt: Date | null; recipientCount: number; createdAt: Date; completedAt: Date | null; properties: Array<{ id: string; propertyId: string | null; propertyName: string }>; recipients: Array<{ id: string; recipientEmail: string; recipientName: string; status: string; sentAt: Date | null; failedAt: Date | null; errorMessage: string | null; attemptCount: number }>; events?: Array<{ type: string }> }) {
   const eventCounts = new Map<string, number>();
   for (const event of campaign.events ?? []) eventCounts.set(event.type, (eventCounts.get(event.type) ?? 0) + 1);
-  return { ...campaign, sentAt: campaign.sentAt?.toISOString() ?? null, createdAt: campaign.createdAt.toISOString(), completedAt: campaign.completedAt?.toISOString() ?? null, recipients: campaign.recipients.map((recipient) => ({ ...recipient, sentAt: recipient.sentAt?.toISOString() ?? null, failedAt: recipient.failedAt?.toISOString() ?? null })), clickCount: eventCounts.get("CLICKED") ?? 0, interestCount: eventCounts.get("INTEREST") ?? 0, saveCount: eventCounts.get("SAVED") ?? 0, sentCount: campaign.recipients.filter((recipient) => recipient.status === "SENT").length, failedCount: campaign.recipients.filter((recipient) => recipient.status === "FAILED").length };
+  return { ...campaign, sentAt: campaign.sentAt?.toISOString() ?? null, createdAt: campaign.createdAt.toISOString(), completedAt: campaign.completedAt?.toISOString() ?? null, recipients: campaign.recipients.map((recipient) => ({ ...recipient, sentAt: recipient.sentAt?.toISOString() ?? null, failedAt: recipient.failedAt?.toISOString() ?? null })), openCount: eventCounts.get("OPENED") ?? 0, clickCount: eventCounts.get("CLICKED") ?? 0, interestCount: eventCounts.get("INTEREST") ?? 0, saveCount: eventCounts.get("SAVED") ?? 0, sentCount: campaign.recipients.filter((recipient) => recipient.status === "SENT").length, failedCount: campaign.recipients.filter((recipient) => recipient.status === "FAILED").length };
 }
 
 export const root = {
@@ -1160,13 +1214,20 @@ export const root = {
     await requireAdmin(context);
     const campaignData = await prisma.campaign.findUniqueOrThrow({ where: { id }, include: { template: true, properties: { include: { property: { include: { media: true } } } } } });
     if (campaignData.status !== "DRAFT") throw new Error("Only draft campaigns can be sent");
-    const subscribers = await prisma.subscriber.findMany({ where: { status: "ACTIVE", consentGrantedAt: { not: null } }, select: { id: true, email: true, name: true } });
-    const campaign = await prisma.$transaction(async (tx) => {
+    const activeConsentedSubscribers = await prisma.subscriber.findMany({ where: { status: "ACTIVE", consentGrantedAt: { not: null } }, select: { id: true, email: true, name: true } });
+    const subscribers = activeConsentedSubscribers.filter((subscriber) => isValidEmailAddress(subscriber.email));
+    console.info("Campaign eligible recipients", { campaignId: id, eligibleRecipients: subscribers.length, excludedInvalidAddresses: activeConsentedSubscribers.length - subscribers.length });
+    if (!subscribers.length) {
+      const completed = await prisma.campaign.update({ where: { id }, data: { status: "FAILED", recipientCount: 0, startedAt: new Date(), sentAt: null, completedAt: new Date() }, include: { properties: true, recipients: true, events: { select: { type: true } } } });
+      return serializeCampaign(completed);
+    }
+    if (!smtpIsConfigured()) throw new Error("Email service is not configured");
+    const from = mailFromAddress();
+    await prisma.$transaction(async (tx) => {
       await tx.campaignRecipient.deleteMany({ where: { campaignId: id, status: "PENDING" } });
       if (subscribers.length) await tx.campaignRecipient.createMany({ data: subscribers.map((subscriber) => ({ campaignId: id, subscriberId: subscriber.id, recipientEmail: subscriber.email, recipientName: subscriber.name })) });
       return tx.campaign.update({ where: { id }, data: { status: "QUEUED", startedAt: new Date(), recipientCount: subscribers.length }, include: { properties: true, recipients: true } });
     });
-    if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASSWORD) throw new Error("Email service is not configured");
     let sent = 0;
     for (const recipient of subscribers) {
       const row = await prisma.campaignRecipient.findUniqueOrThrow({ where: { campaignId_subscriberId: { campaignId: id, subscriberId: recipient.id } } });
@@ -1177,8 +1238,10 @@ export const root = {
         const rawToken = randomBytes(32).toString("hex");
         await prisma.campaignRecipient.update({ where: { id: row.id }, data: { trackingTokenHash: tokenDigest(rawToken) } });
         const unsubscribeToken = await ensureUnsubscribeToken(recipient.id);
-        const html = renderTemplatePreview({ htmlContent: campaignData.template?.htmlContent ?? campaignData.templateHtml ?? "", properties: campaignData.properties.filter((link) => link.property).map((link) => ({ property: link.property! })) }, unsubscribeUrl(unsubscribeToken, rawToken), (propertyId) => campaignClickUrl(rawToken, "", propertyId), (destination) => campaignClickUrl(rawToken, destination));
-        const info = await mailTransport.sendMail({ from: `${process.env.MAIL_FROM_NAME ?? "Harborstone Homes"} <${process.env.MAIL_FROM_EMAIL ?? process.env.SMTP_USER}>`, to: recipient.email, subject: campaignData.subject, html });
+        const html = renderTemplatePreview({ htmlContent: campaignData.template?.htmlContent ?? campaignData.templateHtml ?? "", properties: campaignData.properties.filter((link) => link.property).map((link) => ({ property: link.property! })) }, unsubscribeUrl(unsubscribeToken, rawToken), (propertyId) => campaignClickUrl(rawToken, "", propertyId), (destination) => campaignClickUrl(rawToken, destination), campaignOpenUrl(rawToken));
+        const info = await mailTransport.sendMail({ from, to: recipient.email, subject: campaignData.subject, html });
+        console.info("Campaign SMTP result", { campaignId: id, recipientId: row.id, recipient: maskEmail(recipient.email), acceptedCount: info.accepted?.length ?? 0, rejectedCount: info.rejected?.length ?? 0, messageId: info.messageId, response: info.response });
+        if (!wasRecipientAccepted(info, recipient.email)) throw new Error(info.rejected?.length ? "Mail server rejected the recipient" : "Mail server did not confirm recipient acceptance");
         await prisma.$transaction([
           prisma.campaignRecipient.update({ where: { id: row.id }, data: { status: "SENT", sentAt: new Date(), providerMessageId: info.messageId } }),
           prisma.deliveryAttempt.update({ where: { id: attempt.id }, data: { status: "SENT", providerMessageId: info.messageId, finishedAt: new Date() } }),
@@ -1186,7 +1249,8 @@ export const root = {
         ]);
         sent++;
       } catch (error) {
-        const message = error instanceof Error ? error.message : "Email delivery failed";
+        const { code, message } = smtpErrorDetails(error);
+        console.error("Campaign SMTP delivery failed", { campaignId: id, recipientId: row.id, recipient: maskEmail(recipient.email), code, message });
         await prisma.$transaction([
           prisma.campaignRecipient.update({ where: { id: row.id }, data: { status: "FAILED", failedAt: new Date(), errorMessage: message } }),
           prisma.deliveryAttempt.update({ where: { id: attempt.id }, data: { status: "FAILED", errorMessage: message, finishedAt: new Date() } }),
@@ -1487,11 +1551,14 @@ export const root = {
     const now = new Date();
     const followUp = await prisma.interestFollowUp.update({ where: { id }, data: { status: "SENDING", sendRequestedAt: now, sentById: admin.id, attemptCount: { increment: 1 }, errorMessage: null, failedAt: null } });
     try {
-      if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASSWORD) throw new Error("Email service is not configured");
+      if (!smtpIsConfigured()) throw new Error("Email service is not configured");
+      const from = mailFromAddress();
       const subscriber = await prisma.subscriber.findUnique({ where: { email: current.interest.email.toLowerCase() }, select: { id: true } });
       const unsubscribeLink = subscriber ? unsubscribeUrl(await ensureUnsubscribeToken(subscriber.id)) : undefined;
       const content = followUpEmailContent(current.body, current.interest, unsubscribeLink);
-      const info = await mailTransport.sendMail({ from: `${process.env.MAIL_FROM_NAME ?? "Harborstone Homes"} <${process.env.MAIL_FROM_EMAIL ?? process.env.SMTP_USER}>`, to: current.interest.email, subject: current.subject, html: content.html });
+      const info = await mailTransport.sendMail({ from, to: current.interest.email, subject: current.subject, html: content.html });
+      console.info("Interest follow-up SMTP result", { followUpId: id, recipient: maskEmail(current.interest.email), acceptedCount: info.accepted?.length ?? 0, rejectedCount: info.rejected?.length ?? 0, messageId: info.messageId, response: info.response });
+      if (!wasRecipientAccepted(info, current.interest.email)) throw new Error(info.rejected?.length ? "Mail server rejected the recipient" : "Mail server did not confirm recipient acceptance");
       const sent = await prisma.$transaction(async (tx) => {
         const saved = await tx.interestFollowUp.update({ where: { id }, data: { status: "SENT", sentAt: new Date(), providerMessageId: info.messageId } });
         await tx.interest.update({ where: { id: current.interestId }, data: { followUpSent: true } });
@@ -1499,7 +1566,8 @@ export const root = {
       });
       return { ...sent, createdAt: sent.createdAt.toISOString(), sendRequestedAt: sent.sendRequestedAt?.toISOString() ?? null, sentAt: sent.sentAt?.toISOString() ?? null, failedAt: sent.failedAt?.toISOString() ?? null };
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Email delivery failed";
+      const { code, message } = smtpErrorDetails(error);
+      console.error("Interest follow-up SMTP delivery failed", { followUpId: id, recipient: maskEmail(current.interest.email), code, message });
       const failed = await prisma.interestFollowUp.update({ where: { id }, data: { status: "FAILED", failedAt: new Date(), errorMessage: message } });
       return { ...failed, createdAt: failed.createdAt.toISOString(), sendRequestedAt: failed.sendRequestedAt?.toISOString() ?? null, sentAt: failed.sentAt?.toISOString() ?? null, failedAt: failed.failedAt?.toISOString() ?? null };
     }
@@ -1827,7 +1895,7 @@ export const root = {
     const events = await prisma.campaignEvent.findMany({
       where: {
         ...(start || end ? { occurredAt: { ...(start ? { gte: start } : {}), ...(end ? { lte: end } : {}) } } : {}),
-        type: { in: ["SENT", "CLICKED", "INTEREST", "SAVED", "UNSUBSCRIBED"] },
+        type: { in: ["SENT", "OPENED", "CLICKED", "INTEREST", "SAVED", "UNSUBSCRIBED"] },
       },
       select: { campaignId: true, type: true, occurredAt: true, campaign: { select: { subject: true } } },
       orderBy: { occurredAt: "asc" },
@@ -2156,6 +2224,30 @@ app.get("/unsubscribe", async (req, res) => {
   res.type("html").send("<h1>You have been unsubscribed</h1><p>You will no longer receive Harborstone Homes marketing emails.</p>");
 });
 
+const transparentTrackingGif = Buffer.from("R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==", "base64");
+
+app.get("/campaign-open/:token", async (req, res) => {
+  try {
+    const recipient = await campaignRecipientForToken(req.params.token);
+    if (recipient) {
+      await prisma.campaignEvent.upsert({
+        where: { deduplicationKey: `open:${recipient.id}` },
+        create: {
+          campaignId: recipient.campaignId,
+          subscriberId: recipient.subscriberId,
+          recipientId: recipient.id,
+          type: "OPENED",
+          deduplicationKey: `open:${recipient.id}`,
+        },
+        update: {},
+      });
+    }
+  } catch {
+    // Email rendering must remain unaffected when tracking storage is unavailable.
+  }
+  res.status(200).set("Cache-Control", "no-store, max-age=0").type("gif").send(transparentTrackingGif);
+});
+
 app.get("/campaign-click", async (req, res) => {
   const token = typeof req.query.token === "string" ? req.query.token : "";
   const propertyId = typeof req.query.propertyId === "string" ? req.query.propertyId : "";
@@ -2184,6 +2276,7 @@ export function startServer(port = Number(process.env.PORT ?? 4000)) {
   assertProductionRuntimeConfiguration();
   const server = app.listen(port, "0.0.0.0", () => {
     console.log(`Backend listening on port ${port}`);
+    void verifyMailTransport();
   });
 
   let shuttingDown = false;

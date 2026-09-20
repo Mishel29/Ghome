@@ -224,6 +224,14 @@ The container requires a PostgreSQL database accessible through `DATABASE_URL`.
 
 The frontend is deployed to Vercel and the backend is deployed as a Render Docker service with Render PostgreSQL. Configure values through the platform environment managers; do not add production values to `.env` files or source control.
 
+### Hosted URLs
+
+- Public site: `https://ghome-alpha.vercel.app/`
+- Administrator: `https://ghome-alpha.vercel.app/admin`
+- GraphQL API: the deployed Render service URL, including `/graphql`
+
+`PUBLIC_APP_URL` must equal the public-site URL, and `VITE_GRAPHQL_URL` must equal the GraphQL API URL.
+
 ### Render backend environment
 
 Set `DATABASE_URL`, `PUBLIC_APP_URL`, `PUBLIC_BACKEND_URL`, `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `MAIL_FROM_EMAIL`, `MAIL_FROM_NAME`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`, and `NODE_ENV=production`.
@@ -234,6 +242,20 @@ Render supplies `PORT`. The backend listens on `0.0.0.0`, runs `prisma migrate d
 
 Set `VITE_GRAPHQL_URL` to the deployed backend GraphQL URL, including `/graphql`, before the Vercel build. Vite embeds this value at build time, so redeploy the frontend after it changes. `vercel.json` supplies the SPA rewrite required for direct route refreshes.
 
+### Production environment reference
+
+| Variable | Deployment | Purpose |
+| --- | --- | --- |
+| `DATABASE_URL` | Render backend | Render PostgreSQL connection string. |
+| `PUBLIC_APP_URL` | Render backend | HTTPS Vercel origin allowed by CORS. |
+| `PUBLIC_BACKEND_URL` | Render backend | HTTPS API origin for campaign and unsubscribe links. |
+| `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD` | Render backend | SMTP relay configuration. |
+| `MAIL_FROM_EMAIL`, `MAIL_FROM_NAME` | Render backend | Sender identity for campaign email. |
+| `ADMIN_EMAIL`, `ADMIN_PASSWORD` | Render backend | Initial administrator bootstrap credentials. |
+| `NODE_ENV=production` | Render backend | Enables production runtime validation. |
+| `PORT` | Render backend | Supplied by Render; do not set a fixed value. |
+| `VITE_GRAPHQL_URL` | Vercel frontend | Deployed GraphQL API URL, including `/graphql`. |
+
 ### Disposable production-like verification
 
 `Code/backend/docker-compose.test.yml` creates an isolated `harborstone_test` PostgreSQL database and production-mode backend. It never uses the developer database. Run it from `Code/backend`:
@@ -242,6 +264,29 @@ Set `VITE_GRAPHQL_URL` to the deployed backend GraphQL URL, including `/graphql`
 docker compose -p harborstone_test_suite -f docker-compose.test.yml up --build -d
 docker compose -p harborstone_test_suite -f docker-compose.test.yml down -v
 ```
+
+## Bonus Features
+
+- GitHub Actions runs backend validation, generation, build, unit tests, disposable PostgreSQL integration tests, frontend type checks, lint, tests, build, and mocked Playwright journeys for every push and pull request.
+- Campaign delivery uses focused Vitest coverage with a mocked Nodemailer transport, covering consent filtering, success and failure persistence, unsubscribe links, and continued delivery after individual failures.
+- Campaign emails include a per-recipient tracking pixel. The backend records one `OPENED` event per campaign recipient and exposes open totals in campaign and daily campaign statistics.
+
+Open tracking is approximate: email clients can block remote images, proxy or cache images, and prefetch content. Open metrics should be treated as an engagement signal, not proof that an individual read an email.
+
+Background email queues, ISR/static generation, and direct image file uploads remain intentionally deferred enhancements.
+
+### Delivered campaign email reference
+
+A production delivery screenshot is not committed because it would expose recipient and tracking data. The delivery HTML, unsubscribe link, and per-recipient tracking pixel are verified in [`Code/backend/src/server.test.ts`](Code/backend/src/server.test.ts); the disposable end-to-end stack verifies the tracking route in [`Code/frontend/my-react-app/e2e-real/real-stack.spec.ts`](Code/frontend/my-react-app/e2e-real/real-stack.spec.ts).
+
+### Disposable test administrator
+
+The isolated end-to-end stack creates this non-production account only:
+
+- Email: `admin@e2e.harborstone.test`
+- Password: `e2e-admin-password`
+
+Never deploy these credentials or use them for a real administrator.
 
 ## Automated Tests
 
@@ -263,6 +308,14 @@ npm run test:e2e:real
 Coverage reports are written to `Code/backend/coverage/backend/` and `Code/frontend/my-react-app/coverage/frontend/`. Playwright writes an HTML report to `Code/frontend/my-react-app/playwright-report/`.
  
 
+
+## Data Model Overview
+
+- `User` and `Session` provide authenticated access; `SavedProperty` records a user's property saves.
+- `Property` is the core listing, with media, features, price history, interests, and development relationships.
+- `Subscriber`, `Consent`, and `UnsubscribeToken` support marketing consent and opt-out records.
+- `Campaign`, `CampaignRecipient`, `DeliveryAttempt`, and `CampaignEvent` model campaign composition, delivery, and engagement metrics.
+- `NewsArticle`, `CampaignTemplate`, `PageContent`, and related join models provide managed marketing content.
 
 ## Key Technology Decisions
 
@@ -357,5 +410,12 @@ I did not rely on AI to design the entire application or generate the project fr
 AI suggestions were treated as suggestions and were tested against the actual application before being used.
 
 The final decisions around the product requirements, use cases, database design, business logic and implemented features were made by me.
+
+## What I Would Do Next
+
+- Move campaign delivery and imports to durable background queues with retries and operational visibility.
+- Add production monitoring, alerting, backup/restore exercises, and a staging deployment gate.
+- Increase end-to-end coverage for streamed request limits and real email-provider behavior.
+- Reduce the Vite bundle and consider server rendering only where it improves property discovery.
 
 

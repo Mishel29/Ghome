@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { campaignClickUrl, unsubscribeUrl } from "./emailContent.js";
+import { campaignClickUrl, campaignOpenUrl, unsubscribeUrl } from "./emailContent.js";
 
 describe("campaign email URLs", () => {
   const production = { NODE_ENV: "production", PUBLIC_BACKEND_URL: "https://api.harborstone.example" };
@@ -12,5 +12,9 @@ describe("campaign email URLs", () => {
   it("constructs tracked property links from the public backend URL", () => {
     const url = campaignClickUrl("token", "", "property-id", production);
     expect(url).toBe("https://api.harborstone.example/campaign-click?token=token&propertyId=property-id");
+  });
+
+  it("constructs an encoded open-pixel URL without exposing recipient details", () => {
+    expect(campaignOpenUrl("safe token", production)).toBe("https://api.harborstone.example/campaign-open/safe%20token");
   });
 });

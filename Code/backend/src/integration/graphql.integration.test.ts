@@ -111,6 +111,17 @@ it.skipIf(!enabled)("real GraphQL critical publication, ownership, news, and uns
 
   const preview = await graph("query($id:ID!){campaignPreview(id:$id){consentedRecipientCount}}", { id: campaign.id }, adminToken);
   assert.equal((preview.data?.campaignPreview as { consentedRecipientCount: number }).consentedRecipientCount, 1);
+  const openResponse = await fetch(`${baseUrl}/campaign-open/${trackingToken}`);
+  assert.equal(openResponse.status, 200);
+  assert.match(openResponse.headers.get("content-type") ?? "", /^image\/gif/);
+  assert.equal(Buffer.from(await openResponse.arrayBuffer()).subarray(0, 6).toString("ascii"), "GIF89a");
+  assert.equal((await fetch(`${baseUrl}/campaign-open/${trackingToken}`)).status, 200);
+  const invalidOpenResponse = await fetch(`${baseUrl}/campaign-open/invalid-token`);
+  assert.equal(invalidOpenResponse.status, 200);
+  assert.match(invalidOpenResponse.headers.get("content-type") ?? "", /^image\/gif/);
+  assert.equal(await prisma.campaignEvent.count({ where: { campaignId: campaign.id, recipientId: recipientRow.id, type: "OPENED" } }), 1);
+  const campaignDetail = await graph("query($id:ID!){campaignDetail(id:$id){openCount}}", { id: campaign.id }, adminToken);
+  assert.equal((campaignDetail.data?.campaignDetail as { openCount: number }).openCount, 1);
   assert.equal((await graph("mutation($id:ID!,$campaignToken:String){setPropertySaved(propertyId:$id,saved:true,campaignToken:$campaignToken)}", { id: campaignPropertyB.id, campaignToken: trackingToken }, tokenA)).errors, undefined);
   assert.equal((await graph("mutation($id:ID!,$campaignToken:String){setPropertySaved(propertyId:$id,saved:true,campaignToken:$campaignToken)}", { id: campaignPropertyB.id, campaignToken: trackingToken }, tokenA)).errors, undefined);
   assert.equal((await graph("mutation($id:ID!,$campaignToken:String!){recordCampaignSave(propertyId:$id,campaignToken:$campaignToken)}", { id: campaignPropertyC.id, campaignToken: trackingToken })).errors, undefined);
@@ -124,9 +135,9 @@ it.skipIf(!enabled)("real GraphQL critical publication, ownership, news, and uns
   assert.equal(await prisma.campaignEvent.count({ where: { campaignId: campaign.id, type: "SAVED" } }), 2);
   assert.equal(await prisma.campaignEvent.count({ where: { campaignId: campaign.id, type: "INTEREST" } }), 2);
   assert.equal(await prisma.campaignEvent.count({ where: { campaignId: campaignB.id, type: "SAVED", recipientId: recipientRowB.id } }), 1);
-  const stats = await graph("query{campaignStats{campaignId saves interests}}", undefined, adminToken);
-  const campaignStats = (stats.data?.campaignStats as Array<{ campaignId: string; saves: number; interests: number }>).find((row) => row.campaignId === campaign.id);
-  assert.deepEqual(campaignStats ? { saves: campaignStats.saves, interests: campaignStats.interests } : null, { saves: 2, interests: 2 });
+  const stats = await graph("query{campaignStats{campaignId opens saves interests}}", undefined, adminToken);
+  const campaignStats = (stats.data?.campaignStats as Array<{ campaignId: string; opens: number; saves: number; interests: number }>).find((row) => row.campaignId === campaign.id);
+  assert.deepEqual(campaignStats ? { opens: campaignStats.opens, saves: campaignStats.saves, interests: campaignStats.interests } : null, { opens: 1, saves: 2, interests: 2 });
   const response = await fetch(`${baseUrl}/unsubscribe?token=${unsubscribeToken}&campaignToken=${trackingToken}`);
   assert.equal(response.status, 200);
   assert.equal((await prisma.subscriber.findUniqueOrThrow({ where: { id: recipient.id } })).status, "UNSUBSCRIBED");
