@@ -5,6 +5,7 @@ import { buildSchema, GraphQLError } from "graphql";
 import { prisma } from "./lib/prisma.js";
 import "dotenv/config";
 import { createHash, randomBytes, scryptSync, timingSafeEqual } from "node:crypto";
+import { basename } from "node:path";
 import { parse } from "csv-parse/sync";
 import { validateHistoricalPrices } from "./import/historicalPrices.js";
 import { PROPERTY_CSV_COLUMNS, validatePropertyCsvHeaders } from "./import/propertyCsvSchema.js";
@@ -13,15 +14,31 @@ import sanitizeHtml from "sanitize-html";
 import nodemailer from "nodemailer";
 import helmet from "helmet";
 import { rateLimit } from "express-rate-limit";
+import { normalizePersonName, normalizePhone, subscriberNameKey } from "./lib/contact.js";
+import { aggregateCampaignStatistics } from "./lib/campaignStatistics.js";
+import { campaignClickUrl, unsubscribeUrl } from "./lib/emailContent.js";
+import { assertProductionRuntimeConfiguration, isAllowedCorsOrigin, publicAppUrl } from "./lib/runtimeConfig.js";
 
-const app = express();
+export const app = express();
 
-const allowedOrigins = new Set([process.env.PUBLIC_APP_URL].filter((origin): origin is string => Boolean(origin)));
+app.set("trust proxy", 1);
+
+const GRAPHQL_RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;
+const GRAPHQL_RATE_LIMIT = 100000;
+const LOGIN_RATE_LIMIT = 200;
+
+function isLoginRequest(req: express.Request) {
+  const body = req.body as { query?: unknown; operationName?: unknown } | undefined;
+  const operationName = typeof body?.operationName === "string" ? body.operationName : "";
+  const query = typeof body?.query === "string" ? body.query : "";
+
+  return operationName.toLowerCase() === "login" || /\blogin\s*\(/.test(query);
+}
 
 app.disable("x-powered-by");
 app.use(helmet({ contentSecurityPolicy: false, crossOriginResourcePolicy: { policy: "cross-origin" } }));
 app.use(cors({
-  origin: (origin, callback) => callback(null, !origin || allowedOrigins.size === 0 || allowedOrigins.has(origin)),
+  origin: (origin, callback) => callback(null, isAllowedCorsOrigin(origin)),
   methods: ["GET", "POST", "OPTIONS"],
   allowedHeaders: ["Authorization", "Content-Type"],
 }));
@@ -30,7 +47,20 @@ app.use((req, res, next) => {
   if (Number.isFinite(contentLength) && contentLength > 12 * 1024 * 1024) return res.status(413).json({ error: "Request body is too large" });
   next();
 });
-app.use("/graphql", rateLimit({ windowMs: 15 * 60 * 1000, limit: 300, standardHeaders: "draft-8", legacyHeaders: false }));
+app.use("/graphql", express.json({ limit: "12mb" }));
+app.use("/graphql", rateLimit({
+  windowMs: GRAPHQL_RATE_LIMIT_WINDOW_MS,
+  limit: LOGIN_RATE_LIMIT,
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: (req) => !isLoginRequest(req),
+}));
+app.use("/graphql", rateLimit({
+  windowMs: GRAPHQL_RATE_LIMIT_WINDOW_MS,
+  limit: GRAPHQL_RATE_LIMIT,
+  standardHeaders: true,
+  legacyHeaders: false,
+}));
 const schema = buildSchema(`
   enum PropertyStatus {
     DRAFT
@@ -472,6 +502,7 @@ type PropertyConnection {
     sent: Int!
     clicks: Int!
     interests: Int!
+    saves: Int!
     unsubscribes: Int!
     clickRate: Float!
     interestRate: Float!
@@ -591,6 +622,7 @@ type PropertyConnection {
     publishProperties(ids: [ID!]!): Int!
     deleteProperty(id: ID!): Boolean!
     setPropertySaved(propertyId: ID!, saved: Boolean!, campaignToken: String): Boolean!
+    recordCampaignSave(propertyId: ID!, campaignToken: String!): Boolean!
     recordPropertyView(propertyId: ID!, campaignToken: String): Boolean!
     recordMortgageCalculation(price: Float!, deposit: Float!, rate: Float!, years: Int!, income: Float!): Boolean!
     submitInterest(input: InterestInput!): Interest!
@@ -684,6 +716,18 @@ function uploadResult(upload: { id: string; filename: string; status: string; by
   };
 }
 
+async function assertUniqueSubscriberName(client: { subscriber: { findMany: typeof prisma.subscriber.findMany } }, name: string, email: string, existingId?: string) {
+  const normalized = subscriberNameKey(name);
+  if (!normalized) throw new Error("Subscriber name is required");
+  const subscribers = await client.subscriber.findMany({ select: { id: true, name: true, email: true } });
+  const conflict = subscribers.find((subscriber) => subscriberNameKey(subscriber.name) === normalized && subscriber.id !== existingId && subscriber.email.toLowerCase() !== email);
+  if (conflict) throw new Error(`Subscriber name already exists: ${conflict.name}`);
+}
+
+function assertSubscriberEmailNameCompatible(existing: { name: string } | null, name: string) {
+  if (existing && subscriberNameKey(existing.name) !== subscriberNameKey(name)) throw new Error("Subscriber email already exists with a different name");
+}
+
 function validateUploadedPropertyCsv(contentBase64: string) {
   const content = Buffer.from(contentBase64, "base64").toString("utf8");
   const headerRows = parse(content, { bom: true, relax_column_count: true, skip_empty_lines: true, to_line: 1 }) as unknown[][];
@@ -754,13 +798,22 @@ function validateUploadedSubscriberCsv(contentBase64: string) {
   let validRows = 0;
   for (const [index, row] of rows.entries()) {
     const email = String(row.Email ?? "").trim();
-    const name = String(row.Name ?? "").trim();
+    const name = normalizePersonName(String(row.Name ?? ""));
+    const phone = String(row.Phone ?? "").trim();
     const rowErrors = [
       ...(!name ? [{ rowNumber: index + 2, field: "Name", value: null, message: "Name is required.", errorType: "FIELD" }] : []),
       ...(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) ? [{ rowNumber: index + 2, field: "Email", value: email || null, message: "Email must be valid.", errorType: "FIELD" }] : []),
+      ...(phone && !/^\+\d{6,18}$/.test(phone) ? [{ rowNumber: index + 2, field: "Phone", value: phone, message: "Phone must include one country code followed by digits only.", errorType: "FIELD" }] : []),
     ];
     if (rowErrors.length) errors.push(...rowErrors); else validRows++;
   }
+  const nameRows = new Map<string, number[]>();
+  for (const [index, row] of rows.entries()) {
+    const name = subscriberNameKey(String(row.Name ?? ""));
+    if (name) nameRows.set(name, [...(nameRows.get(name) ?? []), index + 2]);
+  }
+  const duplicateNameErrors = [...nameRows.values()].flatMap((rowNumbers) => rowNumbers.length > 1 ? rowNumbers.map((rowNumber) => ({ rowNumber, field: "Name", value: String(rows[rowNumber - 2].Name ?? ""), message: "Subscriber name is duplicated in this CSV.", errorType: "DUPLICATE" })) : []);
+  errors.push(...duplicateNameErrors);
   return { valid: schema.valid && errors.length === 0, totalRows: rows.length, validRows: schema.valid ? validRows : 0, invalidRows: schema.valid ? rows.length - validRows : rows.length, totalErrors: errors.length, errors, rows };
 }
 
@@ -939,7 +992,7 @@ function renderTemplatePreview(template: { htmlContent: string; properties: Arra
         const priceMin = property.priceMin == null ? null : Number(property.priceMin);
         const priceMax = property.priceMax == null ? null : Number(property.priceMax);
         const price = priceMin == null ? "Price on request" : priceMax != null && priceMax !== priceMin ? `€${priceMin.toLocaleString("en-IE")}–€${priceMax.toLocaleString("en-IE")}` : `€${priceMin.toLocaleString("en-IE")}`;
-        const propertyUrl = propertyLinkUrl?.(property.id) ?? `${process.env.PUBLIC_APP_URL ?? "http://localhost:5173"}/properties/${encodeURIComponent(property.id)}`;
+        const propertyUrl = propertyLinkUrl?.(property.id) ?? `${publicAppUrl()}/properties/${encodeURIComponent(property.id)}`;
         return `<td width="50%" valign="top" style="width:50%;padding:8px"><a href="${propertyUrl}" style="text-decoration:none;color:inherit"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #ddd5c5;background:#fff"><tr><td>${image ? `<img src="${image.url}" alt="${property.name}" width="100%" style="display:block;width:100%;height:150px;object-fit:cover" />` : `<div style="height:150px;background:#e9e4d8"></div>`}</td></tr><tr><td style="padding:14px"><h3 style="margin:0 0 6px;color:#1b2a4a;font-size:17px;line-height:1.25">${property.name}</h3><p style="margin:0 0 8px;color:#6b7280;font-size:12px">${property.location ?? "Location unavailable"}</p><p style="margin:0 0 8px;color:#e8761b;font-weight:700;font-size:16px">${price}</p><p style="margin:0;color:#6b7280;font-size:12px">${[property.type, property.bedroomsMin != null ? `${property.bedroomsMin} bedrooms` : null, property.sizeSqm != null ? `${Number(property.sizeSqm).toLocaleString("en-IE")} m²` : null].filter(Boolean).join(" · ")}</p></td></tr></table></a></td>`;
       });
   const propertyRows = [];
@@ -960,29 +1013,21 @@ function renderTemplatePreview(template: { htmlContent: string; properties: Arra
   return `${safe}<hr style="border:0;border-top:1px solid #ddd5c5;margin:28px 0 16px" /><p style="color:#667085;font-size:12px;text-align:center;margin:0">You are receiving this email because you opted in to Harborstone Homes communications. <a href="${unsubscribeUrl}" style="color:#1b2a4a">Unsubscribe</a></p>`;
 }
 
-const mailTransport = nodemailer.createTransport({
+export const mailTransport = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
   port: Number(process.env.SMTP_PORT ?? 587),
   secure: Number(process.env.SMTP_PORT ?? 587) === 465,
   auth: process.env.SMTP_USER && process.env.SMTP_PASSWORD ? { user: process.env.SMTP_USER, pass: process.env.SMTP_PASSWORD } : undefined,
 });
 
-function unsubscribeUrl(token: string, campaignToken?: string) {
-  const campaignQuery = campaignToken ? `&campaignToken=${encodeURIComponent(campaignToken)}` : "";
-  return `${process.env.PUBLIC_BACKEND_URL ?? "http://localhost:4000"}/unsubscribe?token=${encodeURIComponent(token)}${campaignQuery}`;
-}
-
-function followUpEmailContent(body: string, interest: { name: string; property: { name: string }; agent: { name: string } | null }) {
+function followUpEmailContent(body: string, interest: { name: string; property: { name: string }; agent: { name: string } | null }, unsubscribeLink?: string) {
   const text = body
     .replace(/\{\{name\}\}/g, interest.name)
     .replace(/\{\{property\}\}/g, interest.property.name)
     .replace(/\{\{agent\}\}/g, interest.agent?.name ?? process.env.MAIL_FROM_NAME ?? "Harborstone Homes");
-  return { text, html: `<div>${sanitizeHtml(text, { allowedTags: [], allowedAttributes: {} }).replace(/\n/g, "<br />")}</div>` };
-}
-
-function campaignClickUrl(token: string, destination: string, propertyId?: string) {
-  const query = new URLSearchParams({ token, ...(propertyId ? { propertyId } : { destination }) });
-  return `${process.env.PUBLIC_BACKEND_URL ?? "http://localhost:4000"}/campaign-click?${query.toString()}`;
+  const footerText = unsubscribeLink ? `\n\nUnsubscribe from future updates: ${unsubscribeLink}` : "";
+  const htmlFooter = unsubscribeLink ? `<hr style="border:0;border-top:1px solid #ddd5c5;margin:28px 0 16px" /><p style="color:#667085;font-size:12px;text-align:center;margin:0">You are receiving this email because you registered interest with Harborstone Homes. <a href="${unsubscribeLink}" style="color:#1b2a4a">Unsubscribe from future updates</a></p>` : "";
+  return { text: `${text}${footerText}`, html: `<div>${sanitizeHtml(text, { allowedTags: [], allowedAttributes: {} }).replace(/\n/g, "<br />")}</div>${htmlFooter}` };
 }
 
 async function ensureUnsubscribeToken(subscriberId: string) {
@@ -996,13 +1041,35 @@ async function campaignRecipientForToken(token?: string | null) {
   return prisma.campaignRecipient.findUnique({ where: { trackingTokenHash: tokenDigest(token) }, select: { id: true, campaignId: true, subscriberId: true, recipientEmail: true } });
 }
 
+async function recordCampaignSaveEvent(token: string | null | undefined, propertyId: string) {
+  const recipient = await campaignRecipientForToken(token);
+  if (!recipient) return false;
+  await prisma.campaignEvent.upsert({
+    where: { deduplicationKey: `save:${recipient.id}:${propertyId}` },
+    create: { campaignId: recipient.campaignId, subscriberId: recipient.subscriberId, recipientId: recipient.id, propertyId, type: "SAVED", deduplicationKey: `save:${recipient.id}:${propertyId}` },
+    update: {},
+  });
+  return true;
+}
+
+async function recordCampaignInterestEvent(token: string | null | undefined, propertyId: string, email: string) {
+  const recipient = await campaignRecipientForToken(token);
+  if (!recipient) return false;
+  await prisma.campaignEvent.upsert({
+    where: { deduplicationKey: `interest:${recipient.id}:${propertyId}:${email}` },
+    create: { campaignId: recipient.campaignId, subscriberId: recipient.subscriberId, recipientId: recipient.id, propertyId, type: "INTEREST", deduplicationKey: `interest:${recipient.id}:${propertyId}:${email}` },
+    update: {},
+  });
+  return true;
+}
+
 function serializeCampaign(campaign: { id: string; subject: string; templateHtml: string | null; bodyText: string | null; renderedHtml: string | null; status: string; newsArticleId: string | null; templateId: string | null; sentAt: Date | null; recipientCount: number; createdAt: Date; completedAt: Date | null; properties: Array<{ id: string; propertyId: string | null; propertyName: string }>; recipients: Array<{ id: string; recipientEmail: string; recipientName: string; status: string; sentAt: Date | null; failedAt: Date | null; errorMessage: string | null; attemptCount: number }>; events?: Array<{ type: string }> }) {
   const eventCounts = new Map<string, number>();
   for (const event of campaign.events ?? []) eventCounts.set(event.type, (eventCounts.get(event.type) ?? 0) + 1);
   return { ...campaign, sentAt: campaign.sentAt?.toISOString() ?? null, createdAt: campaign.createdAt.toISOString(), completedAt: campaign.completedAt?.toISOString() ?? null, recipients: campaign.recipients.map((recipient) => ({ ...recipient, sentAt: recipient.sentAt?.toISOString() ?? null, failedAt: recipient.failedAt?.toISOString() ?? null })), clickCount: eventCounts.get("CLICKED") ?? 0, interestCount: eventCounts.get("INTEREST") ?? 0, saveCount: eventCounts.get("SAVED") ?? 0, sentCount: campaign.recipients.filter((recipient) => recipient.status === "SENT").length, failedCount: campaign.recipients.filter((recipient) => recipient.status === "FAILED").length };
 }
 
-const root = {
+export const root = {
   login: async ({ email, password }: { email: string; password: string }) => {
     const user = await prisma.user.findUnique({ where: { email: email.trim().toLowerCase() } });
     if (!user || !passwordMatches(password, user.passwordHash)) {
@@ -1315,11 +1382,14 @@ const root = {
   },
   setPropertySaved: async ({ propertyId, saved, campaignToken }: { propertyId: string; saved: boolean; campaignToken?: string }, context: { token?: string }) => {
     const user = await requireUser(context);
+    const existing = await prisma.savedProperty.findUnique({ where: { userId_propertyId: { userId: user.id, propertyId } }, select: { id: true } });
     if (saved) await prisma.savedProperty.upsert({ where: { userId_propertyId: { userId: user.id, propertyId } }, create: { userId: user.id, propertyId }, update: {} });
     else await prisma.savedProperty.deleteMany({ where: { userId: user.id, propertyId } });
-    const recipient = await campaignRecipientForToken(campaignToken);
-    if (saved && recipient?.recipientEmail.toLowerCase() === user.email.toLowerCase()) await prisma.campaignEvent.upsert({ where: { deduplicationKey: `save:${recipient.id}:${propertyId}` }, create: { campaignId: recipient.campaignId, subscriberId: recipient.subscriberId, recipientId: recipient.id, propertyId, type: "SAVED", deduplicationKey: `save:${recipient.id}:${propertyId}` }, update: {} });
+    if (saved && !existing) await recordCampaignSaveEvent(campaignToken, propertyId).catch((error) => console.error("Campaign save attribution failed", error));
     return saved;
+  },
+  recordCampaignSave: async ({ propertyId, campaignToken }: { propertyId: string; campaignToken: string }) => {
+    return recordCampaignSaveEvent(campaignToken, propertyId);
   },
   recordPropertyView: async ({ propertyId }: { propertyId: string }) => {
     await prisma.analyticsEvent.create({ data: { propertyId, eventType: "PROPERTY_VIEW" } });
@@ -1336,32 +1406,48 @@ const root = {
     if (!input.consent) throw new Error("Consent is required to submit interest");
     const property = await prisma.property.findFirst({ where: { id: input.propertyId, publicationStatus: "PUBLISHED" }, select: { id: true, name: true, location: true, status: true, agentId: true } });
     if (!property) throw new Error("Property is not available");
+    const name = normalizePersonName(input.name);
     const email = input.email.trim().toLowerCase();
+    const phone = normalizePhone(input.phone, true);
+    const message = input.message.trim();
+    if (!name) throw new Error("Name is required");
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) throw new Error("Email must be valid");
+    if (!message) throw new Error("Message is required");
     const now = new Date();
-    const recipient = await campaignRecipientForToken(input.campaignToken);
-    const attributedRecipient = recipient?.recipientEmail.toLowerCase() === email ? recipient : null;
     const result = await prisma.$transaction(async (tx) => {
+      const existingByEmail = await tx.subscriber.findUnique({ where: { email }, select: { id: true, name: true } });
+      assertSubscriberEmailNameCompatible(existingByEmail, name);
+      await assertUniqueSubscriberName(tx, name, email, existingByEmail?.id);
       const subscriber = await tx.subscriber.upsert({
         where: { email },
-        create: { name: input.name.trim(), email, phone: input.phone?.trim() || null, status: "ACTIVE", subscribedAt: now, consentGrantedAt: now, consentVersion: "interest-v1" },
-        update: { name: input.name.trim(), phone: input.phone?.trim() || null, status: "ACTIVE", subscribedAt: now, consentGrantedAt: now, consentVersion: "interest-v1", unsubscribedAt: null },
+        create: { name, email, phone, status: "ACTIVE", subscribedAt: now, consentGrantedAt: now, consentVersion: "interest-v1" },
+        update: { name, phone, status: "ACTIVE", subscribedAt: now, consentGrantedAt: now, consentVersion: "interest-v1", unsubscribedAt: null },
       });
       await tx.consent.create({ data: { subscriberId: subscriber.id, type: "INTEREST", granted: true, version: "interest-v1", source: "property-interest" } });
-      const interest = await tx.interest.create({ data: { propertyId: property.id, userId: null, agentId: property.agentId, name: input.name.trim(), email, phone: input.phone?.trim() || null, message: input.message.trim(), dataConsent: true } });
-      if (attributedRecipient) await tx.campaignEvent.create({ data: { campaignId: attributedRecipient.campaignId, subscriberId: attributedRecipient.subscriberId, recipientId: attributedRecipient.id, propertyId: property.id, type: "INTEREST" } });
+      const interest = await tx.interest.create({ data: { propertyId: property.id, userId: null, agentId: property.agentId, name, email, phone, message, dataConsent: true } });
       return interest;
     });
+    await recordCampaignInterestEvent(input.campaignToken, property.id, email).catch((error) => console.error("Campaign interest attribution failed", error));
     return { ...result, createdAt: result.createdAt.toISOString(), property };
   },
   addSubscriber: async ({ input }: { input: { name: string; email: string; phone?: string; consent: boolean } }, context: { token?: string }) => {
     await requireAdmin(context);
     if (!input.consent) throw new Error("Explicit marketing consent is required");
+    const name = normalizePersonName(input.name);
     const email = input.email.trim().toLowerCase();
+    const phone = normalizePhone(input.phone, false);
+    if (!name) throw new Error("Subscriber name is required");
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) throw new Error("Email must be valid");
     const now = new Date();
-    const subscriber = await prisma.subscriber.upsert({
-      where: { email },
-      create: { name: input.name.trim(), email, phone: input.phone?.trim() || null, status: "ACTIVE", subscribedAt: now, consentGrantedAt: now, consentVersion: "marketing-v1" },
-      update: { name: input.name.trim(), phone: input.phone?.trim() || null, status: "ACTIVE", subscribedAt: now, unsubscribedAt: null, consentGrantedAt: now, consentVersion: "marketing-v1" },
+    const subscriber = await prisma.$transaction(async (tx) => {
+      const existingByEmail = await tx.subscriber.findUnique({ where: { email }, select: { id: true, name: true } });
+      assertSubscriberEmailNameCompatible(existingByEmail, name);
+      await assertUniqueSubscriberName(tx, name, email, existingByEmail?.id);
+      return tx.subscriber.upsert({
+        where: { email },
+        create: { name, email, phone, status: "ACTIVE", subscribedAt: now, consentGrantedAt: now, consentVersion: "marketing-v1" },
+        update: { name, phone, status: "ACTIVE", subscribedAt: now, unsubscribedAt: null, consentGrantedAt: now, consentVersion: "marketing-v1" },
+      });
     });
     await prisma.consent.create({ data: { subscriberId: subscriber.id, type: "MARKETING", granted: true, version: "marketing-v1", source: "admin-registration" } });
     return { ...subscriber, consentGrantedAt: subscriber.consentGrantedAt?.toISOString() ?? null, subscribedAt: subscriber.subscribedAt?.toISOString() ?? null, unsubscribedAt: null };
@@ -1402,7 +1488,9 @@ const root = {
     const followUp = await prisma.interestFollowUp.update({ where: { id }, data: { status: "SENDING", sendRequestedAt: now, sentById: admin.id, attemptCount: { increment: 1 }, errorMessage: null, failedAt: null } });
     try {
       if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASSWORD) throw new Error("Email service is not configured");
-      const content = followUpEmailContent(current.body, current.interest);
+      const subscriber = await prisma.subscriber.findUnique({ where: { email: current.interest.email.toLowerCase() }, select: { id: true } });
+      const unsubscribeLink = subscriber ? unsubscribeUrl(await ensureUnsubscribeToken(subscriber.id)) : undefined;
+      const content = followUpEmailContent(current.body, current.interest, unsubscribeLink);
       const info = await mailTransport.sendMail({ from: `${process.env.MAIL_FROM_NAME ?? "Harborstone Homes"} <${process.env.MAIL_FROM_EMAIL ?? process.env.SMTP_USER}>`, to: current.interest.email, subject: current.subject, html: content.html });
       const sent = await prisma.$transaction(async (tx) => {
         const saved = await tx.interestFollowUp.update({ where: { id }, data: { status: "SENT", sentAt: new Date(), providerMessageId: info.messageId } });
@@ -1653,8 +1741,25 @@ const root = {
     const upload = await prisma.propertyImportUpload.findUniqueOrThrow({ where: { id: uploadId } });
     if (!upload.content) throw new Error("Uploaded subscriber CSV content is unavailable");
     const result = validateUploadedSubscriberCsv(upload.content);
-    const validation = { valid: result.valid, totalRows: result.totalRows, validRows: result.validRows, invalidRows: result.invalidRows, totalErrors: result.totalErrors, errorsTruncated: false, schema: { valid: result.valid, expectedColumns: ["Name", "Email", "Phone"], requiredColumns: ["Name", "Email"], receivedColumns: ["Name", "Email", "Phone"], missingColumns: [], unknownColumns: [], duplicateColumns: [], emptyColumns: [] }, errors: result.errors };
-    const updated = await prisma.propertyImportUpload.update({ where: { id: uploadId }, data: { status: result.valid ? "READY" : "INVALID", validation, validatedRows: result.rows as unknown as import("./generated/client.js").Prisma.InputJsonValue } });
+    const subscribers = await prisma.subscriber.findMany({ select: { name: true, email: true } });
+    const existingByName = new Map(subscribers.map((subscriber) => [subscriberNameKey(subscriber.name), subscriber]));
+    const duplicateNameErrors = result.rows.flatMap((row, index) => {
+      const name = normalizePersonName(String(row.Name ?? ""));
+      const email = String(row.Email ?? "").trim().toLowerCase();
+      const match = existingByName.get(subscriberNameKey(name));
+      return match && match.email.toLowerCase() !== email ? [{ rowNumber: index + 2, field: "Name", value: name, message: `Subscriber name already exists: ${match.name}`, errorType: "DUPLICATE" }] : [];
+    });
+    const existingByEmail = new Map(subscribers.map((subscriber) => [subscriber.email.toLowerCase(), subscriber]));
+    const emailNameErrors = result.rows.flatMap((row, index) => {
+      const name = normalizePersonName(String(row.Name ?? ""));
+      const email = String(row.Email ?? "").trim().toLowerCase();
+      const match = existingByEmail.get(email);
+      return match && subscriberNameKey(match.name) !== subscriberNameKey(name) ? [{ rowNumber: index + 2, field: "Email", value: email, message: "Subscriber email already exists with a different name", errorType: "DUPLICATE" }] : [];
+    });
+    const errors = [...result.errors, ...duplicateNameErrors, ...emailNameErrors];
+    const valid = result.valid && errors.length === 0;
+    const validation = { valid, totalRows: result.totalRows, validRows: valid ? result.validRows : Math.max(result.validRows - duplicateNameErrors.length, 0), invalidRows: valid ? result.invalidRows : result.totalRows - Math.max(result.validRows - duplicateNameErrors.length, 0), totalErrors: errors.length, errorsTruncated: false, schema: { valid: result.valid, expectedColumns: ["Name", "Email", "Phone"], requiredColumns: ["Name", "Email"], receivedColumns: ["Name", "Email", "Phone"], missingColumns: [], unknownColumns: [], duplicateColumns: [], emptyColumns: [] }, errors };
+    const updated = await prisma.propertyImportUpload.update({ where: { id: uploadId }, data: { status: valid ? "READY" : "INVALID", validation, validatedRows: result.rows as unknown as import("./generated/client.js").Prisma.InputJsonValue } });
     return uploadResult(updated);
   },
   cancelPropertyUpload: async ({ uploadId }: { uploadId: string }, context: { token?: string }) => {
@@ -1682,7 +1787,14 @@ const root = {
       try {
         const now = new Date();
         const email = String(row.Email).trim().toLowerCase();
-        const subscriber = await prisma.subscriber.upsert({ where: { email }, create: { name: String(row.Name).trim(), email, phone: String(row.Phone ?? "").trim() || null, status: "ACTIVE", subscribedAt: now, consentGrantedAt: now, consentVersion: "marketing-v1" }, update: { name: String(row.Name).trim(), phone: String(row.Phone ?? "").trim() || null, status: "ACTIVE", subscribedAt: now, unsubscribedAt: null, consentGrantedAt: now, consentVersion: "marketing-v1" } });
+        const name = normalizePersonName(String(row.Name ?? ""));
+        const phone = normalizePhone(String(row.Phone ?? "").trim() || null, false);
+        const subscriber = await prisma.$transaction(async (tx) => {
+          const existingByEmail = await tx.subscriber.findUnique({ where: { email }, select: { id: true, name: true } });
+          assertSubscriberEmailNameCompatible(existingByEmail, name);
+          await assertUniqueSubscriberName(tx, name, email, existingByEmail?.id);
+          return tx.subscriber.upsert({ where: { email }, create: { name, email, phone, status: "ACTIVE", subscribedAt: now, consentGrantedAt: now, consentVersion: "marketing-v1" }, update: { name, phone, status: "ACTIVE", subscribedAt: now, unsubscribedAt: null, consentGrantedAt: now, consentVersion: "marketing-v1" } });
+        });
         await prisma.consent.create({ data: { subscriberId: subscriber.id, type: "MARKETING", granted: true, version: "marketing-v1", source: "subscriber-import" } });
         successfulRows++;
       } catch (error) { errors.push({ rowNumber: index + 2, field: "row", value: null, message: error instanceof Error ? error.message : "Import failed", errorType: "IMPORT" }); }
@@ -1715,27 +1827,12 @@ const root = {
     const events = await prisma.campaignEvent.findMany({
       where: {
         ...(start || end ? { occurredAt: { ...(start ? { gte: start } : {}), ...(end ? { lte: end } : {}) } } : {}),
-        type: { in: ["SENT", "CLICKED", "INTEREST", "UNSUBSCRIBED"] },
+        type: { in: ["SENT", "CLICKED", "INTEREST", "SAVED", "UNSUBSCRIBED"] },
       },
       select: { campaignId: true, type: true, occurredAt: true, campaign: { select: { subject: true } } },
       orderBy: { occurredAt: "asc" },
     });
-    const days = new Map<string, { campaignId: string; campaignSubject: string; date: string; sent: number; clicks: number; interests: number; unsubscribes: number }>();
-    for (const event of events) {
-      const date = event.occurredAt.toISOString().slice(0, 10);
-      const key = `${event.campaignId}:${date}`;
-      const day = days.get(key) ?? { campaignId: event.campaignId, campaignSubject: event.campaign.subject, date, sent: 0, clicks: 0, interests: 0, unsubscribes: 0 };
-      if (event.type === "SENT") day.sent += 1;
-      if (event.type === "CLICKED") day.clicks += 1;
-      if (event.type === "INTEREST") day.interests += 1;
-      if (event.type === "UNSUBSCRIBED") day.unsubscribes += 1;
-      days.set(key, day);
-    }
-    return [...days.values()].map((day) => ({
-      ...day,
-      clickRate: day.sent ? day.clicks / day.sent : 0,
-      interestRate: day.sent ? day.interests / day.sent : 0,
-    }));
+    return aggregateCampaignStatistics(events);
   },
   propertyImportUpload: async ({ id }: { id: string }, context: { token?: string }) => {
     await requireAdmin(context);
@@ -2051,7 +2148,8 @@ app.get("/unsubscribe", async (req, res) => {
   const recipient = await campaignRecipientForToken(campaignToken);
   if (recipient?.subscriberId && recipient.subscriberId !== record.subscriberId) return res.status(400).send("Invalid unsubscribe link.");
   await prisma.$transaction([
-    prisma.subscriber.update({ where: { id: record.subscriberId }, data: { status: "UNSUBSCRIBED", unsubscribedAt: new Date() } }),
+    prisma.subscriber.update({ where: { id: record.subscriberId }, data: { status: "UNSUBSCRIBED", unsubscribedAt: new Date(), consentGrantedAt: null, consentVersion: null } }),
+    prisma.consent.create({ data: { subscriberId: record.subscriberId, type: "MARKETING", granted: false, version: "unsubscribe-v1", source: "unsubscribe-link" } }),
     prisma.unsubscribeToken.delete({ where: { id: record.id } }),
     ...(recipient ? [prisma.campaignEvent.create({ data: { campaignId: recipient.campaignId, subscriberId: record.subscriberId, recipientId: recipient.id, type: "UNSUBSCRIBED", deduplicationKey: `unsubscribe:${recipient.campaignId}:${record.subscriberId}` } })] : []),
   ]);
@@ -2068,7 +2166,7 @@ app.get("/campaign-click", async (req, res) => {
   if (propertyId) {
     const property = await prisma.campaignProperty.findFirst({ where: { campaignId: recipient.campaignId, propertyId }, select: { propertyId: true } });
     if (!property?.propertyId) return res.status(404).send("This campaign link is invalid or has expired.");
-    target = `${process.env.PUBLIC_APP_URL ?? "http://localhost:5173"}/properties/${encodeURIComponent(propertyId)}?campaignToken=${encodeURIComponent(token)}`;
+    target = `${publicAppUrl()}/properties/${encodeURIComponent(propertyId)}?campaignToken=${encodeURIComponent(token)}`;
   } else {
     try {
       const targetUrl = new URL(destination);
@@ -2082,27 +2180,31 @@ app.get("/campaign-click", async (req, res) => {
   res.redirect(302, target);
 });
 
-const PORT = Number(process.env.PORT ?? 4000);
-const server = app.listen(PORT, () => {
-  console.log(`Backend running on http://localhost:${PORT}`);
-  console.log(`GraphQL endpoint: http://localhost:${PORT}/graphql`);
-});
-
-let shuttingDown = false;
-async function shutdown(signal: string) {
-  if (shuttingDown) return;
-  shuttingDown = true;
-  console.log(`${signal} received, closing backend`);
-  const forceExit = setTimeout(() => process.exit(1), 10_000);
-  forceExit.unref();
-  server.close(async () => {
-    try {
-      await prisma.$disconnect();
-      process.exit(0);
-    } catch {
-      process.exit(1);
-    }
+export function startServer(port = Number(process.env.PORT ?? 4000)) {
+  assertProductionRuntimeConfiguration();
+  const server = app.listen(port, "0.0.0.0", () => {
+    console.log(`Backend listening on port ${port}`);
   });
+
+  let shuttingDown = false;
+  async function shutdown(signal: string) {
+    if (shuttingDown) return;
+    shuttingDown = true;
+    console.log(`${signal} received, closing backend`);
+    const forceExit = setTimeout(() => process.exit(1), 10_000);
+    forceExit.unref();
+    server.close(async () => {
+      try {
+        await prisma.$disconnect();
+        process.exit(0);
+      } catch {
+        process.exit(1);
+      }
+    });
+  }
+  process.once("SIGTERM", () => void shutdown("SIGTERM"));
+  process.once("SIGINT", () => void shutdown("SIGINT"));
+  return server;
 }
-process.once("SIGTERM", () => void shutdown("SIGTERM"));
-process.once("SIGINT", () => void shutdown("SIGINT"));
+
+if (process.argv[1] && basename(process.argv[1]) === "server.js") startServer();

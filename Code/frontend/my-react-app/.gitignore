@@ -40,5 +40,6 @@ coverage/
 *.sln
 
 # TypeScript build cache
-*.tsbuildinfoplaywright-report/
+*.tsbuildinfo
+playwright-report/
 test-results/

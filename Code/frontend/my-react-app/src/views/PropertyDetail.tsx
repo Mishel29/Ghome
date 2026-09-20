@@ -1,10 +1,32 @@
 import { graphqlRequest } from "../api/graphql";
+import { captureCampaignAttributionFromUrl, getCampaignAttributionToken } from "../lib/campaignAttribution";
 import { propertyById, viewProperty } from "../api/properties";
 import { useState, useEffect } from "react";
 import { useApp } from "../context";
 import { fmt, type Property } from "../data";
 import { useNavigate, useParams } from "react-router-dom";
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+
+const COUNTRY_CODES = [
+  { country: "Ireland", code: "+353" },
+  { country: "United Kingdom", code: "+44" },
+  { country: "India", code: "+91" },
+  { country: "United States", code: "+1" },
+  { country: "Canada", code: "+1" },
+  { country: "Australia", code: "+61" },
+  { country: "Mexico", code: "+52" },
+  { country: "Spain", code: "+34" },
+  { country: "France", code: "+33" },
+  { country: "Germany", code: "+49" },
+  { country: "Italy", code: "+39" },
+  { country: "Portugal", code: "+351" },
+  { country: "Brazil", code: "+55" },
+  { country: "Netherlands", code: "+31" },
+  { country: "Poland", code: "+48" },
+  { country: "South Africa", code: "+27" },
+  { country: "New Zealand", code: "+64" },
+  { country: "UAE", code: "+971" },
+];
 
 export default function PropertyDetail() {
   const { id } = useParams(); const [property, setProperty] = useState<Property | null>(null); const [error, setError] = useState(""); const [loaded, setLoaded] = useState("");
@@ -28,13 +50,16 @@ function PropertyContent({ p }: { p: Property }) {
   const [photoIdx, setPhotoIdx] = useState(0);
   const [showForm, setShowForm] = useState(false);
   const [formSent, setFormSent] = useState(false);
-  const [form, setForm] = useState({ name: "", email: "", phone: "", message: "", consent: false });
+  const [form, setForm] = useState({ name: "", email: "", countryCode: "+353", phone: "", message: "", consent: false });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const validate = () => {
     const e: Record<string, string> = {};
     if (!form.name.trim()) e.name = "Name is required";
     if (!form.email.match(/^[^@]+@[^@]+\.[^@]+$/)) e.email = "Valid email required";
+    if (!form.phone.trim()) e.phone = "Phone number is required";
+    if (!/^\d+$/.test(form.phone)) e.phone = "Use digits only";
+    if (form.phone.startsWith(form.countryCode.replace("+", ""))) e.phone = "Do not repeat the country code";
     if (!form.message.trim()) e.message = "Message is required";
     if (!form.consent) e.consent = "You must consent to data processing";
     setErrors(e);
@@ -45,11 +70,12 @@ function PropertyContent({ p }: { p: Property }) {
   const [submitError,setSubmitError] = useState("");
   const submit = async (e: React.FormEvent) => {
     e.preventDefault(); if(!validate())return; setSending(true);setSubmitError("");
-    try { await graphqlRequest('mutation($input:InterestInput!){submitInterest(input:$input){id}}',{input:{propertyId:p.id,...form,campaignToken:new URLSearchParams(window.location.search).get("campaignToken")??undefined}});setFormSent(true); }
+    const { countryCode, phone, ...rest } = form;
+    try { captureCampaignAttributionFromUrl(); await graphqlRequest('mutation($input:InterestInput!){submitInterest(input:$input){id}}',{input:{propertyId:p.id,...rest,phone:`${countryCode}${phone}`,campaignToken:getCampaignAttributionToken()}});setFormSent(true); }
     catch(error) {setSubmitError(error instanceof Error?error.message:"Could not register interest");}
     finally {setSending(false);}
   };
-  useEffect(()=>{if(sessionStorage.getItem(`viewed-${p.id}`))return;sessionStorage.setItem(`viewed-${p.id}`,"1");void graphqlRequest('mutation($id:ID!){recordPropertyView(propertyId:$id)}',{id:p.id}).catch(()=>{});},[p.id]);
+  useEffect(()=>{const campaignToken=captureCampaignAttributionFromUrl();if(sessionStorage.getItem(`viewed-${p.id}`))return;sessionStorage.setItem(`viewed-${p.id}`,"1");void graphqlRequest('mutation($id:ID!,$campaignToken:String){recordPropertyView(propertyId:$id,campaignToken:$campaignToken)}',{id:p.id,campaignToken}).catch(()=>{});},[p.id]);
   const statusColors: Record<string, string> = {
     "on-sale": "bg-amber",
     "coming-soon": "bg-burgundy",
@@ -240,8 +266,14 @@ function PropertyContent({ p }: { p: Property }) {
                     {errors.name && <p className="text-[11px] text-red-600 mt-1">{errors.name}</p>}
                   </div>
                   <div>
-                    <label className="text-xs font-semibold text-stone block mb-1.5">Phone</label>
-                    <input className="w-full border border-[#ddd5c5] bg-white px-3 py-2.5 text-sm text-navy" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="Optional"/>
+                    <label className="text-xs font-semibold text-stone block mb-1.5">Phone *</label>
+                    <div className="flex">
+                      <select aria-label="Country code" className="w-32 border border-[#ddd5c5] bg-white px-2 py-2.5 text-sm text-navy" value={form.countryCode} onChange={(e) => setForm({ ...form, countryCode: e.target.value })}>
+                        {COUNTRY_CODES.map(({ country, code }) => <option key={`${country}-${code}`} value={code}>{country} {code}</option>)}
+                      </select>
+                      <input className="w-full border border-l-0 border-[#ddd5c5] bg-white px-3 py-2.5 text-sm text-navy" inputMode="numeric" pattern="[0-9]*" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value.replace(/\D/g, "") })} placeholder="871234567"/>
+                    </div>
+                    {errors.phone && <p className="text-[11px] text-red-600 mt-1">{errors.phone}</p>}
                   </div>
                 </div>
                 <div>

@@ -11,4 +11,5 @@ dist/
 
 *.log
 *.tsbuildinfo
+coverage/
 .DS_Store

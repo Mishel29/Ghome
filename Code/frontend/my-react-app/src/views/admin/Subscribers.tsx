@@ -6,13 +6,29 @@ import type { FileDownload, SubscriberConnection, SubscriberStats } from "../../
 import { AdminPage, Button, Field, Feedback, Pager, inputClass } from "../../components/AdminUI";
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
+const COUNTRY_CODES = [
+  { country: "Ireland", code: "+353" },
+  { country: "United Kingdom", code: "+44" },
+  { country: "India", code: "+91" },
+  { country: "United States", code: "+1" },
+  { country: "Canada", code: "+1" },
+  { country: "Australia", code: "+61" },
+  { country: "Mexico", code: "+52" },
+  { country: "Spain", code: "+34" },
+  { country: "France", code: "+33" },
+  { country: "Germany", code: "+49" },
+  { country: "Italy", code: "+39" },
+  { country: "Portugal", code: "+351" },
+  { country: "Brazil", code: "+55" },
+];
+
 export default function AdminSubscribers() {
   const [status, setStatus] = useState("ALL");
   const [offset, setOffset] = useState(0);
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<string[]>([]);
   const [adding, setAdding] = useState(false);
-  const [form, setForm] = useState({ name: "", email: "", phone: "", consent: false });
+  const [form, setForm] = useState({ name: "", email: "", countryCode: "+353", phone: "", consent: false });
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const action = useAction();
@@ -62,8 +78,16 @@ export default function AdminSubscribers() {
       </div>
       {stats.data?.subscriberStats.days.length ? <div className="h-64"><ResponsiveContainer width="100%" height="100%"><LineChart data={stats.data.subscriberStats.days}><CartesianGrid strokeDasharray="3 3" stroke="#ddd5c5" /><XAxis dataKey="date" tick={{ fontSize: 10 }} /><YAxis allowDecimals={false} /><Tooltip /><Line type="monotone" dataKey="activeRegistrations" name="Active registrations" stroke="#4A6741" strokeWidth={3} /><Line type="monotone" dataKey="unsubscribes" name="Unsubscribes" stroke="#6B2B4C" strokeWidth={3} /></LineChart></ResponsiveContainer></div> : <p className="text-sm text-stone">No subscriber activity in this range.</p>}
     </section>
-    {adding && <form className="bg-white p-6 space-y-4 max-w-xl" onSubmit={(event) => { event.preventDefault(); void action.run(async () => { await graphqlRequest("mutation($input:SubscriberInput!){addSubscriber(input:$input){id}}", { input: form }); setForm({ name: "", email: "", phone: "", consent: false }); setAdding(false); query.reload(); }, "Subscriber added"); }}>
-      {([['name', 'Name'], ['email', 'Email'], ['phone', 'Phone (optional)']] as const).map(([key, label]) => <Field key={key} label={label}><input className={inputClass} type={key === "email" ? "email" : "text"} required={key !== "phone"} value={form[key]} onChange={(event) => setForm({ ...form, [key]: event.target.value })} /></Field>)}
+    {adding && <form className="bg-white p-6 space-y-4 max-w-xl" onSubmit={(event) => { event.preventDefault(); void action.run(async () => { const { countryCode, phone, ...rest } = form; await graphqlRequest("mutation($input:SubscriberInput!){addSubscriber(input:$input){id}}", { input: { ...rest, phone: phone ? `${countryCode}${phone}` : undefined } }); setForm({ name: "", email: "", countryCode: "+353", phone: "", consent: false }); setAdding(false); query.reload(); }, "Subscriber added"); }}>
+      {([['name', 'Name'], ['email', 'Email']] as const).map(([key, label]) => <Field key={key} label={label}><input className={inputClass} type={key === "email" ? "email" : "text"} required value={form[key]} onChange={(event) => setForm({ ...form, [key]: event.target.value })} /></Field>)}
+      <Field label="Phone (optional)">
+        <div className="flex">
+          <select aria-label="Country code" className="w-36 border bg-white p-2 text-sm" value={form.countryCode} onChange={(event) => setForm({ ...form, countryCode: event.target.value })}>
+            {COUNTRY_CODES.map(({ country, code }) => <option key={`${country}-${code}`} value={code}>{country} {code}</option>)}
+          </select>
+          <input aria-label="Phone number" className={inputClass + " border-l-0"} inputMode="numeric" pattern="[0-9]*" value={form.phone} onChange={(event) => setForm({ ...form, phone: event.target.value.replace(/\D/g, "") })} />
+        </div>
+      </Field>
       <label className="flex items-center gap-2 text-sm"><input type="checkbox" required checked={form.consent} onChange={(event) => setForm({ ...form, consent: event.target.checked })} />I have this person&apos;s explicit marketing consent.</label>
       <Button type="submit" disabled={action.busy}>Add Subscriber</Button>
     </form>}

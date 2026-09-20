@@ -1,4 +1,5 @@
 import { comparisonSelection } from "./lib/calculations";
+import { captureCampaignAttributionFromUrl, getCampaignAttributionToken } from "./lib/campaignAttribution";
 import { getAuthToken, setAuthToken, graphqlRequest } from "./api/graphql";
 import { propertyPage, viewProperty, propertyById, PROPERTY_FIELDS } from "./api/properties";
 import { createContext, useContext, useState, useEffect, useCallback } from "react";
@@ -81,6 +82,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
+    captureCampaignAttributionFromUrl();
     let active = true;
     const restore = async () => {
       try {
@@ -139,14 +141,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const toggleSave = (id: string) => {
     const saved = !savedIds.includes(id);
+    captureCampaignAttributionFromUrl();
+    const campaignToken = getCampaignAttributionToken();
     if (!user) {
       const next = saved ? [...new Set([...savedIds, id])] : savedIds.filter((savedId) => savedId !== id);
       setSavedIds(next);
       writeLocalSavedIds(next);
+      if (saved && campaignToken) void graphqlRequest("mutation($id:ID!,$campaignToken:String!){recordCampaignSave(propertyId:$id,campaignToken:$campaignToken)}", { id, campaignToken }).catch(() => {});
       void cacheProperty(id).catch(() => {});
       return;
     }
-    const campaignToken = new URLSearchParams(window.location.search).get("campaignToken") ?? undefined;
     void graphqlRequest('mutation($id:ID!,$saved:Boolean!,$campaignToken:String){setPropertySaved(propertyId:$id,saved:$saved,campaignToken:$campaignToken)}', { id, saved, campaignToken }).then(async () => {
       setSavedIds((old) => saved ? [...new Set([...old, id])] : old.filter((x) => x !== id));
       await cacheProperty(id);

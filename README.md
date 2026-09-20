@@ -219,6 +219,48 @@ Prisma migrations → Admin bootstrap → Backend server
 The container requires a PostgreSQL database accessible through `DATABASE_URL`.
  
 > Do not commit `.env` files or database/SMTP credentials to the repository.
+
+## Production Deployment
+
+The frontend is deployed to Vercel and the backend is deployed as a Render Docker service with Render PostgreSQL. Configure values through the platform environment managers; do not add production values to `.env` files or source control.
+
+### Render backend environment
+
+Set `DATABASE_URL`, `PUBLIC_APP_URL`, `PUBLIC_BACKEND_URL`, `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `MAIL_FROM_EMAIL`, `MAIL_FROM_NAME`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`, and `NODE_ENV=production`.
+
+Render supplies `PORT`. The backend listens on `0.0.0.0`, runs `prisma migrate deploy`, performs the idempotent admin bootstrap, and then starts the API. `PUBLIC_APP_URL` is the allowed browser origin and `PUBLIC_BACKEND_URL` is used for campaign and unsubscribe links.
+
+### Vercel frontend environment
+
+Set `VITE_GRAPHQL_URL` to the deployed backend GraphQL URL, including `/graphql`, before the Vercel build. Vite embeds this value at build time, so redeploy the frontend after it changes. `vercel.json` supplies the SPA rewrite required for direct route refreshes.
+
+### Disposable production-like verification
+
+`Code/backend/docker-compose.test.yml` creates an isolated `harborstone_test` PostgreSQL database and production-mode backend. It never uses the developer database. Run it from `Code/backend`:
+
+```bash
+docker compose -p harborstone_test_suite -f docker-compose.test.yml up --build -d
+docker compose -p harborstone_test_suite -f docker-compose.test.yml down -v
+```
+
+## Automated Tests
+
+```bash
+# Code/backend
+npm test
+npm run test:coverage
+# Set TEST_DATABASE_URL only to a dedicated database whose name ends in _test.
+npm run test:integration
+
+# Code/frontend/my-react-app
+npm test
+npm run test:coverage
+npm run test:e2e
+# Requires E2E_BASE_URL and E2E_GRAPHQL_URL for a disposable real stack.
+npm run test:e2e:real
+```
+
+Coverage reports are written to `Code/backend/coverage/backend/` and `Code/frontend/my-react-app/coverage/frontend/`. Playwright writes an HTML report to `Code/frontend/my-react-app/playwright-report/`.
  
 
 

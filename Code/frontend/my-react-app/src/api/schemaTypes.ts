@@ -373,6 +373,7 @@ export interface Mutation {
   uploadSubscriberFile: PropertyUpload;
   startSubscriberImport: PropertyImport;
   setPropertySaved: boolean;
+  recordCampaignSave: boolean;
   recordPropertyView: boolean;
 }
 
@@ -606,6 +607,7 @@ export interface CampaignDay {
   sent: number;
   clicks: number;
   interests: number;
+  saves: number;
   unsubscribes: number;
   clickRate: number;
   interestRate: number;
