@@ -1,148 +1,197 @@
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { graphqlRequest } from "../api/graphql";
-import { PROPERTY_FIELDS, viewProperty } from "../api/properties";
+import { viewProperty } from "../api/properties";
 import PropertyCard from "../components/PropertyCard";
-import type { Property as ApiProperty } from "../api/schemaTypes";
+import type { Property as ApiProperty, PropertyAssistantResult } from "../api/schemaTypes";
 import type { Property } from "../data";
 
+const ASSISTANT_PROPERTY_FIELDS = `id name location county address postalCode type saleType status stage publicationStatus publishedAt priceMin priceMax bedroomsMin bedroomsMax bathroomsMin bathroomsMax sizeSqm sizeSqmMax completionYear description bedroomOptions bathroomOptions listedDate createdAt media { id url type isPrimary sortOrder altText } features { id name } valueHistory { id year value growthPercent isSynthetic source } historicalPrices { year price } clickCount interestCount saveCount campaigned`;
+const CHAT_MUTATION = `mutation ChatWithPropertyAI($input: PropertyAssistantInput!) { chatWithPropertyAI(input: $input) { message sessionId intent selectedPropertyId filterJson totalCount properties { ${ASSISTANT_PROPERTY_FIELDS} } } }`;
 
-interface Msg { role: "user" | "bot"; text: string; timestamp: Date }
+type ChatMessage = {
+  id: string;
+  role: "user" | "assistant";
+  text: string;
+  timestamp: Date;
+  properties?: Property[];
+  filterJson?: string;
+  totalCount?: number;
+};
+
+type PendingRequest = { message: string; selectedPropertyId?: string; selectedPropertyName?: string };
+type ChatResponse = Omit<PropertyAssistantResult, "properties"> & { properties: ApiProperty[] };
 
 const SUGGESTIONS = [
-  "Show me 3-bed homes under €500k",
-  "Which properties are ready to move in?",
-  "What's in Cork?",
-  "Show me 3-bedroom homes in Cork under 500k",
-  "Show me the most affordable option",
+  "Find me a 3-bedroom home under €500k",
+  "Show me properties near Dublin",
+  "Find family homes with at least 2 bathrooms",
+  "Show me the newest available properties",
 ];
 
+function messageId() {
+  return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
+function responseToMessage(reply: ChatResponse): ChatMessage {
+  return {
+    id: messageId(),
+    role: "assistant",
+    text: reply.message,
+    timestamp: new Date(),
+    properties: reply.properties.map(viewProperty),
+    filterJson: reply.filterJson,
+    totalCount: reply.totalCount,
+  };
+}
+
 export default function Chatbot() {
-  const [results, setResults] = useState<Property[]>([]);
-  const [filterJson,setFilterJson] = useState("{}");
-  const [resultCount,setResultCount] = useState(0);
-  const [messages, setMessages] = useState<Msg[]>([
-    {
-      role: "bot",
-      text: "Hello! I'm Harborstone's AI home assistant. I can help you find properties, answer questions about our developments, and guide you through the buying process. What are you looking for today?",
-      timestamp: new Date(),
-    },
-  ]);
+  const [messages, setMessages] = useState<ChatMessage[]>([{ id: "welcome", role: "assistant", text: "Hello! I can help you explore Harborstone's currently published properties and answer questions about a property you select.", timestamp: new Date() }]);
   const [input, setInput] = useState("");
+  const [sessionId, setSessionId] = useState<string>();
+  const [selectedProperty, setSelectedProperty] = useState<{ id: string; name: string }>();
   const [thinking, setThinking] = useState(false);
+  const [error, setError] = useState<string>();
+  const [lastRequest, setLastRequest] = useState<PendingRequest>();
   const endRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => { endRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages, thinking]);
+  useEffect(() => {
+    endRef.current?.scrollIntoView?.({ behavior: "smooth" });
+  }, [messages, thinking, error]);
 
-  const send = async (text?: string) => {
-    const q = (text ?? input).trim(); if (!q || thinking) return;
-    setInput(""); setMessages((old)=>[...old,{role:"user",text:q,timestamp:new Date()}]);setThinking(true);
+  const send = async (request?: PendingRequest, retry = false) => {
+    const next = request ?? { message: input.trim() };
+    const message = next.message.trim();
+    if (!message || thinking) return;
+
+    setError(undefined);
+    setLastRequest({ ...next, message });
+    if (!retry) {
+      setMessages((current) => [...current, { id: messageId(), role: "user", text: message, timestamp: new Date() }]);
+    }
+    setInput("");
+    setThinking(true);
+
     try {
-      const {propertyAssistant:reply}=await graphqlRequest<{propertyAssistant:{answer:string;filterJson:string;totalCount:number;properties:ApiProperty[]}}>(`query($message:String!,$previousFilterJson:String){propertyAssistant(message:$message,previousFilterJson:$previousFilterJson){answer filterJson totalCount properties{${PROPERTY_FIELDS}}}}`,{message:q,previousFilterJson:filterJson});
-      setMessages((old)=>[...old,{role:"bot",text:reply.answer,timestamp:new Date()}]);setFilterJson(reply.filterJson);setResults(reply.properties.map(viewProperty));setResultCount(reply.totalCount);
-    }catch(error){setMessages((old)=>[...old,{role:"bot",text:error instanceof Error?error.message:"The assistant is unavailable. Please retry.",timestamp:new Date()}]);}
-    finally{setThinking(false);}
+      const data = await graphqlRequest<{ chatWithPropertyAI: ChatResponse }>(CHAT_MUTATION, {
+        input: {
+          message,
+          sessionId,
+          selectedPropertyId: next.selectedPropertyId ?? selectedProperty?.id,
+        },
+      });
+      const reply = data.chatWithPropertyAI;
+      setSessionId(reply.sessionId);
+      if (reply.selectedPropertyId) {
+        const property = reply.properties.find((item) => item.id === reply.selectedPropertyId);
+        setSelectedProperty({ id: reply.selectedPropertyId, name: property?.name ?? next.selectedPropertyName ?? "Selected property" });
+      } else if (reply.intent === "PROPERTY_SEARCH") {
+        setSelectedProperty(undefined);
+      }
+      setMessages((current) => [...current, responseToMessage(reply)]);
+    } catch {
+      setError("The property assistant is temporarily unavailable. Please try again.");
+    } finally {
+      setThinking(false);
+    }
   };
 
-  const fmt2 = (d: Date) => d.toLocaleTimeString("en-IE", { hour: "2-digit", minute: "2-digit" });
+  const askAboutProperty = (property: Property) => {
+    setSelectedProperty({ id: property.id, name: property.name });
+    void send({ message: "Tell me about this property.", selectedPropertyId: property.id, selectedPropertyName: property.name });
+  };
 
-  const renderText = (text: string) =>
-    text.split(/\*\*(.+?)\*\*/g).map((part, i) =>
-      i % 2 === 1 ? <strong key={i}>{part}</strong> : part
-    );
+  const formatTime = (date: Date) => date.toLocaleTimeString("en-IE", { hour: "2-digit", minute: "2-digit" });
 
   return (
-    <div className="bg-cream min-h-screen">
-      <div className="bg-navy py-10 px-6">
-        <div className="max-w-3xl mx-auto">
-          <h1 className="font-display text-white text-3xl font-bold">AI Home Assistant</h1>
-          <p className="text-white/60 text-sm mt-1">Powered by Harborstone property intelligence</p>
+    <div className="min-h-screen bg-cream">
+      <div className="bg-navy px-6 py-10">
+        <div className="mx-auto max-w-4xl">
+          <h1 className="font-display text-3xl font-bold text-white">AI Home Assistant</h1>
+          <p className="mt-1 text-sm text-white/70">Grounded in Harborstone's current published property records.</p>
         </div>
       </div>
 
-      <div className="max-w-3xl mx-auto px-6 py-8">
-        {/* Chat window */}
-        <div className="bg-white border border-[#ddd5c5] shadow-sm flex flex-col h-[520px]">
-          {/* Header */}
-          <div className="bg-cream-dark border-b border-[#ddd5c5] px-5 py-3 flex items-center gap-3">
-            <div className="w-8 h-8 bg-navy rounded-full flex items-center justify-center">
-              <svg width="16" height="16" fill="none" stroke="white" strokeWidth="2" viewBox="0 0 24 24">
-                <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
-              </svg>
-            </div>
+      <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6">
+        <section className="flex min-h-[600px] flex-col border border-[#ddd5c5] bg-white shadow-sm" aria-label="Harborstone property assistant">
+          <header className="flex items-center gap-3 border-b border-[#ddd5c5] bg-cream-dark px-5 py-3">
+            <span className="flex h-8 w-8 items-center justify-center bg-navy text-sm font-bold text-white" aria-hidden="true">H</span>
             <div>
-              <div className="font-semibold text-navy text-sm">Harborstone AI</div>
-              <div className="text-[11px] text-stone flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 bg-sage rounded-full pulse-dot"/>
-                Answers from published property records
-              </div>
+              <p className="text-sm font-semibold text-navy">Harborstone AI</p>
+              <p className="text-xs text-stone">Published property information only</p>
             </div>
-          </div>
+          </header>
 
-          {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-5 space-y-4">
-            {messages.map((m, i) => (
-              <div key={i} className={`chat-msg flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
-                {m.role === "bot" && (
-                  <div className="w-7 h-7 bg-navy rounded-full flex items-center justify-center mr-2 mt-1 shrink-0 text-white text-xs font-bold">H</div>
-                )}
-                <div className={`max-w-[75%] ${m.role === "user" ? "bg-navy text-white" : "bg-cream-dark text-navy"} px-4 py-3 text-sm leading-relaxed`}>
-                  <div className="whitespace-pre-line">{renderText(m.text)}</div>
-                  <div className={`text-[10px] mt-1.5 ${m.role === "user" ? "text-white/50" : "text-stone"}`}>{fmt2(m.timestamp)}</div>
+          {selectedProperty && (
+            <div className="flex items-center justify-between gap-3 border-b border-[#ddd5c5] bg-cream px-5 py-2 text-sm text-navy">
+              <span>Asking about: <strong>{selectedProperty.name}</strong></span>
+              <button type="button" onClick={() => setSelectedProperty(undefined)} className="text-xs font-semibold text-navy underline hover:text-amber">Clear selection</button>
+            </div>
+          )}
+
+          <div className="flex-1 space-y-5 overflow-y-auto p-4 sm:p-5" aria-live="polite">
+            {messages.map((message) => (
+              <div key={message.id} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
+                {message.role === "assistant" && <span className="mr-2 mt-1 flex h-7 w-7 shrink-0 items-center justify-center bg-navy text-xs font-bold text-white" aria-hidden="true">H</span>}
+                <div className={`max-w-[88%] ${message.role === "user" ? "bg-navy text-white" : "bg-cream-dark text-navy"} px-4 py-3 text-sm leading-relaxed`}>
+                  <p className="whitespace-pre-line">{message.text}</p>
+                  <p className={`mt-2 text-[10px] ${message.role === "user" ? "text-white/60" : "text-stone"}`}>{formatTime(message.timestamp)}</p>
+                  {message.properties && message.properties.length > 0 && (
+                    <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                      {message.properties.map((property) => <PropertyCard key={property.id} property={property} showCompare onAskAI={askAboutProperty} />)}
+                    </div>
+                  )}
+                  {message.filterJson && message.totalCount && message.totalCount > 0 && (
+                    <Link className="mt-4 inline-block text-xs font-semibold text-navy underline hover:text-amber" to={`/properties?filters=${encodeURIComponent(message.filterJson)}`}>Open these filters in property search</Link>
+                  )}
                 </div>
               </div>
             ))}
             {thinking && (
-              <div className="flex items-center gap-2">
-                <div className="w-7 h-7 bg-navy rounded-full flex items-center justify-center text-white text-xs font-bold">H</div>
-                <div className="bg-cream-dark px-4 py-3 flex gap-1.5">
-                  {[0, 1, 2].map((i) => (
-                    <span key={i} className="w-2 h-2 bg-stone rounded-full animate-bounce" style={{ animationDelay: `${i * 0.15}s`}}/>
-                  ))}
-                </div>
+              <div className="flex items-center gap-2 text-sm text-stone" role="status">
+                <span className="flex h-7 w-7 items-center justify-center bg-navy text-xs font-bold text-white" aria-hidden="true">H</span>
+                Finding current property information...
               </div>
             )}
-            <div ref={endRef}/>
+            {error && (
+              <div className="flex items-center justify-between gap-3 border border-burgundy/40 bg-cream px-3 py-2 text-sm text-navy" role="alert">
+                <span>{error}</span>
+                <button type="button" onClick={() => lastRequest && void send(lastRequest, true)} disabled={!lastRequest || thinking} className="shrink-0 font-semibold underline disabled:opacity-40">Retry</button>
+              </div>
+            )}
+            <div ref={endRef} />
           </div>
 
-          {/* Input */}
-          <div className="border-t border-[#ddd5c5] p-3 flex gap-2">
-            <input
-              className="flex-1 px-4 py-2.5 border border-[#ddd5c5] bg-cream text-sm text-navy placeholder-stone"
-              placeholder="Ask about properties, prices, locations..."
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && send()}
-            />
-            <button
-              onClick={() => send()}
-              disabled={!input.trim() || thinking}
-              className="bg-navy text-white px-4 py-2.5 hover:bg-amber disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-            >
-              <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
-              </svg>
-            </button>
-          </div>
-        </div>
+          <form className="border-t border-[#ddd5c5] p-3" onSubmit={(event) => { event.preventDefault(); void send(); }}>
+            <label className="sr-only" htmlFor="property-assistant-message">Ask about properties</label>
+            <div className="flex items-end gap-2">
+              <textarea
+                id="property-assistant-message"
+                className="min-h-11 flex-1 resize-y border border-[#ddd5c5] bg-cream px-3 py-2 text-sm text-navy placeholder-stone"
+                placeholder="Ask about properties, prices, or locations..."
+                value={input}
+                onChange={(event) => setInput(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" && !event.shiftKey) {
+                    event.preventDefault();
+                    void send();
+                  }
+                }}
+                disabled={thinking}
+                maxLength={1200}
+              />
+              <button type="submit" disabled={!input.trim() || thinking} className="bg-navy px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-amber disabled:cursor-not-allowed disabled:opacity-40">Send</button>
+            </div>
+          </form>
+        </section>
 
-        {results.length > 0 && <section className="mt-6"><h2 className="font-display text-xl">Matching public properties ({resultCount})</h2><Link className="underline" to={`/properties?filters=${encodeURIComponent(filterJson)}`}>Open these filters in property search</Link><div className="grid sm:grid-cols-2 gap-4 mt-4">{results.map((p)=><PropertyCard key={p.id} property={p} showCompare />)}</div></section>}
-        {/* Suggestions */}
-        <div className="mt-5">
-          <p className="text-xs text-stone mb-3 uppercase tracking-wider font-semibold">Try asking...</p>
+        <section className="mt-5" aria-label="Starter questions">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-stone">Try asking</p>
           <div className="flex flex-wrap gap-2">
-            {SUGGESTIONS.map((s) => (
-              <button
-                key={s}
-                onClick={() => send(s)}
-                className="text-xs px-3 py-2 border border-[#ddd5c5] bg-cream-dark text-navy hover:border-amber hover:text-amber transition-all"
-              >
-                {s}
-              </button>
-            ))}
+            {SUGGESTIONS.map((suggestion) => <button key={suggestion} type="button" onClick={() => void send({ message: suggestion })} disabled={thinking} className="border border-[#ddd5c5] bg-cream-dark px-3 py-2 text-xs text-navy transition-colors hover:border-amber hover:text-amber disabled:opacity-40">{suggestion}</button>)}
           </div>
-        </div>
-      </div>
+        </section>
+      </main>
     </div>
   );
 }

@@ -234,7 +234,7 @@ The frontend is deployed to Vercel and the backend is deployed as a Render Docke
 
 ### Render backend environment
 
-Set `DATABASE_URL`, `PUBLIC_APP_URL`, `PUBLIC_BACKEND_URL`, `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `MAIL_FROM_EMAIL`, `MAIL_FROM_NAME`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`, and `NODE_ENV=production`.
+Set `DATABASE_URL`, `PUBLIC_APP_URL`, `PUBLIC_BACKEND_URL`, `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `MAIL_FROM_EMAIL`, `MAIL_FROM_NAME`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`, and `NODE_ENV=production`. To enable NVIDIA-generated, database-grounded property responses, also set `NVIDIA_API_KEY` and optionally override `NVIDIA_MODEL`; it defaults to `nvidia/nemotron-3-super-120b-a12b`. The assistant remains available with deterministic published-record responses when NVIDIA is not configured or temporarily unavailable.
 
 Render supplies `PORT`. The backend listens on `0.0.0.0`, runs `prisma migrate deploy`, performs the idempotent admin bootstrap, and then starts the API. `PUBLIC_APP_URL` is the allowed browser origin and `PUBLIC_BACKEND_URL` is used for campaign and unsubscribe links.
 
@@ -252,6 +252,8 @@ Set `VITE_GRAPHQL_URL` to the deployed backend GraphQL URL, including `/graphql`
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD` | Render backend | SMTP relay configuration. |
 | `MAIL_FROM_EMAIL`, `MAIL_FROM_NAME` | Render backend | Sender identity for campaign email. |
 | `ADMIN_EMAIL`, `ADMIN_PASSWORD` | Render backend | Initial administrator bootstrap credentials. |
+| `NVIDIA_API_KEY` | Render backend | Optional server-only NVIDIA hosted API credential for grounded response generation. Never expose it to Vite or the browser. |
+| `NVIDIA_MODEL` | Render backend | Optional NVIDIA model override; defaults to `nvidia/nemotron-3-super-120b-a12b`. |
 | `NODE_ENV=production` | Render backend | Enables production runtime validation. |
 | `PORT` | Render backend | Supplied by Render; do not set a fixed value. |
 | `VITE_GRAPHQL_URL` | Vercel frontend | Deployed GraphQL API URL, including `/graphql`. |

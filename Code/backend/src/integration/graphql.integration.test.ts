@@ -70,7 +70,7 @@ it.skipIf(!enabled)("real GraphQL critical publication, ownership, news, and uns
   const recipientRowB = await prisma.campaignRecipient.create({ data: { campaignId: campaignB.id, subscriberId: recipient.id, recipientEmail: recipient.email, recipientName: recipient.name, trackingTokenHash: createHash("sha256").update(trackingTokenB).digest("hex") } });
   await prisma.unsubscribeToken.create({ data: { subscriberId: recipient.id, tokenHash: createHash("sha256").update(unsubscribeToken).digest("hex") } });
 
-  server = spawn(process.execPath, ["dist/server.js"], { env: { ...process.env, DATABASE_URL: databaseUrl, PORT: String(port), PUBLIC_APP_URL: "http://localhost:5173", PUBLIC_BACKEND_URL: baseUrl }, stdio: "ignore" });
+  server = spawn(process.execPath, ["dist/server.js"], { env: { ...process.env, DATABASE_URL: databaseUrl, PORT: String(port), PUBLIC_APP_URL: "http://localhost:5173", PUBLIC_BACKEND_URL: baseUrl, NVIDIA_API_KEY: "" }, stdio: "ignore" });
   for (let attempt = 0; attempt < 100; attempt += 1) { try { if ((await fetch(`${baseUrl}/healthz`)).ok) break; } catch {} await new Promise((resolve) => setTimeout(resolve, 100)); }
 
   const publicProperties = await graph("{properties{nodes{id name}}}");
@@ -80,6 +80,15 @@ it.skipIf(!enabled)("real GraphQL critical publication, ownership, news, and uns
   assert.equal(publicPropertyIds.includes(offline.id), false);
   assert.equal((await graph("query($id:ID!){property(id:$id){id}}", { id: draft.id })).data?.property, null);
   assert.equal((await graph("query($id:ID!){property(id:$id){id}}", { id: offline.id })).data?.property, null);
+  const assistant = await graph("mutation($input:PropertyAssistantInput!){chatWithPropertyAI(input:$input){message sessionId intent properties{id name publicationStatus}}}", { input: { message: "Show me the newest available properties" } });
+  assert.equal(assistant.errors, undefined);
+  const assistantResult = assistant.data?.chatWithPropertyAI as { message: string; sessionId: string; intent: string; properties: Array<{ id: string; publicationStatus: string }> };
+  assert.equal(assistantResult.intent, "PROPERTY_SEARCH");
+  assert.ok(assistantResult.sessionId);
+  assert.equal(assistantResult.properties.some((property) => property.id === published.id && property.publicationStatus === "PUBLISHED"), true);
+  assert.equal(assistantResult.properties.some((property) => property.id === draft.id || property.id === offline.id), false);
+  const unavailableAssistantProperty = await graph("mutation($input:PropertyAssistantInput!){chatWithPropertyAI(input:$input){message}}", { input: { message: "Tell me about this property", selectedPropertyId: draft.id } });
+  assert.equal(unavailableAssistantProperty.errors?.[0]?.message, "The selected property is no longer available publicly.");
   const publicNews = await graph("{publicNewsPage(input:{limit:10}){nodes{title}}}");
   assert.equal(JSON.stringify(publicNews.data).includes(activeNews.title), true);
   assert.equal(JSON.stringify(publicNews.data).includes("Future"), false);

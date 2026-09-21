@@ -13,9 +13,10 @@ const statusLabel: Record<string, { label: string; bg: string }> = {
 interface Props {
   property: Property;
   showCompare?: boolean;
+  onAskAI?: (property: Property) => void;
 }
 
-export default function PropertyCard({ property: p, showCompare = false }: Props) {
+export default function PropertyCard({ property: p, showCompare = false, onAskAI }: Props) {
   const { savedIds, toggleSave, compareIds, toggleCompare } = useApp();
   const navigate = useNavigate();
   const badge = statusLabel[p.status] ?? { label: p.status, bg: "bg-stone" };
@@ -86,6 +87,15 @@ export default function PropertyCard({ property: p, showCompare = false }: Props
                 <path d="M5 12h14M12 5l7 7-7 7"/>
               </svg>
             </button>
+            {onAskAI && (
+              <button
+                onClick={(e) => { e.stopPropagation(); onAskAI(p); }}
+                className="text-xs font-semibold text-navy hover:text-amber transition-colors"
+                aria-label={`Ask AI about ${p.name}`}
+              >
+                Ask AI
+              </button>
+            )}
           </div>
           {showCompare && (
             <button

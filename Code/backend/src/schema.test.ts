@@ -40,4 +40,10 @@ it("Campaign statistics schema excludes open metrics while retaining attributed 
   expect(schema.getType("InterestInput")!.toString()).toBe("InterestInput");
   const interestInput = schema.getType("InterestInput") as import("graphql").GraphQLInputObjectType;
   expect(Object.keys(interestInput.getFields())).toEqual(expect.arrayContaining(["propertyId", "name", "email", "phone", "message", "consent", "campaignToken"]));
+  expect(mutations.chatWithPropertyAI.args.map((argument) => argument.name)).toEqual(["input"]);
+  expect(mutations.chatWithPropertyAI.type.toString()).toBe("PropertyAssistantResult!");
+  const assistantInput = schema.getType("PropertyAssistantInput") as import("graphql").GraphQLInputObjectType;
+  expect(Object.keys(assistantInput.getFields())).toEqual(["message", "sessionId", "selectedPropertyId"]);
+  const assistantResult = schema.getType("PropertyAssistantResult") as import("graphql").GraphQLObjectType;
+  expect(Object.keys(assistantResult.getFields())).toEqual(expect.arrayContaining(["message", "properties", "sessionId", "intent", "selectedPropertyId", "filterJson", "totalCount"]));
 });

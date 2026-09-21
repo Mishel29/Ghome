@@ -4,6 +4,8 @@ export type PropertyStatus = "DRAFT" | "COMING_SOON" | "ON_SALE" | "SOLD_OUT" | 
 
 export type PropertyStage = "PLANNING" | "UNDER_CONSTRUCTION" | "READY_TO_MOVE";
 
+export type PropertyAssistantIntent = "PROPERTY_SEARCH" | "PROPERTY_DETAILS" | "PROPERTY_COMPARISON" | "GENERAL_PROPERTY_QUESTION";
+
 export interface User {
   id: string;
   name: string;
@@ -150,7 +152,6 @@ export interface Query {
   publicNewsPage: NewsConnection;
   subscriberImportHistory: Array<PropertyImport>;
   savedProperties: Array<Property>;
-  propertyAssistant: PropertyAssistantResult;
 }
 
 export type PublicationStatus = "DRAFT" | "PUBLISHED";
@@ -376,6 +377,7 @@ export interface Mutation {
   setPropertySaved: boolean;
   recordCampaignSave: boolean;
   recordPropertyView: boolean;
+  chatWithPropertyAI: PropertyAssistantResult;
 }
 
 export interface CsvHeaderResult {
@@ -687,9 +689,17 @@ export interface InterestGroup {
 }
 
 export interface PropertyAssistantResult {
-  answer: string;
+  message: string;
+  sessionId: string;
+  intent: PropertyAssistantIntent;
+  selectedPropertyId: string | null;
   filterJson: string;
   totalCount: number;
   properties: Array<Property>;
-  sourceIds: Array<string>;
+}
+
+export interface PropertyAssistantInput {
+  message: string;
+  sessionId?: string | null;
+  selectedPropertyId?: string | null;
 }

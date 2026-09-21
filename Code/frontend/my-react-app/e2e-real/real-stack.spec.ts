@@ -20,6 +20,15 @@ test('runs campaign attribution, consent, auth, publication, news, and unsubscri
   await expect(page.getByText('E2E Draft News')).toHaveCount(0);
   await expect(page.getByText('E2E Future News')).toHaveCount(0);
 
+  await page.goto('/chatbot');
+  await page.getByLabel('Ask about properties').fill('Show me the newest available properties');
+  await page.getByLabel('Ask about properties').press('Enter');
+  await expect(page.getByText('I found 3 currently published properties matching your requirements.')).toBeVisible();
+  await expect(page.getByText('E2E Property A', { exact: true })).toBeVisible();
+  await expect(page.getByText('E2E Draft Property')).toHaveCount(0);
+  await page.getByRole('button', { name: 'Ask AI about E2E Property A' }).click();
+  await expect(page.getByText('Asking about:')).toBeVisible();
+
   await page.goto(`${backendUrl}/campaign-click?token=e2e-campaign-token&propertyId=e2e-property-a`);
   await expect(page).toHaveURL(/properties\/e2e-property-a\?campaignToken=e2e-campaign-token/);
   await expect(page.getByRole('heading', { name: 'E2E Property A', exact: true })).toBeVisible();
