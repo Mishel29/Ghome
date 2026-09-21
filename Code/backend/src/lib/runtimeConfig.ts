@@ -56,4 +56,11 @@ export function assertProductionRuntimeConfiguration(env: RuntimeEnvironment = p
   ];
   const missing = required.filter((key) => !env[key]?.trim());
   if (missing.length) throw new Error(`Missing required production environment variables: ${missing.join(", ")}`);
+  const backendUrl = configuredUrl(env.PUBLIC_BACKEND_URL);
+  try {
+    const parsed = new URL(backendUrl!);
+    if (parsed.protocol !== "https:" || parsed.hostname === "localhost" || parsed.hostname === "127.0.0.1" || parsed.hostname === "::1") throw new Error("not publicly reachable");
+  } catch {
+    throw new Error("PUBLIC_BACKEND_URL must be a publicly reachable HTTPS URL in production");
+  }
 }

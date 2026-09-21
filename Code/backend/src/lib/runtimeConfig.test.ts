@@ -33,4 +33,13 @@ describe("runtime configuration", () => {
   it("fails fast when production deployment variables are incomplete", () => {
     expect(() => assertProductionRuntimeConfiguration({ NODE_ENV: "production", DATABASE_URL: "postgresql://db/harborstone" })).toThrow("PUBLIC_APP_URL");
   });
+
+  it("rejects a loopback campaign tracking origin in production", () => {
+    const production = {
+      NODE_ENV: "production", DATABASE_URL: "postgresql://db/harborstone", PUBLIC_APP_URL: "https://harborstone.example", PUBLIC_BACKEND_URL: "http://127.0.0.1:4000",
+      SMTP_HOST: "smtp.example", SMTP_PORT: "2525", SMTP_USER: "smtp-user", SMTP_PASSWORD: "smtp-password", MAIL_FROM_EMAIL: "mail@harborstone.example", MAIL_FROM_NAME: "Harborstone Homes", ADMIN_EMAIL: "admin@harborstone.example", ADMIN_PASSWORD: "admin-password",
+    };
+    expect(() => assertProductionRuntimeConfiguration(production)).toThrow("PUBLIC_BACKEND_URL must be a publicly reachable HTTPS URL");
+    expect(() => assertProductionRuntimeConfiguration({ ...production, PUBLIC_BACKEND_URL: "https://api.harborstone.example/" })).not.toThrow();
+  });
 });

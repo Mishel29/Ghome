@@ -9,7 +9,3 @@ export function campaignClickUrl(token: string, destination: string, propertyId?
   const query = new URLSearchParams({ token, ...(propertyId ? { propertyId } : { destination }) });
   return `${publicBackendUrl(env)}/campaign-click?${query.toString()}`;
 }
-
-export function campaignOpenUrl(token: string, env = process.env) {
-  return `${publicBackendUrl(env)}/campaign-open/${encodeURIComponent(token)}`;
-}

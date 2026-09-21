@@ -269,15 +269,15 @@ docker compose -p harborstone_test_suite -f docker-compose.test.yml down -v
 
 - GitHub Actions runs backend validation, generation, build, unit tests, disposable PostgreSQL integration tests, frontend type checks, lint, tests, build, and mocked Playwright journeys for every push and pull request.
 - Campaign delivery uses focused Vitest coverage with a mocked Nodemailer transport, covering consent filtering, success and failure persistence, unsubscribe links, and continued delivery after individual failures.
-- Campaign emails include a per-recipient tracking pixel. The backend records one `OPENED` event per campaign recipient and exposes open totals in campaign and daily campaign statistics.
+- Campaign attribution records click, save, interest, and unsubscribe events without unreliable email-open measurement.
 
-Open tracking is approximate: email clients can block remote images, proxy or cache images, and prefetch content. Open metrics should be treated as an engagement signal, not proof that an individual read an email.
+Email-open tracking is intentionally not implemented because email clients can block, proxy, cache, or prefetch remote images. The legacy `OPENED` database enum value remains only for migration safety and has no active runtime use.
 
 Background email queues, ISR/static generation, and direct image file uploads remain intentionally deferred enhancements.
 
 ### Delivered campaign email reference
 
-A production delivery screenshot is not committed because it would expose recipient and tracking data. The delivery HTML, unsubscribe link, and per-recipient tracking pixel are verified in [`Code/backend/src/server.test.ts`](Code/backend/src/server.test.ts); the disposable end-to-end stack verifies the tracking route in [`Code/frontend/my-react-app/e2e-real/real-stack.spec.ts`](Code/frontend/my-react-app/e2e-real/real-stack.spec.ts).
+A production delivery screenshot is not committed because it would expose recipient data. The delivery HTML, recipient personalization, unsubscribe link, and tracked campaign links are verified in [`Code/backend/src/server.test.ts`](Code/backend/src/server.test.ts); the disposable end-to-end stack verifies campaign attribution and unsubscribe behavior in [`Code/frontend/my-react-app/e2e-real/real-stack.spec.ts`](Code/frontend/my-react-app/e2e-real/real-stack.spec.ts).
 
 ### Disposable test administrator
 

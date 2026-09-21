@@ -14,7 +14,7 @@ vi.mock('../../api/useQuery', () => ({
 
 const campaign = {
   id: 'campaign-a', subject: 'September homes', status: 'SENT', createdAt: '2026-09-01T10:00:00.000Z', sentAt: '2026-09-01T10:00:00.000Z', completedAt: null,
-  recipientCount: 4, templateId: null, templateHtml: null, bodyText: null, renderedHtml: null, newsArticleId: null, properties: [], openCount: 2, clickCount: 3, interestCount: 1, saveCount: 2, sentCount: 4, failedCount: 0,
+  recipientCount: 4, templateId: null, templateHtml: null, bodyText: null, renderedHtml: null, newsArticleId: null, properties: [], clickCount: 3, interestCount: 1, saveCount: 2, sentCount: 4, failedCount: 0,
 };
 
 afterEach(() => { cleanup(); vi.resetAllMocks(); });
@@ -27,8 +27,9 @@ it('uses campaign delivery counts in the send result message', () => {
 });
 
 it('renders daily campaign saves and interests including zero values', () => {
+  const reload = vi.fn();
   vi.mocked(useQuery).mockImplementation(((query: string) => {
-    if (query.includes('campaignStats')) return { data: { campaignStats: [{ campaignId: 'campaign-a', campaignSubject: 'September homes', date: '2026-09-01', sent: 4, opens: 2, clicks: 3, interests: 0, saves: 0, unsubscribes: 1, clickRate: 0.75, interestRate: 0 }] }, loading: false, error: '', reload: vi.fn() };
+    if (query.includes('campaignStats')) return { data: { campaignStats: [{ campaignId: 'campaign-a', campaignSubject: 'September homes', date: '2026-09-01', sent: 4, clicks: 3, interests: 0, saves: 0, unsubscribes: 1, clickRate: 0.75, interestRate: 0 }] }, loading: false, error: '', reload };
     return { data: { campaignsPage: { nodes: [campaign], totalCount: 1 } }, loading: false, error: '', reload: vi.fn() };
   }) as never);
 
@@ -36,9 +37,30 @@ it('renders daily campaign saves and interests including zero values', () => {
   fireEvent.click(screen.getByRole('button', { name: 'Statistics' }));
 
   expect(screen.getByRole('columnheader', { name: 'Interests' })).toBeVisible();
-  expect(screen.getByRole('columnheader', { name: 'Opens' })).toBeVisible();
+  expect(screen.queryByRole('columnheader', { name: 'Opens' })).toBeNull();
   expect(screen.getByRole('columnheader', { name: 'Saves' })).toBeVisible();
   expect(screen.getAllByRole('cell', { name: '0' })).toHaveLength(2);
+  fireEvent.click(screen.getByRole('button', { name: 'Refresh' }));
+  expect(reload).toHaveBeenCalledTimes(1);
+});
+
+it('renders the latest click count after statistics are refreshed', () => {
+  let clicks = 0;
+  const reload = vi.fn(() => { clicks = 1; });
+  vi.mocked(useQuery).mockImplementation(((query: string) => {
+    if (query.includes('campaignStats')) return { data: { campaignStats: [{ campaignId: 'campaign-a', campaignSubject: 'September homes', date: '2026-09-01', sent: 4, clicks, interests: 0, saves: 0, unsubscribes: 0, clickRate: 0, interestRate: 0 }] }, loading: false, error: '', reload };
+    return { data: { campaignsPage: { nodes: [campaign], totalCount: 1 } }, loading: false, error: '', reload: vi.fn() };
+  }) as never);
+
+  const view = render(<MemoryRouter><AdminCampaigns /></MemoryRouter>);
+  fireEvent.click(screen.getByRole('button', { name: 'Statistics' }));
+  expect(screen.getAllByRole('cell', { name: '0' })).not.toHaveLength(0);
+
+  fireEvent.click(screen.getByRole('button', { name: 'Refresh' }));
+  view.rerender(<MemoryRouter><AdminCampaigns /></MemoryRouter>);
+
+  expect(reload).toHaveBeenCalledTimes(1);
+  expect(screen.getByRole('cell', { name: '1' })).toBeVisible();
 });
 
 it('shows a GraphQL statistics error without hiding the admin page', () => {

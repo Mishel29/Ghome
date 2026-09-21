@@ -17,7 +17,7 @@ const mocked = vi.hoisted(() => {
     $transaction: vi.fn(),
     session: { findUnique: vi.fn() },
     property: { findFirst: vi.fn() },
-    subscriber: { findUnique: vi.fn(), findMany: vi.fn() },
+    subscriber: { count: vi.fn(), findUnique: vi.fn(), findMany: vi.fn() },
     unsubscribeToken: { create: vi.fn() },
     campaign: { findUniqueOrThrow: vi.fn(), update: vi.fn() },
     campaignRecipient: { deleteMany: vi.fn(), createMany: vi.fn(), findUnique: vi.fn(), findUniqueOrThrow: vi.fn(), update: vi.fn() },
@@ -92,36 +92,9 @@ describe("health, readiness, proxy, and GraphQL middleware", () => {
     expect(preflight.headers.get("access-control-allow-origin")).toBe("http://frontend.test");
     expect((await request("/healthz", { headers: { "x-forwarded-for": "203.0.113.42" } })).status).toBe(200);
   });
-});
-
-describe("campaign open tracking", () => {
-  it("records a unique OPENED event and returns a transparent GIF for a valid token", async () => {
-    mocked.prisma.campaignRecipient.findUnique.mockResolvedValue({ id: "recipient-1", campaignId: "campaign-1", subscriberId: "subscriber-1", recipientEmail: "pat@example.test" });
-
-    const response = await request("/campaign-open/secure-token");
-
-    expect(response.status).toBe(200);
-    expect(response.headers.get("content-type")).toContain("image/gif");
-    expect(Buffer.from(await response.arrayBuffer()).subarray(0, 6).toString("ascii")).toBe("GIF89a");
-    expect(mocked.prisma.campaignEvent.upsert).toHaveBeenCalledWith({
-      where: { deduplicationKey: "open:recipient-1" },
-      create: { campaignId: "campaign-1", subscriberId: "subscriber-1", recipientId: "recipient-1", type: "OPENED", deduplicationKey: "open:recipient-1" },
-      update: {},
-    });
-  });
-
-  it("returns the same image for invalid tokens and reuses the recipient deduplication key", async () => {
-    const invalid = await request("/campaign-open/invalid-token");
-    expect(invalid.status).toBe(200);
-    expect(invalid.headers.get("content-type")).toContain("image/gif");
+  it("does not expose the retired campaign open endpoint", async () => {
+    expect((await request("/campaign-open/secure-token")).status).toBe(404);
     expect(mocked.prisma.campaignEvent.upsert).not.toHaveBeenCalled();
-
-    mocked.prisma.campaignRecipient.findUnique.mockResolvedValue({ id: "recipient-1", campaignId: "campaign-1", subscriberId: "subscriber-1", recipientEmail: "pat@example.test" });
-    await request("/campaign-open/secure-token");
-    await request("/campaign-open/secure-token");
-
-    expect(mocked.prisma.campaignEvent.upsert).toHaveBeenCalledTimes(2);
-    expect(mocked.prisma.campaignEvent.upsert.mock.calls.map(([input]) => (input as { where: { deduplicationKey: string } }).where.deduplicationKey)).toEqual(["open:recipient-1", "open:recipient-1"]);
   });
 });
 
@@ -134,8 +107,8 @@ describe("mocked SMTP delivery", () => {
 
   function configureSingleRecipientCampaign(finalStatus: "SENT" | "FAILED", errorMessage: string | null = null) {
     const campaignData = {
-      id: "campaign-1", subject: "New homes", templateHtml: "<p>Homes</p>", bodyText: null, renderedHtml: null, newsArticleId: null, templateId: null, status: "DRAFT", template: null,
-      properties: [], recipientCount: 1, startedAt: null, sentAt: null, completedAt: null, createdAt: new Date("2026-09-01T00:00:00.000Z"),
+      id: "campaign-1", subject: "New homes", templateHtml: "<p>Hello {{Name}}</p>{{properties}}", bodyText: null, renderedHtml: null, newsArticleId: null, templateId: null, status: "DRAFT", template: null,
+      properties: [{ property: { id: "property-1", name: "Fixture home", location: null, priceMin: null, priceMax: null, type: null, bedroomsMin: null, sizeSqm: null, media: [] } }], recipientCount: 1, startedAt: null, sentAt: null, completedAt: null, createdAt: new Date("2026-09-01T00:00:00.000Z"),
     };
     const recipient = { id: "subscriber-1", email: "eligible@example.test", name: "Eligible" };
     mocked.prisma.campaign.findUniqueOrThrow.mockResolvedValue(campaignData);
@@ -162,6 +135,17 @@ describe("mocked SMTP delivery", () => {
     mocked.prisma.subscriber.findUnique.mockResolvedValue({ id: "subscriber-1" });
     mocked.prisma.unsubscribeToken.create.mockResolvedValue({ id: "unsubscribe-1" });
     mocked.prisma.interest.update.mockResolvedValue({ id: "interest-1" });
+  });
+
+  it("uses Sample Recipient only for campaign previews", async () => {
+    mocked.prisma.campaign.findUniqueOrThrow.mockResolvedValue({
+      id: "campaign-1", subject: "New homes", templateHtml: "<p>Hello {{Name}}</p>", template: null, properties: [],
+    });
+    mocked.prisma.subscriber.count.mockResolvedValue(1);
+
+    const preview = await root.campaignPreview({ id: "campaign-1" }, { token: "admin-token" });
+
+    expect(preview.html).toContain("Hello Sample Recipient");
   });
 
   it("uses environment-configured SMTP port and sends follow-up email with an unsubscribe link", async () => {
@@ -205,10 +189,10 @@ describe("mocked SMTP delivery", () => {
 
   it("sends only active consented recipients and persists a successful campaign delivery", async () => {
     const campaignData = {
-      id: "campaign-1", subject: "New homes", templateHtml: "<p>Homes</p>", bodyText: null, renderedHtml: null, newsArticleId: null, templateId: null, status: "DRAFT", template: null,
-      properties: [], recipientCount: 1, startedAt: null, sentAt: null, completedAt: null, createdAt: new Date("2026-09-01T00:00:00.000Z"),
+      id: "campaign-1", subject: "New homes", templateHtml: "<p>Hello {{Name}}</p>{{properties}}", bodyText: null, renderedHtml: null, newsArticleId: null, templateId: null, status: "DRAFT", template: null,
+      properties: [{ property: { id: "property-1", name: "Fixture home", location: null, priceMin: null, priceMax: null, type: null, bedroomsMin: null, sizeSqm: null, media: [] } }], recipientCount: 1, startedAt: null, sentAt: null, completedAt: null, createdAt: new Date("2026-09-01T00:00:00.000Z"),
     };
-    const recipient = { id: "subscriber-1", email: "eligible@example.test", name: "Eligible" };
+    const recipient = { id: "subscriber-1", email: "eligible@example.test", name: "Alice Murphy" };
     mocked.prisma.campaign.findUniqueOrThrow.mockResolvedValue(campaignData);
     mocked.prisma.subscriber.findMany.mockResolvedValue([recipient]);
     mocked.prisma.campaignRecipient.findUniqueOrThrow.mockResolvedValue({ id: "recipient-1", attemptCount: 0 });
@@ -235,9 +219,13 @@ describe("mocked SMTP delivery", () => {
       subject: "New homes",
       html: expect.stringMatching(/http:\/\/backend\.test\/unsubscribe\?token=/),
     }));
-    expect(mailTransport.sendMail).toHaveBeenCalledWith(expect.objectContaining({
-      html: expect.stringMatching(/http:\/\/backend\.test\/campaign-open\/[a-f0-9]{64}/),
-    }));
+    const email = vi.mocked(mailTransport.sendMail).mock.calls[0][0];
+    expect(email.html).toContain("Hello Alice Murphy");
+    expect(email.html).not.toContain("Sample Recipient");
+    expect(email.html).not.toMatch(/\{\{\s*name\s*\}\}/i);
+    expect(email.html).toContain("/campaign-click?token=");
+    expect(email.html).not.toContain("/campaign-open/");
+    expect(email.html).not.toMatch(/<img[^>]+campaign-open/);
     expect(mocked.prisma.campaignRecipient.update).toHaveBeenCalledWith(expect.objectContaining({ data: expect.objectContaining({ status: "SENT" }) }));
     expect(mocked.prisma.campaignEvent.create).toHaveBeenCalledWith(expect.objectContaining({ data: expect.objectContaining({ type: "SENT" }) }));
     expect(result.status).toBe("SENT");
@@ -255,6 +243,18 @@ describe("mocked SMTP delivery", () => {
     expect(result.failedCount).toBe(1);
     expect(mocked.prisma.campaignRecipient.update).toHaveBeenCalledWith(expect.objectContaining({ data: expect.objectContaining({ status: "FAILED", errorMessage: "Mail server rejected the recipient" }) }));
     expect(mocked.prisma.campaignRecipient.update).not.toHaveBeenCalledWith(expect.objectContaining({ data: expect.objectContaining({ status: "SENT" }) }));
+  });
+
+  it("uses a neutral fallback instead of a preview name for a blank recipient name", async () => {
+    const { recipient } = configureSingleRecipientCampaign("SENT");
+    recipient.name = "   ";
+    mocked.sendMail.mockResolvedValue({ messageId: "provider-1", accepted: [recipient.email], rejected: [], response: "250 accepted" });
+
+    await root.sendCampaign({ id: "campaign-1" }, { token: "admin-token" });
+
+    const email = vi.mocked(mailTransport.sendMail).mock.calls[0][0];
+    expect(email.html).toContain("Hello there");
+    expect(email.html).not.toContain("Sample Recipient");
   });
 
   it("persists a failed recipient when SMTP resolves without accepting the address", async () => {
@@ -285,7 +285,7 @@ describe("mocked SMTP delivery", () => {
 
   it("continues campaign delivery after one SMTP failure and persists every recipient outcome", async () => {
     const campaignData = {
-      id: "campaign-1", subject: "New homes", templateHtml: "<p>Homes</p>", bodyText: null, renderedHtml: null, newsArticleId: null, templateId: null, status: "DRAFT", template: null,
+      id: "campaign-1", subject: "New homes", templateHtml: "<p>Hello {{Name}}</p>", bodyText: null, renderedHtml: null, newsArticleId: null, templateId: null, status: "DRAFT", template: null,
       properties: [], recipientCount: 2, startedAt: null, sentAt: null, completedAt: null, createdAt: new Date("2026-09-01T00:00:00.000Z"),
     };
     const subscribers = [
@@ -328,6 +328,9 @@ describe("mocked SMTP delivery", () => {
       html: expect.stringContaining("http://backend.test/unsubscribe?token="),
     }));
     expect(mailTransport.sendMail).toHaveBeenNthCalledWith(2, expect.objectContaining({ to: "second@example.test" }));
+    const deliveryHtml = vi.mocked(mailTransport.sendMail).mock.calls.map(([message]) => message.html);
+    expect(deliveryHtml).toEqual(expect.arrayContaining([expect.stringContaining("Hello First"), expect.stringContaining("Hello Second")]));
+    expect(deliveryHtml.every((html) => !html.includes("Sample Recipient"))).toBe(true);
     expect(mocked.prisma.campaignRecipient.update).toHaveBeenCalledWith(expect.objectContaining({ data: expect.objectContaining({ status: "SENT" }) }));
     expect(mocked.prisma.campaignRecipient.update).toHaveBeenCalledWith(expect.objectContaining({ data: expect.objectContaining({ status: "FAILED", errorMessage: "SMTP unavailable" }) }));
     expect(mocked.prisma.deliveryAttempt.update).toHaveBeenCalledWith(expect.objectContaining({ data: expect.objectContaining({ status: "SENT" }) }));
@@ -337,7 +340,7 @@ describe("mocked SMTP delivery", () => {
 
   it("marks a campaign partially failed when two recipients are accepted and one is rejected", async () => {
     const campaignData = {
-      id: "campaign-1", subject: "New homes", templateHtml: "<p>Homes</p>", bodyText: null, renderedHtml: null, newsArticleId: null, templateId: null, status: "DRAFT", template: null,
+      id: "campaign-1", subject: "New homes", templateHtml: "<p>Hello {{Name}}</p>", bodyText: null, renderedHtml: null, newsArticleId: null, templateId: null, status: "DRAFT", template: null,
       properties: [], recipientCount: 3, startedAt: null, sentAt: null, completedAt: null, createdAt: new Date("2026-09-01T00:00:00.000Z"),
     };
     const subscribers = [
@@ -381,6 +384,10 @@ describe("mocked SMTP delivery", () => {
     const result = await root.sendCampaign({ id: "campaign-1" }, { token: "admin-token" });
 
     expect(mailTransport.sendMail).toHaveBeenCalledTimes(3);
+    const deliveryHtml = vi.mocked(mailTransport.sendMail).mock.calls.map(([message]) => message.html);
+    expect(deliveryHtml).toEqual(expect.arrayContaining([expect.stringContaining("Hello First"), expect.stringContaining("Hello Second"), expect.stringContaining("Hello Third")]));
+    expect(deliveryHtml.every((html) => !html.includes("Sample Recipient"))).toBe(true);
+    expect(deliveryHtml.every((html) => !html.includes("/campaign-open/"))).toBe(true);
     expect(mocked.prisma.campaignRecipient.update).toHaveBeenCalledWith(expect.objectContaining({ data: expect.objectContaining({ status: "SENT" }) }));
     expect(mocked.prisma.campaignRecipient.update).toHaveBeenCalledWith(expect.objectContaining({ data: expect.objectContaining({ status: "FAILED", errorMessage: "Mail server rejected the recipient" }) }));
     expect(result.status).toBe("PARTIALLY_FAILED");

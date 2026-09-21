@@ -57,9 +57,8 @@ test('runs campaign attribution, consent, auth, publication, news, and unsubscri
   await page.goto('/saved');
   await expect(page.getByText('E2E Property A', { exact: true })).toBeVisible();
 
-  const openResponse = await page.request.get(`${backendUrl}/campaign-open/e2e-campaign-token`);
-  expect(openResponse.status()).toBe(200);
-  expect(openResponse.headers()['content-type']).toContain('image/gif');
+  const retiredOpenEndpoint = await page.request.get(`${backendUrl}/campaign-open/e2e-campaign-token`);
+  expect(retiredOpenEndpoint.status()).toBe(404);
 
   await page.evaluate(() => sessionStorage.clear());
   await page.reload();
@@ -74,8 +73,7 @@ test('runs campaign attribution, consent, auth, publication, news, and unsubscri
   const values = await day.locator('td').allTextContents();
   expect(values[3]).toBe('1');
   expect(values[4]).toBe('1');
-  expect(values[5]).toBe('1');
-  expect(values[6]).toBe('2');
+  expect(values[5]).toBe('2');
 
   await page.goto(`${backendUrl}/unsubscribe?token=e2e-unsubscribe-token&campaignToken=e2e-campaign-token`);
   await expect(page.getByRole('heading', { name: 'You have been unsubscribed' })).toBeVisible();

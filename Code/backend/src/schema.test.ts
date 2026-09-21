@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { graphql, buildSchema } from "graphql";
 import { expect, it } from "vitest";
 
-it("CampaignDay schema exposes daily open and save statistics", async () => {
+it("Campaign statistics schema excludes open metrics while retaining attributed metrics", async () => {
   const source = readFileSync(join(process.cwd(), "src", "server.ts"), "utf8");
   const match = source.match(/buildSchema\(`([\s\S]*?)`\);/);
   expect(match, "GraphQL SDL buildSchema template was not found").toBeTruthy();
@@ -17,8 +17,14 @@ it("CampaignDay schema exposes daily open and save statistics", async () => {
   expect(result.errors).toBeUndefined();
   const fields = ((result.data?.__type as { fields: Array<{ name: string }> } | null)?.fields ?? []).map((field) => field.name);
   expect(fields).toContain("date");
-  expect(fields).toEqual(expect.arrayContaining(["opens", "saves"]));
+  expect(fields).toEqual(expect.arrayContaining(["clicks", "saves", "unsubscribes"]));
+  expect(fields).not.toContain("opens");
   expect(fields).toContain("interests");
+
+  const campaign = schema.getType("Campaign") as import("graphql").GraphQLObjectType;
+  const campaignFields = Object.keys(campaign.getFields());
+  expect(campaignFields).not.toContain("openCount");
+  expect(campaignFields).toEqual(expect.arrayContaining(["clickCount", "saveCount", "interestCount"]));
 
   const queryFields = schema.getQueryType()!.getFields();
   expect(queryFields.campaignStats).toBeDefined();

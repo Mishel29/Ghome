@@ -27,7 +27,7 @@ services:
       MAIL_FROM_NAME: Harborstone Homes
       ADMIN_EMAIL: admin@harborstone.test
       ADMIN_PASSWORD: test-admin-password
-      NODE_ENV: production
+      NODE_ENV: test
       PORT: "4000"
     depends_on:
       postgres:
