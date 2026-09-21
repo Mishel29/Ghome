@@ -277,6 +277,7 @@ enum CampaignStatus {
 enum CampaignEventType {
   SENT
   FAILED
+  // Legacy database value retained for migration safety. It has no active runtime use.
   OPENED
   CLICKED
   INTEREST

@@ -25,20 +25,9 @@ export default function PublicNav() {
           <button
             onClick={() => navigate("/")}
             className="flex items-center gap-2 text-white font-display font-bold text-xl tracking-tight hover:opacity-90 transition-opacity"
+            aria-label="Harborstone Homes home"
           >
-            <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-              <polygon
-                points="14,2 26,24 2,24"
-                fill="none"
-                stroke="#E8761B"
-                strokeWidth="2"
-              />
-              <polygon
-                points="14,8 22,22 6,22"
-                fill="#E8761B"
-                opacity="0.3"
-              />
-            </svg>
+            <span className="flex h-8 w-8 items-center justify-center border-2 border-amber text-amber font-display text-lg font-bold" aria-hidden="true">H</span>
             Harborstone
           </button>
 

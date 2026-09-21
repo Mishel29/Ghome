@@ -1,6 +1,6 @@
 export const getAuthToken = () => sessionStorage.getItem("harborstone-token");
 export const setAuthToken = (token: string | null) => token ? sessionStorage.setItem("harborstone-token", token) : sessionStorage.removeItem("harborstone-token");
-const GRAPHQL_URL = import.meta.env.VITE_GRAPHQL_URL ?? "http://localhost:4000/graphql";
+export const GRAPHQL_URL = import.meta.env.VITE_GRAPHQL_URL ?? "http://localhost:4000/graphql";
 
 type GraphQLResponse<T> = {
   data?: T;

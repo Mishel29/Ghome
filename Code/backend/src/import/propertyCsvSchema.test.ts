@@ -1,26 +1,27 @@
-import assert from "node:assert/strict";
-import test from "node:test";
+import { describe, expect, it } from "vitest";
 import { PROPERTY_CSV_COLUMNS, validatePropertyCsvHeaders } from "./propertyCsvSchema.js";
 
-test("accepts the Sample.csv header schema", () => {
+describe("property CSV headers", () => {
+it("accepts the Sample.csv header schema", () => {
   const result = validatePropertyCsvHeaders([...PROPERTY_CSV_COLUMNS]);
-  assert.equal(result.valid, true);
-  assert.deepEqual(result.missingColumns, []);
+  expect(result.valid).toBe(true);
+  expect(result.missingColumns).toEqual([]);
 });
 
-test("reports missing, unknown, duplicate, and empty headers", () => {
+it("reports missing, unknown, duplicate, and empty headers", () => {
   const result = validatePropertyCsvHeaders(["Name", "Name", "Unknown", ""]);
-  assert.equal(result.valid, false);
-  assert.ok(result.missingColumns.includes("Address"));
-  assert.deepEqual(result.duplicateColumns, ["Name"]);
-  assert.deepEqual(result.unknownColumns, ["Unknown"]);
-  assert.deepEqual(result.emptyColumns, [4]);
+  expect(result.valid).toBe(false);
+  expect(result.missingColumns).toContain("Address");
+  expect(result.duplicateColumns).toEqual(["Name"]);
+  expect(result.unknownColumns).toEqual(["Unknown"]);
+  expect(result.emptyColumns).toEqual([4]);
 });
 
-test("allows an empty spacer column before optional media URLs", () => {
+it("allows an empty spacer column before optional media URLs", () => {
   const headers = [...PROPERTY_CSV_COLUMNS.slice(0, -2), , "Image URL", "Video URL"];
   const result = validatePropertyCsvHeaders(headers);
-  assert.equal(result.valid, true);
-  assert.deepEqual(result.emptyColumns, [19]);
-  assert.equal(result.receivedColumns.includes("Image URL"), true);
+  expect(result.valid).toBe(true);
+  expect(result.emptyColumns).toEqual([19]);
+  expect(result.receivedColumns).toContain("Image URL");
+});
 });
