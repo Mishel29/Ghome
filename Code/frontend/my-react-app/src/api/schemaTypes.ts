@@ -141,6 +141,7 @@ export interface Query {
   campaignsPage: CampaignConnection;
   campaignDetail: Campaign;
   campaignStats: Array<CampaignDay>;
+  campaignActivity: Array<CampaignActivityPoint>;
   templatesPage: TemplateConnection;
   templatePreview: HtmlResult;
   interestsPage: InterestConnection;
@@ -611,6 +612,18 @@ export interface CampaignDay {
   unsubscribes: number;
   clickRate: number;
   interestRate: number;
+}
+
+export interface CampaignActivityPoint {
+  campaignId: string;
+  campaignSubject: string;
+  timestamp: string;
+  sent: number;
+  failed: number;
+  clicks: number;
+  interests: number;
+  saves: number;
+  unsubscribes: number;
 }
 
 export interface InterestProperty {

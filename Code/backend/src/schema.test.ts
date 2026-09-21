@@ -29,6 +29,10 @@ it("Campaign statistics schema excludes open metrics while retaining attributed 
   const queryFields = schema.getQueryType()!.getFields();
   expect(queryFields.campaignStats).toBeDefined();
   expect(queryFields.campaignStats.type.toString()).toBe("[CampaignDay!]!");
+  expect(queryFields.campaignActivity?.type.toString()).toBe("[CampaignActivityPoint!]!");
+  const campaignActivity = schema.getType("CampaignActivityPoint") as import("graphql").GraphQLObjectType;
+  expect(Object.keys(campaignActivity.getFields())).toEqual(expect.arrayContaining(["timestamp", "sent", "failed", "clicks", "saves", "interests", "unsubscribes"]));
+  expect(Object.keys(campaignActivity.getFields())).not.toContain("opens");
 
   const mutations = schema.getMutationType()!.getFields();
   expect(mutations.setPropertySaved.args.map((argument) => argument.name)).toEqual(["propertyId", "saved", "campaignToken"]);

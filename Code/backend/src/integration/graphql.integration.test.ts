@@ -136,6 +136,14 @@ it.skipIf(!enabled)("real GraphQL critical publication, ownership, news, and uns
   const stats = await graph("query{campaignStats{campaignId clicks saves interests unsubscribes}}", undefined, adminToken);
   const campaignStats = (stats.data?.campaignStats as Array<{ campaignId: string; clicks: number; saves: number; interests: number; unsubscribes: number }>).find((row) => row.campaignId === campaign.id);
   assert.deepEqual(campaignStats ? { clicks: campaignStats.clicks, saves: campaignStats.saves, interests: campaignStats.interests, unsubscribes: campaignStats.unsubscribes } : null, { clicks: 1, saves: 2, interests: 2, unsubscribes: 0 });
+  const activity = await graph("query{campaignActivity{campaignId timestamp sent failed clicks saves interests unsubscribes}}", undefined, adminToken);
+  const campaignActivity = (activity.data?.campaignActivity as Array<{ campaignId: string; timestamp: string; sent: number; failed: number; clicks: number; saves: number; interests: number; unsubscribes: number }>).filter((row) => row.campaignId === campaign.id);
+  assert.ok(campaignActivity.length > 0);
+  assert.deepEqual(campaignActivity.map((row) => row.timestamp), [...campaignActivity].sort((left, right) => Date.parse(left.timestamp) - Date.parse(right.timestamp)).map((row) => row.timestamp));
+  assert.ok(campaignActivity.some((row) => row.clicks === 1));
+  assert.ok(campaignActivity.some((row) => row.saves === 1));
+  assert.ok(campaignActivity.some((row) => row.interests === 1));
+  assert.ok(campaignActivity.every((row) => row.failed === 0 && row.unsubscribes === 0));
   const response = await fetch(`${baseUrl}/unsubscribe?token=${unsubscribeToken}&campaignToken=${trackingToken}`);
   assert.equal(response.status, 200);
   assert.equal((await prisma.subscriber.findUniqueOrThrow({ where: { id: recipient.id } })).status, "UNSUBSCRIBED");

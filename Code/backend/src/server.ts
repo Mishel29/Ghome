@@ -508,6 +508,18 @@ type PropertyConnection {
     interestRate: Float!
   }
 
+  type CampaignActivityPoint {
+    campaignId: ID!
+    campaignSubject: String!
+    timestamp: String!
+    sent: Int!
+    failed: Int!
+    clicks: Int!
+    interests: Int!
+    saves: Int!
+    unsubscribes: Int!
+  }
+
   type ImportError {
     rowNumber: Int
     field: String!
@@ -649,6 +661,7 @@ type Query {
   adminProperty(id: ID!): Property
   adminDashboard: AdminDashboard!
   campaignStats(from: String, to: String): [CampaignDay!]!
+  campaignActivity(from: String, to: String): [CampaignActivityPoint!]!
   propertyImportUpload(id: ID!): PropertyUpload!
   propertyImportStatus(id: ID!, jobOffset: Int, errorOffset: Int): PropertyImport!
   propertyImportHistory: [PropertyImport!]!
@@ -1902,6 +1915,30 @@ export const root = {
       orderBy: { occurredAt: "asc" },
     });
     return aggregateCampaignStatistics(events);
+  },
+  campaignActivity: async ({ from, to }: { from?: string; to?: string }, context: { token?: string }) => {
+    await requireAdmin(context);
+    const start = from ? new Date(`${from}T00:00:00.000Z`) : null;
+    const end = to ? new Date(`${to}T23:59:59.999Z`) : null;
+    const events = await prisma.campaignEvent.findMany({
+      where: {
+        ...(start || end ? { occurredAt: { ...(start ? { gte: start } : {}), ...(end ? { lte: end } : {}) } } : {}),
+        type: { in: ["SENT", "FAILED", "CLICKED", "INTEREST", "SAVED", "UNSUBSCRIBED"] },
+      },
+      select: { campaignId: true, type: true, occurredAt: true, campaign: { select: { subject: true } } },
+      orderBy: [{ occurredAt: "asc" }, { id: "asc" }],
+    });
+    return events.map((event) => ({
+      campaignId: event.campaignId,
+      campaignSubject: event.campaign.subject,
+      timestamp: event.occurredAt.toISOString(),
+      sent: Number(event.type === "SENT"),
+      failed: Number(event.type === "FAILED"),
+      clicks: Number(event.type === "CLICKED"),
+      interests: Number(event.type === "INTEREST"),
+      saves: Number(event.type === "SAVED"),
+      unsubscribes: Number(event.type === "UNSUBSCRIBED"),
+    }));
   },
   propertyImportUpload: async ({ id }: { id: string }, context: { token?: string }) => {
     await requireAdmin(context);
