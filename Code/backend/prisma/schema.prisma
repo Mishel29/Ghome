@@ -704,7 +704,6 @@ enum DeliveryStatus {
   PENDING
   SENDING
   SENT
-  DELIVERED
   FAILED
   SKIPPED
 }
