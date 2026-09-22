@@ -441,6 +441,13 @@ type PropertyConnection {
   totalCount: Int!
 }
 
+type PropertyFilterOptions {
+  types: [String!]!
+  saleTypes: [String!]!
+  statuses: [PropertyStatus!]!
+  stages: [PropertyStage!]!
+}
+
   type AuthPayload {
     token: String!
     user: User!
@@ -658,6 +665,7 @@ type Query {
     limit: Int
     offset: Int
   ): PropertyConnection!
+  adminPropertyFilterOptions: PropertyFilterOptions!
   adminProperty(id: ID!): Property
   adminDashboard: AdminDashboard!
   campaignStats(from: String, to: String): [CampaignDay!]!
@@ -2185,6 +2193,17 @@ export const root = {
   }, context: { token?: string }) => {
     await requireAdmin(context);
     return root.properties(args, { admin: true });
+  },
+  adminPropertyFilterOptions: async (_args: unknown, context: { token?: string }) => {
+    await requireAdmin(context);
+    const properties = await prisma.property.findMany({ select: { type: true, saleType: true, status: true, stage: true } });
+    const values = <T>(items: Array<T | null>) => [...new Set(items.filter((item): item is T => item !== null))].sort();
+    return {
+      types: values(properties.map((property) => property.type)),
+      saleTypes: values(properties.map((property) => property.saleType)),
+      statuses: values(properties.map((property) => property.status)),
+      stages: values(properties.map((property) => property.stage)),
+    };
   },
   adminProperty: async ({ id }: { id: string }, context: { token?: string }) => {
     await requireAdmin(context);
