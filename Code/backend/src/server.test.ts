@@ -82,7 +82,7 @@ describe("health, readiness, proxy, and GraphQL middleware", () => {
   it("trusts the configured proxy and mounts both GraphQL limiters", async () => {
     expect(app.get("trust proxy")).toBe(1);
     const stack = (app as unknown as { router: { stack: Array<{ name: string }> } }).router.stack;
-    expect(stack.map((layer) => layer.name)).toEqual(expect.arrayContaining(["jsonParser", "<anonymous>", "<anonymous>"]));
+    expect(stack.slice(3, 6).map((layer) => layer.name)).toEqual(["jsonParser", "<anonymous>", "<anonymous>"]);
     expect((await request("/healthz", { headers: { "x-forwarded-for": "203.0.113.42" } })).status).toBe(200);
   });
 
@@ -187,7 +187,7 @@ describe("mocked SMTP delivery", () => {
     expect(mocked.prisma.interest.update).not.toHaveBeenCalled();
   });
 
-  it("sends only active consented recipients and awaits provider delivery confirmation", async () => {
+  it("sends only active consented recipients and persists a successful campaign delivery", async () => {
     const campaignData = {
       id: "campaign-1", subject: "New homes", templateHtml: "<p>Hello {{Name}}</p>{{properties}}", bodyText: null, renderedHtml: null, newsArticleId: null, templateId: null, status: "DRAFT", template: null,
       properties: [{ property: { id: "property-1", name: "Fixture home", location: null, priceMin: null, priceMax: null, type: null, bedroomsMin: null, sizeSqm: null, media: [] } }], recipientCount: 1, startedAt: null, sentAt: null, completedAt: null, createdAt: new Date("2026-09-01T00:00:00.000Z"),
@@ -202,11 +202,11 @@ describe("mocked SMTP delivery", () => {
       .mockResolvedValueOnce({ ...campaignData, status: "QUEUED", recipients: [], properties: [] })
       .mockResolvedValueOnce({
         ...campaignData,
-        status: "SENDING",
+        status: "SENT",
         sentAt: new Date(),
         completedAt: new Date(),
-        recipients: [{ id: "recipient-1", status: "SENDING", recipientEmail: recipient.email, recipientName: recipient.name, attemptCount: 1, providerMessageId: "provider-1", errorMessage: null, sentAt: new Date(), failedAt: null }],
-        events: [],
+        recipients: [{ id: "recipient-1", status: "SENT", recipientEmail: recipient.email, recipientName: recipient.name, attemptCount: 1, providerMessageId: "provider-1", errorMessage: null, sentAt: new Date(), failedAt: null }],
+        events: [{ type: "SENT" }],
       });
     mocked.sendMail.mockResolvedValue({ messageId: "provider-1", accepted: [recipient.email], rejected: [], response: "250 accepted" });
 
@@ -226,10 +226,10 @@ describe("mocked SMTP delivery", () => {
     expect(email.html).toContain("/campaign-click?token=");
     expect(email.html).not.toContain("/campaign-open/");
     expect(email.html).not.toMatch(/<img[^>]+campaign-open/);
-    expect(mocked.prisma.campaignRecipient.update).toHaveBeenCalledWith(expect.objectContaining({ data: expect.objectContaining({ status: "SENDING" }) }));
-    expect(result.status).toBe("SENDING");
-    expect(result.sentCount).toBe(0);
-    expect(result.awaitingDeliveryCount).toBe(1);
+    expect(mocked.prisma.campaignRecipient.update).toHaveBeenCalledWith(expect.objectContaining({ data: expect.objectContaining({ status: "SENT" }) }));
+    expect(mocked.prisma.campaignEvent.create).toHaveBeenCalledWith(expect.objectContaining({ data: expect.objectContaining({ type: "SENT" }) }));
+    expect(result.status).toBe("SENT");
+    expect(result.sentCount).toBe(1);
   });
 
   it("persists a failed recipient when SMTP resolves with a rejected address", async () => {
@@ -242,7 +242,7 @@ describe("mocked SMTP delivery", () => {
     expect(result.sentCount).toBe(0);
     expect(result.failedCount).toBe(1);
     expect(mocked.prisma.campaignRecipient.update).toHaveBeenCalledWith(expect.objectContaining({ data: expect.objectContaining({ status: "FAILED", errorMessage: "Mail server rejected the recipient" }) }));
-    expect(mocked.prisma.campaignRecipient.update).toHaveBeenCalledWith(expect.objectContaining({ data: expect.objectContaining({ status: "FAILED", errorMessage: "Mail server rejected the recipient" }) }));
+    expect(mocked.prisma.campaignRecipient.update).not.toHaveBeenCalledWith(expect.objectContaining({ data: expect.objectContaining({ status: "SENT" }) }));
   });
 
   it("uses a neutral fallback instead of a preview name for a blank recipient name", async () => {
@@ -307,14 +307,14 @@ describe("mocked SMTP delivery", () => {
       .mockResolvedValueOnce({ ...campaignData, status: "QUEUED", recipients: [], properties: [] })
       .mockResolvedValueOnce({
         ...campaignData,
-        status: "SENDING",
+        status: "PARTIALLY_FAILED",
         sentAt: new Date(),
         completedAt: new Date(),
         recipients: [
           { id: "recipient-1", status: "FAILED", recipientEmail: subscribers[0].email, recipientName: subscribers[0].name, attemptCount: 1, providerMessageId: null, errorMessage: "SMTP unavailable", trackingTokenHash: "hash", sentAt: null, failedAt: new Date() },
-          { id: "recipient-2", status: "SENDING", recipientEmail: subscribers[1].email, recipientName: subscribers[1].name, attemptCount: 1, providerMessageId: "provider-1", errorMessage: null, trackingTokenHash: "hash", sentAt: new Date(), failedAt: null },
+          { id: "recipient-2", status: "SENT", recipientEmail: subscribers[1].email, recipientName: subscribers[1].name, attemptCount: 1, providerMessageId: "provider-1", errorMessage: null, trackingTokenHash: "hash", sentAt: new Date(), failedAt: null },
         ],
-        events: [{ type: "FAILED" }],
+        events: [{ type: "SENT" }, { type: "FAILED" }],
       });
     mocked.sendMail
       .mockRejectedValueOnce(new Error("SMTP unavailable"))
@@ -331,11 +331,11 @@ describe("mocked SMTP delivery", () => {
     const deliveryHtml = vi.mocked(mailTransport.sendMail).mock.calls.map(([message]) => message.html);
     expect(deliveryHtml).toEqual(expect.arrayContaining([expect.stringContaining("Hello First"), expect.stringContaining("Hello Second")]));
     expect(deliveryHtml.every((html) => !html.includes("Sample Recipient"))).toBe(true);
-    expect(mocked.prisma.campaignRecipient.update).toHaveBeenCalledWith(expect.objectContaining({ data: expect.objectContaining({ status: "SENDING" }) }));
+    expect(mocked.prisma.campaignRecipient.update).toHaveBeenCalledWith(expect.objectContaining({ data: expect.objectContaining({ status: "SENT" }) }));
     expect(mocked.prisma.campaignRecipient.update).toHaveBeenCalledWith(expect.objectContaining({ data: expect.objectContaining({ status: "FAILED", errorMessage: "SMTP unavailable" }) }));
-    expect(mocked.prisma.deliveryAttempt.update).toHaveBeenCalledWith(expect.objectContaining({ data: expect.objectContaining({ status: "SENDING" }) }));
+    expect(mocked.prisma.deliveryAttempt.update).toHaveBeenCalledWith(expect.objectContaining({ data: expect.objectContaining({ status: "SENT" }) }));
     expect(mocked.prisma.deliveryAttempt.update).toHaveBeenCalledWith(expect.objectContaining({ data: expect.objectContaining({ status: "FAILED" }) }));
-    expect(result.status).toBe("SENDING");
+    expect(result.status).toBe("PARTIALLY_FAILED");
   });
 
   it("marks a campaign partially failed when two recipients are accepted and one is rejected", async () => {
@@ -366,15 +366,15 @@ describe("mocked SMTP delivery", () => {
       .mockResolvedValueOnce({ ...campaignData, status: "QUEUED", recipients: [], properties: [] })
       .mockResolvedValueOnce({
         ...campaignData,
-        status: "SENDING",
+        status: "PARTIALLY_FAILED",
         sentAt: new Date(),
         completedAt: new Date(),
         recipients: [
-          { id: "recipient-1", status: "SENDING", recipientEmail: subscribers[0].email, recipientName: subscribers[0].name, attemptCount: 1, providerMessageId: "provider-1", errorMessage: null, sentAt: new Date(), failedAt: null },
-          { id: "recipient-2", status: "SENDING", recipientEmail: subscribers[1].email, recipientName: subscribers[1].name, attemptCount: 1, providerMessageId: "provider-2", errorMessage: null, sentAt: new Date(), failedAt: null },
+          { id: "recipient-1", status: "SENT", recipientEmail: subscribers[0].email, recipientName: subscribers[0].name, attemptCount: 1, providerMessageId: "provider-1", errorMessage: null, sentAt: new Date(), failedAt: null },
+          { id: "recipient-2", status: "SENT", recipientEmail: subscribers[1].email, recipientName: subscribers[1].name, attemptCount: 1, providerMessageId: "provider-2", errorMessage: null, sentAt: new Date(), failedAt: null },
           { id: "recipient-3", status: "FAILED", recipientEmail: subscribers[2].email, recipientName: subscribers[2].name, attemptCount: 1, providerMessageId: null, errorMessage: "Mail server rejected the recipient", sentAt: null, failedAt: new Date() },
         ],
-        events: [{ type: "FAILED" }],
+        events: [{ type: "SENT" }, { type: "SENT" }, { type: "FAILED" }],
       });
     mocked.sendMail
       .mockResolvedValueOnce({ messageId: "provider-1", accepted: [subscribers[0].email], rejected: [], response: "250 accepted" })
@@ -388,10 +388,10 @@ describe("mocked SMTP delivery", () => {
     expect(deliveryHtml).toEqual(expect.arrayContaining([expect.stringContaining("Hello First"), expect.stringContaining("Hello Second"), expect.stringContaining("Hello Third")]));
     expect(deliveryHtml.every((html) => !html.includes("Sample Recipient"))).toBe(true);
     expect(deliveryHtml.every((html) => !html.includes("/campaign-open/"))).toBe(true);
-    expect(mocked.prisma.campaignRecipient.update).toHaveBeenCalledWith(expect.objectContaining({ data: expect.objectContaining({ status: "SENDING" }) }));
+    expect(mocked.prisma.campaignRecipient.update).toHaveBeenCalledWith(expect.objectContaining({ data: expect.objectContaining({ status: "SENT" }) }));
     expect(mocked.prisma.campaignRecipient.update).toHaveBeenCalledWith(expect.objectContaining({ data: expect.objectContaining({ status: "FAILED", errorMessage: "Mail server rejected the recipient" }) }));
-    expect(result.status).toBe("SENDING");
-    expect(result.sentCount).toBe(0);
+    expect(result.status).toBe("PARTIALLY_FAILED");
+    expect(result.sentCount).toBe(2);
     expect(result.failedCount).toBe(1);
   });
 });

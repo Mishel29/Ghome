@@ -1,1 +1,0 @@
-ALTER TYPE "DeliveryStatus" ADD VALUE 'DELIVERED';
