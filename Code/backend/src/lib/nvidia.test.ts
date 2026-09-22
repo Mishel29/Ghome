@@ -25,6 +25,7 @@ describe("NvidiaClient", () => {
       headers: expect.objectContaining({ authorization: "Bearer test-key" }),
       body: expect.stringContaining('"model":"test-model"'),
     }));
+    expect(JSON.parse(fetchImpl.mock.calls[0][1].body)).toMatchObject({ temperature: 0, top_p: 1, stream: false });
   });
 
   it("uses the default model and leaves the client unavailable without a key", () => {

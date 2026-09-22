@@ -1,27 +1,63 @@
-import { useEffect,useState } from "react";
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import type { CampaignDashboard, CampaignDashboardDay, CampaignDashboardSummary } from "../../api/schemaTypes";
+import { AdminPage, Feedback } from "../../components/AdminUI";
 import { useQuery } from "../../api/useQuery";
-import type { AdminDashboard as DashboardData,CampaignActivityPoint } from "../../api/schemaTypes";
-import { AdminPage,Feedback } from "../../components/AdminUI";
-import { Legend,Line,LineChart,ResponsiveContainer,Tooltip,XAxis,YAxis } from "recharts";
-import { formatCampaignActivityAxisLabel,formatCampaignActivityDate,formatCampaignActivityTime,toCampaignActivityTimeline,type CampaignActivityTimelinePoint } from "./campaignActivityTimeline";
+import { formatCampaignDashboardDate, formatCampaignDashboardDay, formatCampaignSentDate, formatRate, sortCampaignPerformance, type CampaignSortKey } from "./campaignDashboard";
 
-type CampaignActivityTooltipProps = { active?: boolean; payload?: Array<{ payload: CampaignActivityTimelinePoint }> };
+type DashboardTooltipProps = { active?: boolean; payload?: Array<{ payload: CampaignDashboardDay }> };
 
-function CampaignActivityTooltip({ active,payload }: CampaignActivityTooltipProps) {
-  const point=payload?.[0]?.payload;
-  if(!active||!point)return null;
-  const metrics=[["Sent",point.sent],["Failed",point.failed],["Clicks",point.clicks],["Saves",point.saves],["Interests",point.interests],["Unsubscribes",point.unsubscribes]].filter(([,value])=>value);
-  return <div className="border border-[#ddd5c5] bg-white px-3 py-2 text-xs text-navy shadow-sm"><p className="font-semibold">{point.campaignSubject}</p><p>Date: {formatCampaignActivityDate(point.timestampMs)}</p><p>Time: {formatCampaignActivityTime(point.timestampMs)}</p>{metrics.map(([label,value])=><p key={label}>{label}: {value}</p>)}</div>;
+function CampaignDailyTooltip({ active, payload }: DashboardTooltipProps) {
+  const day = payload?.[0]?.payload;
+  if (!active || !day) return null;
+  return <div className="border border-[#ddd5c5] bg-white px-3 py-2 text-xs text-navy shadow-sm"><p className="mb-1 font-semibold">{formatCampaignDashboardDate(day.date)}</p><p>Sent: {day.sent}</p><p>Clicks: {day.clicks}</p><p>Saves: {day.saves}</p><p>Interests: {day.interests}</p><p>Failed: {day.failed}</p><p>Unsubscribes: {day.unsubscribes}</p></div>;
 }
 
-function thirtyDaysAgo(){const date=new Date();date.setUTCDate(date.getUTCDate()-29);return date.toISOString().slice(0,10);}
+function thirtyDaysAgo() {
+  const date = new Date();
+  date.setUTCDate(date.getUTCDate() - 29);
+  return date.toISOString().slice(0, 10);
+}
 
-function useCompactChart(){const [compact,setCompact]=useState(false);useEffect(()=>{const media=window.matchMedia("(max-width: 639px)");const update=()=>setCompact(media.matches);update();media.addEventListener("change",update);return()=>media.removeEventListener("change",update);},[]);return compact;}
+function KpiCards({ summary }: { summary: CampaignDashboardSummary }) {
+  const cards: Array<[string, number | string, string]> = [
+    ["Emails sent", summary.sent, "Successfully sent campaign recipients"],
+    ["Failed", summary.failed, "Recipient delivery failures"],
+    ["Clicks", summary.clicks, "Campaign-attributed clicks"],
+    ["Saves", summary.saves, "Campaign-attributed property saves"],
+    ["Interests", summary.interests, "Campaign-attributed enquiries"],
+    ["Unsubscribes", summary.unsubscribes, "Campaign unsubscribe events"],
+    ["Click-through rate", formatRate(summary.ctr), "Clicks divided by sent"],
+    ["Interest rate", formatRate(summary.interestRate), "Interests divided by sent"],
+  ];
+  return <section aria-label="Campaign performance summary" className="grid grid-cols-2 gap-3 lg:grid-cols-4">{cards.map(([label, value, detail]) => <article key={label} className="border border-[#ddd5c5] border-t-4 border-t-amber bg-white p-4"><p className="text-xs uppercase text-stone">{label}</p><p className="mt-2 font-display text-3xl font-bold text-navy">{value}</p><p className="mt-2 text-xs text-stone">{detail}</p></article>)}</section>;
+}
 
-export default function AdminDashboard(){const from=thirtyDaysAgo();const {data,loading,error}=useQuery<{adminDashboard:DashboardData;campaignActivity:CampaignActivityPoint[]}>(`query DashboardCampaignActivity($from:String!){adminDashboard{properties publishedProperties subscribers unsubscribers campaigns sentCampaigns interests pendingInterests news users} campaignActivity(from:$from){campaignId campaignSubject timestamp sent failed clicks interests saves unsubscribes}}`,{from});
-  const d=data?.adminDashboard;
-  const timeline=toCampaignActivityTimeline(data?.campaignActivity??[]);
-  const compact=useCompactChart();
-  return <AdminPage title="Admin Dashboard" description="Current platform totals and campaign activity from the database."><Feedback error={error} loading={loading}/>{d&&<><div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-5">{[["Properties",d.properties,`${d.publishedProperties} published`,"properties"],["Subscribers",d.subscribers,`${d.unsubscribers} unsubscribed`,"subscribers"],["Campaigns",d.campaigns,`${d.sentCampaigns} sent`,"campaigns"],["Interests",d.interests,`${d.pendingInterests} awaiting follow-up`,"interests"],["News",d.news,"Articles and announcements","news"],["Users",d.users,"Platform accounts","users"]].map(([label,value,sub,path])=><Link to={`/admin/${path}`} className="bg-white border-l-4 border-amber p-5 shadow-sm" key={label}><p className="text-xs uppercase text-stone">{label}</p><p className="font-display text-3xl font-bold mt-2">{value}</p><p className="text-xs text-stone mt-2">{sub}</p></Link>)}</div><section className="bg-white p-3 sm:p-6"><h2 className="text-sm sm:text-base font-semibold mb-4">Campaign activity — last 30 days</h2>{timeline.length?<ResponsiveContainer width="100%" height={compact?220:300}><LineChart data={timeline} margin={{top:12,right:compact?0:12,left:compact?0:-12,bottom:compact?12:4}}><XAxis dataKey="timestampMs" type="number" scale="time" domain={["dataMin","dataMax"]} tickFormatter={(value)=>formatCampaignActivityAxisLabel(value)} minTickGap={compact?100:72} tick={{fontSize:12}}/><YAxis hide={compact} allowDecimals={false} width={32}/><Tooltip content={<CampaignActivityTooltip/>}/>{!compact&&<Legend wrapperStyle={{fontSize:12}}/>}<Line dataKey="sentValue" name="Sent" stroke="#1B2A4A" dot={{r:3}} activeDot={{r:5}} connectNulls={false}/><Line dataKey="failedValue" name="Failed" stroke="#B42318" dot={{r:3}} activeDot={{r:5}} connectNulls={false}/><Line dataKey="clicksValue" name="Clicks" stroke="#E8761B" dot={{r:3}} activeDot={{r:5}} connectNulls={false}/><Line dataKey="savesValue" name="Saves" stroke="#4A6741" dot={{r:3}} activeDot={{r:5}} connectNulls={false}/><Line dataKey="interestsValue" name="Interests" stroke="#805AD5" dot={{r:3}} activeDot={{r:5}} connectNulls={false}/><Line dataKey="unsubscribesValue" name="Unsubscribes" stroke="#6B7280" dot={{r:3}} activeDot={{r:5}} connectNulls={false}/></LineChart></ResponsiveContainer>:<p className="text-stone py-12 text-center">No campaign activity in this period.</p>}</section></>}</AdminPage>;
+function ConversionFunnel({ summary }: { summary: CampaignDashboardSummary }) {
+  const rows = [
+    ["Sent", summary.sent, 100],
+    ["Clicked", summary.clicks, summary.sent ? (summary.clicks / summary.sent) * 100 : 0],
+    ["Saved", summary.saves, summary.sent ? (summary.saves / summary.sent) * 100 : 0],
+    ["Interested", summary.interests, summary.sent ? (summary.interests / summary.sent) * 100 : 0],
+  ] as const;
+  return <section className="bg-white p-4 sm:p-6"><div className="mb-5"><h2 className="font-semibold">Conversion funnel</h2><p className="mt-1 text-sm text-stone">Campaign-attributed actions as a share of successful sends.</p></div><div className="space-y-3">{rows.map(([label, value, rate], index) => <div key={label} className="mx-auto" style={{ width: `${Math.max(42, 100 - index * 14)}%` }}><div className="flex items-center justify-between gap-3 bg-navy px-3 py-3 text-sm text-white"><span className="font-semibold">{label}</span><span>{value} <span className="text-white/70">{index ? `(${rate.toFixed(1)}%)` : ""}</span></span></div></div>)}</div></section>;
+}
+
+function CampaignTable({ dashboard }: { dashboard: CampaignDashboard }) {
+  const [sortKey, setSortKey] = useState<CampaignSortKey>("sentAt");
+  const [direction, setDirection] = useState<"asc" | "desc">("desc");
+  const rows = sortCampaignPerformance(dashboard.campaigns, sortKey, direction);
+  const headers: Array<[string, CampaignSortKey | null]> = [["Campaign name", null], ["Sent date", "sentAt"], ["Recipients", null], ["Sent", null], ["Failed", null], ["Clicks", "clicks"], ["Saves", "saves"], ["Interests", "interests"], ["Unsubscribes", null], ["CTR", "ctr"], ["Interest rate", "interestRate"]];
+  const chooseSort = (key: CampaignSortKey) => {
+    if (key === sortKey) setDirection((current) => current === "desc" ? "asc" : "desc");
+    else { setSortKey(key); setDirection("desc"); }
+  };
+  return <section className="bg-white p-4 sm:p-6"><div className="mb-4"><h2 className="font-semibold">Campaign performance</h2><p className="mt-1 text-sm text-stone">Newest sent campaigns first. Sort delivery and conversion metrics to compare results.</p></div><div className="overflow-x-auto"><table className="w-full min-w-[1050px] text-left text-sm"><thead><tr className="border-b border-[#ddd5c5]">{headers.map(([label, key]) => <th className="p-3 font-semibold" key={label}>{key ? <button type="button" className="text-left underline decoration-transparent underline-offset-4 hover:decoration-current" onClick={() => chooseSort(key)}>{label}{sortKey === key ? direction === "desc" ? " v" : " ^" : ""}</button> : label}</th>)}</tr></thead><tbody>{rows.map((row) => <tr key={row.campaignId} className="border-b border-[#eee8dc]"><td className="p-3 font-medium">{row.campaignName}</td><td className="p-3">{formatCampaignSentDate(row.sentAt)}</td><td className="p-3">{row.recipients}</td><td className="p-3">{row.sent}</td><td className="p-3">{row.failed}</td><td className="p-3">{row.clicks}</td><td className="p-3">{row.saves}</td><td className="p-3">{row.interests}</td><td className="p-3">{row.unsubscribes}</td><td className="p-3">{formatRate(row.ctr)}</td><td className="p-3">{formatRate(row.interestRate)}</td></tr>)}</tbody></table></div>{!rows.length && <p className="py-8 text-center text-sm text-stone">No campaign delivery or attributed activity in this period.</p>}</section>;
+}
+
+export default function AdminDashboard() {
+  const from = thirtyDaysAgo();
+  const { data, loading, error } = useQuery<{ campaignDashboard: CampaignDashboard }>(`query CampaignDashboard($from:String!){campaignDashboard(from:$from){summary{sent failed clicks saves interests unsubscribes ctr interestRate} days{date sent failed clicks saves interests unsubscribes} campaigns{campaignId campaignName sentAt recipients sent failed clicks saves interests unsubscribes ctr interestRate}}}`, { from });
+  const dashboard = data?.campaignDashboard;
+  return <AdminPage title="Campaign Performance" description="Last 30 days of successful delivery and campaign-attributed engagement."><Feedback error={error} loading={loading}/>{dashboard && <div className="space-y-6"><KpiCards summary={dashboard.summary}/><section className="bg-white p-4 sm:p-6"><div className="mb-4"><h2 className="font-semibold">Daily performance</h2><p className="mt-1 text-sm text-stone">Daily UTC totals across all campaigns.</p></div>{dashboard.days.length ? <div className="h-72 sm:h-80"><ResponsiveContainer width="100%" height="100%"><BarChart data={dashboard.days} margin={{ top: 12, right: 12, left: -12, bottom: 4 }}><CartesianGrid stroke="#ddd5c5" strokeDasharray="3 3" vertical={false}/><XAxis dataKey="date" tickFormatter={formatCampaignDashboardDay} minTickGap={28} tick={{ fontSize: 12 }}/><YAxis allowDecimals={false} width={32} tick={{ fontSize: 12 }}/><Tooltip content={<CampaignDailyTooltip/>}/><Legend wrapperStyle={{ fontSize: 12 }}/><Bar dataKey="sent" name="Sent" fill="#1B2A4A"/><Bar dataKey="clicks" name="Clicks" fill="#E8761B"/><Bar dataKey="saves" name="Saves" fill="#4A6741"/><Bar dataKey="interests" name="Interests" fill="#6B2B4C"/></BarChart></ResponsiveContainer></div> : <p className="py-12 text-center text-sm text-stone">No campaign activity in this period.</p>}</section><ConversionFunnel summary={dashboard.summary}/><CampaignTable dashboard={dashboard}/></div>}</AdminPage>;
 }

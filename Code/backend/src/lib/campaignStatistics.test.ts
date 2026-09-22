@@ -26,7 +26,7 @@ describe("campaign statistics aggregation", () => {
   });
 
   it("returns explicit zero values for metrics with no events", () => {
-    expect(aggregateCampaignStatistics([event("SENT", "2026-09-02T10:00:00.000Z")])[0]).toMatchObject({ clicks: 0, interests: 0, saves: 0, unsubscribes: 0 });
+    expect(aggregateCampaignStatistics([event("SENT", "2026-09-02T10:00:00.000Z")])[0]).toMatchObject({ failed: 0, clicks: 0, interests: 0, saves: 0, unsubscribes: 0 });
   });
 
   it("keeps different UTC dates separate", () => {

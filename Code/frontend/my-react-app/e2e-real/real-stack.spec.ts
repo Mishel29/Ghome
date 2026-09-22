@@ -73,6 +73,11 @@ test('runs campaign attribution, consent, auth, publication, news, and unsubscri
   await page.reload();
   await signIn(page, admin);
   await expect(page).toHaveURL(/\/admin$/);
+  await expect(page.getByRole('heading', { name: 'Campaign Performance', exact: true })).toBeVisible();
+  await expect(page.getByText('Emails sent', { exact: true })).toBeVisible();
+  await expect(page.getByText('Daily performance', { exact: true })).toBeVisible();
+  await expect(page.getByText('Conversion funnel', { exact: true })).toBeVisible();
+  await expect(page.getByRole('cell', { name: 'E2E Campaign', exact: true })).toBeVisible();
   await page.goto('/admin/properties');
   await expect(page.getByText('E2E Draft Property')).toBeVisible();
   await page.goto('/admin/campaigns');
@@ -80,9 +85,10 @@ test('runs campaign attribution, consent, auth, publication, news, and unsubscri
   const day = page.locator('table tbody tr').filter({ hasText: 'E2E Campaign' });
   await expect(day).toHaveCount(1);
   const values = await day.locator('td').allTextContents();
-  expect(values[3]).toBe('1');
+  expect(values[3]).toBe('0');
   expect(values[4]).toBe('1');
-  expect(values[5]).toBe('2');
+  expect(values[5]).toBe('1');
+  expect(values[6]).toBe('2');
 
   await page.goto(`${backendUrl}/unsubscribe?token=e2e-unsubscribe-token&campaignToken=e2e-campaign-token`);
   await expect(page.getByRole('heading', { name: 'You have been unsubscribed' })).toBeVisible();

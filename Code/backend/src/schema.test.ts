@@ -17,7 +17,7 @@ it("Campaign statistics schema excludes open metrics while retaining attributed 
   expect(result.errors).toBeUndefined();
   const fields = ((result.data?.__type as { fields: Array<{ name: string }> } | null)?.fields ?? []).map((field) => field.name);
   expect(fields).toContain("date");
-  expect(fields).toEqual(expect.arrayContaining(["clicks", "saves", "unsubscribes"]));
+  expect(fields).toEqual(expect.arrayContaining(["failed", "clicks", "saves", "unsubscribes"]));
   expect(fields).not.toContain("opens");
   expect(fields).toContain("interests");
 
@@ -27,12 +27,18 @@ it("Campaign statistics schema excludes open metrics while retaining attributed 
   expect(campaignFields).toEqual(expect.arrayContaining(["clickCount", "saveCount", "interestCount"]));
 
   const queryFields = schema.getQueryType()!.getFields();
+  expect(queryFields.propertyFilterOptions?.type.toString()).toBe("PropertyFilterOptions!");
+  const propertyFilterOptions = schema.getType("PropertyFilterOptions") as import("graphql").GraphQLObjectType;
+  expect(Object.keys(propertyFilterOptions.getFields())).toEqual(expect.arrayContaining(["propertyTypes", "saleTypes", "counties", "locations", "sizeCategories", "bedrooms", "bathrooms", "agents"]));
   expect(queryFields.campaignStats).toBeDefined();
   expect(queryFields.campaignStats.type.toString()).toBe("[CampaignDay!]!");
+  expect(queryFields.campaignDashboard?.type.toString()).toBe("CampaignDashboard!");
   expect(queryFields.campaignActivity?.type.toString()).toBe("[CampaignActivityPoint!]!");
   const campaignActivity = schema.getType("CampaignActivityPoint") as import("graphql").GraphQLObjectType;
   expect(Object.keys(campaignActivity.getFields())).toEqual(expect.arrayContaining(["timestamp", "sent", "failed", "clicks", "saves", "interests", "unsubscribes"]));
   expect(Object.keys(campaignActivity.getFields())).not.toContain("opens");
+  const campaignDashboard = schema.getType("CampaignDashboard") as import("graphql").GraphQLObjectType;
+  expect(Object.keys(campaignDashboard.getFields())).toEqual(expect.arrayContaining(["summary", "days", "campaigns"]));
 
   const mutations = schema.getMutationType()!.getFields();
   expect(mutations.setPropertySaved.args.map((argument) => argument.name)).toEqual(["propertyId", "saved", "campaignToken"]);
@@ -45,5 +51,5 @@ it("Campaign statistics schema excludes open metrics while retaining attributed 
   const assistantInput = schema.getType("PropertyAssistantInput") as import("graphql").GraphQLInputObjectType;
   expect(Object.keys(assistantInput.getFields())).toEqual(["message", "sessionId", "selectedPropertyId"]);
   const assistantResult = schema.getType("PropertyAssistantResult") as import("graphql").GraphQLObjectType;
-  expect(Object.keys(assistantResult.getFields())).toEqual(expect.arrayContaining(["message", "properties", "sessionId", "intent", "selectedPropertyId", "filterJson", "totalCount"]));
+  expect(Object.keys(assistantResult.getFields())).toEqual(expect.arrayContaining(["message", "properties", "sessionId", "intent", "responseType", "selectedPropertyId", "filterJson", "totalCount", "warnings"]));
 });

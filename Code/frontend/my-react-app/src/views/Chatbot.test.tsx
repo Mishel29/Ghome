@@ -64,9 +64,11 @@ function reply(overrides: Record<string, unknown> = {}) {
       message: "I found a current published property.",
       sessionId: "assistant-session-1234",
       intent: "PROPERTY_SEARCH",
+      responseType: "PROPERTY_RESULTS",
       selectedPropertyId: null,
       filterJson: JSON.stringify({ location: "Cork" }),
       totalCount: 1,
+      warnings: [],
       properties: [property],
       ...overrides,
     },
@@ -78,7 +80,7 @@ describe("Chatbot", () => {
   afterEach(() => cleanup());
 
   it("sends the mutation, renders authoritative cards, and selects a property", async () => {
-    vi.mocked(graphqlRequest).mockResolvedValueOnce(reply()).mockResolvedValueOnce(reply({ intent: "PROPERTY_DETAILS", selectedPropertyId: property.id, properties: [property] }));
+    vi.mocked(graphqlRequest).mockResolvedValueOnce(reply()).mockResolvedValueOnce(reply({ intent: "PROPERTY_DETAILS", responseType: "PROPERTY_DETAILS", selectedPropertyId: property.id, properties: [property] }));
     const user = userEvent.setup();
     render(<MemoryRouter><Chatbot /></MemoryRouter>);
 
@@ -102,5 +104,16 @@ describe("Chatbot", () => {
     expect(screen.getByRole("alert").textContent).not.toContain("provider token");
     await user.click(screen.getByRole("button", { name: "Retry" }));
     await screen.findByText("I found a current published property.");
+  });
+
+  it("renders a deterministic comparison table instead of treating comparison as free-form text", async () => {
+    vi.mocked(graphqlRequest).mockResolvedValueOnce(reply({ intent: "PROPERTY_COMPARISON", responseType: "COMPARISON", properties: [property, { ...property, id: "published-property-2", name: "Published Dublin Home" }] }));
+    const user = userEvent.setup();
+    render(<MemoryRouter><Chatbot /></MemoryRouter>);
+
+    await user.type(screen.getByLabelText("Ask about properties"), "Compare the first two{enter}");
+    await screen.findByRole("table");
+    expect(screen.getByText("Published Dublin Home")).toBeTruthy();
+    expect(screen.getByText("Price")).toBeTruthy();
   });
 });

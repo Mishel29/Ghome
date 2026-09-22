@@ -76,7 +76,7 @@ export class NvidiaClient {
           body: JSON.stringify({
             model: this.model,
             messages,
-            temperature: 0.2,
+            temperature: 0,
             top_p: 1,
             max_tokens: options.maxTokens ?? 600,
             stream: false,

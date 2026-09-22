@@ -3,11 +3,11 @@ import { Link } from "react-router-dom";
 import { graphqlRequest } from "../api/graphql";
 import { viewProperty } from "../api/properties";
 import PropertyCard from "../components/PropertyCard";
-import type { Property as ApiProperty, PropertyAssistantResult } from "../api/schemaTypes";
+import type { Property as ApiProperty, PropertyAssistantResult, PropertyAssistantResponseType } from "../api/schemaTypes";
 import type { Property } from "../data";
 
 const ASSISTANT_PROPERTY_FIELDS = `id name location county address postalCode type saleType status stage publicationStatus publishedAt priceMin priceMax bedroomsMin bedroomsMax bathroomsMin bathroomsMax sizeSqm sizeSqmMax completionYear description bedroomOptions bathroomOptions listedDate createdAt media { id url type isPrimary sortOrder altText } features { id name } valueHistory { id year value growthPercent isSynthetic source } historicalPrices { year price } clickCount interestCount saveCount campaigned`;
-const CHAT_MUTATION = `mutation ChatWithPropertyAI($input: PropertyAssistantInput!) { chatWithPropertyAI(input: $input) { message sessionId intent selectedPropertyId filterJson totalCount properties { ${ASSISTANT_PROPERTY_FIELDS} } } }`;
+const CHAT_MUTATION = `mutation ChatWithPropertyAI($input: PropertyAssistantInput!) { chatWithPropertyAI(input: $input) { message sessionId intent responseType selectedPropertyId filterJson totalCount warnings properties { ${ASSISTANT_PROPERTY_FIELDS} } } }`;
 
 type ChatMessage = {
   id: string;
@@ -17,6 +17,7 @@ type ChatMessage = {
   properties?: Property[];
   filterJson?: string;
   totalCount?: number;
+  responseType?: PropertyAssistantResponseType;
 };
 
 type PendingRequest = { message: string; selectedPropertyId?: string; selectedPropertyName?: string };
@@ -42,7 +43,24 @@ function responseToMessage(reply: ChatResponse): ChatMessage {
     properties: reply.properties.map(viewProperty),
     filterJson: reply.filterJson,
     totalCount: reply.totalCount,
+    responseType: reply.responseType,
   };
+}
+
+function comparisonValue(value: string | number | undefined) {
+  return value === undefined || value === "" ? "Not listed" : value;
+}
+
+function ComparisonTable({ properties }: { properties: Property[] }) {
+  const rows = [
+    ["Price", (property: Property) => property.price.min ? `EUR ${property.price.min.toLocaleString("en-IE")}` : "Not listed"],
+    ["Beds", (property: Property) => property.beds.length ? property.beds.join(" / ") : "Not listed"],
+    ["Baths", (property: Property) => property.baths.length ? property.baths.join(" / ") : "Not listed"],
+    ["Area", (property: Property) => property.sqft.min ? `${property.sqft.min} sq ft` : "Not listed"],
+    ["Location", (property: Property) => comparisonValue([property.location, property.county].filter(Boolean).join(", "))],
+    ["Status", (property: Property) => comparisonValue(property.status.replace("-", " "))],
+  ] as const;
+  return <div className="mt-4 overflow-x-auto border border-[#ddd5c5] bg-white"><table className="min-w-[620px] text-left text-xs"><thead><tr className="border-b border-[#ddd5c5]"><th className="p-2 font-semibold">Property</th>{properties.map((property) => <th className="p-2 font-semibold" key={property.id}>{property.name}</th>)}</tr></thead><tbody>{rows.map(([label, value]) => <tr className="border-b border-[#eee8dc] last:border-b-0" key={label}><th className="p-2 font-semibold">{label}</th>{properties.map((property) => <td className="p-2" key={property.id}>{value(property)}</td>)}</tr>)}</tbody></table></div>;
 }
 
 export default function Chatbot() {
@@ -136,7 +154,8 @@ export default function Chatbot() {
                 <div className={`max-w-[88%] ${message.role === "user" ? "bg-navy text-white" : "bg-cream-dark text-navy"} px-4 py-3 text-sm leading-relaxed`}>
                   <p className="whitespace-pre-line">{message.text}</p>
                   <p className={`mt-2 text-[10px] ${message.role === "user" ? "text-white/60" : "text-stone"}`}>{formatTime(message.timestamp)}</p>
-                  {message.properties && message.properties.length > 0 && (
+                  {message.responseType === "COMPARISON" && message.properties && message.properties.length > 0 && <ComparisonTable properties={message.properties} />}
+                  {message.responseType !== "COMPARISON" && message.properties && message.properties.length > 0 && (
                     <div className="mt-4 grid gap-3 sm:grid-cols-2">
                       {message.properties.map((property) => <PropertyCard key={property.id} property={property} showCompare onAskAI={askAboutProperty} />)}
                     </div>

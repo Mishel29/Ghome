@@ -7,9 +7,12 @@ export const PROPERTY_ASSISTANT_RESULT_LIMIT = 6;
 export const AssistantIntentSchema = z.enum(["PROPERTY_SEARCH", "PROPERTY_DETAILS", "PROPERTY_COMPARISON", "GENERAL_PROPERTY_QUESTION"]);
 export type AssistantIntent = z.infer<typeof AssistantIntentSchema>;
 
+export const AssistantResponseTypeSchema = z.enum(["PROPERTY_RESULTS", "PROPERTY_DETAILS", "COMPARISON", "NO_RESULTS", "CLARIFICATION", "GENERAL_HELP"]);
+export type AssistantResponseType = z.infer<typeof AssistantResponseTypeSchema>;
+
 const optionalText = z.string().trim().min(1).max(80).nullable().optional();
 const optionalPrice = z.number().finite().min(0).max(100_000_000).nullable().optional();
-const optionalCount = z.number().int().min(0).max(50).nullable().optional();
+const optionalCount = z.number().int().min(1).max(50).nullable().optional();
 
 export const AssistantFiltersSchema = z.object({
   location: optionalText,
@@ -70,7 +73,21 @@ export type AssistantSession = {
 };
 
 function cleanFilters(filters: RawAssistantFilters | AssistantFilters): AssistantFilters {
-  return Object.fromEntries(Object.entries(filters).filter(([, value]) => value !== null && value !== undefined)) as AssistantFilters;
+  const clean = Object.fromEntries(Object.entries(filters).filter(([, value]) => value !== null && value !== undefined)) as AssistantFilters;
+  if (clean.location) clean.location = clean.location.trim();
+  if (clean.county) clean.county = clean.county.trim();
+  if (clean.propertyType) {
+    const normalized = clean.propertyType.toLowerCase().replace(/\s+/g, " ").trim();
+    clean.propertyType = ["apartment", "house", "townhouse", "duplex"].includes(normalized) ? normalized : undefined;
+  }
+  return clean;
+}
+
+export function assistantFilterValidationError(filters: AssistantFilters) {
+  if (filters.minPrice !== undefined && filters.maxPrice !== undefined && filters.minPrice > filters.maxPrice) return "The minimum price cannot exceed the maximum price.";
+  if (filters.minBedrooms !== undefined && filters.maxBedrooms !== undefined && filters.minBedrooms > filters.maxBedrooms) return "The minimum bedroom count cannot exceed the maximum bedroom count.";
+  if (filters.minBathrooms !== undefined && filters.maxBathrooms !== undefined && filters.minBathrooms > filters.maxBathrooms) return "The minimum bathroom count cannot exceed the maximum bathroom count.";
+  return undefined;
 }
 
 export function parseAssistantIntent(value: unknown): AssistantStructuredIntent {
@@ -84,9 +101,8 @@ export function parseAssistantIntent(value: unknown): AssistantStructuredIntent 
   }
   const parsed = AssistantStructuredIntentSchema.parse(raw);
   const filters = cleanFilters(parsed.filters);
-  if (filters.minPrice !== undefined && filters.maxPrice !== undefined && filters.minPrice > filters.maxPrice) throw new Error("AI returned invalid price bounds");
-  if (filters.minBedrooms !== undefined && filters.maxBedrooms !== undefined && filters.minBedrooms > filters.maxBedrooms) throw new Error("AI returned invalid bedroom bounds");
-  if (filters.minBathrooms !== undefined && filters.maxBathrooms !== undefined && filters.minBathrooms > filters.maxBathrooms) throw new Error("AI returned invalid bathroom bounds");
+  const validationError = assistantFilterValidationError(filters);
+  if (validationError) throw new Error(validationError);
   return { ...parsed, filters };
 }
 
@@ -100,6 +116,7 @@ function propertyIndexesFromText(message: string) {
   for (const match of message.matchAll(/\b(?:property|home|option)\s*(\d+)\b/gi)) indexes.add(Number(match[1]));
   const words: Record<string, number> = { first: 1, second: 2, third: 3, fourth: 4, fifth: 5, sixth: 6 };
   for (const [word, index] of Object.entries(words)) if (new RegExp(`\\b${word}\\s+(?:property|home|option)\\b`, "i").test(message)) indexes.add(index);
+  if (/\b(?:compare\s+)?(?:the\s+)?first\s+two\b/i.test(message)) { indexes.add(1); indexes.add(2); }
   return [...indexes].filter((index) => index > 0 && index <= PROPERTY_ASSISTANT_RESULT_LIMIT);
 }
 
@@ -124,10 +141,11 @@ export function deterministicAssistantIntent(message: string, selectedPropertyId
   if (/most affordable|lowest price|cheapest/i.test(message)) filters.sort = "price-low";
   const references = propertyIndexesFromText(message);
   const comparison = /\bcompare|which (?:one|property)|more space\b/i.test(message);
-  const details = Boolean(selectedPropertyId) && /\b(this|it|that property|selected)\b/i.test(message);
+  const explicitPropertySearch = /\b(?:show|find|list|search|browse)\b.*\b(?:properties|homes|listings)\b/i.test(message);
+  const details = Boolean(selectedPropertyId) && !explicitPropertySearch && (/\b(this|it|that property|selected)\b/i.test(message) || /\b(price|cost|bed(?:room)?s?|bath(?:room)?s?|size|area|location|status|stage|availab(?:le|ility)|parking|feature|complet(?:ed|ion)|year)\b/i.test(message));
   const searchStateCommand = /\b(start over|reset search|clear (?:the )?search|forget|remove|without|anywhere but)\b/i.test(message);
   return {
-    intent: comparison ? "PROPERTY_COMPARISON" : details ? "PROPERTY_DETAILS" : Object.keys(filters).length || searchStateCommand ? "PROPERTY_SEARCH" : "GENERAL_PROPERTY_QUESTION",
+    intent: comparison ? "PROPERTY_COMPARISON" : details ? "PROPERTY_DETAILS" : Object.keys(filters).length || searchStateCommand || explicitPropertySearch ? "PROPERTY_SEARCH" : "GENERAL_PROPERTY_QUESTION",
     filters,
     referencedPropertyIndexes: references,
     requiresSelectedProperty: details,
@@ -137,12 +155,31 @@ export function deterministicAssistantIntent(message: string, selectedPropertyId
 export function mergeAssistantFilters(previous: AssistantFilters, next: AssistantFilters, message: string) {
   const lower = message.toLowerCase();
   if (/\b(start over|reset search|clear (?:the )?search)\b/.test(lower)) return {};
-  const merged = { ...previous, ...cleanFilters(next) };
+  const explicit = cleanFilters(next);
+  const startsNewSearch = /^\s*(?:show|find|list|search|browse)\b/.test(lower) && !/\b(?:this|it|selected|that property)\b/.test(lower);
+  const merged = startsNewSearch ? { ...explicit } : { ...previous, ...explicit };
+  // A newly stated bound replaces the old bound for the same dimension.
+  if (explicit.maxPrice !== undefined && explicit.minPrice === undefined) delete merged.minPrice;
+  if (explicit.minPrice !== undefined && explicit.maxPrice === undefined) delete merged.maxPrice;
+  if (explicit.minBedrooms !== undefined && explicit.maxBedrooms === undefined) delete merged.maxBedrooms;
+  if (explicit.maxBedrooms !== undefined && explicit.minBedrooms === undefined) delete merged.minBedrooms;
+  if (explicit.minBathrooms !== undefined && explicit.maxBathrooms === undefined) delete merged.maxBathrooms;
+  if (explicit.maxBathrooms !== undefined && explicit.minBathrooms === undefined) delete merged.minBathrooms;
   if (/\b(forget|remove|without|anywhere but)\s+(?:the )?(?:location|area|city|county|dublin|cork)\b/.test(lower)) {
     delete merged.location;
     delete merged.county;
   }
   return cleanFilters(merged);
+}
+
+export function mergeAssistantIntents(deterministic: AssistantStructuredIntent, model: AssistantStructuredIntent): AssistantStructuredIntent {
+  const hasExplicitDeterministicFilters = Object.keys(deterministic.filters).length > 0;
+  return {
+    intent: deterministic.intent === "GENERAL_PROPERTY_QUESTION" && !hasExplicitDeterministicFilters ? model.intent : deterministic.intent,
+    filters: cleanFilters({ ...model.filters, ...deterministic.filters }),
+    referencedPropertyIndexes: deterministic.referencedPropertyIndexes.length ? deterministic.referencedPropertyIndexes : model.referencedPropertyIndexes,
+    requiresSelectedProperty: deterministic.requiresSelectedProperty || model.requiresSelectedProperty,
+  };
 }
 
 export function assistantPropertyFilter(filters: AssistantFilters) {
@@ -167,10 +204,81 @@ function numberValue(value: NumericValue | null | undefined) {
   return typeof value === "number" ? value : value?.toNumber();
 }
 
-type RankableProperty = { id: string; location?: string | null; priceMin?: NumericValue | null; bedroomsMin?: number | null; bathroomsMin?: number | null; createdAt?: Date | string };
+export type AssistantGroundedProperty = {
+  id: string;
+  publicationStatus?: string | null;
+  location?: string | null;
+  county?: string | null;
+  type?: string | null;
+  stage?: string | null;
+  priceMin?: NumericValue | null;
+  priceMax?: NumericValue | null;
+  bedroomsMin?: number | null;
+  bedroomsMax?: number | null;
+  bathroomsMin?: number | null;
+  bathroomsMax?: number | null;
+};
+
+/** Confirms that returned records are public and still satisfy the validated filters. */
+export function validateAssistantProperties<T extends AssistantGroundedProperty>(properties: T[], filters: AssistantFilters) {
+  return properties.every((property) => {
+    const propertyType = property.type?.trim().toLowerCase();
+    const location = property.location?.toLowerCase() ?? "";
+    const county = property.county?.toLowerCase() ?? "";
+    const priceMin = numberValue(property.priceMin);
+    const priceMax = numberValue(property.priceMax);
+    return property.publicationStatus === "PUBLISHED"
+      && (!filters.location || location.includes(filters.location.toLowerCase()))
+      && (!filters.county || county === filters.county.toLowerCase())
+      && (!filters.propertyType || propertyType === filters.propertyType)
+      && (!filters.stage || property.stage === filters.stage)
+      && (filters.minPrice === undefined || (priceMin !== undefined && priceMin >= filters.minPrice))
+      && (filters.maxPrice === undefined || (priceMax !== undefined && priceMax <= filters.maxPrice))
+      && (filters.minBedrooms === undefined || (property.bedroomsMin !== null && property.bedroomsMin !== undefined && property.bedroomsMin >= filters.minBedrooms))
+      && (filters.maxBedrooms === undefined || (property.bedroomsMax !== null && property.bedroomsMax !== undefined && property.bedroomsMax <= filters.maxBedrooms))
+      && (filters.minBathrooms === undefined || (property.bathroomsMin !== null && property.bathroomsMin !== undefined && property.bathroomsMin >= filters.minBathrooms))
+      && (filters.maxBathrooms === undefined || (property.bathroomsMax !== null && property.bathroomsMax !== undefined && property.bathroomsMax <= filters.maxBathrooms));
+  });
+}
+
+type RankableProperty = {
+  id: string;
+  location?: string | null;
+  priceMin?: NumericValue | null;
+  bedroomsMin?: number | null;
+  bathroomsMin?: number | null;
+  completionYear?: number | null;
+  listedDate?: Date | string | null;
+  publishedAt?: Date | string | null;
+  createdAt?: Date | string;
+};
+
+function sortableTimestamp(value: Date | string | null | undefined) {
+  if (!value) return undefined;
+  const timestamp = new Date(value).getTime();
+  return Number.isFinite(timestamp) ? timestamp : undefined;
+}
+
+function compareNullableValues(left: number | undefined, right: number | undefined, direction: "asc" | "desc") {
+  if (left === undefined) return right === undefined ? 0 : 1;
+  if (right === undefined) return -1;
+  return direction === "desc" ? right - left : left - right;
+}
 
 export function rankAssistantProperties<T extends RankableProperty>(properties: T[], filters: AssistantFilters) {
   return [...properties].sort((left, right) => {
+    if (filters.sort === "newest" || filters.sort === "oldest") {
+      const direction = filters.sort === "newest" ? "desc" : "asc";
+      const comparisons = [
+        compareNullableValues(left.completionYear ?? undefined, right.completionYear ?? undefined, direction),
+        compareNullableValues(sortableTimestamp(left.listedDate), sortableTimestamp(right.listedDate), direction),
+        compareNullableValues(sortableTimestamp(left.publishedAt), sortableTimestamp(right.publishedAt), direction),
+        compareNullableValues(sortableTimestamp(left.createdAt), sortableTimestamp(right.createdAt), direction),
+      ];
+      const difference = comparisons.find((comparison) => comparison !== 0);
+      return difference ?? left.id.localeCompare(right.id);
+    }
+
     const score = (property: T) => {
       let result = 0;
       if (filters.location && property.location?.toLowerCase().includes(filters.location.toLowerCase())) result += 8;

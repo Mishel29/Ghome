@@ -10,6 +10,7 @@ export type CampaignDayStatistic = {
   campaignSubject: string;
   date: string;
   sent: number;
+  failed: number;
   clicks: number;
   interests: number;
   saves: number;
@@ -28,12 +29,14 @@ export function aggregateCampaignStatistics(events: CampaignStatisticEvent[]): C
       campaignSubject: event.campaign.subject,
       date,
       sent: 0,
+      failed: 0,
       clicks: 0,
       interests: 0,
       saves: 0,
       unsubscribes: 0,
     };
     if (event.type === "SENT") day.sent += 1;
+    if (event.type === "FAILED") day.failed += 1;
     if (event.type === "CLICKED") day.clicks += 1;
     if (event.type === "INTEREST") day.interests += 1;
     if (event.type === "SAVED") day.saves += 1;

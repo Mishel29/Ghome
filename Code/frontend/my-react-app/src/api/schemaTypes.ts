@@ -6,6 +6,8 @@ export type PropertyStage = "PLANNING" | "UNDER_CONSTRUCTION" | "READY_TO_MOVE";
 
 export type PropertyAssistantIntent = "PROPERTY_SEARCH" | "PROPERTY_DETAILS" | "PROPERTY_COMPARISON" | "GENERAL_PROPERTY_QUESTION";
 
+export type PropertyAssistantResponseType = "PROPERTY_RESULTS" | "PROPERTY_DETAILS" | "COMPARISON" | "NO_RESULTS" | "CLARIFICATION" | "GENERAL_HELP";
+
 export interface User {
   id: string;
   name: string;
@@ -103,6 +105,8 @@ export interface PropertyFilterInput {
   minBathrooms?: number | null;
   maxBathrooms?: number | null;
   completionYear?: number | null;
+  sizeCategory?: string | null;
+  agentId?: string | null;
   location?: string | null;
   listedFrom?: string | null;
   listedTo?: string | null;
@@ -118,6 +122,22 @@ export interface PropertyConnection {
   totalCount: number;
 }
 
+export interface PropertyFilterAgent {
+  id: string;
+  name: string;
+}
+
+export interface PropertyFilterOptions {
+  propertyTypes: Array<string>;
+  saleTypes: Array<string>;
+  counties: Array<string>;
+  locations: Array<string>;
+  sizeCategories: Array<string>;
+  bedrooms: Array<number>;
+  bathrooms: Array<number>;
+  agents: Array<PropertyFilterAgent>;
+}
+
 export interface Query {
   properties: PropertyConnection;
   property: Property | null;
@@ -128,6 +148,7 @@ export interface Query {
   adminNews: Array<NewsArticle>;
   adminProperty: Property | null;
   adminProperties: PropertyConnection;
+  propertyFilterOptions: PropertyFilterOptions;
   subscribers: Array<Subscriber>;
   campaigns: Array<Campaign>;
   campaignPreview: CampaignPreview;
@@ -143,6 +164,7 @@ export interface Query {
   campaignsPage: CampaignConnection;
   campaignDetail: Campaign;
   campaignStats: Array<CampaignDay>;
+  campaignDashboard: CampaignDashboard;
   campaignActivity: Array<CampaignActivityPoint>;
   templatesPage: TemplateConnection;
   templatePreview: HtmlResult;
@@ -608,12 +630,55 @@ export interface CampaignDay {
   campaignSubject: string;
   date: string;
   sent: number;
+  failed: number;
   clicks: number;
   interests: number;
   saves: number;
   unsubscribes: number;
   clickRate: number;
   interestRate: number;
+}
+
+export interface CampaignDashboardSummary {
+  sent: number;
+  failed: number;
+  clicks: number;
+  saves: number;
+  interests: number;
+  unsubscribes: number;
+  ctr: number;
+  interestRate: number;
+}
+
+export interface CampaignDashboardDay {
+  date: string;
+  sent: number;
+  failed: number;
+  clicks: number;
+  saves: number;
+  interests: number;
+  unsubscribes: number;
+}
+
+export interface CampaignPerformanceRow {
+  campaignId: string;
+  campaignName: string;
+  sentAt: string | null;
+  recipients: number;
+  sent: number;
+  failed: number;
+  clicks: number;
+  saves: number;
+  interests: number;
+  unsubscribes: number;
+  ctr: number;
+  interestRate: number;
+}
+
+export interface CampaignDashboard {
+  summary: CampaignDashboardSummary;
+  days: Array<CampaignDashboardDay>;
+  campaigns: Array<CampaignPerformanceRow>;
 }
 
 export interface CampaignActivityPoint {
@@ -692,9 +757,11 @@ export interface PropertyAssistantResult {
   message: string;
   sessionId: string;
   intent: PropertyAssistantIntent;
+  responseType: PropertyAssistantResponseType;
   selectedPropertyId: string | null;
   filterJson: string;
   totalCount: number;
+  warnings: Array<string>;
   properties: Array<Property>;
 }
 

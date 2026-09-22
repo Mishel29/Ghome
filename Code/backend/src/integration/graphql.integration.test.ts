@@ -60,14 +60,15 @@ it.skipIf(!enabled)("real GraphQL critical publication, ownership, news, and uns
   await prisma.newsArticle.create({ data: { title: "Draft news", publicationStatus: "DRAFT" } });
   const recipient = await prisma.subscriber.create({ data: { name: "Recipient", email: "recipient@integration.test", status: "ACTIVE", consentGrantedAt: new Date() } });
   const unsubscribed = await prisma.subscriber.create({ data: { name: "Unsubscribed", email: "unsubscribed@integration.test", status: "UNSUBSCRIBED", consentGrantedAt: new Date() } });
-  const campaign = await prisma.campaign.create({ data: { subject: "Integration campaign", createdById: admin.id } });
-  const campaignB = await prisma.campaign.create({ data: { subject: "Second integration campaign", createdById: admin.id } });
+  const campaignSentAt = new Date();
+  const campaign = await prisma.campaign.create({ data: { subject: "Integration campaign", createdById: admin.id, sentAt: campaignSentAt } });
+  const campaignB = await prisma.campaign.create({ data: { subject: "Second integration campaign", createdById: admin.id, sentAt: campaignSentAt } });
   await prisma.campaignProperty.create({ data: { campaignId: campaign.id, propertyId: published.id, propertyName: published.name } });
   const trackingToken = randomBytes(24).toString("hex");
   const trackingTokenB = randomBytes(24).toString("hex");
   const unsubscribeToken = randomBytes(24).toString("hex");
-  const recipientRow = await prisma.campaignRecipient.create({ data: { campaignId: campaign.id, subscriberId: recipient.id, recipientEmail: recipient.email, recipientName: recipient.name, trackingTokenHash: createHash("sha256").update(trackingToken).digest("hex") } });
-  const recipientRowB = await prisma.campaignRecipient.create({ data: { campaignId: campaignB.id, subscriberId: recipient.id, recipientEmail: recipient.email, recipientName: recipient.name, trackingTokenHash: createHash("sha256").update(trackingTokenB).digest("hex") } });
+  const recipientRow = await prisma.campaignRecipient.create({ data: { campaignId: campaign.id, subscriberId: recipient.id, recipientEmail: recipient.email, recipientName: recipient.name, status: "SENT", sentAt: campaignSentAt, trackingTokenHash: createHash("sha256").update(trackingToken).digest("hex") } });
+  const recipientRowB = await prisma.campaignRecipient.create({ data: { campaignId: campaignB.id, subscriberId: recipient.id, recipientEmail: recipient.email, recipientName: recipient.name, status: "FAILED", failedAt: campaignSentAt, trackingTokenHash: createHash("sha256").update(trackingTokenB).digest("hex") } });
   await prisma.unsubscribeToken.create({ data: { subscriberId: recipient.id, tokenHash: createHash("sha256").update(unsubscribeToken).digest("hex") } });
 
   server = spawn(process.execPath, ["dist/server.js"], { env: { ...process.env, DATABASE_URL: databaseUrl, PORT: String(port), PUBLIC_APP_URL: "http://localhost:5173", PUBLIC_BACKEND_URL: baseUrl, NVIDIA_API_KEY: "" }, stdio: "ignore" });
@@ -142,6 +143,20 @@ it.skipIf(!enabled)("real GraphQL critical publication, ownership, news, and uns
   assert.equal(await prisma.campaignEvent.count({ where: { campaignId: campaign.id, type: "SAVED" } }), 2);
   assert.equal(await prisma.campaignEvent.count({ where: { campaignId: campaign.id, type: "INTEREST" } }), 2);
   assert.equal(await prisma.campaignEvent.count({ where: { campaignId: campaignB.id, type: "SAVED", recipientId: recipientRowB.id } }), 1);
+  await prisma.analyticsEvent.create({ data: { eventType: "PROPERTY_SAVE", propertyId: campaignPropertyD.id } });
+  const dashboard = await graph("query{campaignDashboard{summary{sent failed clicks saves interests unsubscribes ctr interestRate} days{date sent failed clicks saves interests unsubscribes} campaigns{campaignId sent failed clicks saves interests unsubscribes ctr interestRate}}}", undefined, adminToken);
+  assert.equal(dashboard.errors, undefined);
+  const dashboardData = dashboard.data?.campaignDashboard as {
+    summary: { sent: number; failed: number; clicks: number; saves: number; interests: number; unsubscribes: number; ctr: number; interestRate: number };
+    days: Array<{ date: string; sent: number; failed: number; clicks: number; saves: number; interests: number; unsubscribes: number }>;
+    campaigns: Array<{ campaignId: string; sent: number; failed: number; clicks: number; saves: number; interests: number; unsubscribes: number; ctr: number; interestRate: number }>;
+  };
+  assert.deepEqual(dashboardData.summary, { sent: 1, failed: 1, clicks: 1, saves: 3, interests: 2, unsubscribes: 0, ctr: 1, interestRate: 2 });
+  assert.deepEqual(dashboardData.days, [{ date: campaignSentAt.toISOString().slice(0, 10), sent: 1, failed: 1, clicks: 1, saves: 3, interests: 2, unsubscribes: 0 }]);
+  const dashboardCampaign = dashboardData.campaigns.find((row) => row.campaignId === campaign.id);
+  const dashboardCampaignB = dashboardData.campaigns.find((row) => row.campaignId === campaignB.id);
+  assert.deepEqual(dashboardCampaign, { campaignId: campaign.id, sent: 1, failed: 0, clicks: 1, saves: 2, interests: 2, unsubscribes: 0, ctr: 1, interestRate: 2 });
+  assert.deepEqual(dashboardCampaignB, { campaignId: campaignB.id, sent: 0, failed: 1, clicks: 0, saves: 1, interests: 0, unsubscribes: 0, ctr: 0, interestRate: 0 });
   const stats = await graph("query{campaignStats{campaignId clicks saves interests unsubscribes}}", undefined, adminToken);
   const campaignStats = (stats.data?.campaignStats as Array<{ campaignId: string; clicks: number; saves: number; interests: number; unsubscribes: number }>).find((row) => row.campaignId === campaign.id);
   assert.deepEqual(campaignStats ? { clicks: campaignStats.clicks, saves: campaignStats.saves, interests: campaignStats.interests, unsubscribes: campaignStats.unsubscribes } : null, { clicks: 1, saves: 2, interests: 2, unsubscribes: 0 });

@@ -100,6 +100,28 @@ describe("health, readiness, proxy, and GraphQL middleware", () => {
   });
 });
 
+describe("admin property filter options", () => {
+  it("returns distinct metadata from all managed properties, including drafts", async () => {
+    mocked.prisma.property.findMany
+      .mockResolvedValueOnce([{ type: " Townhouse " }, { type: "townhouse" }, { type: null }])
+      .mockResolvedValueOnce([{ saleType: "New" }, { saleType: "" }])
+      .mockResolvedValueOnce([{ county: "Wicklow" }, { county: " wicklow " }])
+      .mockResolvedValueOnce([{ location: "Bray" }, { location: "  Bray" }])
+      .mockResolvedValueOnce([{ sizeCategory: "Large" }])
+      .mockResolvedValueOnce([{ bedroomsMin: 3 }])
+      .mockResolvedValueOnce([{ bedroomsMax: 4 }])
+      .mockResolvedValueOnce([{ bathroomsMin: 2 }])
+      .mockResolvedValueOnce([{ bathroomsMax: 3 }])
+      .mockResolvedValueOnce([{ agent: { id: "agent-1", name: "Aoife Kelly" } }]);
+
+    const result = await root.propertyFilterOptions({}, { token: "admin-token" });
+
+    expect(result).toEqual(expect.objectContaining({ propertyTypes: ["Townhouse"], counties: ["Wicklow"], locations: ["Bray"], bedrooms: [3, 4], bathrooms: [2, 3] }));
+    expect(mocked.prisma.property.findMany).toHaveBeenCalledWith({ select: { type: true }, distinct: ["type"] });
+    expect(mocked.prisma.property.findMany).toHaveBeenCalledWith(expect.objectContaining({ where: { agentId: { not: null } }, distinct: ["agentId"] }));
+  });
+});
+
 describe("public property assistant GraphQL resolver", () => {
   const publishedProperty = {
     id: "published-property-1",
@@ -176,6 +198,30 @@ describe("public property assistant GraphQL resolver", () => {
     expect(details.selectedPropertyId).toBe(publishedProperty.id);
     const search = await chat({ message: "Show me the newest available properties", sessionId: details.sessionId });
     expect(search).toMatchObject({ intent: "PROPERTY_SEARCH", selectedPropertyId: null });
+  });
+
+  it("orders newest searches by completion year rather than record import time", async () => {
+    mocked.prisma.property.findMany.mockResolvedValue([publishedProperty]);
+    mocked.prisma.property.count.mockResolvedValue(1);
+
+    await chat({ message: "Show me the newest available properties" });
+
+    expect(mocked.prisma.property.findMany).toHaveBeenCalledWith(expect.objectContaining({
+      orderBy: [
+        { completionYear: { sort: "desc", nulls: "last" } },
+        { listedDate: { sort: "desc", nulls: "last" } },
+        { publishedAt: { sort: "desc", nulls: "last" } },
+        { createdAt: "desc" },
+      ],
+    }));
+  });
+
+  it("returns the completed year for a selected public property", async () => {
+    mocked.prisma.property.findFirst.mockResolvedValue(publishedProperty);
+
+    const result = await chat({ message: "What year was it completed?", selectedPropertyId: publishedProperty.id });
+
+    expect(result).toMatchObject({ intent: "PROPERTY_DETAILS", message: expect.stringContaining("completed in 2026") });
   });
 
   it("rejects invalid input and prompt injection before retrieval", async () => {
