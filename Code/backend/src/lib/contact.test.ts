@@ -7,8 +7,9 @@ describe("subscriber contact validation", () => {
     expect(subscriberNameKey("ADA  LOVELACE")).toBe("ada lovelace");
   });
 
-  it("accepts an international country-code phone number", () => {
+  it("normalizes formatted international country-code phone numbers", () => {
     expect(normalizePhone("+353871234567", true)).toBe("+353871234567");
+    expect(normalizePhone("+353 1 234 5678", true)).toBe("+35312345678");
   });
 
   it("allows an omitted optional phone but requires it when requested", () => {
@@ -17,7 +18,7 @@ describe("subscriber contact validation", () => {
   });
 
   it("rejects local-only, repeated-country-code, and non-numeric phone input", () => {
-    for (const phone of ["0871234567", "+353+871234567", "+353 871234567"]) {
+    for (const phone of ["0871234567", "+353+871234567", "+353abc871234567"]) {
       expect(() => normalizePhone(phone, true)).toThrow();
     }
   });

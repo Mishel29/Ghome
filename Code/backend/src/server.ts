@@ -722,10 +722,20 @@ async function requireAdmin(context: { token?: string }) {
 }
 
 function uploadResult(upload: { id: string; filename: string; status: string; byteSize: number; expiresAt: Date; validation: unknown }) {
+  const validationRecord = upload.validation && typeof upload.validation === "object" && !Array.isArray(upload.validation)
+    ? upload.validation as Record<string, unknown>
+    : null;
+  const validation = validationRecord
+    ? {
+        ...validationRecord,
+        duplicateProperties: Array.isArray(validationRecord.duplicateProperties) ? validationRecord.duplicateProperties : [],
+        unresolvedDuplicateCount: typeof validationRecord.unresolvedDuplicateCount === "number" ? validationRecord.unresolvedDuplicateCount : 0,
+      }
+    : upload.validation;
   return {
     ...upload,
     expiresAt: upload.expiresAt.toISOString(),
-    validation: upload.validation ?? null,
+    validation: validation ?? null,
   };
 }
 
@@ -813,10 +823,16 @@ function validateUploadedSubscriberCsv(contentBase64: string) {
     const email = String(row.Email ?? "").trim();
     const name = normalizePersonName(String(row.Name ?? ""));
     const phone = String(row.Phone ?? "").trim();
+    let phoneError: string | null = null;
+    try {
+      row.Phone = normalizePhone(phone || null, false) ?? "";
+    } catch (error) {
+      phoneError = error instanceof Error ? error.message : "Phone number is invalid.";
+    }
     const rowErrors = [
       ...(!name ? [{ rowNumber: index + 2, field: "Name", value: null, message: "Name is required.", errorType: "FIELD" }] : []),
       ...(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) ? [{ rowNumber: index + 2, field: "Email", value: email || null, message: "Email must be valid.", errorType: "FIELD" }] : []),
-      ...(phone && !/^\+\d{6,18}$/.test(phone) ? [{ rowNumber: index + 2, field: "Phone", value: phone, message: "Phone must include one country code followed by digits only.", errorType: "FIELD" }] : []),
+      ...(phoneError ? [{ rowNumber: index + 2, field: "Phone", value: phone, message: phoneError, errorType: "FIELD" }] : []),
     ];
     if (rowErrors.length) errors.push(...rowErrors); else validRows++;
   }
@@ -1840,7 +1856,7 @@ export const root = {
     });
     const errors = [...result.errors, ...duplicateNameErrors, ...emailNameErrors];
     const valid = result.valid && errors.length === 0;
-    const validation = { valid, totalRows: result.totalRows, validRows: valid ? result.validRows : Math.max(result.validRows - duplicateNameErrors.length, 0), invalidRows: valid ? result.invalidRows : result.totalRows - Math.max(result.validRows - duplicateNameErrors.length, 0), totalErrors: errors.length, errorsTruncated: false, schema: { valid: result.valid, expectedColumns: ["Name", "Email", "Phone"], requiredColumns: ["Name", "Email"], receivedColumns: ["Name", "Email", "Phone"], missingColumns: [], unknownColumns: [], duplicateColumns: [], emptyColumns: [] }, errors };
+    const validation = { valid, totalRows: result.totalRows, validRows: valid ? result.validRows : Math.max(result.validRows - duplicateNameErrors.length, 0), invalidRows: valid ? result.invalidRows : result.totalRows - Math.max(result.validRows - duplicateNameErrors.length, 0), totalErrors: errors.length, errorsTruncated: false, schema: { valid: result.valid, expectedColumns: ["Name", "Email", "Phone"], requiredColumns: ["Name", "Email"], receivedColumns: ["Name", "Email", "Phone"], missingColumns: [], unknownColumns: [], duplicateColumns: [], emptyColumns: [] }, errors, duplicateProperties: [], unresolvedDuplicateCount: 0 };
     const updated = await prisma.propertyImportUpload.update({ where: { id: uploadId }, data: { status: valid ? "READY" : "INVALID", validation, validatedRows: result.rows as unknown as import("./generated/client.js").Prisma.InputJsonValue } });
     return uploadResult(updated);
   },
