@@ -166,7 +166,7 @@ export type SubscriberStatus = "PENDING" | "ACTIVE" | "UNSUBSCRIBED";
 
 export type CampaignStatus = "DRAFT" | "QUEUED" | "SENDING" | "SENT" | "PARTIALLY_FAILED" | "FAILED";
 
-export type DeliveryStatus = "PENDING" | "SENDING" | "SENT" | "FAILED" | "SKIPPED";
+export type DeliveryStatus = "PENDING" | "SENDING" | "SENT" | "DELIVERED" | "FAILED" | "SKIPPED";
 
 export interface AuthPayload {
   token: string;
@@ -235,6 +235,7 @@ export interface CampaignRecipient {
   recipientName: string;
   status: DeliveryStatus;
   sentAt: string | null;
+  deliveredAt: string | null;
   failedAt: string | null;
   errorMessage: string | null;
   attemptCount: number;
@@ -266,6 +267,7 @@ export interface Campaign {
   saveCount: number | null;
   sentCount: number | null;
   failedCount: number | null;
+  awaitingDeliveryCount: number | null;
 }
 
 export interface CampaignPreview {
