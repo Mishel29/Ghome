@@ -167,6 +167,7 @@ export const DeliveryStatus = {
   PENDING: 'PENDING',
   SENDING: 'SENDING',
   SENT: 'SENT',
+  DELIVERED: 'DELIVERED',
   FAILED: 'FAILED',
   SKIPPED: 'SKIPPED'
 } as const

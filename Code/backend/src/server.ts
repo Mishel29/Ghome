@@ -47,6 +47,34 @@ app.use((req, res, next) => {
   if (Number.isFinite(contentLength) && contentLength > 12 * 1024 * 1024) return res.status(413).json({ error: "Request body is too large" });
   next();
 });
+app.post("/webhooks/brevo", express.json({ limit: "256kb" }), async (req, res) => {
+  const secret = process.env.BREVO_WEBHOOK_SECRET;
+  if (!secret || req.query.token !== secret) return res.sendStatus(401);
+
+  const payload = req.body as { event?: unknown; "message-id"?: unknown; messageId?: unknown; reason?: unknown };
+  const event = typeof payload.event === "string" ? payload.event.toLowerCase() : "";
+  const messageId = typeof payload["message-id"] === "string" ? payload["message-id"] : typeof payload.messageId === "string" ? payload.messageId : "";
+  if (!messageId) return res.sendStatus(204);
+
+  const providerMessageId = messageId.replace(/^<|>$/g, "");
+  const recipient = await prisma.campaignRecipient.findFirst({ where: { providerMessageId: { in: [messageId, providerMessageId, `<${providerMessageId}>`] } }, select: { id: true, campaignId: true } });
+  if (!recipient) return res.sendStatus(204);
+
+  if (event === "delivered") {
+    await prisma.$transaction([
+      prisma.campaignRecipient.update({ where: { id: recipient.id }, data: { status: "DELIVERED", deliveredAt: new Date(), errorMessage: null } }),
+      prisma.campaignEvent.upsert({ where: { deduplicationKey: `delivered:${recipient.id}` }, create: { campaignId: recipient.campaignId, recipientId: recipient.id, type: "SENT", deduplicationKey: `delivered:${recipient.id}` }, update: {} }),
+    ]);
+  } else if (["hard_bounce", "soft_bounce", "blocked", "invalid_email", "error"].includes(event)) {
+    const errorMessage = typeof payload.reason === "string" && payload.reason.trim() ? payload.reason.trim() : `Brevo reported ${event.replaceAll("_", " ")}`;
+    await prisma.$transaction([
+      prisma.campaignRecipient.update({ where: { id: recipient.id }, data: { status: "FAILED", failedAt: new Date(), errorMessage } }),
+      prisma.campaignEvent.upsert({ where: { deduplicationKey: `failed:${recipient.id}` }, create: { campaignId: recipient.campaignId, recipientId: recipient.id, type: "FAILED", deduplicationKey: `failed:${recipient.id}` }, update: {} }),
+    ]);
+  }
+  await reconcileCampaignDelivery(recipient.campaignId);
+  res.sendStatus(204);
+});
 app.use("/graphql", express.json({ limit: "12mb" }));
 app.use("/graphql", rateLimit({
   windowMs: GRAPHQL_RATE_LIMIT_WINDOW_MS,
@@ -441,6 +469,13 @@ type PropertyConnection {
   totalCount: Int!
 }
 
+type PropertyFilterOptions {
+  types: [String!]!
+  saleTypes: [String!]!
+  statuses: [PropertyStatus!]!
+  stages: [PropertyStage!]!
+}
+
   type AuthPayload {
     token: String!
     user: User!
@@ -465,12 +500,12 @@ type PropertyConnection {
   type HtmlResult { html: String! }
 
   enum CampaignStatus { DRAFT QUEUED SENDING SENT PARTIALLY_FAILED FAILED }
-  enum DeliveryStatus { PENDING SENDING SENT FAILED SKIPPED }
+  enum DeliveryStatus { PENDING SENDING SENT DELIVERED FAILED SKIPPED }
   input CampaignFilter { search: String, from: String, to: String, status: CampaignStatus, offset: Int, limit: Int }
   input CampaignInput { subject: String!, templateHtml: String, bodyText: String, templateId: ID, propertyIds: [ID!], newsArticleId: ID }
   type CampaignProperty { id: ID!, propertyId: ID, propertyName: String! }
-  type CampaignRecipient { id: ID!, recipientEmail: String!, recipientName: String!, status: DeliveryStatus!, sentAt: String, failedAt: String, errorMessage: String, attemptCount: Int! }
-  type Campaign { id: ID!, subject: String!, templateHtml: String, bodyText: String, renderedHtml: String, status: CampaignStatus!, newsArticleId: ID, templateId: ID, sentAt: String, recipientCount: Int!, recipients: [CampaignRecipient!]!, properties: [CampaignProperty!]!, createdAt: String!, completedAt: String, clickCount: Int, interestCount: Int, saveCount: Int, sentCount: Int, failedCount: Int }
+  type CampaignRecipient { id: ID!, recipientEmail: String!, recipientName: String!, status: DeliveryStatus!, sentAt: String, deliveredAt: String, failedAt: String, errorMessage: String, attemptCount: Int! }
+  type Campaign { id: ID!, subject: String!, templateHtml: String, bodyText: String, renderedHtml: String, status: CampaignStatus!, newsArticleId: ID, templateId: ID, sentAt: String, recipientCount: Int!, recipients: [CampaignRecipient!]!, properties: [CampaignProperty!]!, createdAt: String!, completedAt: String, clickCount: Int, interestCount: Int, saveCount: Int, sentCount: Int, failedCount: Int, awaitingDeliveryCount: Int }
   type CampaignConnection { nodes: [Campaign!]!, totalCount: Int! }
   type CampaignPreview { subject: String!, html: String!, consentedRecipientCount: Int! }
 
@@ -658,6 +693,7 @@ type Query {
     limit: Int
     offset: Int
   ): PropertyConnection!
+  adminPropertyFilterOptions: PropertyFilterOptions!
   adminProperty(id: ID!): Property
   adminDashboard: AdminDashboard!
   campaignStats(from: String, to: String): [CampaignDay!]!
@@ -722,10 +758,20 @@ async function requireAdmin(context: { token?: string }) {
 }
 
 function uploadResult(upload: { id: string; filename: string; status: string; byteSize: number; expiresAt: Date; validation: unknown }) {
+  const validationRecord = upload.validation && typeof upload.validation === "object" && !Array.isArray(upload.validation)
+    ? upload.validation as Record<string, unknown>
+    : null;
+  const validation = validationRecord
+    ? {
+        ...validationRecord,
+        duplicateProperties: Array.isArray(validationRecord.duplicateProperties) ? validationRecord.duplicateProperties : [],
+        unresolvedDuplicateCount: typeof validationRecord.unresolvedDuplicateCount === "number" ? validationRecord.unresolvedDuplicateCount : 0,
+      }
+    : upload.validation;
   return {
     ...upload,
     expiresAt: upload.expiresAt.toISOString(),
-    validation: upload.validation ?? null,
+    validation: validation ?? null,
   };
 }
 
@@ -813,10 +859,16 @@ function validateUploadedSubscriberCsv(contentBase64: string) {
     const email = String(row.Email ?? "").trim();
     const name = normalizePersonName(String(row.Name ?? ""));
     const phone = String(row.Phone ?? "").trim();
+    let phoneError: string | null = null;
+    try {
+      row.Phone = normalizePhone(phone || null, false) ?? "";
+    } catch (error) {
+      phoneError = error instanceof Error ? error.message : "Phone number is invalid.";
+    }
     const rowErrors = [
       ...(!name ? [{ rowNumber: index + 2, field: "Name", value: null, message: "Name is required.", errorType: "FIELD" }] : []),
       ...(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) ? [{ rowNumber: index + 2, field: "Email", value: email || null, message: "Email must be valid.", errorType: "FIELD" }] : []),
-      ...(phone && !/^\+\d{6,18}$/.test(phone) ? [{ rowNumber: index + 2, field: "Phone", value: phone, message: "Phone must include one country code followed by digits only.", errorType: "FIELD" }] : []),
+      ...(phoneError ? [{ rowNumber: index + 2, field: "Phone", value: phone, message: phoneError, errorType: "FIELD" }] : []),
     ];
     if (rowErrors.length) errors.push(...rowErrors); else validRows++;
   }
@@ -1131,10 +1183,20 @@ async function recordCampaignInterestEvent(token: string | null | undefined, pro
   return true;
 }
 
-function serializeCampaign(campaign: { id: string; subject: string; templateHtml: string | null; bodyText: string | null; renderedHtml: string | null; status: string; newsArticleId: string | null; templateId: string | null; sentAt: Date | null; recipientCount: number; createdAt: Date; completedAt: Date | null; properties: Array<{ id: string; propertyId: string | null; propertyName: string }>; recipients: Array<{ id: string; recipientEmail: string; recipientName: string; status: string; sentAt: Date | null; failedAt: Date | null; errorMessage: string | null; attemptCount: number }>; events?: Array<{ type: string }> }) {
+async function reconcileCampaignDelivery(campaignId: string) {
+  const [delivered, failed, pending] = await Promise.all([
+    prisma.campaignRecipient.count({ where: { campaignId, status: "DELIVERED" } }),
+    prisma.campaignRecipient.count({ where: { campaignId, status: "FAILED" } }),
+    prisma.campaignRecipient.count({ where: { campaignId, status: { in: ["PENDING", "SENDING", "SENT"] } } }),
+  ]);
+  const status = pending ? "SENDING" : failed ? delivered ? "PARTIALLY_FAILED" : "FAILED" : "SENT";
+  await prisma.campaign.update({ where: { id: campaignId }, data: { status, completedAt: pending ? null : new Date(), sentAt: delivered ? new Date() : null } });
+}
+
+function serializeCampaign(campaign: { id: string; subject: string; templateHtml: string | null; bodyText: string | null; renderedHtml: string | null; status: string; newsArticleId: string | null; templateId: string | null; sentAt: Date | null; recipientCount: number; createdAt: Date; completedAt: Date | null; properties: Array<{ id: string; propertyId: string | null; propertyName: string }>; recipients: Array<{ id: string; recipientEmail: string; recipientName: string; status: string; sentAt: Date | null; deliveredAt?: Date | null; failedAt: Date | null; errorMessage: string | null; attemptCount: number }>; events?: Array<{ type: string }> }) {
   const eventCounts = new Map<string, number>();
   for (const event of campaign.events ?? []) eventCounts.set(event.type, (eventCounts.get(event.type) ?? 0) + 1);
-  return { ...campaign, sentAt: campaign.sentAt?.toISOString() ?? null, createdAt: campaign.createdAt.toISOString(), completedAt: campaign.completedAt?.toISOString() ?? null, recipients: campaign.recipients.map((recipient) => ({ ...recipient, sentAt: recipient.sentAt?.toISOString() ?? null, failedAt: recipient.failedAt?.toISOString() ?? null })), clickCount: eventCounts.get("CLICKED") ?? 0, interestCount: eventCounts.get("INTEREST") ?? 0, saveCount: eventCounts.get("SAVED") ?? 0, sentCount: campaign.recipients.filter((recipient) => recipient.status === "SENT").length, failedCount: campaign.recipients.filter((recipient) => recipient.status === "FAILED").length };
+  return { ...campaign, sentAt: campaign.sentAt?.toISOString() ?? null, createdAt: campaign.createdAt.toISOString(), completedAt: campaign.completedAt?.toISOString() ?? null, recipients: campaign.recipients.map((recipient) => ({ ...recipient, sentAt: recipient.sentAt?.toISOString() ?? null, deliveredAt: recipient.deliveredAt?.toISOString() ?? null, failedAt: recipient.failedAt?.toISOString() ?? null })), clickCount: eventCounts.get("CLICKED") ?? 0, interestCount: eventCounts.get("INTEREST") ?? 0, saveCount: eventCounts.get("SAVED") ?? 0, sentCount: campaign.recipients.filter((recipient) => recipient.status === "DELIVERED").length, failedCount: campaign.recipients.filter((recipient) => recipient.status === "FAILED").length, awaitingDeliveryCount: campaign.recipients.filter((recipient) => ["PENDING", "SENDING", "SENT"].includes(recipient.status)).length };
 }
 
 export const root = {
@@ -1257,9 +1319,8 @@ export const root = {
         console.info("Campaign SMTP result", { campaignId: id, recipientId: row.id, recipient: maskEmail(recipient.email), acceptedCount: info.accepted?.length ?? 0, rejectedCount: info.rejected?.length ?? 0, messageId: info.messageId, response: info.response });
         if (!wasRecipientAccepted(info, recipient.email)) throw new Error(info.rejected?.length ? "Mail server rejected the recipient" : "Mail server did not confirm recipient acceptance");
         await prisma.$transaction([
-          prisma.campaignRecipient.update({ where: { id: row.id }, data: { status: "SENT", sentAt: new Date(), providerMessageId: info.messageId } }),
-          prisma.deliveryAttempt.update({ where: { id: attempt.id }, data: { status: "SENT", providerMessageId: info.messageId, finishedAt: new Date() } }),
-          prisma.campaignEvent.create({ data: { campaignId: id, subscriberId: recipient.id, recipientId: row.id, type: "SENT" } }),
+          prisma.campaignRecipient.update({ where: { id: row.id }, data: { status: "SENDING", sentAt: new Date(), providerMessageId: info.messageId } }),
+          prisma.deliveryAttempt.update({ where: { id: attempt.id }, data: { status: "SENDING", providerMessageId: info.messageId, finishedAt: new Date() } }),
         ]);
         sent++;
       } catch (error) {
@@ -1272,8 +1333,8 @@ export const root = {
         ]);
       }
     }
-    const finalStatus = sent === subscribers.length ? "SENT" : sent ? "PARTIALLY_FAILED" : "FAILED";
-    const completed = await prisma.campaign.update({ where: { id }, data: { status: finalStatus, sentAt: sent ? new Date() : null, completedAt: new Date() }, include: { properties: true, recipients: true, events: { select: { type: true } } } });
+    const finalStatus = sent ? "SENDING" : "FAILED";
+    const completed = await prisma.campaign.update({ where: { id }, data: { status: finalStatus, sentAt: sent ? new Date() : null, completedAt: sent ? null : new Date() }, include: { properties: true, recipients: true, events: { select: { type: true } } } });
     return serializeCampaign(completed);
   },
   deleteCampaign: async ({ id }: { id: string }, context: { token?: string }) => {
@@ -1840,7 +1901,7 @@ export const root = {
     });
     const errors = [...result.errors, ...duplicateNameErrors, ...emailNameErrors];
     const valid = result.valid && errors.length === 0;
-    const validation = { valid, totalRows: result.totalRows, validRows: valid ? result.validRows : Math.max(result.validRows - duplicateNameErrors.length, 0), invalidRows: valid ? result.invalidRows : result.totalRows - Math.max(result.validRows - duplicateNameErrors.length, 0), totalErrors: errors.length, errorsTruncated: false, schema: { valid: result.valid, expectedColumns: ["Name", "Email", "Phone"], requiredColumns: ["Name", "Email"], receivedColumns: ["Name", "Email", "Phone"], missingColumns: [], unknownColumns: [], duplicateColumns: [], emptyColumns: [] }, errors };
+    const validation = { valid, totalRows: result.totalRows, validRows: valid ? result.validRows : Math.max(result.validRows - duplicateNameErrors.length, 0), invalidRows: valid ? result.invalidRows : result.totalRows - Math.max(result.validRows - duplicateNameErrors.length, 0), totalErrors: errors.length, errorsTruncated: false, schema: { valid: result.valid, expectedColumns: ["Name", "Email", "Phone"], requiredColumns: ["Name", "Email"], receivedColumns: ["Name", "Email", "Phone"], missingColumns: [], unknownColumns: [], duplicateColumns: [], emptyColumns: [] }, errors, duplicateProperties: [], unresolvedDuplicateCount: 0 };
     const updated = await prisma.propertyImportUpload.update({ where: { id: uploadId }, data: { status: valid ? "READY" : "INVALID", validation, validatedRows: result.rows as unknown as import("./generated/client.js").Prisma.InputJsonValue } });
     return uploadResult(updated);
   },
@@ -2169,6 +2230,17 @@ export const root = {
   }, context: { token?: string }) => {
     await requireAdmin(context);
     return root.properties(args, { admin: true });
+  },
+  adminPropertyFilterOptions: async (_args: unknown, context: { token?: string }) => {
+    await requireAdmin(context);
+    const properties = await prisma.property.findMany({ select: { type: true, saleType: true, status: true, stage: true } });
+    const values = <T>(items: Array<T | null>) => [...new Set(items.filter((item): item is T => item !== null))].sort();
+    return {
+      types: values(properties.map((property) => property.type)),
+      saleTypes: values(properties.map((property) => property.saleType)),
+      statuses: values(properties.map((property) => property.status)),
+      stages: values(properties.map((property) => property.stage)),
+    };
   },
   adminProperty: async ({ id }: { id: string }, context: { token?: string }) => {
     await requireAdmin(context);
