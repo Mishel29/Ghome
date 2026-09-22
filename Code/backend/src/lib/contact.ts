@@ -7,7 +7,7 @@ export function subscriberNameKey(name: string) {
 }
 
 export function normalizePhone(phone?: string | null, required = false) {
-  const value = (phone?.trim() ?? "").replace(/[\s()-]/g, "");
+  const value = phone?.trim() ?? "";
   if (!value) {
     if (required) throw new Error("Phone number is required");
     return null;
