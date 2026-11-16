@@ -116,13 +116,6 @@ export interface PropertyConnection {
   totalCount: number;
 }
 
-export interface PropertyFilterOptions {
-  types: Array<string>;
-  saleTypes: Array<string>;
-  statuses: Array<PropertyStatus>;
-  stages: Array<PropertyStage>;
-}
-
 export interface Query {
   properties: PropertyConnection;
   property: Property | null;

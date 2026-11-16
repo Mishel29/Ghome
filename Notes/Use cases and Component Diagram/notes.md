@@ -1,4 +1,4 @@
-Project: Glenveagh Properties Coding Challenge
+
 
 Problem Statement: Build a small marketing platform for a fictional housing development. It has three connected parts: a public marketing website, a custom content management system (CMS) that powers it, and a simple email campaign tool for announcing updates to subscribers.
 
